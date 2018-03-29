@@ -52,5 +52,9 @@
     "sass-web-fonts": "^2.0.2",
     "vue": "^2.5.16",
     "vue-template-compiler": "^2.5.16"
+  },
+  "engines": {
+    "node": ">= 8.11.0",
+    "npm": ">= 5.8.0"
   }
 }
