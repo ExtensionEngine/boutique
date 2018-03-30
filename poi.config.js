@@ -1,5 +1,4 @@
 const path = require('path');
-const port = process.env.PORT || 8080;
 
 const aliases = {
   '@': path.resolve(__dirname, './client')
@@ -22,7 +21,8 @@ module.exports = (options, req) => ({
   sourceMap: options.mode === 'development',
   hotEntry: 'app',
   generateStats: true,
-  port
+  // Override using: `npm run dev:server -- --port <number>`
+  port: 8080
 });
 
 // NOTE: Remove absolute path to local `node_modules` from configuration
