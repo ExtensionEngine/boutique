@@ -1,5 +1,5 @@
+const createError = require('http-errors');
 const find = require('lodash/find');
-const HttpError = require('../error');
 const HttpStatus = require('http-status');
 const toInteger = require('lodash/toInteger');
 
@@ -20,10 +20,7 @@ function get(req, res, next) {
   const id = toInteger(req.params.id);
   const course = find(courses, { id });
   if (course) return res.jsend.success(course);
-  next(new HttpError({
-    status: HttpStatus.NOT_FOUND,
-    message: 'Course not found'
-  }));
+  next(createError(HttpStatus.NOT_FOUND, 'Course not found'));
 }
 
 module.exports = {

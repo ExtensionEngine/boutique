@@ -2,6 +2,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const express = require('express');
 const helmet = require('helmet');
+const HttpError = require('http-errors').HttpError;
 const jsend = require('jsend').middleware;
 const morgan = require('morgan');
 // const passport = require('passport');
@@ -10,7 +11,6 @@ const morgan = require('morgan');
 // eslint-disable-next-line no-unused-vars
 // const auth = require('./auth');
 const config = require('./config');
-const HttpError = require('./error');
 const logger = require('./logger')();
 const router = require('./router');
 
