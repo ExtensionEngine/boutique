@@ -8,12 +8,12 @@ const Promise = require('bluebird');
 let users = [{
   id: 22,
   name: 'Admin',
-  email: 'admin@ntc.com',
+  email: 'admin@example.com',
   password: 'test123'
 }, {
   id: 23,
   name: 'User',
-  email: 'user@ntc.com',
+  email: 'user@example.com',
   password: 'test456'
 }];
 

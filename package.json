@@ -1,5 +1,5 @@
 {
-  "name": "ntc-lms",
+  "name": "lms-starter",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -16,13 +16,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ExtensionEngine/ntc-lms.git"
+    "url": "git+https://github.com/ExtensionEngine/lms-starter.git"
   },
   "keywords": [],
   "bugs": {
-    "url": "https://github.com/ExtensionEngine/ntc-lms/issues"
+    "url": "https://github.com/ExtensionEngine/lms-starter/issues"
   },
-  "homepage": "https://github.com/ExtensionEngine/ntc-lms#readme",
+  "homepage": "https://github.com/ExtensionEngine/lms-starter#readme",
   "devDependencies": {
     "del-cli": "^1.1.0",
     "eslint": "^4.19.1",
