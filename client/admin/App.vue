@@ -1,12 +1,12 @@
 <template>
   <div id="app" class="system-font-stack">
     <img class="logo" src="./static/logo.png" alt="Logo">
-    <greet message="Hello world! 😉"></greet>
+    <greet message="Hello admin! 😉"></greet>
   </div>
 </template>
 
 <script>
-import Greet from '@/components/Greet';
+import Greet from '@/admin/components/Greet';
 
 export default {
   name: 'app',

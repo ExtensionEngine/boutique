@@ -12,19 +12,26 @@ module.exports = (options, req) => ({
     require('poi-preset-bundle-report')()
   ],
   entry: {
-    app: 'client/main.js'
+    admin: 'client/admin/main.js',
+    student: 'client/student/main.js'
   },
   dist: 'dist',
-  staticFolder: 'client/static',
+  html: [{
+    filename: 'admin/index.html',
+    excludeChunks: ['student']
+  }, {
+    filename: 'index.html',
+    excludeChunks: ['admin']
+  }],
   extendWebpack(config) {
     configureModuleResolution(config);
     config.resolve.alias.merge(aliases);
   },
   sourceMap: options.mode === 'development',
-  hotEntry: 'app',
+  hotEntry: ['student', 'admin'],
   generateStats: true,
   // Override using: `npm run dev:server -- --port <number>`
-  port: 8080,
+  port: 8081,
   devServer: {
     proxy: {
       '/api': {
