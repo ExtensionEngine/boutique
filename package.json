@@ -5,9 +5,11 @@
   "scripts": {
     "dev:client": "poi",
     "dev:server": "nodemon --exec \"node -r dotenv/config\" ./server | bunyan -o short",
+    "lint:js": "eslint --ext .js,.vue server client",
     "lint:scss": "stylelint client/**/*.vue client/**/*.scss --syntax scss",
+    "lint": "npm run lint:js; npm run lint:scss",
     "debug": "node --inspect-brk -r dotenv/config ./server",
-    "start": "node -r dotenv/config ./server",
+    "start": "NODE_ENV=production node -r dotenv/config ./server",
     "build": "poi build",
     "clean": "del-cli dist/* !dist/.gitkeep",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -40,6 +42,7 @@
     "stylelint": "^9.1.3",
     "stylelint-config-standard": "^18.2.0",
     "stylelint-order": "^0.8.1",
+    "vue-template-compiler": "^2.5.16",
     "@mapbox/stylelint-processor-arbitrary-tags": "^0.2.0"
   },
   "dependencies": {
@@ -58,8 +61,7 @@
     "morgan": "^1.9.0",
     "sass-web-fonts": "^2.0.2",
     "sequelize": "^4.37.5",
-    "vue": "^2.5.16",
-    "vue-template-compiler": "^2.5.16"
+    "vue": "^2.5.16"
   },
   "engines": {
     "node": ">= 8.11.0",
