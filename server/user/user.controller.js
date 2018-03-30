@@ -1,3 +1,5 @@
+'use strict';
+
 const createError = require('http-errors');
 const HttpStatus = require('http-status');
 const { User } = require('../database');

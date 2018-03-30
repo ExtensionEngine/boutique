@@ -1,3 +1,5 @@
+'use strict';
+
 const { auth: config = {} } = require('../config');
 const { ExtractJwt, Strategy } = require('passport-jwt');
 const passport = require('passport');

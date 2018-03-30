@@ -1,3 +1,5 @@
+'use strict';
+
 const createError = require('http-errors');
 const find = require('lodash/find');
 const HttpStatus = require('http-status');

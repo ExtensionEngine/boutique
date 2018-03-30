@@ -1,3 +1,5 @@
+'use strict';
+
 // TODO: Replace mock with actual implementation!
 const Promise = require('bluebird');
 const User = require('./user.model');
