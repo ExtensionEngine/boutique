@@ -1,3 +1,5 @@
+'use strict';
+
 const bunyan = require('bunyan');
 const pkg = require('../package.json');
 const loggers = {};

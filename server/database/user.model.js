@@ -1,3 +1,5 @@
+'use strict';
+
 // TODO: Replace mock with actual implementation!
 const bcrypt = require('bcrypt');
 const { auth: config = {} } = require('../config');

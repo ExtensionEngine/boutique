@@ -1,3 +1,5 @@
+'use strict';
+
 const bluebird = require('bluebird');
 const sequelize = require('sequelize');
 const { promisify } = require('util');
