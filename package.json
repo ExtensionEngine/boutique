@@ -8,7 +8,7 @@
     "lint:js": "eslint --ext .js,.vue server client",
     "lint:scss": "stylelint client/**/*.vue client/**/*.scss --syntax scss",
     "lint": "npm run lint:js; npm run lint:scss",
-    "debug": "node --inspect-brk -r dotenv/config ./server",
+    "debug": "node --inspect-brk -r dotenv/config ./server | bunyan",
     "start": "NODE_ENV=production node -r dotenv/config ./server",
     "build": "poi build",
     "clean": "del-cli dist/* !dist/.gitkeep",
