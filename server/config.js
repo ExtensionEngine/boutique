@@ -17,5 +17,17 @@ module.exports = {
     secret: process.env.AUTH_JWT_SECRET
     // issuer: process.env.AUTH_JWT_ISSUER,
     // audience: process.env.AUTH_JWT_AUDIENCE
+  },
+  storage: {
+    amazon: {
+      key: process.env.STORAGE_KEY,
+      secret: process.env.STORAGE_SECRET,
+      region: process.env.STORAGE_REGION,
+      bucket: process.env.STORAGE_BUCKET
+    },
+    filesystem: {
+      path: process.env.STORAGE_PATH
+    },
+    provider: process.env.STORAGE_PROVIDER
   }
 };
