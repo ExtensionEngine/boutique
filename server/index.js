@@ -1,0 +1,22 @@
+const bluebird = require('bluebird');
+const sequelize = require('sequelize');
+const { promisify } = require('util');
+
+const app = require('./app');
+const config = require('./config');
+const database = require('./database');
+const logger = require('./logger')();
+const runServer = promisify(app.listen.bind(app));
+
+if (process.env.NODE_ENV !== 'production') {
+  sequelize.Promise.config({ longStackTraces: true });
+  bluebird.config({ longStackTraces: true });
+}
+
+const address = `http://${config.ip}:${config.port}`;
+
+database.initialize()
+  .then(() => logger.info('🗄️  Database initialized'))
+  .then(() => runServer(config.port, config.ip))
+  .then(() => logger.info(`✈️  Server listening on ${address}`))
+  .catch(err => logger.error({ err }));

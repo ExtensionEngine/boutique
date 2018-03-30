@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev:client": "poi",
-    "dev:server": "nodemon --exec \"node -r dotenv/config\" ./server",
+    "dev:server": "nodemon --exec \"node -r dotenv/config\" ./server | bunyan -o short",
     "lint:scss": "stylelint client/**/*.vue client/**/*.scss --syntax scss",
     "debug": "node --inspect-brk -r dotenv/config ./server",
     "start": "node -r dotenv/config ./server",
@@ -43,13 +43,20 @@
     "@mapbox/stylelint-processor-arbitrary-tags": "^0.2.0"
   },
   "dependencies": {
+    "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
+    "bunyan": "^1.8.12",
+    "cors": "^2.8.4",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "helmet": "^3.12.0",
+    "http-status": "^1.0.1",
+    "jsend": "^1.0.2",
     "lodash": "^4.17.5",
     "mdi": "^2.2.43",
+    "morgan": "^1.9.0",
     "sass-web-fonts": "^2.0.2",
+    "sequelize": "^4.37.5",
     "vue": "^2.5.16",
     "vue-template-compiler": "^2.5.16"
   },
