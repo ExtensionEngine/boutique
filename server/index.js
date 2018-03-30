@@ -11,8 +11,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 const app = require('./app');
 const config = require('./config');
-const database = require('./database');
-const logger = require('./logger')();
+const database = require('./common/database');
+const logger = require('./common/logger')();
 const runServer = promisify(app.listen.bind(app));
 
 const address = `http://${config.ip}:${config.port}`;

@@ -2,7 +2,7 @@
 
 // TODO: Replace mock with actual implementation!
 const bcrypt = require('bcrypt');
-const { auth: config = {} } = require('../config');
+const { auth: config = {} } = require('../../config');
 const find = require('lodash/find');
 const jwt = require('jsonwebtoken');
 const Promise = require('bluebird');

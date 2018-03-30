@@ -11,9 +11,9 @@ const passport = require('passport');
 
 // Setup authentication before instantiating the main app router.
 // eslint-disable-next-line no-unused-vars
-const auth = require('./auth');
+const auth = require('./common/auth');
 const config = require('./config');
-const logger = require('./logger')();
+const logger = require('./common/logger')();
 const router = require('./router');
 
 const app = express();

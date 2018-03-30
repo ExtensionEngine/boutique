@@ -2,7 +2,7 @@
 
 const createError = require('http-errors');
 const HttpStatus = require('http-status');
-const { User } = require('../database');
+const { User } = require('../common/database');
 
 const { BAD_REQUEST, NOT_FOUND } = HttpStatus;
 
