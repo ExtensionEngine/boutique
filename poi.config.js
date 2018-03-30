@@ -1,3 +1,5 @@
+require('dotenv').load();
+const config = require('./server/config');
 const path = require('path');
 
 const aliases = {
@@ -22,7 +24,14 @@ module.exports = (options, req) => ({
   hotEntry: 'app',
   generateStats: true,
   // Override using: `npm run dev:server -- --port <number>`
-  port: 8080
+  port: 8080,
+  devServer: {
+    proxy: {
+      '/api': {
+        target: `http://${config.ip}:${config.port}`
+      }
+    }
+  }
 });
 
 // NOTE: Remove absolute path to local `node_modules` from configuration
