@@ -4,35 +4,8 @@
       <span v-if="message">{{ message }}</span>
     </div>
     <form>
-      <div class="field">
-        <label class="label">Email</label>
-        <div class="control">
-          <input
-            v-model="email"
-            v-validate="'required|email'"
-            data-vv-name="email"
-            class="input"
-            placeholder="Email">
-        </div>
-        <p v-if="vErrors.has('email')" class="help is-danger">
-          {{ vErrors.first('email') }}
-        </p>
-      </div>
-      <div class="field">
-        <label class="label">Password</label>
-        <div class="control">
-          <input
-            v-model="password"
-            v-validate="'required'"
-            data-vv-name="password"
-            class="input"
-            type="password"
-            placeholder="Password">
-        </div>
-        <p v-if="vErrors.has('password')" class="help is-danger">
-          {{ vErrors.first('password') }}
-        </p>
-      </div>
+      <v-input v-model="email" name="email" validate="required|email"></v-input>
+      <v-input v-model="password" name="password" validate="required"></v-input>
       <div class="options">
         <button @click.stop="submit" class="button is-primary" type="button">
           Login
@@ -46,6 +19,7 @@
 import { mapActions } from 'vuex';
 import { withValidation } from '@/common/validation';
 import pick from 'lodash/pick';
+import VInput from '@/common/components/form/VInput';
 
 const LOGIN_ERR_MESSAGE = 'User email and password do not match';
 
@@ -70,7 +44,8 @@ export default {
           .catch(() => (this.message = LOGIN_ERR_MESSAGE));
       });
     }
-  }
+  },
+  components: { VInput }
 };
 </script>
 
