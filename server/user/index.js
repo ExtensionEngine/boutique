@@ -7,6 +7,6 @@ router
   .post('/login', ctrl.login);
 
 module.exports = {
-  path: '/user',
+  path: '/users',
   router
 };
