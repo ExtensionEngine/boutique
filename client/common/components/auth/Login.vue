@@ -4,23 +4,39 @@
       <span v-if="message">{{ message }}</span>
     </div>
     <form>
-      <v-text-field
-        v-model="email"
-        :error-messages="vErrors.collect('email')"
-        v-validate="'required|email'"
-        data-vv-name="email"
-        label="E-mail">
-      </v-text-field>
-      <v-text-field
-        v-model="password"
-        :error-messages="vErrors.collect('password')"
-        v-validate="'required'"
-        data-vv-name="password"
-        label="Password"
-        type="password">
-      </v-text-field>
+      <div class="field">
+        <label class="label">Email</label>
+        <div class="control">
+          <input
+            v-model="email"
+            v-validate="'required|email'"
+            data-vv-name="email"
+            class="input"
+            placeholder="Email">
+        </div>
+        <p v-if="vErrors.has('email')" class="help is-danger">
+          {{ vErrors.first('email') }}
+        </p>
+      </div>
+      <div class="field">
+        <label class="label">Password</label>
+        <div class="control">
+          <input
+            v-model="password"
+            v-validate="'required'"
+            data-vv-name="password"
+            class="input"
+            type="password"
+            placeholder="Password">
+        </div>
+        <p v-if="vErrors.has('password')" class="help is-danger">
+          {{ vErrors.first('password') }}
+        </p>
+      </div>
       <div class="options">
-        <v-btn @click="submit">Login</v-btn>
+        <button @click.stop="submit" class="button is-primary" type="button">
+          Login
+        </button>
       </div>
     </form>
   </div>
