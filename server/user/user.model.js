@@ -58,7 +58,7 @@ class User extends Model {
         }
       },
       beforeBulkCreate(users) {
-        let updates = users.map(user => user.encryptPassword());
+        const updates = users.map(user => user.encryptPassword());
         return Promise.all(updates);
       }
     };
