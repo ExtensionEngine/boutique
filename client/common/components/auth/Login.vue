@@ -6,10 +6,10 @@
     <form>
       <v-text-field
         v-model="email"
-        label="E-mail"
         :error-messages="vErrors.collect('email')"
         v-validate="'required|email'"
-        data-vv-name="email">
+        data-vv-name="email"
+        label="E-mail">
       </v-text-field>
       <v-text-field
         v-model="password"
