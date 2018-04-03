@@ -11,7 +11,8 @@ Vue.use(Vuetify);
 Vue.use(VeeValidate, {
   delay: 700,
   fieldsBagName: 'vFields',
-  errorBagName: 'vErrors'
+  errorBagName: 'vErrors',
+  inject: false
 });
 
 // eslint-disable-next-line no-new
