@@ -1,18 +1,12 @@
 <template>
-  <div id="app" class="system-font-stack">
-    <img class="logo" src="./static/logo.png" alt="Logo">
-    <greet message="Hello admin! 😉"></greet>
-  </div>
+  <v-app id="app">
+    <router-view></router-view>
+  </v-app>
 </template>
 
 <script>
-import Greet from '@/admin/components/Greet';
-
 export default {
-  name: 'app',
-  components: {
-    Greet
-  }
+  name: 'app'
 };
 </script>
 
