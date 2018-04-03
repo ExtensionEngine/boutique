@@ -1,6 +1,6 @@
 import auth from '../../../api/auth';
 
-export const login = ({ commit, state }, credentials) => {
+export const login = ({ commit }, credentials) => {
   return auth.login(credentials)
     .then(user => commit('login', user));
 };
@@ -13,10 +13,10 @@ export const logout = () => {
     }, 0));
 };
 
-export const forgotPassword = ({ commit }, { email }) => {
+export const forgotPassword = (context, { email }) => {
   return auth.forgotPassword(email);
 };
 
-export const resetPassword = ({ commit }, { email }) => {
+export const resetPassword = (context, { email }) => {
   return auth.forgotPassword(email);
 };
