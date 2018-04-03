@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions } from 'vuex';
 import { withValidation } from '@/common/validation';
 import pick from 'lodash/pick';
 
@@ -43,7 +43,6 @@ export default {
       message: ''
     };
   },
-  computed: mapState(['user']),
   methods: {
     ...mapActions(['login']),
     submit() {
