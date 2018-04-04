@@ -1,7 +1,9 @@
-const path = require('path');
+'use strict';
+
+const { join } = require('path');
 
 module.exports = {
-  'config': path.resolve('server/common/database', 'config.js'),
-  'seeders-path': path.resolve('server/common/database', 'seeds'),
-  'migrations-path': path.resolve('server/common/database', 'migrations')
+  config: join(__dirname, './server/common/database/config.js'),
+  'seeders-path': join(__dirname, './server/common/database/seeds'),
+  'migrations-path': join(__dirname, './server/common/database/migrations')
 }

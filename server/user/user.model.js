@@ -2,8 +2,8 @@
 
 const bcrypt = require('bcrypt');
 const { auth: config = {} } = require('../config');
-const pick = require('lodash/pick');
 const jwt = require('jsonwebtoken');
+const pick = require('lodash/pick');
 
 const { Model } = require('sequelize');
 
@@ -58,8 +58,7 @@ class User extends Model {
         }
       },
       beforeBulkCreate(users) {
-        const updates = users.map(user => user.encryptPassword());
-        return Promise.all(updates);
+        return Promise.all(users.map(it => it.encryptPassword()));
       }
     };
   }
@@ -71,7 +70,7 @@ class User extends Model {
 
   async authenticate(password) {
     const result = await bcrypt.compare(password, this.password);
-    return result ? this : false;
+    return result && this;
   }
 
   createToken(options = {}) {

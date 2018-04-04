@@ -1,8 +1,9 @@
 'use strict';
 
-const Sequelize = require('sequelize');
-const invoke = require('lodash/invoke');
 const config = require('./config');
+const forEach = require('lodash/forEach');
+const invoke = require('lodash/invoke');
+const Sequelize = require('sequelize');
 
 // require models
 const User = require('../../user/user.model');
@@ -23,7 +24,7 @@ const models = {
   User: defineModel(User)
 };
 
-Object.values(models).forEach((model) => {
+forEach(models, model => {
   invoke(model, 'associate', models);
   invoke(model, 'addHooks', models);
 });
