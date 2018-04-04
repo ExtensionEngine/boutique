@@ -1,19 +1,19 @@
 'use strict';
 
-const includes = require('lodash/includes');
+const includes = (arr, item) => arr.indexOf(item) !== -1;
 
-const actions = [
+const delimiter = ':';
+const shorthands = [
   'migrate',
   'seed',
   'create',
   'drop'
 ];
-const delimiter = ':';
 
 const input = process.argv[2] || '';
 const [cmd] = input.split(delimiter);
 
-if (includes(actions, cmd)) {
+if (cmd && includes(shorthands, cmd)) {
   process.argv[2] = `db:${input}`;
 }
 require('sequelize-cli/lib/sequelize');

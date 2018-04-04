@@ -5,7 +5,7 @@ const forEach = require('lodash/forEach');
 const invoke = require('lodash/invoke');
 const Sequelize = require('sequelize');
 
-// require models
+// Require models.
 const User = require('../../user/user.model');
 
 let db = {};
