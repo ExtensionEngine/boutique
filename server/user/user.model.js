@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const { auth: config = {} } = require('../config');
 const jwt = require('jsonwebtoken');
 const pick = require('lodash/pick');
+const { role } = require('../../common/config');
 
 const { Model } = require('sequelize');
 
@@ -21,29 +22,42 @@ class User extends Model {
         allowNull: false,
         validate: { notEmpty: true, len: [5, 100] }
       },
+      role: {
+        type: DataTypes.ENUM(role.ADMIN, role.STUDENT),
+        defaultValue: role.STUDENT
+      },
       firstName: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        field: 'first_name'
       },
       lastName: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        field: 'last_name'
       },
       createdAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        field: 'created_at',
+        allowNull: false
       },
       updatedAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        field: 'updated_at',
+        allowNull: false
       },
       deletedAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        field: 'deleted_at'
       }
     };
   }
 
   static options() {
     return {
-      modelName: 'users',
+      modelName: 'user',
       timestamps: true,
-      paranoid: true
+      paranoid: true,
+      underscored: true,
+      freezeTableName: true
     };
   }
 

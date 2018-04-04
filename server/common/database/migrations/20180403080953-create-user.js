@@ -1,36 +1,52 @@
 'use strict';
 
+const { role } = require('../../../../common/config');
+
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('users', {
+  up: (queryInterface, Sequelize) => queryInterface.createTable('user', {
     id: {
-      allowNull: false,
-      autoIncrement: true,
+      type: Sequelize.INTEGER,
       primaryKey: true,
-      type: Sequelize.INTEGER
+      autoIncrement: true,
+      allowNull: false
     },
     email: {
-      type: Sequelize.STRING
-    },
-    firstName: {
-      type: Sequelize.STRING
-    },
-    lastName: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: { isEmail: true, notEmpty: true },
+      unique: { msg: 'The specified email address is already in use.' }
     },
     password: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: { notEmpty: true, len: [5, 100] }
+    },
+    role: {
+      type: Sequelize.ENUM(role.ADMIN, role.STUDENT),
+      defaultValue: role.STUDENT
+    },
+    firstName: {
+      type: Sequelize.STRING,
+      field: 'first_name'
+    },
+    lastName: {
+      type: Sequelize.STRING,
+      field: 'last_name'
     },
     createdAt: {
-      allowNull: false,
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      field: 'created_at',
+      allowNull: false
     },
     updatedAt: {
-      allowNull: false,
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      field: 'updated_at',
+      allowNull: false
     },
     deletedAt: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      field: 'deleted_at'
     }
   }),
-  down: (queryInterface, Sequelize) => queryInterface.dropTable('users')
+  down: (queryInterface, Sequelize) => queryInterface.dropTable('user')
 };
