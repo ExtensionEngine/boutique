@@ -28,15 +28,14 @@ class User extends Model {
         defaultValue: role.STUDENT
       },
       token: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        validate: { notEmpty: true, len: [10, 500] }
       },
       firstName: {
-        type: DataTypes.STRING,
-        field: 'first_name'
+        type: DataTypes.STRING
       },
       lastName: {
-        type: DataTypes.STRING,
-        field: 'last_name'
+        type: DataTypes.STRING
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -69,10 +68,9 @@ class User extends Model {
         return user.encryptPassword();
       },
       beforeUpdate(user) {
-        if (!user.changed('password')) {
-          return Promise.resolve(user);
-        }
-        return user.encryptPassword();
+        return user.changed('password')
+          ? user.encryptPassword()
+          : Promise.resolve(user);
       },
       beforeBulkCreate(users) {
         return Promise.map(users, user => user.encryptPassword());
