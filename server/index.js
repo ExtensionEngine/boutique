@@ -21,7 +21,4 @@ database.initialize()
   .then(() => logger.info('🗄️  Database initialized'))
   .then(() => runServer(config.port, config.ip))
   .then(() => logger.info(`✈️  Server listening on ${address}`))
-  .catch(err => {
-    logger.error({ err });
-    if (err.name === 'SequelizeConnectionError') throw err;
-  });
+  .catch(err => logger.error({ err }));
