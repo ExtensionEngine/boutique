@@ -24,6 +24,9 @@ module.exports = {
       type: Sequelize.ENUM(values(role)),
       defaultValue: role.STUDENT
     },
+    token: {
+      type: Sequelize.STRING(500)
+    },
     firstName: {
       type: Sequelize.STRING,
       field: 'first_name'

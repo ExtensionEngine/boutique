@@ -27,6 +27,9 @@ class User extends Model {
         type: DataTypes.ENUM(values(role)),
         defaultValue: role.STUDENT
       },
+      token: {
+        type: DataTypes.STRING
+      },
       firstName: {
         type: DataTypes.STRING,
         field: 'first_name'
@@ -37,13 +40,11 @@ class User extends Model {
       },
       createdAt: {
         type: DataTypes.DATE,
-        field: 'created_at',
-        allowNull: false
+        field: 'created_at'
       },
       updatedAt: {
         type: DataTypes.DATE,
-        field: 'updated_at',
-        allowNull: false
+        field: 'updated_at'
       },
       deletedAt: {
         type: DataTypes.DATE,
