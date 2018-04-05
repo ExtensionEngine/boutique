@@ -22,6 +22,26 @@ const defineModel = Model => {
   return Model.init(fields, { sequelize, hooks, scopes, ...options });
 };
 
+function initialize() {
+  if (isProduction) return Promise.resolve();
+
+  const umzug = new Umzug({
+    storage: 'sequelize',
+    storageOptions: {
+      sequelize
+    },
+    migrations: {
+      params: [
+        sequelize.getQueryInterface(),
+        Sequelize
+      ],
+      path: migrationsPath
+    }
+  });
+
+  return umzug.up();
+}
+
 const models = {
   User: defineModel(User)
 };
@@ -34,25 +54,7 @@ forEach(models, model => {
 db = Object.assign({
   Sequelize,
   sequelize,
-  initialize() {
-    if (isProduction) return Promise.resolve();
-
-    const umzug = new Umzug({
-      storage: 'sequelize',
-      storageOptions: {
-        sequelize
-      },
-      migrations: {
-        params: [
-          sequelize.getQueryInterface(),
-          Sequelize
-        ],
-        path: migrationsPath
-      }
-    });
-
-    return umzug.up();
-  }
+  initialize
 }, models);
 
 // Patch Sequelize#method to support getting models by class name.
