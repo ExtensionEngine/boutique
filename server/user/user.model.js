@@ -21,7 +21,7 @@ class User extends Model {
       password: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: { notEmpty: true, len: [5, 100] }
+        validate: { notEmpty: true, len: [5, 255] }
       },
       role: {
         type: DataTypes.ENUM(values(role)),
