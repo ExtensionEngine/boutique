@@ -1,12 +1,13 @@
 'use strict';
 
 const bcrypt = require('bcrypt');
-const { auth: config = {} } = require('../config');
 const jwt = require('jsonwebtoken');
-const pick = require('lodash/pick');
-const { role } = require('../../common/config');
-
 const { Model } = require('sequelize');
+const pick = require('lodash/pick');
+const Promise = require('bluebird');
+const values = require('lodash/values');
+const { auth: config = {} } = require('../config');
+const { role } = require('../../common/config');
 
 class User extends Model {
   static fields(DataTypes) {
@@ -23,7 +24,7 @@ class User extends Model {
         validate: { notEmpty: true, len: [5, 100] }
       },
       role: {
-        type: DataTypes.ENUM(role.ADMIN, role.STUDENT),
+        type: DataTypes.ENUM(values(role)),
         defaultValue: role.STUDENT
       },
       firstName: {
@@ -67,12 +68,13 @@ class User extends Model {
         return user.encryptPassword();
       },
       beforeUpdate(user) {
-        if (user.changed('password')) {
-          return user.encryptPassword();
+        if (!user.changed('password')) {
+          return Promise.resolve(user);
         }
+        return user.encryptPassword();
       },
       beforeBulkCreate(users) {
-        return Promise.all(users.map(it => it.encryptPassword()));
+        return Promise.map(users, user => user.encryptPassword());
       }
     };
   }

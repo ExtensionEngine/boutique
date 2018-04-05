@@ -1,13 +1,15 @@
 'use strict';
 
-const config = require('./config');
 const forEach = require('lodash/forEach');
 const invoke = require('lodash/invoke');
 const Sequelize = require('sequelize');
-
+const Umzug = require('umzug');
+const config = require('./config');
+const migrationsPath = require('../../../.sequelizerc')['migrations-path'];
 // Require models.
 const User = require('../../user/user.model');
 
+const isProduction = process.env.NODE_ENV === 'production';
 let db = {};
 const sequelize = new Sequelize(config.url, config);
 const { Sequelize: { DataTypes } } = sequelize;
@@ -32,7 +34,25 @@ forEach(models, model => {
 db = Object.assign({
   Sequelize,
   sequelize,
-  initialize() { return sequelize.sync(); }
+  initialize() {
+    if (isProduction) return Promise.resolve();
+
+    const umzug = new Umzug({
+      storage: 'sequelize',
+      storageOptions: {
+        sequelize
+      },
+      migrations: {
+        params: [
+          sequelize.getQueryInterface(),
+          Sequelize
+        ],
+        path: migrationsPath
+      }
+    });
+
+    return umzug.up();
+  }
 }, models);
 
 // Patch Sequelize#method to support getting models by class name.

@@ -1,6 +1,7 @@
 'use strict';
 
 const bcrypt = require('bcrypt');
+const Promise = require('bluebird');
 const { auth: config = {} } = require('../../../config');
 const { role } = require('../../../../common/config');
 
@@ -25,7 +26,7 @@ const users = [{
 
 module.exports = {
   up(queryInterface, Sequelize) {
-    return Promise.all(users.map(it => encryptPassword(it)))
+    return Promise.map(users, user => encryptPassword(user))
       .then(users => queryInterface.bulkInsert('user', users, {}));
   },
   down(queryInterface, Sequelize) {

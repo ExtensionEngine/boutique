@@ -1,6 +1,7 @@
 'use strict';
 
 const { role } = require('../../../../common/config');
+const values = require('lodash/values');
 
 module.exports = {
   up: (queryInterface, Sequelize) => queryInterface.createTable('user', {
@@ -13,16 +14,14 @@ module.exports = {
     email: {
       type: Sequelize.STRING,
       allowNull: false,
-      validate: { isEmail: true, notEmpty: true },
-      unique: { msg: 'The specified email address is already in use.' }
+      unique: true
     },
     password: {
       type: Sequelize.STRING,
-      allowNull: false,
-      validate: { notEmpty: true, len: [5, 100] }
+      allowNull: false
     },
     role: {
-      type: Sequelize.ENUM(role.ADMIN, role.STUDENT),
+      type: Sequelize.ENUM(values(role)),
       defaultValue: role.STUDENT
     },
     firstName: {
