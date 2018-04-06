@@ -5,8 +5,16 @@
     </div>
     <form>
       <v-input v-model="email" name="email" validate="required|email"></v-input>
-      <v-input v-model="password" name="password" validate="required"></v-input>
+      <v-input
+        v-model="password"
+        name="password"
+        type="password"
+        validate="required">
+      </v-input>
       <div class="options">
+        <router-link :to="{ name: 'forgot-password' }">
+          Forgot password ?
+        </router-link>
         <button @click.stop="submit" class="button is-primary" type="button">
           Login
         </button>
@@ -53,5 +61,10 @@ export default {
 .options {
   padding: 5px 0 10px 0;
   text-align: right;
+
+  a {
+    display: inline-block;
+    padding: 6px 20px;
+  }
 }
 </style>
