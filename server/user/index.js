@@ -5,7 +5,9 @@ const router = require('express').Router();
 
 router
   .get('/', ctrl.list)
-  .post('/login', ctrl.login);
+  .post('/login', ctrl.login)
+  .post('/forgotPassword', ctrl.forgotPassword)
+  .post('/resetPassword', ctrl.resetPassword);
 
 module.exports = {
   path: '/users',

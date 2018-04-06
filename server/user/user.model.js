@@ -1,13 +1,14 @@
 'use strict';
 
+const { auth: config = {} } = require('../config');
+const { Model } = require('sequelize');
+const { role } = require('../../common/config');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { Model } = require('sequelize');
+const mail = require('../common/mail');
 const pick = require('lodash/pick');
 const Promise = require('bluebird');
 const values = require('lodash/values');
-const { auth: config = {} } = require('../config');
-const { role } = require('../../common/config');
 
 class User extends Model {
   static fields(DataTypes) {
@@ -79,6 +80,13 @@ class User extends Model {
     };
   }
 
+  static async invite(userData) {
+    const user = await this.create(userData);
+    user.token = user.createToken({ expiresIn: '5 days' });
+    mail.invite(user);
+    return user.save();
+  }
+
   async encryptPassword() {
     this.password = await bcrypt.hash(this.password, config.saltRounds);
     return this;
@@ -87,6 +95,12 @@ class User extends Model {
   async authenticate(password) {
     const result = await bcrypt.compare(password, this.password);
     return result && this;
+  }
+
+  sendResetToken() {
+    this.token = this.createToken({ expiresIn: '5 days' });
+    mail.resetPassword(this);
+    return this.save();
   }
 
   createToken(options = {}) {

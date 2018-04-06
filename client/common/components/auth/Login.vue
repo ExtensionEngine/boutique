@@ -5,8 +5,16 @@
     </div>
     <form>
       <v-input v-model="email" name="email" validate="required|email"></v-input>
-      <v-input v-model="password" name="password" validate="required"></v-input>
+      <v-input
+        v-model="password"
+        name="password"
+        type="password"
+        validate="required">
+      </v-input>
       <div class="options">
+        <router-link :to="{ name: 'forgot-password' }">
+          Forgot password ?
+        </router-link>
         <button @click.stop="submit" class="button is-primary" type="button">
           Login
         </button>
@@ -16,11 +24,12 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { createNamespacedHelpers } from 'vuex';
 import { withValidation } from '@/common/validation';
 import pick from 'lodash/pick';
 import VInput from '@/common/components/form/VInput';
 
+const { mapActions } = createNamespacedHelpers('auth');
 const LOGIN_ERR_MESSAGE = 'User email and password do not match';
 
 export default {
@@ -34,7 +43,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions('auth', ['login']),
+    ...mapActions(['login']),
     submit() {
       this.message = '';
       this.$validator.validateAll().then(isValid => {
@@ -53,5 +62,10 @@ export default {
 .options {
   padding: 5px 0 10px 0;
   text-align: right;
+
+  a {
+    display: inline-block;
+    padding: 6px 20px;
+  }
 }
 </style>
