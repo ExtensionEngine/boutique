@@ -34,7 +34,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['login']),
+    ...mapActions('auth', ['login']),
     submit() {
       this.message = '';
       this.$validator.validateAll().then(isValid => {

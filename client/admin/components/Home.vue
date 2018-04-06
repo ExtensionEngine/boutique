@@ -1,20 +1,12 @@
 <template>
-  <div>
-    <p class="message">
-      <span class="mdi mdi-message"></span>
-      Hello admin!
-    </p>
-  </div>
+  <p class="message">
+    <span class="mdi mdi-message"></span>
+    Hello admin!
+  </p>
 </template>
 
-<script>
-export default {
-  name: 'home'
-};
-</script>
-
 <style lang="scss" scoped>
-.message {
-  text-align: center;
-}
+  .message {
+    text-align: center;
+  }
 </style>

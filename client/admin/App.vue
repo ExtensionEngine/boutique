@@ -1,12 +1,38 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <div v-if="user" class="container">
+      <navbar />
+
+      <div class="columns">
+        <div class="column is-3">
+          <sidebar />
+        </div>
+        <div class="column is-9">
+          <router-view></router-view>
+        </div>
+      </div>
+    </div>
+
+    <div v-else>
+          <router-view></router-view>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+import Navbar from './components/common/Navbar';
+import Sidebar from './components/common/Sidebar';
+
 export default {
-  name: 'app'
+  name: 'app',
+  computed: {
+    ...mapState('auth', ['user'])
+  },
+  components: {
+    Navbar,
+    Sidebar
+  }
 };
 </script>
 
@@ -30,12 +56,9 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
-}
 
-.logo {
-  height: 64px;
-  width: auto;
-  margin: 16px auto;
-  display: block;
+  .container {
+    margin-top: 80px;
+  }
 }
 </style>
