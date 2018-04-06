@@ -33,9 +33,9 @@ html, body {
 }
 
 .logo {
-  height: 64px;
-  width: auto;
-  margin: 16px auto;
   display: block;
+  width: auto;
+  height: 64px;
+  margin: 16px auto;
 }
 </style>
