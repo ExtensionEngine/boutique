@@ -3,7 +3,6 @@
     <h1 class="title">
       Users Overview
     </h1>
-
     <table class="table is-fullwidth is-hoverable">
       <thead>
         <th>Email</th>
@@ -21,22 +20,17 @@
       </tbody>
     </table>
   </div>
-
 </template>
 
 <script>
-  import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
-  export default {
-    name: 'usersIndex',
-    computed: {
-      ...mapState('users', ['users'])
-    },
-    methods: {
-      ...mapActions('users', ['getUsers'])
-    },
-    mounted() {
-      this.getUsers();
-    }
-  };
+export default {
+  name: 'usersIndex',
+  computed: mapState('users', ['users']),
+  methods: mapActions('users', ['getUsers']),
+  mounted() {
+    this.getUsers();
+  }
+};
 </script>
