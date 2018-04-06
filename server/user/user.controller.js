@@ -23,8 +23,7 @@ function login({ body }, res, next) {
     .then(user => {
       const token = user.createToken({ expiresIn: '5 days' });
       res.jsend.success({ token, user });
-    })
-    .catch(err => next(err));
+    });
 }
 
 function forgotPassword({ body }, res, next) {
@@ -32,8 +31,7 @@ function forgotPassword({ body }, res, next) {
   return User.find({ where: { email } })
     .then(user => user || createError(NOT_FOUND, 'User not found'))
     .then(user => user.sendResetToken())
-    .then(() => res.end())
-    .catch(err => next(err));
+    .then(() => res.end());
 }
 
 function resetPassword({ body, params }, res, next) {
@@ -44,8 +42,7 @@ function resetPassword({ body, params }, res, next) {
       user.password = password;
       return user.save();
     })
-    .then(() => res.end())
-    .catch(err => next(err));
+    .then(() => res.end());
 }
 
 module.exports = {

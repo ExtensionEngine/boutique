@@ -8,6 +8,7 @@ const HttpError = require('http-errors').HttpError;
 const jsend = require('jsend').middleware;
 const morgan = require('morgan');
 const passport = require('passport');
+require('express-async-errors');
 
 // Setup authentication before instantiating the main app router.
 // eslint-disable-next-line no-unused-vars
