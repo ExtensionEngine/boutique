@@ -1,12 +1,11 @@
 'use strict';
 
+const { 'migrations-path': migrationsPath } = require('../../../.sequelizerc');
+const config = require('./config');
 const forEach = require('lodash/forEach');
 const invoke = require('lodash/invoke');
 const Sequelize = require('sequelize');
 const Umzug = require('umzug');
-
-const config = require('./config');
-const migrationsPath = require('../../../.sequelizerc')['migrations-path'];
 
 // Require models.
 const User = require('../../user/user.model');
