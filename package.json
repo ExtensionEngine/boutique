@@ -55,6 +55,7 @@
     "bcrypt": "^1.0.3",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
+    "bulma": "^0.6.2",
     "bunyan": "^1.8.12",
     "cors": "^2.8.4",
     "dotenv": "^5.0.1",
@@ -63,6 +64,7 @@
     "helmet": "^3.12.0",
     "http-errors": "^1.6.3",
     "http-status": "^1.0.1",
+    "humanize-string": "^1.0.2",
     "joi": "^13.1.2",
     "jsend": "^1.0.2",
     "jsonwebtoken": "^8.2.0",
@@ -78,7 +80,6 @@
     "vee-validate": "^2.0.6",
     "vue": "^2.5.16",
     "vue-router": "^3.0.1",
-    "vuetify": "^1.0.11",
     "vuex": "^3.0.1"
   },
   "engines": {

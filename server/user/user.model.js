@@ -32,10 +32,12 @@ class User extends Model {
         validate: { notEmpty: true, len: [10, 500] }
       },
       firstName: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        field: 'first_name'
       },
       lastName: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        field: 'last_name'
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -57,7 +59,6 @@ class User extends Model {
       modelName: 'user',
       timestamps: true,
       paranoid: true,
-      underscored: true,
       freezeTableName: true
     };
   }
