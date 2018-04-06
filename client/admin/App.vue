@@ -1,20 +1,15 @@
 <template>
   <div id="app">
-    <div v-if="user" class="container">
-      <navbar />
-
+    <navbar/>
+    <div class="container">
       <div class="columns">
         <div class="column is-3">
-          <sidebar />
+          <sidebar/>
         </div>
         <div class="column is-9">
           <router-view></router-view>
         </div>
       </div>
-    </div>
-
-    <div v-else>
-      <router-view></router-view>
     </div>
   </div>
 </template>
@@ -26,16 +21,13 @@ import Sidebar from './components/common/Sidebar';
 
 export default {
   name: 'app',
-  computed: {
-    ...mapState('auth', ['user'])
-  },
+  computed: mapState('auth', ['user']),
   components: {
     Navbar,
     Sidebar
   }
 };
 </script>
-
 
 <style lang="scss">
 @import "./stylesheets/main";
