@@ -59,6 +59,7 @@
     "bunyan": "^1.8.12",
     "cors": "^2.8.4",
     "dotenv": "^5.0.1",
+    "emailjs": "^2.0.0",
     "express": "^4.16.3",
     "fs-blob-store": "^5.2.1",
     "helmet": "^3.12.0",
