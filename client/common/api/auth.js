@@ -25,8 +25,8 @@ function forgotPassword(email) {
   return request.post(url.forgotPassword, { email });
 }
 
-function resetPassword(token, password) {
-  return request.post(url.resetPassword, { token, password });
+function resetPassword(body) {
+  return request.post(url.resetPassword, body);
 }
 
 export default {

@@ -17,6 +17,6 @@ export const forgotPassword = (context, { email }) => {
   return auth.forgotPassword(email);
 };
 
-export const resetPassword = (context, { email }) => {
-  return auth.forgotPassword(email);
+export const resetPassword = (context, payload) => {
+  return auth.resetPassword(payload);
 };
