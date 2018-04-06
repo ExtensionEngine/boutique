@@ -35,13 +35,20 @@
         <router-link to="/admin/schools"> Schools </router-link>
       </li>
     </ul>
+
     <p class="menu-label">
       Reports
     </p>
     <ul class="menu-list">
-      <li><a>Districts</a></li>
-      <li><a>Learners</a></li>
-      <li><a>Tools</a></li>
+      <li>
+        <a>Districts</a>
+      </li>
+      <li>
+        <a>Learners</a>
+      </li>
+      <li>
+        <a>Tools</a>
+      </li>
     </ul>
   </aside>
 </template>

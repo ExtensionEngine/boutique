@@ -11,10 +11,10 @@
         <th>Last Name</th>
       </thead>
       <tbody>
-        <tr v-for="user in users" :key="user && user.id">
-          <td>{{ user && user.email }}</td>
-          <td>{{ user && user.firstName }}</td>
-          <td>{{ user && user.lastName }}</td>
+        <tr v-for="user in users" :key="user.id">
+          <td>{{ user.email }}</td>
+          <td>{{ user.firstName }}</td>
+          <td>{{ user.lastName }}</td>
         </tr>
       </tbody>
     </table>
