@@ -4,11 +4,11 @@ const url = {
   users: '/users'
 };
 
-function getUsers() {
+function list() {
   return request.get(url.users)
     .then(res => res.data.data);
 }
 
 export default {
-  getUsers
+  list
 };

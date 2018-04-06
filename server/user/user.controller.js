@@ -24,6 +24,7 @@ function login({ body }, res, next) {
 }
 
 function list(_, res, next) {
+  // TODO: only allow admin access to this action
   return User.findAll()
     .then(users => res.jsend.success(users))
     .catch(err => next(err));
