@@ -5,10 +5,10 @@
     </p>
     <ul class="menu-list">
       <li>
-        <router-link to="/admin"> Dashboard </router-link>
+        <router-link to="/"> Dashboard </router-link>
       </li>
       <li>
-        <router-link to="/admin/users"> Users </router-link>
+        <router-link to="/users"> Users </router-link>
       </li>
     </ul>
 
@@ -21,18 +21,18 @@
 
         <ul>
           <li>
-            <router-link to="/admin/programs/new"> Add new </router-link>
+            <router-link to="/programs/new"> Add new </router-link>
           </li>
           <li>
-            <router-link to="/admin/programs"> Show All </router-link>
+            <router-link to="/programs"> Show All </router-link>
           </li>
         </ul>
       </li>
       <li>
-        <router-link to="/admin/districts"> Districts </router-link>
+        <router-link to="/districts"> Districts </router-link>
       </li>
       <li>
-        <router-link to="/admin/schools"> Schools </router-link>
+        <router-link to="/schools"> Schools </router-link>
       </li>
     </ul>
 
