@@ -19,7 +19,7 @@
 import { mapState, mapActions } from 'vuex';
 
 export default {
-  name: 'Navbar',
+  name: 'lms-navbar',
   computed: mapState('auth', ['user']),
   methods: mapActions('auth', ['logout'])
 };

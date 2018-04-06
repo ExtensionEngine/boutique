@@ -26,7 +26,7 @@
 import { mapState, mapActions } from 'vuex';
 
 export default {
-  name: 'usersIndex',
+  name: 'user-list',
   computed: mapState('users', ['users']),
   methods: mapActions('users', ['getUsers']),
   mounted() {
