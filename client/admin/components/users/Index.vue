@@ -9,12 +9,14 @@
         <th>Email</th>
         <th>First Name</th>
         <th>Last Name</th>
+        <th>Role</th>
       </thead>
       <tbody>
         <tr v-for="user in users" :key="user.id">
           <td>{{ user.email }}</td>
           <td>{{ user.firstName }}</td>
           <td>{{ user.lastName }}</td>
+          <td>{{ user.role }}</td>
         </tr>
       </tbody>
     </table>
