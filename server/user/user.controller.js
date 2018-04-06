@@ -6,7 +6,7 @@ const { User } = require('../common/database');
 
 const { BAD_REQUEST, NOT_FOUND } = HttpStatus;
 
-function createError(code = 400, message = 'An error has occured') {
+function createError(code = NOT_FOUND, message = 'An error has occured') {
   return Promise.reject(httpError(code, message, { custom: true }));
 }
 
