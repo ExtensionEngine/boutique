@@ -1,12 +1,7 @@
 <template>
   <section class="section is-medium">
-    <div class="title">
-    404
-    </div>
-    <div class="subtitle">
-    Page not found
-    </div>
-
+    <div class="title"> 404 </div>
+    <div class="subtitle"> Page not found </div>
     <router-link to="/"> Go Home </router-link>
   </section>
 </template>

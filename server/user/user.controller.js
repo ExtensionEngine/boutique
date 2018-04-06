@@ -23,6 +23,13 @@ function login({ body }, res, next) {
     .catch(err => next(err));
 }
 
+function list(_, res, next) {
+  return User.findAll()
+    .then(users => res.jsend.success(users))
+    .catch(err => next(err));
+}
+
 module.exports = {
+  list,
   login
 };
