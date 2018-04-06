@@ -1,7 +1,12 @@
 <template>
   <div>
-    <div v-if="message" class="well">
-      <span>{{ message }}</span>
+    <div v-if="message">
+      <div class="notification is-warning">
+        {{ message }}
+      </div>
+      <div class="options">
+        <a @click="$router.go(-1)">Back</a>
+      </div>
     </div>
     <div v-else>
       <form @submit.prevent="submit">
@@ -36,7 +41,7 @@ export default {
           return delay(2000);
         })
         .then(() => this.$router.push('/'))
-        .catch(() => (this.message = 'Error'));
+        .catch(() => (this.message = 'Oops! Something went wrong.'));
     }
   },
   components: { VInput }

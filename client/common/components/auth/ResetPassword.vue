@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div class="message"><span>{{ error }}</span></div>
+    <div v-if="error" class="notification is-error">
+      <span>{{ error }}</span>
+    </div>
     <form @submit.prevent="submit">
       <v-input
         v-model="password"
