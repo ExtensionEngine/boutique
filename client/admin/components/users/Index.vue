@@ -27,10 +27,10 @@ import { mapState, mapActions } from 'vuex';
 
 export default {
   name: 'user-list',
-  computed: mapState('users', ['users']),
-  methods: mapActions('users', ['getUsers']),
+  computed: mapState('users', { users: 'items' }),
+  methods: mapActions('users', ['fetch']),
   mounted() {
-    this.getUsers();
+    this.fetch();
   }
 };
 </script>
