@@ -1,6 +1,4 @@
-import users from '@/common/api/users';
+import generateActions from '@/common/store/helpers/actions';
+const { get, fetch, save, setApiUrl } = generateActions('/users');
 
-export const getUsers = ({ commit }) => {
-  return users.list()
-    .then(users => commit('setUsers', users));
-};
+export { get, fetch, save, setApiUrl };

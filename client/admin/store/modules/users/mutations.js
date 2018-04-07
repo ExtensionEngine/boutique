@@ -1,3 +1,8 @@
-export const setUsers = (state, users) => {
-  state.users = users;
-};
+export {
+  fetch,
+  reset,
+  add,
+  save,
+  remove,
+  setApiUrl
+} from '@/common/store/helpers/mutations';
