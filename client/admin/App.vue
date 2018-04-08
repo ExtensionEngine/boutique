@@ -1,31 +1,12 @@
 <template>
   <div id="app">
-    <navbar/>
-    <div class="container">
-      <div class="columns">
-        <div class="column is-2">
-          <sidebar/>
-        </div>
-        <div class="column is-10">
-          <router-view></router-view>
-        </div>
-      </div>
-    </div>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import Navbar from './components/common/Navbar';
-import Sidebar from './components/common/Sidebar';
-
 export default {
-  name: 'app',
-  computed: mapState('auth', ['user']),
-  components: {
-    Navbar,
-    Sidebar
-  }
+  name: 'app'
 };
 </script>
 
