@@ -1,13 +1,27 @@
 'use strict';
 
+const { User } = require('../common/database');
 const httpError = require('http-errors');
 const HttpStatus = require('http-status');
-const { User } = require('../common/database');
+const pick = require('lodash/pick');
 
 const { BAD_REQUEST, NOT_FOUND } = HttpStatus;
 
 function createError(code = 400, message = 'An error has occured') {
   return Promise.reject(httpError(code, message, { custom: true }));
+}
+
+function list(req, res, next) {
+  // TODO: only allow admin access to this action
+  return User.findAll().then(users => res.jsend.success(users));
+}
+
+function create({ body }, res, next) {
+  const attrs = ['email', 'role', 'firstName', 'lastName'];
+  return User.findOne({ where: { email: body.email } })
+    .then(user => user || User.invite(pick(body, attrs)))
+    .then(user => res.jsend.success({ user }))
+    .catch(err => next(err));
 }
 
 function login({ body }, res, next) {
@@ -25,11 +39,6 @@ function login({ body }, res, next) {
       res.jsend.success({ token, user });
     })
     .catch(err => next(err));
-}
-
-function list(req, res, next) {
-  // TODO: only allow admin access to this action
-  return User.findAll().then(users => res.jsend.success(users));
 }
 
 function forgotPassword({ body }, res, next) {
@@ -55,6 +64,7 @@ function resetPassword({ body, params }, res, next) {
 
 module.exports = {
   list,
+  create,
   login,
   forgotPassword,
   resetPassword
