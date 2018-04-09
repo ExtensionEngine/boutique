@@ -11,9 +11,11 @@ function createError(code = 400, message = 'An error has occured') {
   return Promise.reject(httpError(code, message, { custom: true }));
 }
 
-function list(req, res, next) {
-  // TODO: only allow admin access to this action
-  return User.findAll().then(users => res.jsend.success(users));
+function list({ query }, res, next) {
+  const { email } = query;
+  const where = {};
+  if (email) where.email = email;
+  return User.findAll({ where }).then(users => res.jsend.success(users));
 }
 
 function create({ body }, res, next) {
