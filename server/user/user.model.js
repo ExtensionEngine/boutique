@@ -21,7 +21,6 @@ class User extends Model {
       },
       password: {
         type: DataTypes.STRING,
-        allowNull: false,
         validate: { notEmpty: true, len: [5, 255] }
       },
       role: {
@@ -88,6 +87,7 @@ class User extends Model {
   }
 
   async encryptPassword() {
+    if (!this.password) return;
     this.password = await bcrypt.hash(this.password, config.saltRounds);
     return this;
   }
