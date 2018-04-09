@@ -4,7 +4,7 @@ import store from './store';
 import Vue from 'vue';
 
 import AdminRoot from '@/admin/components/index';
-import Auth from '@/common/components/auth/index';
+import Auth from '@/common/components/auth';
 import ForgotPassword from '@/common/components/auth/ForgotPassword';
 import Login from '@/common/components/auth/Login';
 import NotFound from '@/admin/components/common/NotFound';
@@ -22,16 +22,6 @@ const fallbackRoute = {
 const router = new Router({
   routes: [{
     path: '/',
-    name: 'home',
-    component: AdminRoot,
-    meta: { auth: true },
-    children: [{
-      path: '/users',
-      name: 'users',
-      component: Users
-    }, fallbackRoute]
-  }, {
-    path: '/',
     name: 'auth',
     component: Auth,
     children: [{
@@ -47,6 +37,16 @@ const router = new Router({
       name: 'reset-password',
       component: ResetPassword
     }]
+  }, {
+    path: '/',
+    name: 'home',
+    component: AdminRoot,
+    meta: { auth: true },
+    children: [{
+      path: '/users',
+      name: 'users',
+      component: Users
+    }, fallbackRoute]
   }, fallbackRoute]
 });
 
