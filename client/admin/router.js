@@ -9,7 +9,7 @@ import ForgotPassword from '@/common/components/auth/ForgotPassword';
 import Login from '@/common/components/auth/Login';
 import NotFound from '@/admin/components/common/NotFound';
 import ResetPassword from '@/common/components/auth/ResetPassword';
-import Users from '@/admin/components/users/Index';
+import Users from '@/admin/components/users';
 
 Vue.use(Router);
 
