@@ -18,6 +18,15 @@ module.exports = {
     issuer: process.env.AUTH_JWT_ISSUER,
     audience: process.env.AUTH_JWT_AUDIENCE
   },
+  email: {
+    sender: process.env.EMAIL_ADDRESS,
+    user: process.env.EMAIL_USER,
+    password: process.env.EMAIL_PASSWORD,
+    host: process.env.EMAIL_HOST,
+    port: process.env.EMAIL_PORT || null,
+    ssl: process.env.EMAIL_SSL,
+    tls: process.env.EMAIL_TLS
+  },
   storage: {
     amazon: {
       key: process.env.STORAGE_KEY,
