@@ -21,7 +21,7 @@ const fallbackRoute = {
 
 const router = new Router({
   routes: [{
-    path: '/',
+    path: '/auth',
     name: 'auth',
     component: Auth,
     children: [{

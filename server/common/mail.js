@@ -22,7 +22,7 @@ function send(message) {
 }
 
 function invite(user) {
-  const link = `${getAppUrl(user)}/#/reset-password/${user.token}`;
+  const link = `${getAppUrl(user)}/#/auth/reset-password/${user.token}`;
   const message = `
     An account has been created for you on ${SERVER_URL}.
     Please click <a href="${link}">here</a> to complete your registration.`;
@@ -36,7 +36,7 @@ function invite(user) {
 }
 
 function resetPassword(user) {
-  const link = `${getAppUrl(user)}/#/reset-password/${user.token}`;
+  const link = `${getAppUrl(user)}/#/auth/reset-password/${user.token}`;
   const message = `
     You requested password reset.
     Please click <a href="${link}">here</a> to complete the reset process.`;
