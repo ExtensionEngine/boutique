@@ -2,13 +2,18 @@
   <modal :show="show" @close="close">
     <v-input
       v-model="user.email"
-      name="email"
-      validate="required|email|max:255">
+      :validate="{
+        required: true,
+        email: true,
+        max: 255,
+        'unique-email': userData
+      }"
+      name="email">
     </v-input>
     <v-select
       v-model="user.role"
-      name="role"
-      :options="roles">
+      :options="roles"
+      name="role">
     </v-select>
     <v-input
       v-model="user.firstName"
@@ -31,8 +36,10 @@ import { role } from '@/../common/config';
 import { withValidation } from '@/common/validation';
 import cloneDeep from 'lodash/cloneDeep';
 import humanize from 'humanize-string';
+import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
 import Modal from '@/common/components/Modal';
+import request from '@/common/api/request';
 import VInput from '@/common/components/form/VInput';
 import VSelect from '@/common/components/form/VSelect';
 
@@ -74,10 +81,21 @@ export default {
       });
     }
   },
+  mounted() {
+    if (this.$validator.rules['unique-email']) return;
+    this.$validator.extend('unique-email', {
+      getMessage: field => `The ${field} is not unique.`,
+      validate: (email, [userData]) => {
+        if (userData && email === userData.email) return true;
+        return request.get('/users', { params: { email } })
+          .then(res => ({ valid: isEmpty(res.data.data) }));
+      }
+    });
+  },
   watch: {
     show(val) {
       if (!val) return;
-      if (this.userData) this.user = cloneDeep(this.userData);
+      if (!isEmpty(this.userData)) this.user = cloneDeep(this.userData);
       this.vErrors.clear();
     }
   },
