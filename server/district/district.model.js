@@ -13,12 +13,14 @@ class District extends Model {
       },
       ncesId: {
         type: DataTypes.INTEGER,
+        field: 'nces_id',
         allowNull: false,
         validate: { notEmpty: true },
         unique: true
       },
       ncesType: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
+        field: 'nces_type'
       },
       createdAt: {
         type: DataTypes.DATE,

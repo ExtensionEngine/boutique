@@ -12,21 +12,24 @@ module.exports = {
     name: {
       type: Sequelize.STRING
     },
-    ncesId: {
+    nces_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
       validate: { notEmpty: true },
       unique: true
     },
-    ncesType: {
+    nces_type: {
       type: Sequelize.INTEGER
     },
-    createdAt: {
-      allowNull: false,
-      type: Sequelize.DATE
+    created_at: {
+      type: Sequelize.DATE,
+      allowNull: false
     },
-    updatedAt: {
-      allowNull: false,
+    updated_at: {
+      type: Sequelize.DATE,
+      allowNull: false
+    },
+    deleted_at: {
       type: Sequelize.DATE
     }
   }),

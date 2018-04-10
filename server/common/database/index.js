@@ -9,6 +9,8 @@ const Sequelize = require('sequelize');
 const Umzug = require('umzug');
 
 // Require models.
+const District = require('../../district/district.model');
+const School = require('../../school/school.model');
 const User = require('../../user/user.model');
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -47,6 +49,8 @@ function initialize() {
 }
 
 const models = {
+  District: defineModel(District),
+  School: defineModel(School),
   User: defineModel(User)
 };
 

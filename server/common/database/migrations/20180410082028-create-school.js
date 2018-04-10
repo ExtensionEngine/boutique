@@ -12,27 +12,30 @@ module.exports = {
     name: {
       type: Sequelize.STRING
     },
-    ncesId: {
+    nces_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
       validate: { notEmpty: true },
       unique: true
     },
-    ncesType: {
+    nces_type: {
       type: Sequelize.INTEGER
     },
-    ncesSchoolLevel: {
+    nces_school_level: {
       type: Sequelize.INTEGER
     },
     state: {
       type: Sequelize.STRING(2)
     },
-    createdAt: {
-      allowNull: false,
-      type: Sequelize.DATE
+    created_at: {
+      type: Sequelize.DATE,
+      allowNull: false
     },
-    updatedAt: {
-      allowNull: false,
+    updated_at: {
+      type: Sequelize.DATE,
+      allowNull: false
+    },
+    deleted_at: {
       type: Sequelize.DATE
     }
   }),
