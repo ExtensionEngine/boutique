@@ -8,6 +8,7 @@ import Auth from '@/common/components/auth';
 import ForgotPassword from '@/common/components/auth/ForgotPassword';
 import Login from '@/common/components/auth/Login';
 import NotFound from '@/admin/components/common/NotFound';
+import Programs from '@/admin/components/programs';
 import ResetPassword from '@/common/components/auth/ResetPassword';
 import Users from '@/admin/components/users';
 
@@ -43,6 +44,10 @@ const router = new Router({
     component: AdminRoot,
     meta: { auth: true },
     children: [{
+      path: '',
+      name: 'programs',
+      component: Programs
+    }, {
       path: '/users',
       name: 'users',
       component: Users
