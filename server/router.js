@@ -1,6 +1,6 @@
 'use strict';
 
-const auth = require('passport').authenticate('jwt');
+const auth = require('./common/auth').authenticate('jwt');
 const express = require('express');
 const course = require('./course');
 const program = require('./program');

@@ -1,5 +1,6 @@
 'use strict';
 
+const AuthError = require('passport/lib/errors/authenticationerror');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const express = require('express');
@@ -7,11 +8,8 @@ const helmet = require('helmet');
 const HttpError = require('http-errors').HttpError;
 const jsend = require('jsend').middleware;
 const morgan = require('morgan');
-const passport = require('passport');
 require('express-async-errors');
 
-// Setup authentication before instantiating the main app router.
-// eslint-disable-next-line no-unused-vars
 const auth = require('./common/auth');
 const config = require('./config');
 const logger = require('./common/logger')();
@@ -21,7 +19,7 @@ const app = express();
 app.use(helmet());
 app.use(cors({ origin: config.cors.allowedOrigins, credentials: true }));
 app.use(bodyParser.json({ limit: config.uploadLimit }));
-app.use(passport.initialize());
+app.use(auth.initialize());
 app.use(express.static(config.staticFolder));
 app.use(jsend);
 
@@ -42,7 +40,7 @@ app.use('/api/v1', router);
 
 // Global error handler.
 app.use((err, req, res, next) => {
-  if (err instanceof HttpError) {
+  if ((err instanceof HttpError) || (err instanceof AuthError)) {
     res.status(err.status).jsend.error(err.message);
     return;
   }

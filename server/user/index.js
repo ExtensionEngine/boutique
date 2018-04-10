@@ -1,6 +1,6 @@
 'use strict';
 
-const auth = require('passport').authenticate('jwt');
+const auth = require('../common/auth').authenticate('jwt');
 const ctrl = require('./user.controller');
 const router = require('express').Router();
 
