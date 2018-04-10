@@ -4,12 +4,17 @@
     <div class="control">
       <multiselect
         :value="resolvedValue"
+        :name="name"
         v-bind="options"
+        v-validate="validate"
         @input="it => $emit('input', isValueObj ? (it && it.value) : it)"
         @close="close"
         @open="open">
       </multiselect>
     </div>
+    <p v-if="vErrors.has(name)" class="help is-danger">
+      {{ vErrors.first(name) }}
+    </p>
   </div>
 </template>
 
@@ -23,7 +28,7 @@ import Multiselect from 'vue-multiselect';
 export default {
   name: 'v-select',
   inheritAttrs: true,
-  props: ['value', 'name'],
+  props: ['name', 'value', 'validate'],
   computed: {
     options() {
       return Object.assign({
@@ -55,7 +60,8 @@ export default {
       this.$emit('close', id);
     }
   },
-  components: { Multiselect }
+  components: { Multiselect },
+  inject: ['$validator']
 };
 </script>
 

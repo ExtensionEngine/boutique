@@ -15,17 +15,18 @@
       <v-select
         v-model="user.role"
         :options="roles"
-        name="role">
+        name="role"
+        validate="required">
       </v-select>
       <v-input
         v-model="user.firstName"
         name="firstName"
-        validate="alpha|min:2|max:50">
+        validate="required|alpha|min:2|max:50">
       </v-input>
       <v-input
         v-model="user.lastName"
         name="lastName"
-        validate="alpha|min:2|max:50">
+        validate="required|alpha|min:2|max:50">
       </v-input>
       <div class="controls">
         <div class="is-pulled-right">
