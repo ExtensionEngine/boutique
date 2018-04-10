@@ -21,11 +21,9 @@
 </template>
 
 <script>
-import { createNamespacedHelpers } from 'vuex';
 import { delay } from 'bluebird';
+import { mapActions } from 'vuex';
 import VInput from '@/common/components/form/VInput';
-
-const { mapActions } = createNamespacedHelpers('auth');
 
 export default {
   data() {
@@ -35,7 +33,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['forgotPassword']),
+    ...mapActions('auth', ['forgotPassword']),
     submit() {
       this.forgotPassword({ email: this.email })
         .then(() => {

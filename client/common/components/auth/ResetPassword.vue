@@ -24,11 +24,9 @@
 </template>
 
 <script>
-import { createNamespacedHelpers } from 'vuex';
+import { mapActions } from 'vuex';
 import { withValidation } from '@/common/validation';
 import VInput from '@/common/components/form/VInput';
-
-const { mapActions } = createNamespacedHelpers('auth');
 
 export default {
   mixins: [withValidation()],
@@ -40,7 +38,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['resetPassword']),
+    ...mapActions('auth', ['resetPassword']),
     submit() {
       const token = this.$route.params.token;
       this.$validator.validateAll().then(isValid => {

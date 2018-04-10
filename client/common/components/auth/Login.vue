@@ -22,12 +22,11 @@
 </template>
 
 <script>
-import { createNamespacedHelpers } from 'vuex';
+import { mapActions } from 'vuex';
 import { withValidation } from '@/common/validation';
 import pick from 'lodash/pick';
 import VInput from '@/common/components/form/VInput';
 
-const { mapActions } = createNamespacedHelpers('auth');
 const LOGIN_ERR_MESSAGE = 'User email and password do not match';
 
 export default {
@@ -41,7 +40,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['login']),
+    ...mapActions('auth', ['login']),
     submit() {
       this.message = '';
       this.$validator.validateAll().then(isValid => {
