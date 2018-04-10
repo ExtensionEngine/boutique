@@ -26,6 +26,14 @@ function create({ body }, res, next) {
     .catch(err => next(err));
 }
 
+function patch({ params, body }, res, next) {
+  return User.findById(params.id, { paranoid: false })
+    .then(user => user || createError(NOT_FOUND, 'User does not exist'))
+    .then(user => user.update(pick(body, ['email', 'role', 'firstName', 'lastName'])))
+    .then(user => res.jsend.success({ user }))
+    .catch(err => next(err));
+}
+
 function login({ body }, res, next) {
   const { email, password } = body;
   if (!email || !password) {
@@ -67,6 +75,7 @@ function resetPassword({ body, params }, res, next) {
 module.exports = {
   list,
   create,
+  patch,
   login,
   forgotPassword,
   resetPassword
