@@ -21,7 +21,7 @@ module.exports = {
     },
     role: {
       type: Sequelize.ENUM(values(role)),
-      defaultValue: role.STUDENT
+      allowNull: false
     },
     token: {
       type: Sequelize.STRING(500)

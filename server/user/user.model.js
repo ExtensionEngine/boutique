@@ -25,6 +25,7 @@ class User extends Model {
       },
       role: {
         type: DataTypes.ENUM(values(role)),
+        allowNull: false,
         defaultValue: role.STUDENT
       },
       token: {
