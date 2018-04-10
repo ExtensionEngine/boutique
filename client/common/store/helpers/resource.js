@@ -68,7 +68,7 @@ export default class Resource {
     this.mappings[id] = _cid;
   }
 
-  /*
+  /**
    * Remove both client and server ids for given model.
    * @param {object} model
    */
@@ -106,7 +106,7 @@ export default class Resource {
       // if server id is not provided but exist inside resource cache
       if (!model.id && this.getKey(model._cid)) this.setKey(model);
       const action = model.id ? 'patch' : 'post';
-      const url = model.id ? this.url(model.id.toString()) : this.url('');
+      const url = this.url(model.id ? model.id.toString() : '');
       return axios[action](url, this.clean(model)).then(response => {
         if (!model.id) this.map(model._cid, response.data.data.id);
         model = cloneDeep(model);
@@ -122,12 +122,11 @@ export default class Resource {
    */
   update(cid, changes) {
     const key = this.getKey(cid);
-    return this.patch(key, changes)
-      .then(response => {
-        const updated = response.data.data;
-        updated._cid = cid;
-        return updated;
-      });
+    return this.patch(key, changes).then(response => {
+      const updated = response.data.data;
+      updated._cid = cid;
+      return updated;
+    });
   }
 
   /**

@@ -15,19 +15,11 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import Navbar from '@/admin/components/common/Navbar';
 import Sidebar from '@/admin/components/common/Sidebar';
 
 export default {
   name: 'admin',
-  computed: mapState('auth', ['user']),
   components: { Navbar, Sidebar }
 };
 </script>
-
-<style lang="scss" scoped>
-.message {
-  text-align: center;
-}
-</style>

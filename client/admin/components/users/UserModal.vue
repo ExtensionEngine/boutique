@@ -103,8 +103,8 @@ export default {
   watch: {
     show(val) {
       if (!val) return;
-      if (!isEmpty(this.userData)) this.user = cloneDeep(this.userData);
       this.vErrors.clear();
+      if (!isEmpty(this.userData)) this.user = cloneDeep(this.userData);
     }
   },
   components: { Modal, VInput, VSelect }

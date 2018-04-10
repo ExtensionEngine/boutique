@@ -9,31 +9,31 @@ const pick = require('lodash/pick');
 const { BAD_REQUEST, NOT_FOUND } = HttpStatus;
 const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
 
-function list({ query: { email } }, res, next) {
+function list({ query: { email } }, res) {
   const where = {};
   if (email) where.email = email;
   return User.findAll({ where })
     .then(users => res.jsend.success(map(users, 'profile')));
 }
 
-function create({ body }, res, next) {
+function create({ body }, res) {
   return User.findOne({ where: { email: body.email } })
     .then(user => !user || createError(NOT_FOUND, 'User already exists!'))
     .then(() => User.invite(pick(body, inputAttrs)))
     .then(user => res.jsend.success({ user: user.profile }));
 }
 
-function patch({ params, body }, res, next) {
+function patch({ params, body }, res) {
   return User.findById(params.id, { paranoid: false })
     .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
     .then(user => user.update(pick(body, inputAttrs)))
     .then(user => res.jsend.success({ user: user.profile }));
 }
 
-function login({ body }, res, next) {
+function login({ body }, res) {
   const { email, password } = body;
   if (!email || !password) {
-    return next(createError(BAD_REQUEST, 'Please enter email and password!'));
+    return createError(BAD_REQUEST, 'Please enter email and password!');
   }
 
   return User.find({ where: { email } })
@@ -46,7 +46,7 @@ function login({ body }, res, next) {
     });
 }
 
-function forgotPassword({ body }, res, next) {
+function forgotPassword({ body }, res) {
   let { email } = body;
   return User.find({ where: { email } })
     .then(user => user || createError(NOT_FOUND, 'User not found!'))
@@ -54,7 +54,7 @@ function forgotPassword({ body }, res, next) {
     .then(() => res.end());
 }
 
-function resetPassword({ body, params }, res, next) {
+function resetPassword({ body, params }, res) {
   const { password, token } = body;
   return User.find({ where: { token } })
     .then(user => user || createError(NOT_FOUND, 'Invalid token!'))
