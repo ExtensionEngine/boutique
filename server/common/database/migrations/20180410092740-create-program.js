@@ -10,12 +10,10 @@ module.exports = {
     },
     name: {
       type: Sequelize.STRING,
-      field: 'name',
       allowNull: false
     },
     description: {
       type: Sequelize.STRING(2000),
-      field: 'description',
       allowNull: false
     },
     createdAt: {
