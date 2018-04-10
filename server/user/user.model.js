@@ -5,6 +5,7 @@ const { Model } = require('sequelize');
 const { role } = require('../../common/config');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const logger = require('../common/logger')();
 const mail = require('../common/mail');
 const pick = require('lodash/pick');
 const Promise = require('bluebird');
@@ -89,7 +90,8 @@ class User extends Model {
   static async invite(userData) {
     const user = await this.create(userData);
     user.token = user.createToken({ expiresIn: '5 days' });
-    mail.invite(user);
+    mail.invite(user).catch(err =>
+      logger.error('Error: Sending invite email failed:', err.message));
     return user.save();
   }
 
@@ -106,7 +108,8 @@ class User extends Model {
 
   sendResetToken() {
     this.token = this.createToken({ expiresIn: '5 days' });
-    mail.resetPassword(this);
+    mail.resetPassword(this).catch(err =>
+      logger.error('Error: Sending reset password email failed:', err.message));
     return this.save();
   }
 
