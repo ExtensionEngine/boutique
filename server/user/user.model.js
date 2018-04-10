@@ -21,11 +21,11 @@ class User extends Model {
       },
       password: {
         type: DataTypes.STRING,
-        allowNull: false,
         validate: { notEmpty: true, len: [5, 255] }
       },
       role: {
         type: DataTypes.ENUM(values(role)),
+        allowNull: false,
         defaultValue: role.STUDENT
       },
       token: {
@@ -51,6 +51,12 @@ class User extends Model {
       deletedAt: {
         type: DataTypes.DATE,
         field: 'deleted_at'
+      },
+      profile: {
+        type: DataTypes.VIRTUAL,
+        get() {
+          return pick(this, ['id', 'firstName', 'lastName', 'email', 'role']);
+        }
       }
     };
   }
@@ -88,6 +94,7 @@ class User extends Model {
   }
 
   async encryptPassword() {
+    if (!this.password) return;
     this.password = await bcrypt.hash(this.password, config.saltRounds);
     return this;
   }

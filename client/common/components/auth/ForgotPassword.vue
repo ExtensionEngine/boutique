@@ -33,7 +33,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['forgotPassword']),
+    ...mapActions('auth', ['forgotPassword']),
     submit() {
       this.forgotPassword({ email: this.email })
         .then(() => {

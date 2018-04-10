@@ -1,0 +1,26 @@
+<template>
+  <nav
+    class="navbar is-fixed-top is-light"
+    role="navigation"
+    aria-label="main navigation">
+    <div class="navbar-brand">
+      <router-link to="/" class="navbar-item">LMS ADMIN</router-link>
+    </div>
+    <div class="navbar-menu">
+      <div v-if="user" class="navbar-end">
+        <div class="navbar-item">{{ user.email }}</div>
+        <a @click="logout" href="#" class="navbar-item">Logout</a>
+      </div>
+    </div>
+  </nav>
+</template>
+
+<script>
+import { mapState, mapActions } from 'vuex';
+
+export default {
+  name: 'lms-navbar',
+  computed: mapState('auth', ['user']),
+  methods: mapActions('auth', ['logout'])
+};
+</script>

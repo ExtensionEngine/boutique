@@ -10,7 +10,6 @@ export default {
 };
 </script>
 
-
 <style lang="scss">
 @import "./stylesheets/main";
 
@@ -30,12 +29,9 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
-}
 
-.logo {
-  display: block;
-  width: auto;
-  height: 64px;
-  margin: 16px auto;
+  .container {
+    margin-top: 80px;
+  }
 }
 </style>
