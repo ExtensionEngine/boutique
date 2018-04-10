@@ -76,7 +76,7 @@ export default {
     save() {
       this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
-        this.saveUser({ ...this.user, role: this.user.role.value });
+        this.saveUser(this.user);
         this.close();
       });
     }

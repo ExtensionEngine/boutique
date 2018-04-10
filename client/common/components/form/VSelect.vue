@@ -3,9 +3,9 @@
     <label class="label">{{ label }}</label>
     <div class="control">
       <multiselect
-        :value="value"
+        :value="resolvedValue"
         v-bind="options"
-        @input="val => $emit('input', val)"
+        @input="it => $emit('input', isValueObj ? (it && it.value) : it)"
         @close="close"
         @open="open">
       </multiselect>
@@ -14,7 +14,10 @@
 </template>
 
 <script>
+import find from 'lodash/find';
+import first from 'lodash/first';
 import humanize from 'humanize-string';
+import isObject from 'lodash/isObject';
 import Multiselect from 'vue-multiselect';
 
 export default {
@@ -27,9 +30,18 @@ export default {
         closeOnSelect: true,
         showLabels: false,
         placeholder: 'Select option',
-        trackBy: 'name',
+        trackBy: 'value',
         label: 'label'
       }, this.$attrs);
+    },
+    isValueObj() {
+      const { options } = this.options;
+      return isObject(first(options));
+    },
+    resolvedValue() {
+      const { value } = this;
+      if (!value || !this.isValueObj) return value;
+      return find(this.options.options, { value });
     },
     label() {
       return humanize(this.name);
