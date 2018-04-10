@@ -8,6 +8,7 @@
         <th>First Name</th>
         <th>Last Name</th>
         <th>Role</th>
+        <th></th>
       </thead>
       <tbody>
         <tr v-for="user in users" :key="user.id">
@@ -15,11 +16,17 @@
           <td>{{ user.firstName }}</td>
           <td>{{ user.lastName }}</td>
           <td>{{ user.role }}</td>
+          <td>
+            <button @click="edit(user)" class="button is-small is-outlined">
+              <span class="mdi mdi-pencil"></span>
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
     <user-modal
       :show="showModal"
+      :userData="context"
       @close="showModal = false">
     </user-modal>
   </div>
@@ -33,11 +40,18 @@ export default {
   name: 'user-list',
   data() {
     return {
-      showModal: false
+      showModal: false,
+      context: null
     };
   },
   computed: mapState('users', { users: 'items' }),
-  methods: mapActions('users', ['fetch']),
+  methods: {
+    ...mapActions('users', ['fetch']),
+    edit(user) {
+      this.context = user;
+      this.showModal = true;
+    }
+  },
   mounted() {
     this.fetch();
   },
