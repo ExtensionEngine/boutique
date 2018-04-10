@@ -10,6 +10,7 @@ const Umzug = require('umzug');
 
 // Require models.
 const User = require('../../user/user.model');
+const Program = require('../../program/program.model');
 
 const isProduction = process.env.NODE_ENV === 'production';
 const sequelize = new Sequelize(config.url, config);
@@ -47,7 +48,8 @@ function initialize() {
 }
 
 const models = {
-  User: defineModel(User)
+  User: defineModel(User),
+  Program: defineModel(Program)
 };
 
 forEach(models, model => {
