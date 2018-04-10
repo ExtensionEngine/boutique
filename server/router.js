@@ -9,8 +9,8 @@ const user = require('./user');
 const router = express.Router();
 // TODO: Remove this demo route!
 router.use('/ping', (_, res) => res.jsend.success(null));
-router.use(course.path, auth, course.router);
-router.use(program.path, program.router);
 router.use(user.path, user.router);
+router.use(course.path, auth, course.router);
+router.use(program.path, auth, program.router);
 
 module.exports = router;
