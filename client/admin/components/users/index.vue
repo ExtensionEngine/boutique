@@ -2,7 +2,7 @@
   <div>
     <h1 class="title">Users</h1>
     <button
-      @click="showModal = true"
+      @click="create"
       class="btn-create button is-primary is-pulled-right">
       Create
     </button>
@@ -51,6 +51,10 @@ export default {
   computed: mapState('users', { users: 'items' }),
   methods: {
     ...mapActions('users', ['fetch']),
+    create() {
+      this.context = null;
+      this.showModal = true;
+    },
     edit(user) {
       this.context = user;
       this.showModal = true;
