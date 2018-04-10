@@ -8,6 +8,7 @@ const pick = require('lodash/pick');
 
 const { BAD_REQUEST, NOT_FOUND } = HttpStatus;
 const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
+const getOrigin = req => `${req.protocol}://${req.get('host')}`;
 
 function list({ query: { email } }, res) {
   const where = {};
@@ -16,10 +17,12 @@ function list({ query: { email } }, res) {
     .then(users => res.jsend.success(map(users, 'profile')));
 }
 
-function create({ body }, res) {
+function create(req, res) {
+  const { body } = req;
+  const origin = getOrigin(req);
   return User.findOne({ where: { email: body.email } })
     .then(user => !user || createError(NOT_FOUND, 'User already exists!'))
-    .then(() => User.invite(pick(body, inputAttrs)))
+    .then(() => User.invite(pick(body, inputAttrs), { origin }))
     .then(user => res.jsend.success({ user: user.profile }));
 }
 
@@ -46,11 +49,12 @@ function login({ body }, res) {
     });
 }
 
-function forgotPassword({ body }, res) {
-  let { email } = body;
+function forgotPassword(req, res) {
+  const { email } = req.body;
+  const origin = getOrigin(req);
   return User.find({ where: { email } })
     .then(user => user || createError(NOT_FOUND, 'User not found!'))
-    .then(user => user.sendResetToken())
+    .then(user => user.sendResetToken({ origin }))
     .then(() => res.end());
 }
 

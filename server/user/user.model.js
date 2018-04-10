@@ -87,10 +87,10 @@ class User extends Model {
     };
   }
 
-  static async invite(userData) {
+  static async invite(userData, options) {
     const user = await this.create(userData);
     user.token = user.createToken({ expiresIn: '5 days' });
-    mail.invite(user).catch(err =>
+    mail.invite(user, options).catch(err =>
       logger.error('Error: Sending invite email failed:', err.message));
     return user.save();
   }
@@ -106,9 +106,9 @@ class User extends Model {
     return result && this;
   }
 
-  sendResetToken() {
+  sendResetToken(options) {
     this.token = this.createToken({ expiresIn: '5 days' });
-    mail.resetPassword(this).catch(err =>
+    mail.resetPassword(this, options).catch(err =>
       logger.error('Error: Sending reset password email failed:', err.message));
     return this.save();
   }
