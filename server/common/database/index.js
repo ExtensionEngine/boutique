@@ -1,12 +1,12 @@
 'use strict';
 
+const { 'migrations-path': migrationsPath } = require('../../../.sequelizerc');
+const config = require('./config');
 const forEach = require('lodash/forEach');
 const invoke = require('lodash/invoke');
+const logger = require('../logger')();
 const Sequelize = require('sequelize');
 const Umzug = require('umzug');
-
-const config = require('./config');
-const migrationsPath = require('../../../.sequelizerc')['migrations-path'];
 
 // Require models.
 const User = require('../../user/user.model');
@@ -24,8 +24,8 @@ const defineModel = Model => {
 };
 
 function initialize() {
-  if (isProduction) return Promise.resolve();
   const umzug = new Umzug({
+    logging: message => logger.info('[Migration]', message),
     storage: 'sequelize',
     storageOptions: {
       sequelize,
@@ -37,7 +37,13 @@ function initialize() {
     }
   });
 
-  return umzug.up();
+  return Promise.resolve(!isProduction && umzug.up())
+    .then(() => umzug.executed())
+    .then(migrations => {
+      const files = migrations.map(it => it.file);
+      if (!files.length) return;
+      logger.info('⬆️  Executed migrations:', files);
+    });
 }
 
 const models = {

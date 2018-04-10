@@ -18,7 +18,7 @@ const runServer = promisify(app.listen.bind(app));
 const address = `http://${config.ip}:${config.port}`;
 
 database.initialize()
-  .then(() => logger.info('🗄️  Database initialized'))
+  .then(migrations => logger.info('🗄️  Database initialized'))
   .then(() => runServer(config.port, config.ip))
   .then(() => logger.info(`✈️  Server listening on ${address}`))
   .catch(err => logger.error({ err }));
