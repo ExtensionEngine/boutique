@@ -1,7 +1,11 @@
 <template>
   <div>
-    <h1 class="title">Users Overview</h1>
-    <button @click="showModal = true" class="button is-primary">Create</button>
+    <h1 class="title">Users</h1>
+    <button
+      @click="showModal = true"
+      class="btn-create button is-primary is-pulled-right">
+      Create
+    </button>
     <table class="table is-fullwidth is-hoverable">
       <thead>
         <th>Email</th>
