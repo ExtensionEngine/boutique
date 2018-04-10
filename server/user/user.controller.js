@@ -3,6 +3,7 @@
 const { User } = require('../common/database');
 const httpError = require('http-errors');
 const HttpStatus = require('http-status');
+const map = require('lodash/map');
 const pick = require('lodash/pick');
 
 const { BAD_REQUEST, NOT_FOUND } = HttpStatus;
@@ -15,14 +16,15 @@ function list({ query }, res, next) {
   const { email } = query;
   const where = {};
   if (email) where.email = email;
-  return User.findAll({ where }).then(users => res.jsend.success(users));
+  return User.findAll({ where })
+    .then(users => res.jsend.success(map(users, 'profile')));
 }
 
 function create({ body }, res, next) {
   const attrs = ['email', 'role', 'firstName', 'lastName'];
   return User.findOne({ where: { email: body.email } })
     .then(user => user || User.invite(pick(body, attrs)))
-    .then(user => res.jsend.success({ user }))
+    .then(user => res.jsend.success({ user: user.profile }))
     .catch(err => next(err));
 }
 
@@ -30,7 +32,7 @@ function patch({ params, body }, res, next) {
   return User.findById(params.id, { paranoid: false })
     .then(user => user || createError(NOT_FOUND, 'User does not exist'))
     .then(user => user.update(pick(body, ['email', 'role', 'firstName', 'lastName'])))
-    .then(user => res.jsend.success({ user }))
+    .then(user => res.jsend.success({ user: user.profile }))
     .catch(err => next(err));
 }
 
@@ -46,7 +48,7 @@ function login({ body }, res, next) {
     .then(user => user || createError(NOT_FOUND, 'Wrong password'))
     .then(user => {
       const token = user.createToken({ expiresIn: '5 days' });
-      res.jsend.success({ token, user });
+      res.jsend.success({ token, user: user.profile });
     })
     .catch(err => next(err));
 }

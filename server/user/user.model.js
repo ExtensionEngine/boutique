@@ -50,6 +50,12 @@ class User extends Model {
       deletedAt: {
         type: DataTypes.DATE,
         field: 'deleted_at'
+      },
+      profile: {
+        type: DataTypes.VIRTUAL,
+        get() {
+          return pick(this, ['id', 'firstName', 'lastName', 'email', 'role']);
+        }
       }
     };
   }
