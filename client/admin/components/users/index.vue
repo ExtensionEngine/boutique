@@ -15,7 +15,7 @@
         <th></th>
       </thead>
       <tbody>
-        <tr v-for="user in users" :key="user.id">
+        <tr v-for="user in users" :key="user._cid">
           <td>{{ user.email }}</td>
           <td>{{ user.firstName }}</td>
           <td>{{ user.lastName }}</td>
