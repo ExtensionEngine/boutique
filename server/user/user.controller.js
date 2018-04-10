@@ -1,6 +1,7 @@
 'use strict';
 
 const { createError } = require('../common/errors');
+const { hostname } = require('../config');
 const { User } = require('../common/database');
 const HttpStatus = require('http-status');
 const map = require('lodash/map');
@@ -8,7 +9,7 @@ const pick = require('lodash/pick');
 
 const { BAD_REQUEST, NOT_FOUND } = HttpStatus;
 const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
-const getOrigin = req => `${req.protocol}://${req.get('host')}`;
+const getOrigin = req => `${req.protocol}://${hostname || req.get('host')}`;
 
 function list({ query: { email } }, res) {
   const where = {};

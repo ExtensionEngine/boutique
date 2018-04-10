@@ -3,6 +3,7 @@
 const path = require('path');
 
 module.exports = {
+  hostname: process.env.HOSTNAME,
   port: process.env.PORT,
   ip: process.env.IP,
   staticFolder: path.resolve(__dirname, '../dist'),
