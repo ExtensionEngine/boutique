@@ -45,6 +45,15 @@ class School extends Model {
     };
   }
 
+  static associate({ District }) {
+    this.belongsTo(District, {
+      foreignKey: {
+        name: 'districtId',
+        field: 'district_id'
+      }
+    });
+  }
+
   static options() {
     return {
       modelName: 'school',

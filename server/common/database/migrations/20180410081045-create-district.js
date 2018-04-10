@@ -1,6 +1,9 @@
 'use strict';
+
+const tableName = 'district';
+
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('district', {
+  up: (queryInterface, Sequelize) => queryInterface.createTable(tableName, {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
@@ -33,5 +36,5 @@ module.exports = {
       type: Sequelize.DATE
     }
   }),
-  down: queryInterface => queryInterface.dropTable('district')
+  down: queryInterface => queryInterface.dropTable(tableName)
 };

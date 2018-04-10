@@ -1,6 +1,9 @@
 'use strict';
+
+const tableName = 'school';
+
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('school', {
+  up: (queryInterface, Sequelize) => queryInterface.createTable(tableName, {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
@@ -37,7 +40,12 @@ module.exports = {
     },
     deleted_at: {
       type: Sequelize.DATE
+    },
+    district_id: {
+      type: Sequelize.INTEGER,
+      references: { model: 'district', key: 'id' },
+      allowNull: false
     }
   }),
-  down: queryInterface => queryInterface.dropTable('school')
+  down: queryInterface => queryInterface.dropTable(tableName)
 };
