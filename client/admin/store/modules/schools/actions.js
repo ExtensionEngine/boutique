@@ -1,4 +1,4 @@
 import generateActions from '@/common/store/helpers/actions';
-const { fetch, setApiUrl } = generateActions('/schools');
+const { fetch } = generateActions('/schools');
 
-export { fetch, setApiUrl };
+export { fetch };
