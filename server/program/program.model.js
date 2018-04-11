@@ -30,6 +30,12 @@ class Program extends Model {
     };
   }
 
+  static associate({ ProgramLevel }) {
+    this.hasMany(ProgramLevel, {
+      foreignKey: { name: 'programId', field: 'program_id' }
+    });
+  }
+
   static options() {
     return {
       modelName: 'program',
