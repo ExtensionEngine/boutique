@@ -1,12 +1,21 @@
 <template>
   <div>
     <h1 class="title">Program Levels</h1>
-    <button
-      @click="create"
-      class="btn-create button is-primary is-pulled-right">
-      Create
-    </button>
-    <table class="table is-fullwidth is-hoverable">
+    <div class="actions is-clearfix">
+      <button
+        v-if="hasPrograms"
+        @click="create"
+        class="btn-create button is-primary is-pulled-right">
+        Create
+      </button>
+    </div>
+    <div v-if="!hasPrograms" class="notification is-danger">
+      Please create at least one program first!
+    </div>
+    <div v-else-if="!hasProgramLevels" class="notification">
+      Click on the button above to create your first program level.
+    </div>
+    <table v-else class="table is-fullwidth is-hoverable">
       <thead>
         <th>Name</th>
         <th>Program</th>
@@ -34,6 +43,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
+import isEmpty from 'lodash/isEmpty';
 import find from 'lodash/find';
 import get from 'lodash/get';
 import ProgramLevelModal from './ProgramLevelModal';
@@ -48,7 +58,13 @@ export default {
   },
   computed: {
     ...mapState('programs', { programs: 'items' }),
-    ...mapState('programLevels', { programLevels: 'items' })
+    ...mapState('programLevels', { programLevels: 'items' }),
+    hasPrograms() {
+      return !isEmpty(this.programs);
+    },
+    hasProgramLevels() {
+      return !isEmpty(this.programLevels);
+    }
   },
   methods: {
     ...mapActions('programLevels', ['fetch']),
@@ -70,3 +86,9 @@ export default {
   components: { ProgramLevelModal }
 };
 </script>
+
+<style lang="scss" scoped>
+.actions {
+  padding: 10px 0;
+}
+</style>
