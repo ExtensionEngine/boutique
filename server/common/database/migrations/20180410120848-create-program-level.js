@@ -14,7 +14,8 @@ module.exports = {
       type: Sequelize.INTEGER,
       field: 'program_id',
       references: { model: 'program', key: 'id' },
-      onDelete: 'NO ACTION'
+      onDelete: 'NO ACTION',
+      allowNull: false
     },
     name: {
       type: Sequelize.STRING(255),
