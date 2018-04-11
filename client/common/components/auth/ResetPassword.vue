@@ -38,7 +38,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['resetPassword']),
+    ...mapActions('auth', ['resetPassword']),
     submit() {
       const token = this.$route.params.token;
       this.$validator.validateAll().then(isValid => {

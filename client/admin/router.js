@@ -3,22 +3,26 @@ import Router from 'vue-router';
 import store from './store';
 import Vue from 'vue';
 
-import Auth from '@/common/components/auth/index';
+import AdminRoot from '@/admin/components/index';
+import Auth from '@/common/components/auth';
 import ForgotPassword from '@/common/components/auth/ForgotPassword';
-import Home from '@/admin/components/Home';
 import Login from '@/common/components/auth/Login';
+import NotFound from '@/admin/components/common/NotFound';
+import Programs from '@/admin/components/programs';
 import ResetPassword from '@/common/components/auth/ResetPassword';
+import Users from '@/admin/components/users';
 
 Vue.use(Router);
 
+// Handle 404
+const fallbackRoute = {
+  path: '*',
+  component: NotFound
+};
+
 const router = new Router({
   routes: [{
-    path: '/',
-    name: 'home',
-    component: Home,
-    meta: { auth: true }
-  }, {
-    path: '/',
+    path: '/auth',
     name: 'auth',
     component: Auth,
     children: [{
@@ -34,7 +38,21 @@ const router = new Router({
       name: 'reset-password',
       component: ResetPassword
     }]
-  }]
+  }, {
+    path: '/',
+    name: 'home',
+    component: AdminRoot,
+    meta: { auth: true },
+    children: [{
+      path: '',
+      name: 'programs',
+      component: Programs
+    }, {
+      path: '/users',
+      name: 'users',
+      component: Users
+    }, fallbackRoute]
+  }, fallbackRoute]
 });
 
 router.beforeEach((to, from, next) => {

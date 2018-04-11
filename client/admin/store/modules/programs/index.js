@@ -1,15 +1,14 @@
 import * as actions from './actions';
-import * as getters from './getters';
 import * as mutations from './mutations';
 
 const state = {
-  user: JSON.parse(window.localStorage.getItem('LMS_USER') || null)
+  items: {},
+  $apiUrl: '/programs'
 };
 
 export default {
   namespaced: true,
   state,
-  getters,
   actions,
   mutations
 };

@@ -3,7 +3,7 @@
     <div class="message">
       <span v-if="message">{{ message }}</span>
     </div>
-    <form>
+    <form @submit.prevent="submit">
       <v-input v-model="email" name="email" validate="required|email"></v-input>
       <v-input
         v-model="password"
@@ -15,9 +15,7 @@
         <router-link :to="{ name: 'forgot-password' }">
           Forgot password ?
         </router-link>
-        <button @click.stop="submit" class="button is-primary" type="button">
-          Login
-        </button>
+        <button class="button is-primary" type="submit">Login</button>
       </div>
     </form>
   </div>
@@ -42,7 +40,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['login']),
+    ...mapActions('auth', ['login']),
     submit() {
       this.message = '';
       this.$validator.validateAll().then(isValid => {

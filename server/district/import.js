@@ -2,8 +2,6 @@ const { forIn, groupBy } = require('lodash');
 const { District, School } = require('../common/database');
 const parseCsv = require('../common/util/csv');
 
-const districtIdColumnName = 'LEAID';
-
 async function importDistrict(schools, key) {
   const ncesId = +key;
   let [district] = await District.findOrBuild({ where: { ncesId } });
@@ -30,6 +28,6 @@ async function importSchool(data, district) {
 
 module.exports = async function (filePath) {
   const data = await parseCsv(filePath);
-  const districts = groupBy(data, districtIdColumnName);
+  const districts = groupBy(data, 'LEAID');
   return forIn(districts, importDistrict);
 };

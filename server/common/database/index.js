@@ -10,6 +10,7 @@ const Umzug = require('umzug');
 
 // Require models.
 const District = require('../../district/district.model');
+const Program = require('../../program/program.model');
 const School = require('../../school/school.model');
 const User = require('../../user/user.model');
 
@@ -50,6 +51,7 @@ function initialize() {
 
 const models = {
   District: defineModel(District),
+  Program: defineModel(Program),
   School: defineModel(School),
   User: defineModel(User)
 };

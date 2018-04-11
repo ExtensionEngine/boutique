@@ -5,6 +5,7 @@ const { Model } = require('sequelize');
 const { role } = require('../../common/config');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const logger = require('../common/logger')();
 const mail = require('../common/mail');
 const pick = require('lodash/pick');
 const Promise = require('bluebird');
@@ -21,11 +22,11 @@ class User extends Model {
       },
       password: {
         type: DataTypes.STRING,
-        allowNull: false,
         validate: { notEmpty: true, len: [5, 255] }
       },
       role: {
         type: DataTypes.ENUM(values(role)),
+        allowNull: false,
         defaultValue: role.STUDENT
       },
       token: {
@@ -51,6 +52,12 @@ class User extends Model {
       deletedAt: {
         type: DataTypes.DATE,
         field: 'deleted_at'
+      },
+      profile: {
+        type: DataTypes.VIRTUAL,
+        get() {
+          return pick(this, ['id', 'firstName', 'lastName', 'email', 'role']);
+        }
       }
     };
   }
@@ -83,11 +90,13 @@ class User extends Model {
   static async invite(userData) {
     const user = await this.create(userData);
     user.token = user.createToken({ expiresIn: '5 days' });
-    mail.invite(user);
+    mail.invite(user).catch(err =>
+      logger.error('Error: Sending invite email failed:', err.message));
     return user.save();
   }
 
   async encryptPassword() {
+    if (!this.password) return;
     this.password = await bcrypt.hash(this.password, config.saltRounds);
     return this;
   }
@@ -99,7 +108,8 @@ class User extends Model {
 
   sendResetToken() {
     this.token = this.createToken({ expiresIn: '5 days' });
-    mail.resetPassword(this);
+    mail.resetPassword(this).catch(err =>
+      logger.error('Error: Sending reset password email failed:', err.message));
     return this.save();
   }
 
