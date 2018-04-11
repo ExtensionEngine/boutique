@@ -44,5 +44,5 @@ function resetPassword(user, { origin }) {
 }
 
 function resetUrl(origin, user) {
-  return `${origin}/#/auth/reset-password/${user.token}`;
+  return `${origin}/admin/#/auth/reset-password/${user.token}`;
 }
