@@ -7,7 +7,7 @@ const csvOptions = {
   to: 10,
   trim: true,
   delimiter: ',',
-  columns: true
+  columns: true // TODO: collect only the columns we need
 };
 
 /**

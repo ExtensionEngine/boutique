@@ -8,8 +8,7 @@ class District extends Model {
       name: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: { notEmpty: true },
-        unique: true
+        validate: { notEmpty: true }
       },
       ncesId: {
         type: DataTypes.INTEGER,
