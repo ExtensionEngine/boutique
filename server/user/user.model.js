@@ -62,6 +62,12 @@ class User extends Model {
     };
   }
 
+  static associate({ Enrollment }) {
+    this.hasMany(Enrollment, {
+      foreignKey: { name: 'studentId', field: 'student_id' }
+    });
+  }
+
   static options() {
     return {
       modelName: 'user',
