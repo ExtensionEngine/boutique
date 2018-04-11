@@ -1,7 +1,6 @@
 'use strict';
 
 const { createError } = require('../common/errors');
-const { hostname } = require('../config');
 const { User } = require('../common/database');
 const HttpStatus = require('http-status');
 const map = require('lodash/map');
@@ -9,7 +8,6 @@ const pick = require('lodash/pick');
 
 const { BAD_REQUEST, NOT_FOUND } = HttpStatus;
 const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
-const getOrigin = req => `${req.protocol}://${hostname || req.get('host')}`;
 
 function list({ query: { email } }, res) {
   const where = {};
@@ -20,7 +18,7 @@ function list({ query: { email } }, res) {
 
 function create(req, res) {
   const { body } = req;
-  const origin = getOrigin(req);
+  const origin = req.origin();
   return User.findOne({ where: { email: body.email } })
     .then(user => !user || createError(NOT_FOUND, 'User already exists!'))
     .then(() => User.invite(pick(body, inputAttrs), { origin }))
@@ -52,7 +50,7 @@ function login({ body }, res) {
 
 function forgotPassword(req, res) {
   const { email } = req.body;
-  const origin = getOrigin(req);
+  const origin = req.origin();
   return User.find({ where: { email } })
     .then(user => user || createError(NOT_FOUND, 'User not found!'))
     .then(user => user.sendResetToken({ origin }))
