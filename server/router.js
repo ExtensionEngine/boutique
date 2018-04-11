@@ -13,6 +13,6 @@ router.use('/ping', (_, res) => res.jsend.success(null));
 router.use(user.path, user.router);
 router.use(course.path, auth, course.router);
 router.use(program.path, auth, program.router);
-router.use(programLevel.path, programLevel.router);
+router.use(programLevel.path, auth, programLevel.router);
 
 module.exports = router;
