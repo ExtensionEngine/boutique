@@ -26,7 +26,7 @@
           <td>{{ it.name }}</td>
           <td>{{ getProgramName(it.programId) }}</td>
           <td>
-            <button @click="edit(it)" class="button is-small is-outlined">
+            <button @click="edit(it)" class="button is-small is-pulled-right is-outlined">
               <span class="mdi mdi-pencil"></span>
             </button>
           </td>

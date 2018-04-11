@@ -21,7 +21,7 @@
           <td>{{ user.lastName }}</td>
           <td>{{ user.role }}</td>
           <td>
-            <button @click="edit(user)" class="button is-small is-outlined">
+            <button @click="edit(user)" class="button is-small is-pulled-right is-outlined">
               <span class="mdi mdi-pencil"></span>
             </button>
           </td>
