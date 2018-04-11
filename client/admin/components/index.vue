@@ -15,11 +15,16 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import Navbar from '@/admin/components/common/Navbar';
 import Sidebar from '@/admin/components/common/Sidebar';
 
 export default {
   name: 'admin',
-  components: { Navbar, Sidebar }
+  components: { Navbar, Sidebar },
+  methods: mapActions('programs', ['fetch']),
+  created() {
+    this.fetch();
+  }
 };
 </script>
