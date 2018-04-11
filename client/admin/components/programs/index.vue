@@ -56,9 +56,6 @@ export default {
       this.showModal = true;
     }
   },
-  mounted() {
-    this.fetch();
-  },
   components: { ProgramModal }
 };
 </script>

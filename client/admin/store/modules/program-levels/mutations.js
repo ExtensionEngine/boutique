@@ -3,6 +3,5 @@ export {
   reset,
   add,
   save,
-  remove,
-  setApiUrl
+  remove
 } from '@/common/store/helpers/mutations';

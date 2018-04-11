@@ -2,7 +2,8 @@
   <modal :show="show" @close="close">
     <div class="program-level-modal">
       <h2 class="title is-4">
-        {{ programLevelData ? 'Edit' : 'Create' }} Program Level</h2>
+        {{ programLevelData ? 'Edit' : 'Create' }} Program Level
+      </h2>
       <v-input
         v-model="programLevel.name"
         name="name"
@@ -41,7 +42,7 @@ export default {
   mixins: [withValidation()],
   props: {
     show: { type: Boolean, default: false },
-    programLevelData: { type: Object, default() { return {}; } }
+    programLevelData: { type: Object, default: () => ({}) }
   },
   data() {
     return { programLevel: reset() };
