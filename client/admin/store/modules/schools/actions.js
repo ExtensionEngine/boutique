@@ -1,4 +1,4 @@
 import generateActions from '@/common/store/helpers/actions';
-const { fetch } = generateActions('/schools');
+const { fetch, upload } = generateActions('/schools');
 
-export { fetch };
+export { fetch, upload };

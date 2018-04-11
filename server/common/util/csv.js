@@ -4,7 +4,7 @@ const parse = require('csv-parse');
 
 const csvOptions = {
   from: 1,
-  to: 10,
+  to: 20,
   trim: true,
   delimiter: ',',
   columns: true // TODO: collect only the columns we need
