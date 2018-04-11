@@ -4,17 +4,18 @@
       <h2 class="title is-4">
         {{ programLevelData ? 'Edit' : 'Create' }} Program Level
       </h2>
+      <v-select
+        v-model="programLevel.programId"
+        :options="programOptions"
+        :max-height="150"
+        name="program"
+        validate="required">
+      </v-select>
       <v-input
         v-model="programLevel.name"
         name="name"
         validate="required|min:2|max:255">
       </v-input>
-      <v-select
-        v-model="programLevel.programId"
-        :options="programOptions"
-        name="program"
-        validate="required">
-      </v-select>
       <div class="controls">
         <div class="is-pulled-right">
           <button @click="close" class="button">Cancel</button>
