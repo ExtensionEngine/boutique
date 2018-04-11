@@ -1,12 +1,17 @@
 <template>
   <div>
     <h1 class="title">Programs</h1>
-    <button
-      @click="create"
-      class="btn-create button is-primary is-pulled-right">
-      Create
-    </button>
-    <table class="table is-fullwidth is-hoverable">
+    <div class="actions is-clearfix">
+      <button
+        @click="create"
+        class="btn-create button is-primary is-pulled-right">
+        Create
+      </button>
+    </div>
+    <div v-if="!hasPrograms" class="notification is-warning">
+      Click on the button above to create your first program.
+    </div>
+    <table v-else class="table is-fullwidth is-hoverable">
       <thead>
         <th>Name</th>
         <th>Description</th>
@@ -34,6 +39,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
+import isEmpty from 'lodash/isEmpty';
 import ProgramModal from './ProgramModal';
 
 export default {
@@ -44,7 +50,12 @@ export default {
       context: null
     };
   },
-  computed: mapState('programs', { programs: 'items' }),
+  computed: {
+    ...mapState('programs', { programs: 'items' }),
+    hasPrograms() {
+      return !isEmpty(this.programs);
+    }
+  },
   methods: {
     ...mapActions('programs', ['fetch']),
     create() {
@@ -59,3 +70,9 @@ export default {
   components: { ProgramModal }
 };
 </script>
+
+<style lang="scss" scoped>
+.actions {
+  padding: 15px 0;
+}
+</style>
