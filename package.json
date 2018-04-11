@@ -7,6 +7,7 @@
     "dev:server": "nodemon --exec \"node -r dotenv/config\" ./server | bunyan",
     "db": "node -r dotenv/config ./server/script/sequelize",
     "db:reset": "npm run db drop && npm run db create && npm run db migrate",
+    "db:seed": "npm run db seed:all",
     "user:add": "node  -r dotenv/config ./server/script/add-user.js",
     "lint:js": "eslint --ext .js,.vue server client",
     "lint:scss": "stylelint client/**/*.vue client/**/*.scss --syntax scss",
