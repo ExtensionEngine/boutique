@@ -3,10 +3,12 @@
 const { email: config } = require('../config');
 const { parse: parseUrl } = require('url');
 const { promisify } = require('util');
+const { role } = require('../../common/config');
 const email = require('emailjs');
 
 const server = email.server.connect(config);
 const send = promisify(server.send.bind(server));
+const isAdmin = user => user.role && user.role === role.ADMIN;
 
 module.exports = {
   send,
@@ -44,5 +46,6 @@ function resetPassword(user, { origin }) {
 }
 
 function resetUrl(origin, user) {
-  return `${origin}/admin/#/auth/reset-password/${user.token}`;
+  const baseUrl = origin + (isAdmin(user) ? '/admin' : '');
+  return `${baseUrl}/#/auth/reset-password/${user.token}`;
 }
