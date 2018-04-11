@@ -20,14 +20,14 @@ function create({ body }, res) {
   return User.findOne({ where: { email: body.email } })
     .then(user => !user || createError(NOT_FOUND, 'User already exists!'))
     .then(() => User.invite(pick(body, inputAttrs)))
-    .then(user => res.jsend.success({ user: user.profile }));
+    .then(user => res.jsend.success(user.profile));
 }
 
 function patch({ params, body }, res) {
   return User.findById(params.id, { paranoid: false })
     .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
     .then(user => user.update(pick(body, inputAttrs)))
-    .then(user => res.jsend.success({ user: user.profile }));
+    .then(user => res.jsend.success(user.profile));
 }
 
 function login({ body }, res) {

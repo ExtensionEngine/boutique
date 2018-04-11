@@ -11,12 +11,12 @@ function list(req, res) {
 
 function create({ body }, res) {
   return Program.create(processInput(body))
-    .then(program => res.jsend.success({ program }));
+    .then(program => res.jsend.success(program));
 }
 
 function patch({ body, program }, res) {
   return program.update(processInput(body))
-    .then(program => res.jsend.success({ program }));
+    .then(program => res.jsend.success(program));
 }
 
 module.exports = {
