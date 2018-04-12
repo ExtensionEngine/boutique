@@ -1,7 +1,14 @@
 <template>
   <div class="school-upload">
-    <b v-if="isUploading"> (TODO: add icon) Uploading, please wait...</b>
-    <form v-else @submit.prevent="prepareUpload" method="POST" enctype="multipart/form-data">
+    <b v-if="isUploading">
+      <span class="icon"><i class="mdi mdi-loading mdi-spin"></i></span>
+      Uploading, please wait...
+    </b>
+    <form
+      v-else
+      @submit.prevent="prepareUpload"
+      method="POST"
+      enctype="multipart/form-data">
       <div class="file has-name is-fullwidth">
         <label class="file-label">
           <input ref="csv" @change="updateFileName" class="file-input" type="file" name="csv"/>

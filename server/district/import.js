@@ -1,4 +1,5 @@
-const { forIn, groupBy } = require('lodash');
+const forIn = require('lodash/forIn');
+const groupBy = require('lodash/groupBy');
 const { District, School } = require('../common/database');
 const parseCsv = require('../common/util/csv');
 
