@@ -17,7 +17,6 @@ export default function ($apiUrl) {
   const upload = ({ commit }, { path, data }) => {
     commit('setFlags', { isUploading: true });
     return api.post(path, data)
-      .then(res => commit('fetch', res))
       .then(() => commit('setFlags', { isUploading: false }));
   };
 

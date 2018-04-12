@@ -9,14 +9,16 @@
         <th>Name</th>
         <th>State</th>
         <th>Level</th>
+        <th>Status</th>
         <th>Type</th>
       </thead>
       <tbody>
         <tr v-for="school in schools" :key="school._cid">
-          <td>{{ school.district.name }}</td>
+          <td>{{ school.district && school.district.name }}</td>
           <td>{{ school.name }}</td>
           <td>{{ school.state }}</td>
           <td>{{ school.ncesSchoolLevel }}</td>
+          <td>{{ school.ncesStatus }}</td>
           <td>{{ school.ncesType }}</td>
         </tr>
       </tbody>

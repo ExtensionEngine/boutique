@@ -21,6 +21,7 @@ async function importSchool(data, district) {
     name: data['SCH_NAME'],
     ncesId,
     ncesSchoolLevel: +data['LEVEL'] || 0,
+    ncesStatus: +data['SY_STATUS'] || 0,
     ncesType: +data['SCH_TYPE'] || 0,
     state: data['STABR']
   });

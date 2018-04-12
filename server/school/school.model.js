@@ -17,13 +17,17 @@ class School extends Model {
         validate: { notEmpty: true },
         unique: true
       },
+      ncesSchoolLevel: {
+        type: DataTypes.INTEGER,
+        field: 'nces_school_level'
+      },
       ncesType: {
         type: DataTypes.INTEGER,
         field: 'nces_type'
       },
-      ncesSchoolLevel: {
+      ncesStatus: {
         type: DataTypes.INTEGER,
-        field: 'nces_school_level'
+        field: 'nces_status'
       },
       state: {
         type: DataTypes.STRING,

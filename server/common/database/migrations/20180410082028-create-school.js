@@ -21,10 +21,13 @@ module.exports = {
       validate: { notEmpty: true },
       unique: true
     },
-    nces_type: {
+    nces_school_level: {
       type: Sequelize.INTEGER
     },
-    nces_school_level: {
+    nces_status: {
+      type: Sequelize.INTEGER
+    },
+    nces_type: {
       type: Sequelize.INTEGER
     },
     state: {

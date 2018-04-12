@@ -29,7 +29,7 @@ export default {
   props: {
     label: {
       type: String,
-      default: 'NCES School Universe File'
+      default: 'Upload NCES School Universe List'
     },
     placeholder: {
       type: String,
@@ -43,13 +43,13 @@ export default {
   },
   computed: mapState('schools', ['isUploading']),
   methods: {
-    ...mapActions('schools', ['upload']),
+    ...mapActions('schools', ['fetch', 'upload']),
     prepareUpload() {
       const { files } = this.$refs.csv;
       if (files.length === 0) return;
       const data = new FormData(); // eslint-disable-line
       data.append('csv', files[0], files[0].name);
-      this.upload({ path: 'import', data });
+      this.upload({ path: 'import', data }).then(this.fetch);
     },
     updateFileName({ target: { files } }) {
       this.fileName = files[0].name;
