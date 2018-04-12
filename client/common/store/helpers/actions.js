@@ -13,7 +13,10 @@ export default function ($apiUrl) {
   };
 
   const upload = ({ commit }, { path, data }) => {
-    return api.post(path, data).then(res => commit('fetch', res));
+    commit('setFlags', { isUploading: true });
+    return api.post(path, data)
+      .then(res => commit('fetch', res))
+      .then(() => commit('setFlags', { isUploading: false }));
   };
 
   const save = ({ state, commit }, model) => {

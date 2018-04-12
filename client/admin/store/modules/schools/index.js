@@ -3,7 +3,8 @@ import * as mutations from './mutations';
 
 const state = {
   items: {},
-  $apiUrl: '/schools'
+  $apiUrl: '/schools',
+  isUploading: false
 };
 
 export default {
