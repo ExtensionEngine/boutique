@@ -2,19 +2,7 @@
   <div>
     <h1 class="title">Schools</h1>
     <upload/>
-    <div class="field">
-      <multiselect
-        :options="districts"
-        :close-on-select="true"
-        :clear-on-select="false"
-        placeholder="Filter by District"
-        label="name"
-        track-by="name"
-        @open="fetchOptions"
-        @select="filterSchools">
-      </multiselect>
-    </div>
-
+    <filter-autocomplete/>
     <table class="table is-fullwidth is-hoverable">
       <thead>
         <th>District</th>
@@ -37,37 +25,20 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex';
-import Multiselect from 'vue-multiselect';
+import { mapState, mapActions } from 'vuex';
+import FilterAutocomplete from './FilterAutocomplete';
 import Upload from './Upload';
 
 export default {
   name: 'school-list',
-  computed: {
-    ...mapState('schools', { schools: 'items' }),
-    ...mapGetters('districts', { districts: 'array' })
-  },
-  methods: {
-    ...mapActions('schools', { fetchSchools: 'fetch', resetSchools: 'reset' }),
-    ...mapActions('districts', { fetchDistricts: 'fetch' }),
-    filterSchools(selectedDistrict) {
-      this.resetSchools({ districtId: selectedDistrict.id });
-    },
-    fetchOptions() {
-      if (this.districts.length) return;
-      this.fetchDistricts();
-    }
-  },
+  computed: mapState('schools', { schools: 'items' }),
+  methods: mapActions('schools', ['fetch']),
   mounted() {
-    this.fetchSchools();
+    this.fetch();
   },
   components: {
-    Multiselect,
+    FilterAutocomplete,
     Upload
   }
 };
 </script>
-
-<style lang="scss">
-@import '~vue-multiselect/dist/vue-multiselect.min';
-</style>
