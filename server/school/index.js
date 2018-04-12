@@ -8,7 +8,8 @@ const upload = multer({ dest: process.env.UPLOADS_DIR });
 
 router
   .get('/', ctrl.list)
-  .post('/import', upload.single('csv'), ctrl.handleImport);
+  .post('/import', upload.single('csv'), ctrl.handleImport)
+  .delete('/:id', ctrl.destroy);
 
 module.exports = {
   path: '/schools',

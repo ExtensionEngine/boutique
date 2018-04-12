@@ -9,6 +9,16 @@ function list({ query: { districtId } }, res) {
     .then(schools => res.jsend.success(schools));
 }
 
+function destroy({ params: { id } }, res, next) {
+  if (!id) return res.sendStatus(400);
+  return School.destroy({ where: { id } })
+    .then(deleted => {
+      if (deleted) return res.sendStatus(204);
+      throw new Error('Delete failed!');
+    })
+    .catch(err => next(err));
+}
+
 function handleImport({ file }, res, next) {
   if (!file) return res.sendStatus(400);
   // TODO: validate file
@@ -19,5 +29,6 @@ function handleImport({ file }, res, next) {
 
 module.exports = {
   list,
+  destroy,
   handleImport
 };
