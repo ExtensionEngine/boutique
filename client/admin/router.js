@@ -8,6 +8,7 @@ import Auth from '@/common/components/auth';
 import ForgotPassword from '@/common/components/auth/ForgotPassword';
 import Login from '@/common/components/auth/Login';
 import NotFound from '@/admin/components/common/NotFound';
+import ProgramLevels from '@/admin/components/program-levels';
 import Programs from '@/admin/components/programs';
 import ResetPassword from '@/common/components/auth/ResetPassword';
 import Schools from '@/admin/components/schools';
@@ -48,6 +49,10 @@ const router = new Router({
       path: '',
       name: 'programs',
       component: Programs
+    }, {
+      path: '/program-levels',
+      name: 'programLevels',
+      component: ProgramLevels
     }, {
       path: '/users',
       name: 'users',

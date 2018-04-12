@@ -4,6 +4,7 @@ const auth = require('./common/auth').authenticate('jwt');
 const express = require('express');
 const course = require('./course');
 const program = require('./program');
+const programLevel = require('./program-level');
 const school = require('./school');
 const user = require('./user');
 
@@ -13,6 +14,7 @@ router.use('/ping', (_, res) => res.jsend.success(null));
 router.use(user.path, user.router);
 router.use(course.path, auth, course.router);
 router.use(program.path, auth, program.router);
+router.use(programLevel.path, auth, programLevel.router);
 router.use(school.path, auth, school.router);
 
 module.exports = router;
