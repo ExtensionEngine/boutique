@@ -1,15 +1,15 @@
 <template>
   <div class="field">
     <multiselect
-      placeholder="Filter by District"
       label="name"
       track-by="id"
-      v-model="district"
-      :options="districts"
+      v-model="selectedOption"
       :close-on-select="true"
       :clear-on-select="false"
+      :options="options"
+      :placeholder="placeholder"
       @open="fetchOptions"
-      @select="filterSchools">
+      @select="filterItems">
     </multiselect>
   </div>
 </template>
@@ -19,22 +19,28 @@ import { mapActions, mapGetters } from 'vuex';
 import Multiselect from 'vue-multiselect';
 
 export default {
-  name: 'school-filter-autocomplete',
+  name: 'filter-autocomplete',
+  props: {
+    placeholder: {
+      type: String,
+      default: 'Filter by District'
+    }
+  },
   data() {
     return {
-      district: null
+      selectedOption: null
     };
   },
-  computed: mapGetters('districts', { districts: 'array' }),
+  computed: mapGetters('districts', { options: 'list' }),
   methods: {
-    ...mapActions('schools', { resetSchools: 'reset' }),
-    ...mapActions('districts', { fetchDistricts: 'fetch' }),
-    filterSchools({ id }) {
-      this.resetSchools({ districtId: id });
+    ...mapActions('schools', ['reset']),
+    ...mapActions('districts', ['fetch']),
+    filterItems({ id }) {
+      this.reset({ districtId: id });
     },
     fetchOptions() {
-      if (this.districts.length) return;
-      this.fetchDistricts();
+      if (this.options.length) return;
+      this.fetch();
     }
   },
   components: {

@@ -1,1 +1,1 @@
-export const array = state => Object.values(state.items);
+export const list = state => Object.values(state.items);
