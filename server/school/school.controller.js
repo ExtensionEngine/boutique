@@ -3,8 +3,10 @@
 const { School } = require('../common/database');
 const districtImport = require('../district/import');
 
-function list(req, res) {
-  return School.findAll().then(schools => res.jsend.success(schools));
+function list({ query: { districtId } }, res) {
+  const where = districtId ? { districtId } : {};
+  return School.findAll({ where, include: [ 'district' ] })
+    .then(schools => res.jsend.success(schools));
 }
 
 function handleImport({ file }, res, next) {

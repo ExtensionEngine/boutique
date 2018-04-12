@@ -6,7 +6,9 @@ export default function ($apiUrl) {
 
   const get = ({ commit }, id) => api.getById(id).then(res => commit('save', res));
 
-  const reset = ({ commit }) => api.fetch().then(res => commit('reset', res));
+  const reset = ({ commit }, opts = {}) => {
+    return api.fetch(opts).then(res => commit('reset', res));
+  };
 
   const fetch = ({ commit }, opts = {}) => {
     return api.fetch(opts).then(res => commit('fetch', res));
