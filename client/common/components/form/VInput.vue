@@ -12,7 +12,7 @@
         @input="$emit('input', $event.target.value)"
         class="input">
     </div>
-    <p :style="showError" class="help is-danger">
+    <p v-visible="showError" class="help is-danger">
       {{ vErrors.first(name) || '&nbsp;' }}
     </p>
   </div>
@@ -34,8 +34,7 @@ export default {
       return humanize(this.name);
     },
     showError() {
-      const visibility = this.vErrors.has(this.name) ? 'visible' : 'hidden';
-      return { visibility };
+      return this.vErrors.has(this.name);
     }
   },
   inject: ['$validator']
