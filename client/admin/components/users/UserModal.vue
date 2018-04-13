@@ -2,38 +2,40 @@
   <modal :show="show" @close="close">
     <div class="user-modal">
       <h2 class="title is-4">{{ userData ? 'Edit' : 'Create' }} User</h2>
-      <v-input
-        v-model="user.email"
-        :validate="{
-          required: true,
-          email: true,
-          max: 255,
-          'unique-email': userData
-        }"
-        name="email">
-      </v-input>
-      <v-select
-        v-model="user.role"
-        :options="roles"
-        name="role"
-        validate="required">
-      </v-select>
-      <v-input
-        v-model="user.firstName"
-        name="firstName"
-        validate="required|alpha|min:2|max:50">
-      </v-input>
-      <v-input
-        v-model="user.lastName"
-        name="lastName"
-        validate="required|alpha|min:2|max:50">
-      </v-input>
-      <div class="controls">
-        <div class="is-pulled-right">
-          <button @click="close" class="button">Cancel</button>
-          <button @click="save" class="button is-primary">Save</button>
+      <form @submit.prevent="save">
+        <v-input
+          v-model="user.email"
+          :validate="{
+            required: true,
+            email: true,
+            max: 255,
+            'unique-email': userData
+          }"
+          name="email">
+        </v-input>
+        <v-select
+          v-model="user.role"
+          :options="roles"
+          name="role"
+          validate="required">
+        </v-select>
+        <v-input
+          v-model="user.firstName"
+          name="firstName"
+          validate="required|alpha|min:2|max:50">
+        </v-input>
+        <v-input
+          v-model="user.lastName"
+          name="lastName"
+          validate="required|alpha|min:2|max:50">
+        </v-input>
+        <div class="controls">
+          <div class="is-pulled-right">
+            <button @click="close" class="button" type="button">Cancel</button>
+            <button class="button is-primary" type="submit">Save</button>
+          </div>
         </div>
-      </div>
+      </form>
     </div>
   </modal>
 </template>

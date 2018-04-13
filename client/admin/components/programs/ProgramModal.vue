@@ -2,22 +2,24 @@
   <modal :show="show" @close="close">
     <div class="program-modal">
       <h2 class="title is-4">{{ programData ? 'Edit' : 'Create' }} Program</h2>
-      <v-input
-        v-model="program.name"
-        name="name"
-        validate="required|min:2|max:255">
-      </v-input>
-      <v-input
-        v-model="program.description"
-        name="description"
-        validate="required|min:2|max:2000">
-      </v-input>
-      <div class="controls">
-        <div class="is-pulled-right">
-          <button @click="close" class="button">Cancel</button>
-          <button @click="save" class="button is-primary">Save</button>
+      <form @submit.prevent="save">
+        <v-input
+          v-model="program.name"
+          name="name"
+          validate="required|min:2|max:255">
+        </v-input>
+        <v-input
+          v-model="program.description"
+          name="description"
+          validate="required|min:2|max:2000">
+        </v-input>
+        <div class="controls">
+          <div class="is-pulled-right">
+            <button @click="close" class="button" type="button">Cancel</button>
+            <button class="button is-primary" type="submit">Save</button>
+          </div>
         </div>
-      </div>
+      </form>
     </div>
   </modal>
 </template>
