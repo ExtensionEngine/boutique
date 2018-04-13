@@ -12,8 +12,8 @@
         @open="open">
       </multiselect>
     </div>
-    <p v-if="vErrors.has(name)" class="help is-danger">
-      {{ vErrors.first(name) }}
+    <p :style="showError" class="help is-danger">
+      {{ vErrors.first(name) || '&nbsp;' }}
     </p>
   </div>
 </template>
@@ -50,6 +50,10 @@ export default {
     },
     label() {
       return humanize(this.name);
+    },
+    showError() {
+      const visibility = this.vErrors.has(this.name) ? 'visible' : 'hidden';
+      return { visibility };
     }
   },
   methods: {

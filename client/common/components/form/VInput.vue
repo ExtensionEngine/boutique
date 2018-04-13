@@ -12,8 +12,8 @@
         @input="$emit('input', $event.target.value)"
         class="input">
     </div>
-    <p v-if="vErrors.has(name)" class="help is-danger">
-      {{ vErrors.first(name) }}
+    <p :style="showError" class="help is-danger">
+      {{ vErrors.first(name) || '&nbsp;' }}
     </p>
   </div>
 </template>
@@ -32,6 +32,10 @@ export default {
   computed: {
     label() {
       return humanize(this.name);
+    },
+    showError() {
+      const visibility = this.vErrors.has(this.name) ? 'visible' : 'hidden';
+      return { visibility };
     }
   },
   inject: ['$validator']
