@@ -3,6 +3,7 @@ import router from './router';
 import store from './store';
 import VeeValidate from '@/common/validation';
 import Vue from 'vue';
+import VueHotkey from 'v-hotkey';
 
 Vue.use(VeeValidate, {
   delay: 700,
@@ -10,6 +11,7 @@ Vue.use(VeeValidate, {
   errorBagName: 'vErrors',
   inject: false
 });
+Vue.use(VueHotkey);
 
 // eslint-disable-next-line no-new
 new Vue({
