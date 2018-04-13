@@ -18,7 +18,9 @@ module.exports = (options, req) => ({
   dist: 'dist',
   html: [{
     filename: 'admin/index.html',
-    excludeChunks: ['student']
+    excludeChunks: ['student'],
+    title: 'NTC SL Admin',
+    favicon: './client/admin/static/favicon.png'
   }, {
     filename: 'index.html',
     excludeChunks: ['admin']

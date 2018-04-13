@@ -4,7 +4,9 @@
     role="navigation"
     aria-label="main navigation">
     <div class="navbar-brand">
-      <router-link to="/" class="navbar-item">LMS ADMIN</router-link>
+      <router-link to="/" class="navbar-item">
+        <img src="../../static/logo.png" class="logo" alt="New Teacher Center logo"/>
+      </router-link>
     </div>
     <div class="navbar-menu">
       <div v-if="user" class="navbar-end">
@@ -24,3 +26,12 @@ export default {
   methods: mapActions('auth', ['logout'])
 };
 </script>
+
+<style lang="scss">
+nav {
+  img.logo {
+    min-width: 10rem;
+    min-height: 3rem;
+  }
+}
+</style>
