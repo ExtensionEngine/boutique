@@ -29,11 +29,9 @@
           name="lastName"
           validate="required|alpha|min:2|max:50">
         </v-input>
-        <div class="controls">
-          <div class="is-pulled-right">
-            <button @click="close" class="button" type="button">Cancel</button>
-            <button class="button is-primary" type="submit">Save</button>
-          </div>
+        <div class="controls field is-grouped is-grouped-right">
+          <button @click="close" class="control button" type="button">Cancel</button>
+          <button class="control button is-primary" type="submit">Save</button>
         </div>
       </form>
     </div>
@@ -112,21 +110,3 @@ export default {
   components: { Modal, VInput, VSelect }
 };
 </script>
-
-<style lang="scss" scoped>
-.user-modal {
-  padding: 20px 10px 40px;
-}
-
-.title {
-  margin-bottom: 50px;
-}
-
-.controls {
-  margin-top: 26px;
-
-  .button {
-    margin-left: 6px;
-  }
-}
-</style>
