@@ -4,24 +4,24 @@
       <h2 class="title is-4">
         {{ programLevelData ? 'Edit' : 'Create' }} Program Level
       </h2>
-      <v-select
-        v-model="programLevel.programId"
-        :options="programOptions"
-        :max-height="150"
-        name="program"
-        validate="required">
-      </v-select>
-      <v-input
-        v-model="programLevel.name"
-        name="name"
-        validate="required|min:2|max:255">
-      </v-input>
-      <div class="controls">
-        <div class="is-pulled-right">
-          <button @click="close" class="button">Cancel</button>
-          <button @click="save" class="button is-primary">Save</button>
+      <form @submit.prevent="save">
+        <v-select
+          v-model="programLevel.programId"
+          :options="programOptions"
+          :max-height="150"
+          name="program"
+          validate="required">
+        </v-select>
+        <v-input
+          v-model="programLevel.name"
+          name="name"
+          validate="required|min:2|max:255">
+        </v-input>
+        <div class="controls field is-grouped is-grouped-right">
+          <button @click="close" class="control button" type="button">Cancel</button>
+          <button class="control button is-primary" type="submit">Save</button>
         </div>
-      </div>
+      </form>
     </div>
   </modal>
 </template>
@@ -79,21 +79,3 @@ export default {
   components: { Modal, VInput, VSelect }
 };
 </script>
-
-<style lang="scss" scoped>
-.program-level-modal {
-  padding: 20px 10px 40px;
-}
-
-.title {
-  margin-bottom: 50px;
-}
-
-.controls {
-  margin-top: 26px;
-
-  .button {
-    margin-left: 6px;
-  }
-}
-</style>
