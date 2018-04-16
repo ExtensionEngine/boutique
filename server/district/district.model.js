@@ -10,15 +10,8 @@ class District extends Model {
         allowNull: false,
         validate: { notEmpty: true }
       },
-      ncesId: {
-        type: DataTypes.INTEGER,
-        field: 'nces_id',
-        allowNull: false,
-        unique: true
-      },
-      ncesType: {
-        type: DataTypes.INTEGER,
-        field: 'nces_type'
+      type: {
+        type: DataTypes.INTEGER
       },
       createdAt: {
         type: DataTypes.DATE,

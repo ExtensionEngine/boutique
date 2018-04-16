@@ -5,12 +5,11 @@ const Promise = require('bluebird');
 const { District, School } = require('../common/database');
 const parseCsv = require('../common/util/csv');
 
-async function importDistrict(schools, key) {
-  const ncesId = key;
-  let [district] = await District.findOrBuild({ where: { ncesId } });
+async function importDistrict(schools, id) {
+  let [district] = await District.findOrBuild({ where: { id } });
   await district.update({
-    name: get(schools, '[0].LEA_NAME'),
-    ncesId
+    id,
+    name: get(schools, '[0].LEA_NAME')
   });
   return Promise.map(schools, school => importSchool(school, district));
 }
