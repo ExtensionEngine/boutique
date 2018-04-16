@@ -1,7 +1,12 @@
 'use strict';
 
+const { BAD_REQUEST, NO_CONTENT, NOT_FOUND } = require('http-status');
+const pick = require('lodash/pick');
+const { createError } = require('../common/errors');
 const { School } = require('../common/database');
 const districtImport = require('../district/import');
+
+const allowedAttrs = ['name', 'state'];
 
 function list({ query: { districtId } }, res) {
   const where = districtId ? { districtId } : {};
@@ -9,26 +14,32 @@ function list({ query: { districtId } }, res) {
     .then(schools => res.jsend.success(schools));
 }
 
+function patch({ params, body }, res, next) {
+  return School.findById(params.id, { paranoid: false })
+    .then(school => school || createError(NOT_FOUND, 'School does not exist!'))
+    .then(school => school.update(pick(body, allowedAttrs)))
+    .then(school => res.jsend.success(school));
+}
+
 function destroy({ params: { id } }, res, next) {
-  if (!id) return res.sendStatus(400);
+  if (!id) return res.sendStatus(BAD_REQUEST);
   return School.destroy({ where: { id } })
-    .then(deleted => {
-      if (deleted) return res.sendStatus(204);
+    .then(deletedCount => {
+      if (deletedCount) return res.sendStatus(NO_CONTENT);
       throw new Error('Delete failed!');
-    })
-    .catch(err => next(err));
+    });
 }
 
 function handleImport({ file }, res, next) {
-  if (!file) return res.sendStatus(400);
+  if (!file) return res.sendStatus(BAD_REQUEST);
   // TODO: validate file
   return districtImport(file.path)
-    .then(data => res.jsend.success(data))
-    .catch(err => next(err));
+    .then(data => res.jsend.success(data));
 }
 
 module.exports = {
   list,
+  patch,
   destroy,
   handleImport
 };

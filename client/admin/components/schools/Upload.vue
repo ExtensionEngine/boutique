@@ -1,7 +1,7 @@
 <template>
   <div class="school-upload">
     <b v-if="isUploading">
-      <span class="icon"><i class="mdi mdi-loading mdi-spin"></i></span>
+      <span class="icon"><span class="mdi mdi-loading mdi-spin"></span></span>
       Uploading, please wait...
     </b>
     <form
@@ -11,17 +11,26 @@
       enctype="multipart/form-data">
       <div class="file has-name is-fullwidth">
         <label class="file-label">
-          <input ref="csv" @change="updateFileName" class="file-input" type="file" name="csv"/>
+          <input
+            @change="updateFileName"
+            class="file-input"
+            name="csv"
+            type="file"
+            ref="csv"/>
           <span class="file-cta">
             <span class="file-icon">
-              <i class="fas fa-upload"></i>
+              <span class="mdi mdi-upload"></span>
             </span>
             <span class="file-label">{{ label }}</span>
           </span>
           <span class="file-name">
             {{ fileName || placeholder }}
           </span>
-          <input type="submit" value="Upload" class="button is-primary" :disabled="!fileName"/>
+          <input
+            :disabled="!fileName"
+            class="button is-primary"
+            type="submit"
+            value="Upload"/>
         </label>
       </div>
     </form>

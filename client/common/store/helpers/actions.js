@@ -14,12 +14,6 @@ export default function ($apiUrl) {
     return api.fetch(opts).then(res => commit('fetch', res));
   };
 
-  const upload = ({ commit }, { path, data }) => {
-    commit('setFlags', { isUploading: true });
-    return api.post(path, data)
-      .then(() => commit('setFlags', { isUploading: false }));
-  };
-
   const save = ({ state, commit }, model) => {
     if (!model._cid) model._cid = cuid();
     model._synced = false;
@@ -57,7 +51,6 @@ export default function ($apiUrl) {
     remove,
     reset,
     save,
-    setApiUrl,
-    upload
+    setApiUrl
   };
 }

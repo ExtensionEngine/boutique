@@ -1,15 +1,15 @@
 <template>
   <div class="field">
     <multiselect
-      label="name"
-      track-by="id"
       v-model="selectedOption"
-      :close-on-select="true"
       :clear-on-select="false"
+      :close-on-select="true"
       :options="options"
       :placeholder="placeholder"
       @open="fetchOptions"
-      @select="filterItems">
+      @select="filterItems"
+      label="name"
+      track-by="id">
     </multiselect>
   </div>
 </template>

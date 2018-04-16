@@ -9,8 +9,12 @@ module.exports = {
       autoIncrement: true,
       primaryKey: true,
       allowNull: false,
-      validate: { notEmpty: true },
       unique: true
+    },
+    district_id: {
+      type: Sequelize.INTEGER,
+      references: { model: 'district', key: 'id' },
+      allowNull: false
     },
     name: {
       type: Sequelize.STRING
@@ -18,7 +22,6 @@ module.exports = {
     nces_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      validate: { notEmpty: true },
       unique: true
     },
     nces_school_level: {
@@ -43,11 +46,6 @@ module.exports = {
     },
     deleted_at: {
       type: Sequelize.DATE
-    },
-    district_id: {
-      type: Sequelize.INTEGER,
-      references: { model: 'district', key: 'id' },
-      allowNull: false
     }
   }),
   down: queryInterface => queryInterface.dropTable(tableName)

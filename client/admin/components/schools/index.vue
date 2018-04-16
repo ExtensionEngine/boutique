@@ -3,6 +3,10 @@
     <h1 class="title">Schools</h1>
     <upload/>
     <filter-autocomplete/>
+    <modal
+      :show="showModal"
+      :schoolData="context"
+      @close="showModal = false"/>
     <table class="table is-fullwidth is-hoverable">
       <thead>
         <th>District</th>
@@ -23,6 +27,15 @@
           <td>{{ school.ncesType }}</td>
           <td>
             <button
+              @click="() => edit(school)"
+              class="button"
+              title="Edit this school info">
+              <span class="icon">
+                <i class="mdi mdi-pencil"></i>
+              </span>
+            </button>
+
+            <button
               @click="() => remove(school)"
               class="button is-danger"
               title="Delete this school">
@@ -40,17 +53,31 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import FilterAutocomplete from './FilterAutocomplete';
+import Modal from './Modal';
 import Upload from './Upload';
 
 export default {
   name: 'school-list',
+  data() {
+    return {
+      context: {},
+      showModal: false
+    };
+  },
   computed: mapState('schools', { schools: 'items' }),
-  methods: mapActions('schools', ['fetch', 'remove']),
+  methods: {
+    ...mapActions('schools', ['fetch', 'remove']),
+    edit(context) {
+      this.context = context;
+      this.showModal = true;
+    }
+  },
   mounted() {
     this.fetch();
   },
   components: {
     FilterAutocomplete,
+    Modal,
     Upload
   }
 };

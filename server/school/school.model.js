@@ -14,7 +14,6 @@ class School extends Model {
         type: DataTypes.INTEGER,
         field: 'nces_id',
         allowNull: false,
-        validate: { notEmpty: true },
         unique: true
       },
       ncesSchoolLevel: {

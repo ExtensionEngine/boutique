@@ -9,7 +9,6 @@ module.exports = {
       autoIncrement: true,
       primaryKey: true,
       allowNull: false,
-      validate: { notEmpty: true },
       unique: true
     },
     name: {
@@ -18,7 +17,6 @@ module.exports = {
     nces_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      validate: { notEmpty: true },
       unique: true
     },
     nces_type: {

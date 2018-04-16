@@ -1,4 +1,5 @@
 const forIn = require('lodash/forIn');
+const get = require('lodash/get');
 const groupBy = require('lodash/groupBy');
 const { District, School } = require('../common/database');
 const parseCsv = require('../common/util/csv');
@@ -7,24 +8,24 @@ async function importDistrict(schools, key) {
   const ncesId = +key;
   let [district] = await District.findOrBuild({ where: { ncesId } });
   await district.update({
-    name: schools[0]['LEA_NAME'],
+    name: get(schools, '[0].LEA_NAME'),
     ncesId
   });
-  return schools.forEach(school => importSchool(school, district));
+  return Promise.map(schools, school => importSchool(school, district));
 }
 
 async function importSchool(data, district) {
-  const ncesId = +data['SCHID'];
+  const ncesId = get(data, 'SCHID');
   let [school] = await School.findOrBuild({ where: { ncesId } });
 
   return school.update({
     districtId: district.id,
-    name: data['SCH_NAME'],
+    name: get(data, 'SCH_NAME'),
     ncesId,
-    ncesSchoolLevel: +data['LEVEL'] || 0,
-    ncesStatus: +data['SY_STATUS'] || 0,
-    ncesType: +data['SCH_TYPE'] || 0,
-    state: data['STABR']
+    ncesSchoolLevel: get(data, 'LEVEL', 0),
+    ncesStatus: get(data, 'SY_STATUS', 0),
+    ncesType: get(data, 'SCH_TYPE', 0),
+    state: get(data, 'STABR')
   });
 }
 
