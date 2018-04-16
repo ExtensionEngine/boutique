@@ -2,38 +2,38 @@
   <modal :show="show" @close="close">
     <div class="user-modal">
       <h2 class="title is-4">{{ userData ? 'Edit' : 'Create' }} User</h2>
-      <v-input
-        v-model="user.email"
-        :validate="{
-          required: true,
-          email: true,
-          max: 255,
-          'unique-email': userData
-        }"
-        name="email">
-      </v-input>
-      <v-select
-        v-model="user.role"
-        :options="roles"
-        name="role"
-        validate="required">
-      </v-select>
-      <v-input
-        v-model="user.firstName"
-        name="firstName"
-        validate="required|alpha|min:2|max:50">
-      </v-input>
-      <v-input
-        v-model="user.lastName"
-        name="lastName"
-        validate="required|alpha|min:2|max:50">
-      </v-input>
-      <div class="controls">
-        <div class="is-pulled-right">
-          <button @click="close" class="button">Cancel</button>
-          <button @click="save" class="button is-primary">Save</button>
+      <form @submit.prevent="save">
+        <v-input
+          v-model="user.email"
+          :validate="{
+            required: true,
+            email: true,
+            max: 255,
+            'unique-email': userData
+          }"
+          name="email">
+        </v-input>
+        <v-select
+          v-model="user.role"
+          :options="roles"
+          name="role"
+          validate="required">
+        </v-select>
+        <v-input
+          v-model="user.firstName"
+          name="firstName"
+          validate="required|alpha|min:2|max:50">
+        </v-input>
+        <v-input
+          v-model="user.lastName"
+          name="lastName"
+          validate="required|alpha|min:2|max:50">
+        </v-input>
+        <div class="controls field is-grouped is-grouped-right">
+          <button @click="close" class="control button" type="button">Cancel</button>
+          <button class="control button is-primary" type="submit">Save</button>
         </div>
-      </div>
+      </form>
     </div>
   </modal>
 </template>
@@ -110,21 +110,3 @@ export default {
   components: { Modal, VInput, VSelect }
 };
 </script>
-
-<style lang="scss" scoped>
-.user-modal {
-  padding: 20px 10px 40px;
-}
-
-.title {
-  margin-bottom: 50px;
-}
-
-.controls {
-  margin-top: 26px;
-
-  .button {
-    margin-left: 6px;
-  }
-}
-</style>

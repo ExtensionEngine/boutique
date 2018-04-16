@@ -2,22 +2,22 @@
   <modal :show="show" @close="close">
     <div class="program-modal">
       <h2 class="title is-4">{{ programData ? 'Edit' : 'Create' }} Program</h2>
-      <v-input
-        v-model="program.name"
-        name="name"
-        validate="required|min:2|max:255">
-      </v-input>
-      <v-input
-        v-model="program.description"
-        name="description"
-        validate="required|min:2|max:2000">
-      </v-input>
-      <div class="controls">
-        <div class="is-pulled-right">
-          <button @click="close" class="button">Cancel</button>
-          <button @click="save" class="button is-primary">Save</button>
+      <form @submit.prevent="save">
+        <v-input
+          v-model="program.name"
+          name="name"
+          validate="required|min:2|max:255">
+        </v-input>
+        <v-input
+          v-model="program.description"
+          name="description"
+          validate="required|min:2|max:2000">
+        </v-input>
+        <div class="controls field is-grouped is-grouped-right">
+          <button @click="close" class="control button" type="button">Cancel</button>
+          <button class="control button is-primary" type="submit">Save</button>
         </div>
-      </div>
+      </form>
     </div>
   </modal>
 </template>
@@ -66,21 +66,3 @@ export default {
   components: { Modal, VInput }
 };
 </script>
-
-<style lang="scss" scoped>
-.program-modal {
-  padding: 20px 10px 40px;
-}
-
-.title {
-  margin-bottom: 50px;
-}
-
-.controls {
-  margin-top: 26px;
-
-  .button {
-    margin-left: 6px;
-  }
-}
-</style>

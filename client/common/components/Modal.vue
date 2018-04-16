@@ -1,5 +1,8 @@
 <template>
-  <div :class="{ 'is-active': show }" class="modal">
+  <div
+    :class="{ 'is-active': show }"
+    v-hotkey="{ escape: () => $emit('close') }"
+    class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
       <div class="box">
@@ -17,3 +20,24 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.modal .modal-content {
+  .box > div {
+    padding: 20px 10px 5px;
+  }
+
+  .title {
+    margin-bottom: 50px;
+  }
+
+  .controls {
+    margin-top: 26px;
+
+    .control.button {
+      margin: 0;
+      margin-left: 6px;
+    }
+  }
+}
+</style>
