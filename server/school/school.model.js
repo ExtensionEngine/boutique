@@ -10,23 +10,15 @@ class School extends Model {
         allowNull: false,
         validate: { notEmpty: true }
       },
-      ncesId: {
+      level: {
         type: DataTypes.INTEGER,
-        field: 'nces_id',
-        allowNull: false,
-        unique: true
+        field: 'level'
       },
-      ncesSchoolLevel: {
-        type: DataTypes.INTEGER,
-        field: 'nces_school_level'
+      type: {
+        type: DataTypes.INTEGER
       },
-      ncesType: {
-        type: DataTypes.INTEGER,
-        field: 'nces_type'
-      },
-      ncesStatus: {
-        type: DataTypes.INTEGER,
-        field: 'nces_status'
+      status: {
+        type: DataTypes.INTEGER
       },
       state: {
         type: DataTypes.STRING,

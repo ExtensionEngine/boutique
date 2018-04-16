@@ -6,7 +6,7 @@ const { createError } = require('../common/errors');
 const { School } = require('../common/database');
 const districtImport = require('../district/import');
 
-const allowedAttrs = ['name', 'state'];
+const allowedAttrs = ['name', 'state', 'level', 'type', 'status'];
 
 function list({ query: { districtId } }, res) {
   const where = districtId ? { districtId } : {};

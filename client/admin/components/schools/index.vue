@@ -25,9 +25,9 @@
           <td>{{ school.district && school.district.name }}</td>
           <td>{{ school.name }}</td>
           <td>{{ school.state }}</td>
-          <td>{{ school.ncesSchoolLevel }}</td>
-          <td>{{ school.ncesStatus }}</td>
-          <td>{{ school.ncesType }}</td>
+          <td>{{ school.level }}</td>
+          <td>{{ school.status }}</td>
+          <td>{{ school.type }}</td>
           <td>
             <button
               @click="() => edit(school)"

@@ -11,14 +11,14 @@
         name="state"
         validate="required|min:2|max:2"/>
       <v-input
-        v-model="obj.ncesSchoolLevel"
-        name="ncesSchoolLevel"/>
+        v-model="obj.level"
+        name="level"/>
       <v-input
-        v-model="obj.ncesStatus"
-        name="ncesStatus"/>
+        v-model="obj.status"
+        name="status"/>
       <v-input
-        v-model="obj.ncesType"
-        name="ncesType"/>
+        v-model="obj.type"
+        name="type"/>
       <hr/>
       <div class="controls">
         <div>
@@ -43,9 +43,9 @@ const resetData = () => {
   return {
     name: '',
     state: '',
-    ncesSchoollevel: '',
-    ncesStatus: '',
-    ncesType: ''
+    level: '',
+    status: '',
+    type: ''
   };
 };
 

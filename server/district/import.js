@@ -16,17 +16,17 @@ async function importDistrict(schools, key) {
 }
 
 async function importSchool(data, district) {
-  const ncesId = get(data, 'SCHID');
-  let [school] = await School.findOrBuild({ where: { ncesId } });
+  const id = get(data, 'SCHID');
+  let [school] = await School.findOrBuild({ where: { id } });
 
   return school.update({
+    id,
     districtId: district.id,
     name: get(data, 'SCH_NAME'),
-    ncesId,
-    ncesSchoolLevel: get(data, 'LEVEL', 0),
-    ncesStatus: get(data, 'SY_STATUS', 0),
-    ncesType: get(data, 'SCH_TYPE', 0),
-    state: get(data, 'STABR')
+    level: get(data, 'LEVEL', 0),
+    state: get(data, 'STABR'),
+    status: get(data, 'SY_STATUS', 0),
+    type: get(data, 'SCH_TYPE', 0)
   });
 }
 
