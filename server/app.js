@@ -13,6 +13,7 @@ require('express-async-errors');
 const auth = require('./common/auth');
 const config = require('./config');
 const logger = require('./common/logger')();
+const origin = require('./common/origin');
 const router = require('./router');
 
 const app = express();
@@ -20,6 +21,7 @@ app.use(helmet());
 app.use(cors({ origin: config.cors.allowedOrigins, credentials: true }));
 app.use(bodyParser.json({ limit: config.uploadLimit }));
 app.use(auth.initialize());
+app.use(origin());
 app.use(express.static(config.staticFolder));
 app.use(jsend);
 
