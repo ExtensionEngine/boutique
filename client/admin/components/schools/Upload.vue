@@ -59,13 +59,13 @@ export default {
   },
   computed: mapState('schools', ['isUploading']),
   methods: {
-    ...mapActions('schools', ['fetch', 'upload']),
+    ...mapActions('schools', ['reset', 'upload']),
     prepareUpload() {
       const { files } = this.$refs.csv;
       if (files.length === 0) return;
       const data = new FormData(); // eslint-disable-line
       data.append('csv', files[0], files[0].name);
-      this.upload({ path: 'import', data }).then(this.fetch);
+      this.upload({ path: 'import', data }).then(this.reset);
     },
     updateFileName({ target: { files } }) {
       this.fileName = files[0].name;
