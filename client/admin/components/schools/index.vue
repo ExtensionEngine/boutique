@@ -18,7 +18,10 @@
         <th>Actions</th>
       </thead>
       <tbody>
-        <tr v-for="school in schools" :key="school._cid">
+        <tr
+          v-for="school in schools"
+          :class="{ 'is-selected': (school.id === context.id) }"
+          :key="school._cid">
           <td>{{ school.district && school.district.name }}</td>
           <td>{{ school.name }}</td>
           <td>{{ school.state }}</td>

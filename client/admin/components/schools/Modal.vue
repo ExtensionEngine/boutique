@@ -5,13 +5,20 @@
       <v-input
         v-model="obj.name"
         name="name"
-        validate="required|min:2|max:50">
-      </v-input>
+        validate="required|min:2|max:50"/>
       <v-input
         v-model="obj.state"
         name="state"
-        validate="required|min:2|max:2">
-      </v-input>
+        validate="required|min:2|max:2"/>
+      <v-input
+        v-model="obj.ncesSchoolLevel"
+        name="ncesSchoolLevel"/>
+      <v-input
+        v-model="obj.ncesStatus"
+        name="ncesStatus"/>
+      <v-input
+        v-model="obj.ncesType"
+        name="ncesType"/>
       <hr/>
       <div class="controls">
         <div>
