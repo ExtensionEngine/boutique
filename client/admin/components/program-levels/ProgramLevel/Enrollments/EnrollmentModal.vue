@@ -1,0 +1,95 @@
+<template>
+  <modal :show="show" @close="close">
+    <div class="enrollment-modal">
+      <h2 class="title is-4">Enroll user</h2>
+      <v-select
+        v-model="studentId"
+        :options="students"
+        :searchable="true"
+        :isLoading="isLoading"
+        :maxHeight="150"
+        name="student"
+        validate="required"
+        @search-change="search">
+      </v-select>
+      <div class="controls">
+        <div class="is-pulled-right">
+          <button @click="close" class="button">Cancel</button>
+          <button @click="add" class="button is-primary">Add</button>
+        </div>
+      </div>
+    </div>
+  </modal>
+</template>
+
+<script>
+import { mapActions } from 'vuex';
+import { withValidation } from '@/common/validation';
+import map from 'lodash/map';
+import Modal from '@/common/components/Modal';
+import pick from 'lodash/pick';
+import request from '@/common/api/request';
+import VSelect from '@/common/components/form/VSelect';
+
+export default {
+  name: 'enollment-modal',
+  mixins: [withValidation()],
+  props: {
+    programLevelId: { type: Number, required: true },
+    show: { type: Boolean, default: false }
+  },
+  data() {
+    return {
+      isLoading: false,
+      studentId: null,
+      students: []
+    };
+  },
+  methods: {
+    ...mapActions('enrollments', ['save']),
+    add() {
+      this.$validator.validateAll().then(isValid => {
+        if (!isValid) return;
+        this.save(pick(this, ['studentId', 'programLevelId']));
+        this.close();
+      });
+    },
+    close() {
+      this.studentId = null;
+      this.$emit('close');
+    },
+    search(email) {
+      this.isLoading = true;
+      const params = { emailLike: email, role: 'STUDENT' };
+      request.get('/users', { params }).then(({ data: { data } }) => {
+        this.isLoading = false;
+        this.students = map(data, it => ({
+          value: it.id, label: `${it.email} - ${it.firstName} ${it.lastName}`
+        }));
+      });
+    }
+  },
+  components: { Modal, VSelect },
+  created() {
+    this.search();
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.enrollment-modal {
+  padding: 20px 10px 40px;
+}
+
+.title {
+  margin-bottom: 50px;
+}
+
+.controls {
+  margin-top: 60px;
+
+  .button {
+    margin-left: 6px;
+  }
+}
+</style>

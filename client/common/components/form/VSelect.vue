@@ -9,7 +9,8 @@
         v-validate="validate"
         @input="it => $emit('input', isValueObj ? (it && it.value) : it)"
         @close="close"
-        @open="open">
+        @open="open"
+        @search-change="val => $emit('search-change', val)">
       </multiselect>
     </div>
     <p v-if="vErrors.has(name)" class="help is-danger">
