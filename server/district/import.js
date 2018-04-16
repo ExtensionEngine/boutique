@@ -1,11 +1,12 @@
 const forIn = require('lodash/forIn');
 const get = require('lodash/get');
 const groupBy = require('lodash/groupBy');
+const Promise = require('bluebird');
 const { District, School } = require('../common/database');
 const parseCsv = require('../common/util/csv');
 
 async function importDistrict(schools, key) {
-  const ncesId = +key;
+  const ncesId = key;
   let [district] = await District.findOrBuild({ where: { ncesId } });
   await district.update({
     name: get(schools, '[0].LEA_NAME'),
