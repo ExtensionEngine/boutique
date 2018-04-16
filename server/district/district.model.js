@@ -10,9 +10,6 @@ class District extends Model {
         allowNull: false,
         validate: { notEmpty: true }
       },
-      type: {
-        type: DataTypes.INTEGER
-      },
       createdAt: {
         type: DataTypes.DATE,
         field: 'created_at'
