@@ -3,6 +3,7 @@ const get = require('lodash/get');
 const groupBy = require('lodash/groupBy');
 const Promise = require('bluebird');
 const { District, School } = require('../common/database');
+const { getEnum } = require('../school/enums');
 const parseCsv = require('../common/util/csv');
 
 async function importDistrict(schools, id) {
@@ -22,10 +23,10 @@ async function importSchool(data, district) {
     id,
     districtId: district.id,
     name: get(data, 'SCH_NAME'),
-    level: get(data, 'LEVEL', 0),
+    level: getEnum('level', data.LEVEL),
     state: get(data, 'STABR'),
-    status: get(data, 'SY_STATUS', 0),
-    type: get(data, 'SCH_TYPE', 0)
+    status: getEnum('status', data.SY_STATUS),
+    type: getEnum('type', data.SCH_TYPE)
   });
 }
 

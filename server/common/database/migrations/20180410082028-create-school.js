@@ -1,5 +1,6 @@
 'use strict';
 
+const { enums: { level, status, type } } = require('../../../school/enums');
 const tableName = 'school';
 
 module.exports = {
@@ -19,13 +20,13 @@ module.exports = {
       type: Sequelize.STRING
     },
     level: {
-      type: Sequelize.INTEGER
+      type: Sequelize.ENUM(level)
     },
     status: {
-      type: Sequelize.INTEGER
+      type: Sequelize.ENUM(status)
     },
     type: {
-      type: Sequelize.INTEGER
+      type: Sequelize.ENUM(type)
     },
     state: {
       type: Sequelize.STRING(2)
