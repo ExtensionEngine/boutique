@@ -7,6 +7,7 @@
         :name="name"
         v-bind="options"
         v-validate="validate"
+        data-vv-delay="1000"
         @input="it => $emit('input', isValueObj ? (it && it.value) : it)"
         @close="close"
         @open="open"

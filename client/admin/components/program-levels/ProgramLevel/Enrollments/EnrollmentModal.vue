@@ -8,8 +8,11 @@
         :searchable="true"
         :isLoading="isLoading"
         :maxHeight="150"
+        :validate="{
+          required: true,
+          'unique-enrollment': { studentId, programLevelId }
+        }"
         name="student"
-        validate="required|unique-enrollment"
         @search-change="search">
       </v-select>
       <div class="controls field is-grouped is-grouped-right">
@@ -75,10 +78,7 @@ export default {
     if (this.$validator.rules['unique-enrollment']) return;
     this.$validator.extend('unique-enrollment', {
       getMessage: field => `Student is already enrolled!`,
-      validate: student => {
-        if (!student) return;
-        const { programLevelId } = this;
-        const params = { studentId: student.value, programLevelId };
+      validate: (option, [params]) => {
         return request.get('/enrollments', { params })
           .then(res => ({ valid: isEmpty(res.data.data) }));
       }
