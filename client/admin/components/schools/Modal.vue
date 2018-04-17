@@ -6,10 +6,10 @@
         v-model="obj.name"
         name="name"
         validate="required|min:2|max:50"/>
-      <v-input
+      <v-select
         v-model="obj.state"
-        name="state"
-        validate="required|min:2|max:2"/>
+        :options="states"
+        name="state"/>
       <v-select
         v-model="obj.level"
         :options="enums.level"
@@ -41,9 +41,12 @@ import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
 import Modal from '@/common/components/Modal';
+import mapValues from 'lodash/mapValues';
+import values from 'lodash/values';
 import VInput from '@/common/components/form/VInput';
 import VSelect from '@/common/components/form/VSelect';
 import { enums } from '../../../../server/school/enums';
+import states from '../../../../common/usStates';
 
 const resetData = () => {
   return {
@@ -73,6 +76,10 @@ export default {
         status: map(enums.status, it => ({ label: humanize(it), value: it })),
         type: map(enums.type, it => ({ label: humanize(it), value: it }))
       };
+    },
+    states() {
+      const stateOptions = mapValues(states, (label, value) => ({ label, value }));
+      return values(stateOptions);
     }
   },
   methods: {
