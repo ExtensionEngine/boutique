@@ -14,7 +14,7 @@
     </multiselect>
     <button
       v-if="selectedOption"
-      @click="selectedOption = null"
+      @click="clearSelected"
       class="control"
     >
       <span class="icon"><span class="mdi mdi-restore"></span></span>
@@ -43,6 +43,10 @@ export default {
   methods: {
     ...mapActions('schools', ['reset']),
     ...mapActions('districts', ['fetch']),
+    clearSelected() {
+      this.selectedOption = null;
+      this.reset();
+    },
     filterItems({ id }) {
       this.reset({ districtId: id });
     },
