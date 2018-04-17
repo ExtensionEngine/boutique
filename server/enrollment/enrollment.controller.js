@@ -1,20 +1,22 @@
 'use strict';
 
 const { createError } = require('../common/errors');
-const { Enrollment } = require('../common/database');
+const { Enrollment, Sequelize } = require('../common/database');
 const HttpStatus = require('http-status');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
 
 const { BAD_REQUEST } = HttpStatus;
+const Op = Sequelize.Op;
 
 const processInput = input => pick(input, ['studentId', 'programLevelId']);
 const processOutput = it => ({ ...it.dataValues, student: it.student.profile });
 
-function list({ params: { programLevelId } }, res) {
-  const where = {};
-  if (programLevelId) where.programLevelId = programLevelId;
-  return Enrollment.findAll({ where, include: ['student'] })
+function list({ query: { programLevelId, studentId } }, res) {
+  const cond = [];
+  if (programLevelId) cond.push({ programLevelId });
+  if (studentId) cond.push({ studentId });
+  return Enrollment.findAll({ where: { [Op.and]: cond }, include: ['student'] })
     .then(enrollments => res.jsend.success(map(enrollments, processOutput)));
 }
 

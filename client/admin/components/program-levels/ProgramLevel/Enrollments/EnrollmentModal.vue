@@ -9,7 +9,7 @@
         :isLoading="isLoading"
         :maxHeight="150"
         name="student"
-        validate="required"
+        validate="required|unique-enrollment"
         @search-change="search">
       </v-select>
       <div class="controls field is-grouped is-grouped-right">
@@ -23,6 +23,7 @@
 <script>
 import { mapActions } from 'vuex';
 import { withValidation } from '@/common/validation';
+import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
 import Modal from '@/common/components/Modal';
 import pick from 'lodash/pick';
@@ -67,10 +68,23 @@ export default {
       });
     }
   },
-  components: { Modal, VSelect },
   created() {
     this.search();
-  }
+  },
+  mounted() {
+    if (this.$validator.rules['unique-enrollment']) return;
+    this.$validator.extend('unique-enrollment', {
+      getMessage: field => `Student is already enrolled!`,
+      validate: student => {
+        if (!student) return;
+        const { programLevelId } = this;
+        const params = { studentId: student.value, programLevelId };
+        return request.get('/enrollments', { params })
+          .then(res => ({ valid: isEmpty(res.data.data) }));
+      }
+    });
+  },
+  components: { Modal, VSelect }
 };
 </script>
 
