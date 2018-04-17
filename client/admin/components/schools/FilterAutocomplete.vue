@@ -1,5 +1,5 @@
 <template>
-  <div class="field">
+  <div class="field has-addons">
     <multiselect
       v-model="selectedOption"
       :clear-on-select="false"
@@ -8,9 +8,17 @@
       :placeholder="placeholder"
       @open="fetchOptions"
       @select="filterItems"
+      class="control"
       label="name"
       track-by="id">
     </multiselect>
+    <button
+      v-if="selectedOption"
+      @click="selectedOption = null"
+      class="control"
+    >
+      <span class="icon"><span class="mdi mdi-restore"></span></span>
+    </button>
   </div>
 </template>
 
