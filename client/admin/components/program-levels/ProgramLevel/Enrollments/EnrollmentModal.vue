@@ -12,11 +12,9 @@
         validate="required"
         @search-change="search">
       </v-select>
-      <div class="controls">
-        <div class="is-pulled-right">
-          <button @click="close" class="button">Cancel</button>
-          <button @click="add" class="button is-primary">Add</button>
-        </div>
+      <div class="controls field is-grouped is-grouped-right">
+        <button @click="close" class="control button">Cancel</button>
+        <button @click="add" class="control button is-primary">Add</button>
       </div>
     </div>
   </modal>
@@ -86,7 +84,7 @@ export default {
 }
 
 .controls {
-  margin-top: 60px;
+  padding-top: 60px;
 
   .button {
     margin-left: 6px;

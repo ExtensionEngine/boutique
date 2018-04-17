@@ -69,3 +69,9 @@ export default {
   components: { EnrollmentModal }
 };
 </script>
+
+<style lang="scss" scoped>
+.notification {
+  margin-top: 10px;
+}
+</style>
