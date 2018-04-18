@@ -1,26 +1,24 @@
 <template>
   <div class="school-upload">
     <b v-if="isUploading">
-      <span class="icon"><span class="mdi mdi-loading mdi-spin"></span></span>
+      <span class="icon mdi mdi-loading mdi-spin"/>
       Uploading, please wait...
     </b>
     <form
       v-else
       @submit.prevent="prepareUpload"
       method="POST"
-      enctype="multipart/form-data">
+      enctype="multipart/form-data"
+      ref="form">
       <div class="file has-name is-fullwidth">
         <label class="file-label">
           <input
             @change="updateFileName"
             class="file-input"
             name="csv"
-            type="file"
-            ref="csv"/>
+            type="file">
           <span class="file-cta">
-            <span class="file-icon">
-              <span class="mdi mdi-upload"></span>
-            </span>
+            <span class="file-icon mdi mdi-upload"/>
             <span class="file-label">{{ label }}</span>
           </span>
           <span class="file-name">
@@ -30,7 +28,7 @@
             :disabled="!fileName"
             class="button is-primary"
             type="submit"
-            value="Upload"/>
+            value="Upload">
         </label>
       </div>
     </form>
@@ -61,10 +59,10 @@ export default {
   methods: {
     ...mapActions('schools', ['reset', 'upload']),
     prepareUpload() {
-      const { files } = this.$refs.csv;
-      if (files.length === 0) return;
-      const data = new FormData(); // eslint-disable-line
-      data.append('csv', files[0], files[0].name);
+      const { form } = this.$refs;
+      const data = new window.FormData(form);
+
+      if (!data.has('csv')) return;
       this.upload({ path: 'import', data }).then(this.reset);
     },
     updateFileName({ target: { files } }) {

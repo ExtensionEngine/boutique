@@ -1,3 +1,1 @@
-export {
-  fetch
-} from '@/common/store/helpers/mutations';
+export { fetch } from '@/common/store/helpers/mutations';

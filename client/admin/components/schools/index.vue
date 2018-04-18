@@ -33,18 +33,13 @@
               @click="() => edit(school)"
               class="button"
               title="Edit this school info">
-              <span class="icon">
-                <i class="mdi mdi-pencil"></i>
-              </span>
+              <span class="icon mdi mdi-pencil"/>
             </button>
-
             <button
               @click="() => remove(school)"
               class="button is-danger"
               title="Delete this school">
-              <span class="icon">
-                <i class="mdi mdi-delete"></i>
-              </span>
+              <span class="icon mdi mdi-delete"/>
             </button>
           </td>
         </tr>

@@ -14,14 +14,14 @@ function list({ query: { districtId } }, res) {
     .then(schools => res.jsend.success(schools));
 }
 
-function patch({ params, body }, res, next) {
+function patch({ params, body }, res) {
   return School.findById(params.id, { paranoid: false })
     .then(school => school || createError(NOT_FOUND, 'School does not exist!'))
     .then(school => school.update(pick(body, allowedAttrs)))
     .then(school => res.jsend.success(school));
 }
 
-function destroy({ params: { id } }, res, next) {
+function destroy({ params: { id } }, res) {
   if (!id) return res.sendStatus(BAD_REQUEST);
   return School.destroy({ where: { id } })
     .then(deletedCount => {
@@ -30,7 +30,7 @@ function destroy({ params: { id } }, res, next) {
     });
 }
 
-function handleImport({ file }, res, next) {
+function handleImport({ file }, res) {
   if (!file) return res.sendStatus(BAD_REQUEST);
   // TODO: validate file
   return districtImport(file.path)

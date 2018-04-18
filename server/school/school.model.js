@@ -1,6 +1,7 @@
 'use strict';
-const { enums: { level, status, type } } = require('./enums');
 const { Model } = require('sequelize');
+const { Level, Status, Type } = require('../../common/constants/school');
+const states = require('../../common/constants/usStates');
 
 class School extends Model {
   static fields(DataTypes) {
@@ -11,18 +12,18 @@ class School extends Model {
         validate: { notEmpty: true }
       },
       level: {
-        type: DataTypes.ENUM(level),
+        type: DataTypes.ENUM(Level.values),
         field: 'level'
       },
       type: {
-        type: DataTypes.ENUM(type)
+        type: DataTypes.ENUM(Type.values)
       },
       status: {
-        type: DataTypes.ENUM(status)
+        type: DataTypes.ENUM(Status.values)
       },
       state: {
-        type: DataTypes.STRING,
-        validate: { len: [2, 2] }
+        type: DataTypes.STRING(2),
+        validate: { isIn: [Object.keys(states)] }
       },
       createdAt: {
         type: DataTypes.DATE,

@@ -15,9 +15,8 @@
     <button
       v-if="selectedOption"
       @click="clearSelected"
-      class="control"
-    >
-      <span class="icon"><span class="mdi mdi-restore"></span></span>
+      class="control">
+      <span class="icon mdi mdi-restore"/>
     </button>
   </div>
 </template>

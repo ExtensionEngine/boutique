@@ -12,17 +12,17 @@
         name="state"/>
       <v-select
         v-model="obj.level"
-        :options="enums.level"
+        :options="levels"
         name="level"/>
       <v-select
         v-model="obj.status"
-        :options="enums.status"
+        :options="statuses"
         name="status"/>
       <v-select
         v-model="obj.type"
-        :options="enums.type"
+        :options="types"
         name="type"/>
-      <hr/>
+      <hr>
       <div class="controls">
         <div>
           <button @click="validateAndSave" class="button is-primary">Save</button>
@@ -37,26 +37,16 @@
 import { mapActions } from 'vuex';
 import { withValidation } from '@/common/validation';
 import cloneDeep from 'lodash/cloneDeep';
-import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';
-import map from 'lodash/map';
 import Modal from '@/common/components/Modal';
-import mapValues from 'lodash/mapValues';
-import values from 'lodash/values';
+import map from 'lodash/map';
 import VInput from '@/common/components/form/VInput';
 import VSelect from '@/common/components/form/VSelect';
-import { enums } from '../../../../server/school/enums';
-import states from '../../../../common/usStates';
+import { format } from '../../../../common/util/enum';
+import { Level, Status, Type } from '../../../../common/constants/school';
+import states from '../../../../common/constants/usStates';
 
-const resetData = () => {
-  return {
-    name: '',
-    state: '',
-    level: '',
-    status: '',
-    type: ''
-  };
-};
+const resetData = () => ({ name: '', state: '', level: '', status: '', type: '' });
 
 export default {
   name: 'school-modal',
@@ -66,20 +56,16 @@ export default {
     schoolData: { type: Object, required: true }
   },
   data() {
-    return { obj: resetData() };
+    return {
+      obj: resetData(),
+      levels: format(Level),
+      statuses: format(Status),
+      types: format(Type)
+    };
   },
   computed: {
-    enums() {
-      // TODO: dry this up
-      return {
-        level: map(enums.level, it => ({ label: humanize(it), value: it })),
-        status: map(enums.status, it => ({ label: humanize(it), value: it })),
-        type: map(enums.type, it => ({ label: humanize(it), value: it }))
-      };
-    },
     states() {
-      const stateOptions = mapValues(states, (label, value) => ({ label, value }));
-      return values(stateOptions);
+      return map(states, (label, value) => ({ label, value }));
     }
   },
   methods: {

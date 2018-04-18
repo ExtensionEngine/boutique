@@ -1,32 +1,32 @@
 const forIn = require('lodash/forIn');
-const get = require('lodash/get');
 const groupBy = require('lodash/groupBy');
 const Promise = require('bluebird');
 const { District, School } = require('../common/database');
-const { getEnum } = require('../school/enums');
+const { Level, Status, Type } = require('../../common/constants/school');
 const parseCsv = require('../common/util/csv');
 
+const upsert = async (Model, updates = {}) => {
+  const { id } = updates;
+  const [instance] = await Model.findOrBuild({ where: { id } });
+  return instance.update(updates);
+};
+
 async function importDistrict(schools, id) {
-  let [district] = await District.findOrBuild({ where: { id } });
-  await district.update({
-    id,
-    name: get(schools, '[0].LEA_NAME')
-  });
+  const [school] = schools;
+  const district = await upsert(District, { id, name: school.LEA_NAME });
+
   return Promise.map(schools, school => importSchool(school, district));
 }
 
 async function importSchool(data, district) {
-  const id = get(data, 'SCHID');
-  let [school] = await School.findOrBuild({ where: { id } });
-
-  return school.update({
-    id,
+  return upsert(School, {
+    id: data.SCHID,
     districtId: district.id,
-    name: get(data, 'SCH_NAME'),
-    level: getEnum('level', data.LEVEL),
-    state: get(data, 'STABR'),
-    status: getEnum('status', data.SY_STATUS),
-    type: getEnum('type', data.SCH_TYPE)
+    name: data.SCH_NAME,
+    level: Level.fromPosition(data.LEVEL),
+    state: data.STABR,
+    status: Status.fromPosition(data.SY_STATUS),
+    type: Type.fromPosition(data.SCH_TYPE)
   });
 }
 

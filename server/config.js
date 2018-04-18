@@ -7,7 +7,7 @@ module.exports = {
   port: process.env.PORT,
   ip: process.env.IP,
   staticFolder: path.resolve(__dirname, '../dist'),
-  uploadLimit: '50mb',
+  uploadLimit: process.env.UPLOAD_LIMIT,
   cors: {
     allowedOrigins: [],
     allowedHeaders: []

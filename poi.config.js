@@ -20,7 +20,7 @@ module.exports = (options, req) => ({
     filename: 'admin/index.html',
     excludeChunks: ['student'],
     title: 'NTC SL Admin',
-    favicon: './client/admin/static/favicon.png'
+    favicon: './client/admin/static/assets/favicon.png'
   }, {
     filename: 'index.html',
     excludeChunks: ['admin']
