@@ -2,9 +2,10 @@
 
 const multer = require('multer');
 const router = require('express').Router();
+const { uploadsDir } = require('../../server/config');
 const ctrl = require('./school.controller');
 
-const upload = multer({ dest: process.env.UPLOADS_DIR });
+const upload = multer({ dest: uploadsDir });
 
 router
   .get('/', ctrl.list)
