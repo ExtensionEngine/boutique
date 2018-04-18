@@ -7,9 +7,11 @@
         :name="name"
         v-bind="options"
         v-validate="validate"
+        data-vv-delay="1000"
         @input="it => $emit('input', isValueObj ? (it && it.value) : it)"
         @close="close"
-        @open="open">
+        @open="open"
+        @search-change="val => $emit('search-change', val)">
       </multiselect>
     </div>
     <p v-visible="showError" class="help is-danger">

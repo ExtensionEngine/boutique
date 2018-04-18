@@ -9,6 +9,10 @@ function list(req, res) {
   return ProgramLevel.findAll().then(levels => res.jsend.success(levels));
 }
 
+function get({ programLevel }, res) {
+  return res.jsend.success(programLevel);
+}
+
 function create({ body }, res) {
   return ProgramLevel.create(processInput(body))
     .then(programLevel => res.jsend.success(programLevel));
@@ -21,6 +25,7 @@ function patch({ body, programLevel }, res) {
 
 module.exports = {
   list,
+  get,
   create,
   patch
 };

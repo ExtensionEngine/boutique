@@ -12,6 +12,7 @@ router
   .use('/:id*', getProgramLevel)
   .get('/', ctrl.list)
   .post('/', ctrl.create)
+  .get('/:id', ctrl.get)
   .patch('/:id', ctrl.patch);
 
 function getProgramLevel(req, res, next) {
