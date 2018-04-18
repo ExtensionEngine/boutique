@@ -9,8 +9,10 @@
       @close="showModal = false"/>
     <table class="table is-fullwidth is-hoverable">
       <thead>
-        <th>District</th>
-        <th>Name</th>
+        <th>District ID</th>
+        <th>District Name</th>
+        <th>School ID</th>
+        <th>School Name</th>
         <th>State</th>
         <th>Level</th>
         <th>Status</th>
@@ -22,7 +24,9 @@
           v-for="school in schools"
           :class="{ 'is-selected': (school.id === context.id) }"
           :key="school._cid">
+          <td>{{ school.districtId }}</td>
           <td>{{ school.district && school.district.name }}</td>
+          <td>{{ school.id }}</td>
           <td>{{ school.name }}</td>
           <td>{{ school.state }}</td>
           <td>{{ school.level }}</td>
