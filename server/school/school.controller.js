@@ -2,14 +2,15 @@
 
 const { BAD_REQUEST, NO_CONTENT, NOT_FOUND } = require('http-status');
 const pick = require('lodash/pick');
+const pickBy = require('lodash/pickBy');
 const { createError } = require('../common/errors');
 const { School } = require('../common/database');
 const districtImport = require('../district/import');
 
 const allowedAttrs = ['name', 'state', 'level', 'type', 'status'];
 
-function list({ query: { districtId } }, res) {
-  const where = districtId ? { districtId } : {};
+function list({ query }, res) {
+  const where = pickBy(query);
   return School.findAll({ where, include: [ 'district' ] })
     .then(schools => res.jsend.success(schools));
 }
