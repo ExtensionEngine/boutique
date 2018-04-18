@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h2 class="subtitle">Log in to start working</h2>
     <div class="message">
       <span v-if="message">{{ message }}</span>
     </div>

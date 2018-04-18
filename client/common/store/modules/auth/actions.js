@@ -8,6 +8,7 @@ export const login = ({ commit }, credentials) => {
 export const logout = () => {
   return auth.logout()
     .then(() => setTimeout(() => {
+      window.localStorage.removeItem('LMS_TOKEN');
       window.localStorage.removeItem('LMS_USER');
       window.location.reload();
     }, 0));

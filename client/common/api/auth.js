@@ -17,6 +17,7 @@ function login(credentials) {
 
 function logout() {
   window.localStorage.removeItem('LMS_TOKEN');
+  window.localStorage.removeItem('LMS_USER');
   // TODO: Add server side invalidation
   return Promise.resolve(true);
 }

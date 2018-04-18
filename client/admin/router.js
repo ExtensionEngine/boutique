@@ -13,6 +13,7 @@ import ProgramLevel from '@/admin/components/program-levels/ProgramLevel';
 import ProgramLevels from '@/admin/components/program-levels';
 import Programs from '@/admin/components/programs';
 import ResetPassword from '@/common/components/auth/ResetPassword';
+import Schools from '@/admin/components/schools';
 import Users from '@/admin/components/users';
 
 Vue.use(Router);
@@ -67,6 +68,10 @@ const router = new Router({
       path: '/users',
       name: 'users',
       component: Users
+    }, {
+      path: '/schools',
+      name: 'schools',
+      component: Schools
     }, fallbackRoute]
   }, fallbackRoute]
 });

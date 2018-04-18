@@ -26,3 +26,7 @@ export const remove = (state, models) => {
 export const setApiUrl = (state, url) => {
   state.$apiUrl = url;
 };
+
+export const setFlags = (state, flags) => {
+  each(flags, (value, key) => (state[key] = value));
+};
