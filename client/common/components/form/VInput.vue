@@ -9,6 +9,7 @@
         :data-vv-as="label"
         :placeholder="label"
         v-validate="validate"
+        data-vv-delay="1000"
         @input="$emit('input', $event.target.value)"
         class="input">
     </div>

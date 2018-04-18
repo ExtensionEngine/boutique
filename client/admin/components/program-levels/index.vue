@@ -15,24 +15,23 @@
     <div v-else-if="!hasProgramLevels" class="notification">
       Click on the button above to create your first program level.
     </div>
-    <table v-else class="table is-fullwidth is-hoverable">
-      <thead>
-        <th>Name</th>
-        <th>Program</th>
-        <th></th>
-      </thead>
-      <tbody>
-        <tr v-for="it in programLevels" :key="it._cid">
-          <td>{{ it.name }}</td>
-          <td>{{ getProgramName(it.programId) }}</td>
-          <td>
-            <button @click="edit(it)" class="button is-small is-pulled-right is-outlined">
-              <span class="mdi mdi-pencil"></span>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div v-else>
+      <div v-for="it in programLevels" :key="it._cid" class="card">
+        <div class="card-content">
+          <router-link
+            :to="{ name: 'enrollments', params: { programLevelId: it.id } }"
+            class="is-size-3">
+            {{ it.name }}
+          </router-link>
+          <p class="subtitle is-size-6">{{ getProgramName(it.programId) }}</p>
+        </div>
+        <footer class="card-footer">
+          <a @click="edit(it)" href="#" class="card-footer-item">
+            Edit
+          </a>
+        </footer>
+      </div>
+    </div>
     <program-level-modal
       :show="showModal"
       :programLevelData="context"
@@ -90,5 +89,9 @@ export default {
 <style lang="scss" scoped>
 .actions {
   padding: 10px 0;
+}
+
+.card {
+  margin: 40px 0;
 }
 </style>

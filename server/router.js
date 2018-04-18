@@ -4,6 +4,7 @@ const auth = require('./common/auth').authenticate('jwt');
 const express = require('express');
 const course = require('./course');
 const district = require('./district');
+const enrollment = require('./enrollment');
 const program = require('./program');
 const programLevel = require('./program-level');
 const school = require('./school');
@@ -18,5 +19,6 @@ router.use(district.path, auth, district.router);
 router.use(program.path, auth, program.router);
 router.use(programLevel.path, auth, programLevel.router);
 router.use(school.path, auth, school.router);
+router.use(enrollment.path, auth, enrollment.router);
 
 module.exports = router;
