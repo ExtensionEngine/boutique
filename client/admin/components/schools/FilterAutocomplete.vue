@@ -9,8 +9,7 @@
       @open="fetchOptions"
       @select="filterItems"
       class="control"
-      label="name"
-      track-by="id">
+      label="name">
     </multiselect>
     <button
       v-if="selectedOption"
