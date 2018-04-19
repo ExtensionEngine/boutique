@@ -8,6 +8,7 @@ const helmet = require('helmet');
 const HttpError = require('http-errors').HttpError;
 const jsend = require('jsend').middleware;
 const morgan = require('morgan');
+const nocache = require('nocache');
 require('express-async-errors');
 
 const auth = require('./common/auth');
@@ -38,7 +39,7 @@ app.use(morgan(format, {
 }));
 
 // Mount main router
-app.use('/api/v1', router);
+app.use('/api/v1', nocache(), router);
 
 // Global error handler.
 app.use((err, req, res, next) => {

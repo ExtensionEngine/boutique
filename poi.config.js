@@ -33,6 +33,9 @@ module.exports = (options, req) => ({
   // Override using: `npm run dev:server -- --port <number>`
   port: 8081,
   devServer: {
+    headers: {
+      'X-Powered-By': 'Webpack DevSever'
+    },
     proxy: {
       '/api': {
         target: `http://${config.ip}:${config.port}`
