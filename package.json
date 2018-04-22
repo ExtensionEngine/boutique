@@ -86,7 +86,6 @@
     "s3-blob-store": "^3.2.0",
     "sass-web-fonts": "^2.0.2",
     "sequelize": "^4.37.6",
-    "to-case": "^2.0.0",
     "umzug": "^2.1.0",
     "url-join": "^4.0.0",
     "v-hotkey": "^0.2.0",

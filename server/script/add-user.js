@@ -3,7 +3,7 @@
 const { prompt } = require('inquirer');
 const { role } = require('../../common/config');
 const { User } = require('../common/database');
-const capitalize = require('to-case').capital;
+const humanize = require('humanize-string');
 const inRange = require('lodash/inRange');
 const isEmail = require('is-email-like');
 const map = require('lodash/map');
@@ -39,7 +39,7 @@ const questions = [{
 }, {
   type: 'list',
   name: 'role',
-  choices: map(role, value => ({ name: capitalize(value), value })),
+  choices: map(role, value => ({ name: humanize(value), value })),
   message: 'Select role:'
 }];
 
