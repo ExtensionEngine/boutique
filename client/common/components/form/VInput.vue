@@ -8,6 +8,7 @@
         :name="name"
         :data-vv-as="label"
         :placeholder="label"
+        v-bind="$attrs"
         v-validate="validate"
         data-vv-delay="1000"
         @input="$emit('input', $event.target.value)"
@@ -30,6 +31,7 @@ export default {
     value: { type: String, required: true },
     validate: { type: [String, Object] }
   },
+  inheritAttrs: false,
   computed: {
     label() {
       return humanize(this.name);

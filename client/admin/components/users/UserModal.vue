@@ -11,6 +11,7 @@
             max: 255,
             'unique-email': userData
           }"
+          autocomplete="email"
           name="email">
         </v-input>
         <v-select
@@ -21,11 +22,13 @@
         </v-select>
         <v-input
           v-model="user.firstName"
+          autocomplete="given-name"
           name="firstName"
           validate="required|alpha|min:2|max:50">
         </v-input>
         <v-input
           v-model="user.lastName"
+          autocomplete="family-name"
           name="lastName"
           validate="required|alpha|min:2|max:50">
         </v-input>

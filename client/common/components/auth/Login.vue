@@ -4,9 +4,15 @@
       <span v-if="message">{{ message }}</span>
     </div>
     <form @submit.prevent="submit">
-      <v-input v-model="email" name="email" validate="required|email"></v-input>
+      <v-input
+        v-model="email"
+        autocomplete="email"
+        name="email"
+        validate="required|email">
+      </v-input>
       <v-input
         v-model="password"
+        autocomplete="current-password"
         name="password"
         type="password"
         validate="required">
