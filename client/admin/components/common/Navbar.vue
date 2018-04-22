@@ -21,6 +21,11 @@ import { mapState, mapActions } from 'vuex';
 export default {
   name: 'lms-navbar',
   computed: mapState('auth', ['user']),
-  methods: mapActions('auth', ['logout'])
+  methods: mapActions('auth', ['logout']),
+  mounted() {
+    // NOTE: Add appropriate css class to <html> element according to:
+    //       https://bulma.io/documentation/components/navbar/#fixed-navbar
+    document.documentElement.classList.add('has-navbar-fixed-top');
+  }
 };
 </script>

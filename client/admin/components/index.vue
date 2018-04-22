@@ -1,7 +1,9 @@
 <template>
-  <div>
-    <navbar/>
-    <div class="container">
+  <div class="app-container">
+    <header class="app-header">
+      <navbar/>
+    </header>
+    <main class="app-content container">
       <div class="columns">
         <div class="column is-2">
           <sidebar/>
@@ -10,7 +12,7 @@
           <router-view></router-view>
         </div>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
@@ -28,3 +30,16 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.app-container {
+  height: 100%;
+  padding: 32px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-content {
+  flex: 1;
+}
+</style>

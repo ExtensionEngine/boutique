@@ -28,10 +28,5 @@ html, body {
   height: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: hidden;
-
-  .container {
-    margin-top: 80px;
-  }
 }
 </style>
