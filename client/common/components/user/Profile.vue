@@ -1,11 +1,12 @@
 <template>
   <div>
-    <div v-if="user" id="profile-greeting">
+    <div id="profile-greeting">
       Welcome, <span class="user-full-name">{{ user.firstName }} {{ user.lastName }}</span>.
       You can modify your data using the following form:
     </div>
     <div>
       <form @submit.prevent="submit">
+        <div>
         <v-input
           v-model="firstName"
           autocomplete="given-name"
@@ -18,13 +19,12 @@
           name="lastName"
           validate="required|alpha|min:2|max:50">
         </v-input>
-        <button class="button is-primary" type="submit">Submit</button>
-        <transition name="fade">
-          <span v-if="message" class="message">
-            {{ message }}
-          </span>
-        </transition>
+        </div>
+        <button class="button is-primary" type="submit" :disabled="!firstOrLastNameChangeRequested">Submit</button>
       </form>
+      <transition name="fade">
+        <span v-if="message" class="message">{{ message }}</span>
+      </transition>
     </div>
   </div>
 </template>
@@ -44,38 +44,40 @@ export default {
       message: ''
     };
   },
-  mounted() {
-    if (this.user) {
-      this.firstName = this.user.firstName;
-      this.lastName = this.user.lastName;
+  computed: {
+    ...mapState('auth', ['user']),
+    firstOrLastNameChangeRequested() {
+      return this.user.firstName !== this.firstName || this.user.lastName !== this.lastName;
     }
   },
-  computed: mapState('auth', ['user']),
+  mounted() {
+    if (!this.user) return;
+    this.firstName = this.user.firstName;
+    this.lastName = this.user.lastName;
+  },
   methods: {
     ...mapActions('users', { saveUser: 'save' }),
     submit() {
       this.message = '';
       this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
-        if (this.firstOrLastNameChangeRequested()) {
-          this.user.firstName = this.firstName;
-          this.user.lastName = this.lastName;
-          this.saveUser(this.user)
-          .then(() => (this.message = 'Changes saved successfully.'))
-          .then(setTimeout(() => (this.message = ''), 2000))
-          .catch(() => (this.message = 'There was a problem updating your data. Please try again later.'));
-        }
+        if (!this.firstOrLastNameChangeRequested) return;
+        const localUser = Object.assign(this.user, {firstName: this.firstName, lastName: this.lastName});
+        this.saveUserAndDisplayOutcomeMessage(localUser);
       });
     },
-    firstOrLastNameChangeRequested() {
-      return this.user.firstName !== this.firstName || this.user.lastName !== this.lastName;
+    saveUserAndDisplayOutcomeMessage(user) {
+      this.saveUser(user)
+        .then(() => (this.message = 'Changes saved successfully.'))
+        .then(setTimeout(() => (this.message = ''), 2000))
+        .catch(() => (this.message = 'There was a problem updating your data. Please try again later.'));
     }
   },
   components: { VInput }
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 #profile-greeting {
   margin-bottom: 20px;
 }
@@ -86,11 +88,21 @@ export default {
 .message {
   margin-left: 20px;
   font-style: italic;
+  margin-left: 35px;
 }
 .fade-enter-active, .fade-leave-active {
   transition: opacity 1s;
 }
 .fade-enter, .fade-leave-to {
   opacity: 0;
+}
+form {
+  div {
+    width: 100%;
+    clear: both;
+  }
+  button {
+    float: left;
+  }
 }
 </style>

@@ -13,8 +13,8 @@ import ProgramLevel from '@/admin/components/program-levels/ProgramLevel';
 import ProgramLevels from '@/admin/components/program-levels';
 import Programs from '@/admin/components/programs';
 import ResetPassword from '@/common/components/auth/ResetPassword';
-import Users from '@/admin/components/users';
 import UserProfile from '@/common/components/user/Profile';
+import Users from '@/admin/components/users';
 
 Vue.use(Router);
 
