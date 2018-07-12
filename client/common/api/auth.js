@@ -1,4 +1,7 @@
 import request from './request';
+import Resource from '@/common/store/helpers/resource';
+
+const usersApi = new Resource('/users');
 
 const url = {
   login: '/users/login',
@@ -21,6 +24,10 @@ function logout() {
   return Promise.resolve(true);
 }
 
+function update(user) {
+  return usersApi.save(user);
+}
+
 function forgotPassword(email) {
   return request.post(url.forgotPassword, { email });
 }
@@ -32,6 +39,7 @@ function resetPassword(body) {
 export default {
   login,
   logout,
+  update,
   forgotPassword,
   resetPassword
 };

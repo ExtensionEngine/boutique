@@ -1,76 +1,90 @@
 <template>
   <div>
-    <div id="profile-greeting">
-      Welcome, <span class="user-full-name">{{ user.firstName }} {{ user.lastName }}</span>.
+    <div class="profile-greeting">
+      Welcome, 
+      <span class="full-name">{{ user.firstName }} {{ user.lastName }}</span>. 
       You can modify your data using the following form:
     </div>
-    <div>
-      <form @submit.prevent="submit">
-        <div>
+    <form @submit.prevent="submit">
+      <div class="fields">
         <v-input
-          v-model="firstName"
+          v-model="userData.firstName"
           autocomplete="given-name"
           name="firstName"
           validate="required|alpha|min:2|max:50">
         </v-input>
         <v-input
-          v-model="lastName"
+          v-model="userData.lastName"
           autocomplete="family-name"
           name="lastName"
           validate="required|alpha|min:2|max:50">
         </v-input>
-        </div>
-        <button class="button is-primary" type="submit" :disabled="!firstOrLastNameChangeRequested">Submit</button>
-      </form>
-      <transition name="fade">
-        <span v-if="message" class="message">{{ message }}</span>
-      </transition>
-    </div>
+      </div>
+      <button 
+        :disabled="!isDirty" 
+        class="btn-submit button is-primary"
+        type="submit">
+        Submit
+      </button>
+    </form>
+    <transition name="fade">
+      <span v-if="message" class="message">{{ message }}</span>
+    </transition>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
-import VInput from '@/common/components/form/VInput';
+import { mapActions, mapState } from 'vuex';
 import { withValidation } from '@/common/validation';
+import VInput from '@/common/components/form/VInput';
 
 export default {
   name: 'user-profile',
   mixins: [withValidation()],
   data() {
     return {
-      firstName: '',
-      lastName: '',
+      userData: {
+        id: null,
+        firstName: '',
+        lastName: ''
+      },
       message: ''
     };
   },
   computed: {
     ...mapState('auth', ['user']),
-    firstOrLastNameChangeRequested() {
-      return this.user.firstName !== this.firstName || this.user.lastName !== this.lastName;
+    isDirty() {
+      return this.user.firstName !== this.userData.firstName ||
+             this.user.lastName !== this.userData.lastName;
     }
   },
-  mounted() {
-    if (!this.user) return;
-    this.firstName = this.user.firstName;
-    this.lastName = this.user.lastName;
-  },
   methods: {
-    ...mapActions('users', { saveUser: 'save' }),
+    ...mapActions('auth', ['updateUser']),
     submit() {
       this.message = '';
       this.$validator.validateAll().then(isValid => {
-        if (!isValid) return;
-        if (!this.firstOrLastNameChangeRequested) return;
-        const localUser = Object.assign(this.user, {firstName: this.firstName, lastName: this.lastName});
-        this.saveUserAndDisplayOutcomeMessage(localUser);
+        if (!isValid || !this.isDirty) return;
+        this.save(this.userData);
       });
     },
-    saveUserAndDisplayOutcomeMessage(user) {
-      this.saveUser(user)
+    save(user) {
+      this.updateUser(user)
         .then(() => (this.message = 'Changes saved successfully.'))
         .then(setTimeout(() => (this.message = ''), 2000))
-        .catch(() => (this.message = 'There was a problem updating your data. Please try again later.'));
+        .catch(() => {
+          this.message = `
+            There was a problem updating your data. 
+            Please try again later.
+          `;
+        });
+    }
+  },
+  watch: {
+    user: {
+      handler({ id, firstName, lastName }) {
+        Object.assign(this.userData, { id, firstName, lastName });
+      },
+      immediate: true
     }
   },
   components: { VInput }
@@ -78,10 +92,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-#profile-greeting {
+.profile-greeting {
   margin-bottom: 20px;
 }
-.user-full-name {
+.full-name {
   color: #00d1b2;
   font-weight: bold;
 }
@@ -97,11 +111,11 @@ export default {
   opacity: 0;
 }
 form {
-  div {
+  .fields {
     width: 100%;
     clear: both;
   }
-  button {
+  .btn-submit {
     float: left;
   }
 }

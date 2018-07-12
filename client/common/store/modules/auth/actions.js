@@ -5,6 +5,11 @@ export const login = ({ commit }, credentials) => {
     .then(user => commit('login', user));
 };
 
+export const updateUser = ({ commit }, user) => {
+  return auth.update(user)
+    .then(user => commit('login', user));
+};
+
 export const logout = () => {
   return auth.logout()
     .then(() => setTimeout(() => {

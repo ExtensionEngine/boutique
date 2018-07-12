@@ -9,20 +9,39 @@
     <div class="navbar-menu">
       <div v-if="user" class="navbar-end">
         <div class="navbar-item">
-          <div class="dropdown is-active" v-click-outside="hideDropdownMenu" @click="showDropdownMenu = !showDropdownMenu">
+          <div class="dropdown is-active"
+            v-click-outside="hideDropdownMenu"
+            @click="showDropdownMenu = !showDropdownMenu">
             <div class="dropdown-trigger">
-              <button class="button dropdown-header" aria-haspopup="true" aria-controls="dropdown-menu">
+              <button
+                class="button dropdown-header is-transparent"
+                aria-haspopup="true"
+                aria-controls="dropdown-menu">
                 <span>{{ user.email }}</span>
-                <span class="icon is-small mdi mdi-18px" :class="dropdownChevronClass" aria-hidden="true"></span>
+                <span
+                  class="icon is-small mdi mdi-18px"
+                  aria-hidden="true"
+                  :class="dropdownChevronClass"></span>
               </button>
             </div>
-            <div class="dropdown-menu" id="dropdown-menu" role="menu" v-show="showDropdownMenu">
+            <div
+              id="dropdown-menu"
+              class="dropdown-menu"
+              role="menu"
+              v-show="showDropdownMenu">
               <div class="dropdown-content">
                 <router-link to="/profile" class="dropdown-item">
-                  <span class="icon is-small mdi mdi-18px mdi-account-outline" aria-hidden="true"></span>
+                  <span
+                    class="icon is-small mdi mdi-18px mdi-account-outline"
+                    aria-hidden="true"></span>
                   Profile Settings
                 </router-link>
-                <a href="#" class="dropdown-item" @click="logout">Logout</a>
+                <a href="#" class="dropdown-item" @click="logout">
+                  <span
+                    class="icon is-small mdi mdi-18px mdi-logout"
+                    aria-hidden="true"></span>
+                  Logout
+                </a>
               </div>
             </div>
           </div>
@@ -34,7 +53,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import ClickOutside from 'vue-click-outside';
+import vClickOutside from 'v-click-outside';
 
 export default {
   name: 'lms-navbar',
@@ -61,27 +80,32 @@ export default {
     document.documentElement.classList.add('has-navbar-fixed-top');
   },
   directives: {
-    ClickOutside
+    clickOutside: vClickOutside.directive
   }
 };
 </script>
 
 <style lang="scss" scoped>
+$dropdownColor: #eee;
+
 .dropdown {
   &-menu {
     cursor: pointer;
   }
   &-header {
     color: #3273dc;
-    background: #ddd;
     font-weight: 500;
   }
   &-content {
-    background: #eee;
+    background: $dropdownColor;
   }
   &-item:hover {
     color: #fff;
-    background: #6495ed;
+    background: rgba(57, 127, 247, 0.7);
   }
+}
+.is-transparent {
+  background: transparent;
+  background-image: none;
 }
 </style>
