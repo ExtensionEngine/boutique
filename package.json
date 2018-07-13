@@ -45,7 +45,7 @@
     "poi-preset-eslint": "^9.1.1",
     "sass-loader": "^6.0.7",
     "sequelize-cli": "^4.0.0",
-    "stylelint": "^9.2.0",
+    "stylelint": "^9.3.0",
     "stylelint-config-standard": "^18.2.0",
     "stylelint-order": "^0.8.1",
     "vue-template-compiler": "^2.5.16"

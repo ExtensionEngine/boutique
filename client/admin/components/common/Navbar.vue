@@ -21,7 +21,8 @@
                 <span
                   class="icon is-small mdi mdi-18px"
                   aria-hidden="true"
-                  :class="dropdownChevronClass"></span>
+                  :class="dropdownChevronClass">
+                </span>
               </button>
             </div>
             <div
@@ -33,13 +34,15 @@
                 <router-link to="/profile" class="dropdown-item">
                   <span
                     class="icon is-small mdi mdi-18px mdi-account-outline"
-                    aria-hidden="true"></span>
+                    aria-hidden="true">
+                  </span>
                   Profile Settings
                 </router-link>
                 <a href="#" class="dropdown-item" @click="logout">
                   <span
                     class="icon is-small mdi mdi-18px mdi-logout"
-                    aria-hidden="true"></span>
+                    aria-hidden="true">
+                  </span>
                   Logout
                 </a>
               </div>
@@ -92,18 +95,23 @@ $dropdownColor: #eee;
   &-menu {
     cursor: pointer;
   }
+
   &-header {
-    color: #3273dc;
+    color: #0ccce8;
     font-weight: 500;
   }
+
   &-content {
     background: $dropdownColor;
   }
+
   &-item:hover {
     color: #fff;
-    background: rgba(57, 127, 247, 0.7);
+    font-weight: bold;
+    background: rgba(50, 110, 130, 0.3);
   }
 }
+
 .is-transparent {
   background: transparent;
   background-image: none;

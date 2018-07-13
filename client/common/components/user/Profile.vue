@@ -22,13 +22,26 @@
       </div>
       <button 
         :disabled="!isDirty" 
-        class="btn-submit button is-primary"
+        class="button is-primary"
         type="submit">
         Submit
       </button>
     </form>
     <transition name="fade">
-      <span v-if="message" class="message">{{ message }}</span>
+      <div
+        v-show="message.content"
+        class="message-container"
+        :class="messageContainerClass">
+        <span class="message">
+          {{ message.content }}
+          <span
+            v-if="message.isError"
+            class="icon-close icon is-small mdi mdi-18px mdi-close"
+            @click="message.content=''"
+            aria-hidden="true">
+          </span>
+        </span>
+      </div>
     </transition>
   </div>
 </template>
@@ -48,7 +61,10 @@ export default {
         firstName: '',
         lastName: ''
       },
-      message: ''
+      message: {
+        content: '',
+        isError: false
+      }
     };
   },
   computed: {
@@ -56,12 +72,15 @@ export default {
     isDirty() {
       return this.user.firstName !== this.userData.firstName ||
              this.user.lastName !== this.userData.lastName;
+    },
+    messageContainerClass() {
+      return this.message.isError ? 'message-error' : 'message-notice';
     }
   },
   methods: {
     ...mapActions('auth', ['updateUser']),
     submit() {
-      this.message = '';
+      this.message.content = '';
       this.$validator.validateAll().then(isValid => {
         if (!isValid || !this.isDirty) return;
         this.save(this.userData);
@@ -69,13 +88,17 @@ export default {
     },
     save(user) {
       this.updateUser(user)
-        .then(() => (this.message = 'Changes saved successfully.'))
-        .then(setTimeout(() => (this.message = ''), 2000))
+        .then(() => {
+          this.message.content = 'Changes saved successfully.';
+          this.message.isError = false;
+        })
+        .then(setTimeout(() => (this.message.content = ''), 3000))
         .catch(() => {
-          this.message = `
+          this.message.content = `
             There was a problem updating your data. 
             Please try again later.
           `;
+          this.message.isError = true;
         });
     }
   },
@@ -92,31 +115,64 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$messageText: #f7f7f7;
+$messageError: #d13d00;
+$messageNotice: #0ce889;
+
 .profile-greeting {
   margin-bottom: 20px;
 }
+
 .full-name {
   color: #00d1b2;
   font-weight: bold;
 }
+
 .message {
-  margin-left: 20px;
-  font-style: italic;
-  margin-left: 35px;
+  color: $messageText;
+  background: transparent;
+
+  &-container {
+    display: inline-block;
+    position: absolute;
+    top: 30%;
+    left: 20%;
+    z-index: 50;
+    width: 60%;
+    margin-left: 35px;
+    border-radius: 5px;
+    padding: 20px 40px;
+    text-align: center;
+  }
+
+  &-error {
+    background: $messageError;
+  }
+
+  &-notice {
+    background: $messageNotice;
+  }
 }
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 1s;
+
+.icon-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px;
+  cursor: pointer;
 }
-.fade-enter, .fade-leave-to {
+
+.fade-enter-active {
+  transition: opacity 2s;
+}
+
+.fade-enter {
   opacity: 0;
 }
+
 form {
   .fields {
-    width: 100%;
-    clear: both;
-  }
-  .btn-submit {
-    float: left;
+    width: 60%;
   }
 }
 </style>
