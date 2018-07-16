@@ -21,5 +21,8 @@ module.exports = {
       anonymous: 'always',
       named: 'never'
     }]
+  },
+  env: {
+    'browser': true
   }
 };
