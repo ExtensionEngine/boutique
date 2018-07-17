@@ -7,6 +7,8 @@ $web-font-path: web-fonts-url(('Roboto': (300, 400, 500, 700)));
 $mdi-font-path: '~mdi/fonts';
 /* stylelint-disable-next-line at-rule-empty-line-before */
 @import '~mdi/scss/materialdesignicons';
+// Snotify style
+@import '~vue-snotify/styles/material.css';
 
 .system-font-stack {
   /* stylelint-disable value-list-comma-newline-after */

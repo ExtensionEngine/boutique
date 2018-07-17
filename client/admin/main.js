@@ -1,11 +1,13 @@
 import App from './App';
 import router from './router';
 import store from './store';
+import Snotify from 'vue-snotify';
 import VeeValidate from '@/common/validation';
 import Vue from 'vue';
 import VueHotkey from 'v-hotkey';
 import VueVisible from 'vue-visible';
 
+Vue.use(Snotify);
 Vue.use(VeeValidate, {
   delay: 700,
   fieldsBagName: 'vFields',

@@ -94,6 +94,7 @@
     "vue": "^2.5.16",
     "vue-multiselect": "^2.1.0",
     "vue-router": "^3.0.1",
+    "vue-snotify": "^3.2.0",
     "vue-visible": "^1.0.2",
     "vuex": "^3.0.1"
   },

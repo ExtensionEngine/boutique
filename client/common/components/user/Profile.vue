@@ -5,6 +5,7 @@
       <span class="full-name">{{ user.firstName }} {{ user.lastName }}</span>. 
       You can modify your data using the following form:
     </div>
+    <vue-snotify class="toast-notification"></vue-snotify>
     <form @submit.prevent="submit">
       <div class="fields">
         <v-input
@@ -27,22 +28,6 @@
         Submit
       </button>
     </form>
-    <transition name="fade">
-      <div
-        v-show="message.content"
-        class="message-container"
-        :class="messageContainerClass">
-        <span class="message">
-          {{ message.content }}
-          <span
-            v-if="message.isError"
-            class="icon-close icon is-small mdi mdi-18px mdi-close"
-            @click="message.content=''"
-            aria-hidden="true">
-          </span>
-        </span>
-      </div>
-    </transition>
   </div>
 </template>
 
@@ -50,6 +35,16 @@
 import { mapActions, mapState } from 'vuex';
 import { withValidation } from '@/common/validation';
 import VInput from '@/common/components/form/VInput';
+
+const snotifyConfig = {
+  timeout: 3000,
+  showProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  position: 'centerCenter',
+  backdrop: 0.15,
+  icon: false
+};
 
 export default {
   name: 'user-profile',
@@ -60,10 +55,6 @@ export default {
         id: null,
         firstName: '',
         lastName: ''
-      },
-      message: {
-        content: '',
-        isError: false
       }
     };
   },
@@ -72,34 +63,58 @@ export default {
     isDirty() {
       return this.user.firstName !== this.userData.firstName ||
              this.user.lastName !== this.userData.lastName;
-    },
-    messageContainerClass() {
-      return this.message.isError ? 'message-error' : 'message-notice';
     }
   },
   methods: {
     ...mapActions('auth', ['updateUser']),
     submit() {
-      this.message.content = '';
       this.$validator.validateAll().then(isValid => {
         if (!isValid || !this.isDirty) return;
         this.save(this.userData);
       });
     },
     save(user) {
-      this.updateUser(user)
-        .then(() => {
-          this.message.content = 'Changes saved successfully.';
-          this.message.isError = false;
-        })
-        .then(setTimeout(() => (this.message.content = ''), 3000))
-        .catch(() => {
-          this.message.content = `
-            There was a problem updating your data. 
-            Please try again later.
-          `;
-          this.message.isError = true;
-        });
+      this.$snotify.async(
+        'Submitting data...',
+        '',
+        () => this.updateUser(user)
+          .then(...this.toast(
+            snotifyConfig,
+            {
+              success: 'Changes saved successfully!',
+              error: 'There was a problem updating your data. Please try again later.'
+            }
+          )),
+        snotifyConfig
+      );
+    },
+    toast(config, { success, error } = { success: 'success', error: 'error' }) {
+      const successConfig = {
+        title: '',
+        body: success,
+        config: {
+          ...config,
+          html: this.innerHtml(success, 'checkbox-marked-circle-outline')
+        }
+      };
+      const errorConfig = {
+        title: '',
+        body: error,
+        config: {
+          ...config,
+          timeout: 0,
+          html: this.innerHtml(error, 'close-circle-outline')
+        }
+      };
+      return [() => successConfig, () => Promise.reject(errorConfig)];
+    },
+    innerHtml(msg, icon) {
+      return `
+        <div class="message">
+          <p>${msg}</p>
+          <span class="icon is-medium mdi mdi-36px mdi-${icon}"/>
+        </div>
+      `;
     }
   },
   watch: {
@@ -115,64 +130,58 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$messageText: #f7f7f7;
-$messageError: #d13d00;
-$messageNotice: #0ce889;
+$userName: #00d1b2;
+$notificationText: #f7f7f7;
+$success: #0ce889;
+$error: #d13d00;
 
 .profile-greeting {
   margin-bottom: 20px;
 }
 
 .full-name {
-  color: #00d1b2;
+  color: $userName;
   font-weight: bold;
 }
 
-.message {
-  color: $messageText;
-  background: transparent;
-
-  &-container {
-    display: inline-block;
-    position: absolute;
-    top: 30%;
-    left: 20%;
-    z-index: 50;
-    width: 60%;
-    margin-left: 35px;
-    border-radius: 5px;
-    padding: 20px 40px;
-    text-align: center;
-  }
-
-  &-error {
-    background: $messageError;
-  }
-
-  &-notice {
-    background: $messageNotice;
-  }
+form .fields {
+  width: 60%;
 }
 
-.icon-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 5px;
-  cursor: pointer;
-}
+.toast-notification /deep/ {
+  .snotify {
+    min-width: 400px;
 
-.fade-enter-active {
-  transition: opacity 2s;
-}
+    &Toast__inner {
+      padding: 5px 15px;
+      color: $notificationText;
 
-.fade-enter {
-  opacity: 0;
-}
+      .message {
+        display: flex;
+        width: 100%;
+        align-self: center;
+        justify-content: space-between;
+        background: none;
 
-form {
-  .fields {
-    width: 60%;
+        p {
+          flex: 1;
+          text-align: center;
+        }
+
+        .icon {
+          display: table-cell;
+          vertical-align: middle;
+        }
+      }
+    }
+
+    &-success {
+      background: $success;
+    }
+
+    &-error {
+      background: $error;
+    }
   }
 }
 </style>

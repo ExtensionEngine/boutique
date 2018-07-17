@@ -1,7 +1,7 @@
 <template>
   <div
     class="dropdown is-active"
-    v-click-outside="hideMenu"
+    v-click-outside="() => { showMenu = false; }"
     @click="showMenu = !showMenu">
     <div class="dropdown-trigger">
       <button
@@ -38,11 +38,6 @@ export default {
   computed: {
     menuItems() {
       return this.$slots.menuItems[0];
-    }
-  },
-  methods: {
-    hideMenu() {
-      this.showMenu = false;
     }
   },
   updated() {

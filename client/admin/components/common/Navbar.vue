@@ -38,22 +38,13 @@ import Dropdown from './Dropdown';
 
 export default {
   name: 'lms-navbar',
-  components: { Dropdown },
-  data() {
-    return {
-      showDropdownMenu: false
-    };
-  },
-  computed: {
-    ...mapState('auth', ['user'])
-  },
-  methods: {
-    ...mapActions('auth', ['logout'])
-  },
+  computed: mapState('auth', ['user']),
+  methods: mapActions('auth', ['logout']),
   mounted() {
     // NOTE: Add appropriate css class to <html> element according to:
     //       https://bulma.io/documentation/components/navbar/#fixed-navbar
     document.documentElement.classList.add('has-navbar-fixed-top');
-  }
+  },
+  components: { Dropdown }
 };
 </script>
