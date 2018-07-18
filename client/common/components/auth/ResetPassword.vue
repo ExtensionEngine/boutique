@@ -12,9 +12,9 @@
       </v-input>
       <v-input
         v-model="passwordConfirmation"
+        :validate="{ rules: { required: true, is: password } }"
         type="password"
-        name="passwordConfirmation"
-        :validate="{ rules: { required: true, is: password } }">
+        name="passwordConfirmation">
       </v-input>
       <button class="button is-primary" type="submit">
         Change password

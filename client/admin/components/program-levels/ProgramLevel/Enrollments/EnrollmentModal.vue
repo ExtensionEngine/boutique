@@ -12,8 +12,8 @@
           required: true,
           'unique-enrollment': { studentId, programLevelId }
         }"
-        name="student"
-        @search-change="search">
+        @search-change="search"
+        name="student">
       </v-select>
       <div class="controls field is-grouped is-grouped-right">
         <button @click="close" class="control button">Cancel</button>

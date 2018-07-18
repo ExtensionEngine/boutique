@@ -23,19 +23,19 @@ import Sidebar from '@/admin/components/common/Sidebar';
 
 export default {
   name: 'admin',
-  components: { Navbar, Sidebar },
   methods: mapActions('programs', ['fetch']),
   created() {
     this.fetch();
-  }
+  },
+  components: { Navbar, Sidebar }
 };
 </script>
 
 <style lang="scss" scoped>
 .app-container {
+  display: flex;
   height: 100%;
   padding: 32px 0;
-  display: flex;
   flex-direction: column;
 }
 
