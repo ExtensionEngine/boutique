@@ -1,4 +1,22 @@
 import generateActions from '@/common/store/helpers/actions';
-const { get, fetch, save, setApiUrl } = generateActions('/users');
+const { api, get, fetch, save, setApiUrl } = generateActions('/users');
 
-export { get, fetch, save, setApiUrl };
+const FormData = require('form-data');
+
+const saveAvatar = (data, { blob, userId }) => {
+  const formData = new FormData();
+  formData.append('avatar', blob);
+
+  return api.post(
+    `/${userId}/image`,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }
+  )
+    .then(({ data }) => { return data; });
+};
+
+export { get, fetch, save, setApiUrl, saveAvatar };

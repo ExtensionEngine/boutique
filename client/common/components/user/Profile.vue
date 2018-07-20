@@ -7,6 +7,26 @@
     </div>
     <vue-snotify class="toast-notification"></vue-snotify>
     <form @submit.prevent="submit">
+      <croppa
+        @file-size-exceed="onImageWrongUpload"
+        @file-type-mismatch="onImageWrongUpload"
+        @image-remove="onImageRemove"
+        v-model="imageCropper"
+        :width="200"
+        :height="200"
+        :replace-drop="true"
+        :prevent-white-space="true"
+        :show-remove-button="false"
+        accept="image/jpeg,image/png">
+        <!-- TODO: display existing user avatar if extant -->
+        <img v-if="userData.avatar" :src="''"/>
+      </croppa>
+      <button
+        @click="imageCropper.remove()"
+        v-if="imageCropper.imageSet"
+        class="remove-image-btn">
+        Remove image
+      </button>
       <div class="fields">
         <v-input
           v-model="userData.firstName"
@@ -54,19 +74,23 @@ export default {
       userData: {
         id: null,
         firstName: '',
-        lastName: ''
-      }
+        lastName: '',
+        avatar: ''
+      },
+      imageCropper: {}
     };
   },
   computed: {
     ...mapState('auth', ['user']),
     isDirty() {
       return this.user.firstName !== this.userData.firstName ||
-             this.user.lastName !== this.userData.lastName;
+             this.user.lastName !== this.userData.lastName ||
+             this.imageCropper.chosenFile;
     }
   },
   methods: {
     ...mapActions('auth', ['updateUser']),
+    ...mapActions('users', ['saveAvatar']),
     submit() {
       this.$validator.validateAll().then(isValid => {
         if (!isValid || !this.isDirty) return;
@@ -77,7 +101,14 @@ export default {
       this.$snotify.async(
         'Submitting data...',
         '',
-        () => this.updateUser(user)
+        () => this.uploadCroppedImage()
+          .then(result => {
+            // eslint-disable-next-line prefer-promise-reject-errors
+            if (result === '') return Promise.reject('Picture upload failed.');
+            this.userData.avatar = result;
+            return Promise.resolve();
+          })
+          .then(() => this.updateUser(user))
           .then(...this.toast(
             snotifyConfig,
             {
@@ -115,6 +146,27 @@ export default {
           <span class="icon is-medium mdi mdi-36px mdi-${icon}"/>
         </div>
       `;
+    },
+    uploadCroppedImage() {
+      return this.canvasToBlob(this.imageCropper.getCanvas())
+        .then(blob => {
+          return this.saveAvatar({blob: blob, userId: this.user.id});
+        });
+    },
+    canvasToBlob(canvas) {
+      return new Promise((resolve, reject) => {
+        canvas.toBlob(blob => resolve(blob), 'image/jpeg', 0.8);
+      });
+    },
+    onImageWrongUpload() {
+      this.$snotify.error(
+        '',
+        'The image is too large or the file type is incorrect. Please reupload.',
+        snotifyConfig
+      );
+    },
+    onImageRemove() {
+      // TODO: check if the user previously had an avatar and delete it on form submit
     }
   },
   watch: {
@@ -182,6 +234,11 @@ form .fields {
     &-error {
       background: $error;
     }
+  }
+
+  .remove-image-btn {
+    display: block !important;
+    padding: 2px;
   }
 }
 </style>

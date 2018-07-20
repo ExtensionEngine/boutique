@@ -9,6 +9,8 @@ $mdi-font-path: '~mdi/fonts';
 @import '~mdi/scss/materialdesignicons';
 // Snotify style
 @import '~vue-snotify/styles/material.css';
+// Croppa style
+@import '~vue-croppa/dist/vue-croppa.css';
 
 .system-font-stack {
   /* stylelint-disable value-list-comma-newline-after */

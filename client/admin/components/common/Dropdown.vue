@@ -59,6 +59,7 @@ $dropdownColor: #eee;
 
 .dropdown {
   &-menu {
+    min-width: 100%;
     cursor: pointer;
   }
 

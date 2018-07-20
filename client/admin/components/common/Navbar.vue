@@ -10,7 +10,11 @@
       <div v-if="user" class="navbar-end">
         <div class="navbar-item">
           <dropdown>
-            <span slot="header">{{ user.email }}</span>
+            <span slot="header">
+              <user-header :image="''"><!-- TODO: display user avatar if extant -->
+                <slot>{{ user.email }}</slot>
+              </user-header>
+            </span>
             <div slot="menuItems">
               <router-link to="/profile">
                 <span
@@ -19,9 +23,7 @@
                 Profile Settings
               </router-link>
               <a href="#" @click="logout">
-                <span
-                  class="icon is-small mdi mdi-18px mdi-logout">
-                </span>
+                <span class="icon is-small mdi mdi-18px mdi-logout"></span>
                 Logout
               </a>              
             </div>
@@ -35,6 +37,7 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import Dropdown from './Dropdown';
+import UserHeader from '@/common/components/user/Header';
 
 export default {
   name: 'lms-navbar',
@@ -45,6 +48,6 @@ export default {
     //       https://bulma.io/documentation/components/navbar/#fixed-navbar
     document.documentElement.classList.add('has-navbar-fixed-top');
   },
-  components: { Dropdown }
+  components: { Dropdown, UserHeader }
 };
 </script>

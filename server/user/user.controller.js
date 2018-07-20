@@ -7,7 +7,7 @@ const map = require('lodash/map');
 const pick = require('lodash/pick');
 
 const { BAD_REQUEST, NOT_FOUND } = HttpStatus;
-const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
+const inputAttrs = ['email', 'role', 'firstName', 'lastName', 'avatar'];
 const Op = Sequelize.Op;
 
 function list({ query: { email, emailLike, role } }, res) {
@@ -71,11 +71,26 @@ function resetPassword({ body, params }, res) {
     .then(() => res.end());
 }
 
+function getAvatar(req, res) {
+  res.send(''); // TODO: add avatar fetching
+}
+
+function saveAvatar(req, res) {
+  let file = req.file;
+  if (!file) res.send('');
+  file.lastModifiedDate = new Date();
+  file.name = file.filename;
+  console.log(req.file);
+  res.send(req.file.filename);
+}
+
 module.exports = {
   list,
   create,
   patch,
   login,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  getAvatar,
+  saveAvatar
 };

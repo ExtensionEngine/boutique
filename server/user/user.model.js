@@ -53,10 +53,17 @@ class User extends Model {
         type: DataTypes.DATE,
         field: 'deleted_at'
       },
+      avatar: {
+        type: DataTypes.STRING,
+        field: 'avatar'
+      },
       profile: {
         type: DataTypes.VIRTUAL,
         get() {
-          return pick(this, ['id', 'firstName', 'lastName', 'email', 'role']);
+          return pick(
+            this,
+            ['id', 'firstName', 'lastName', 'email', 'role', 'image_url']
+          );
         }
       }
     };

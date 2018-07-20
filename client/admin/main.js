@@ -1,4 +1,5 @@
 import App from './App';
+import Croppa from 'vue-croppa';
 import router from './router';
 import store from './store';
 import Snotify from 'vue-snotify';
@@ -7,6 +8,7 @@ import Vue from 'vue';
 import VueHotkey from 'v-hotkey';
 import VueVisible from 'vue-visible';
 
+Vue.use(Croppa);
 Vue.use(Snotify);
 Vue.use(VeeValidate, {
   delay: 700,
