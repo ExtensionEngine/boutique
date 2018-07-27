@@ -62,7 +62,7 @@ class User extends Model {
         get() {
           return pick(
             this,
-            ['id', 'firstName', 'lastName', 'email', 'role', 'image_url']
+            ['id', 'firstName', 'lastName', 'email', 'role', 'avatar']
           );
         }
       }

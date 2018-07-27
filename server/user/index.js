@@ -5,16 +5,14 @@ const ctrl = require('./user.controller');
 const router = require('express').Router();
 const multer = require('multer');
 
-const avatarFolderPath = require('path').join(__dirname, './avatars');
 const multerStorage = multer.diskStorage({
-  destination: (req, file, cb) => { cb(null, avatarFolderPath); },
+  destination: (req, file, cb) => { cb(null, './tmp/'); },
   filename: (req, file, cb) => {
     cb(null, req.user.id + '.jpg');
   }
 });
-// TODO: remove custom storage; storing file in tmp folder instead, and handle actual storage later
 
-const upload = multer({ storage: multerStorage });
+const imageUpload = multer({ storage: multerStorage }).single('avatar');
 
 router
   .post('/login', ctrl.login)
@@ -24,8 +22,7 @@ router
   .patch('/:id', ctrl.patch)
   .post('/forgotPassword', ctrl.forgotPassword)
   .post('/resetPassword', ctrl.resetPassword)
-  .get('/:id/image', ctrl.getAvatar)
-  .post('/:id/image', upload.single('avatar'), ctrl.saveAvatar);
+  .post('/:id/image', imageUpload, ctrl.saveAvatar);
 
 module.exports = {
   path: '/users',

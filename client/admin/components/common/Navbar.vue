@@ -11,9 +11,10 @@
         <div class="navbar-item">
           <dropdown>
             <span slot="header">
-              <user-header :image="''"><!-- TODO: display user avatar if extant -->
-                <slot>{{ user.email }}</slot>
-              </user-header>
+              <user-avatar :image="user.avatar"/>
+              <span class="user-email">
+                {{ user.email }}
+              </span>
             </span>
             <div slot="menuItems">
               <router-link to="/profile">
@@ -37,7 +38,7 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import Dropdown from './Dropdown';
-import UserHeader from '@/common/components/user/Header';
+import UserAvatar from '@/common/components/user/Avatar';
 
 export default {
   name: 'lms-navbar',
@@ -48,6 +49,14 @@ export default {
     //       https://bulma.io/documentation/components/navbar/#fixed-navbar
     document.documentElement.classList.add('has-navbar-fixed-top');
   },
-  components: { Dropdown, UserHeader }
+  components: { Dropdown, UserAvatar }
 };
 </script>
+
+<style lang="scss" scoped>
+.user-email {
+  vertical-align: top;
+  text-align: center;
+  margin-left: 10px;
+}
+</style>

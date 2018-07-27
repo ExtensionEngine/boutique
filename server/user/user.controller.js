@@ -5,6 +5,8 @@ const { Sequelize, User } = require('../common/database');
 const HttpStatus = require('http-status');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
+const fs = require('fs');
+const path = require('path');
 
 const { BAD_REQUEST, NOT_FOUND } = HttpStatus;
 const inputAttrs = ['email', 'role', 'firstName', 'lastName', 'avatar'];
@@ -71,17 +73,24 @@ function resetPassword({ body, params }, res) {
     .then(() => res.end());
 }
 
-function getAvatar(req, res) {
-  res.send(''); // TODO: add avatar fetching
-}
-
-function saveAvatar(req, res) {
-  let file = req.file;
-  if (!file) res.send('');
-  file.lastModifiedDate = new Date();
-  file.name = file.filename;
-  console.log(req.file);
-  res.send(req.file.filename);
+function saveAvatar({ file }, res) {
+  if (!file || !file.path) res.send('');
+  let destDirPath = path.join(__dirname, `./..`);
+  return new Promise((resolve, reject) => {
+    fs.rename(
+      file.path,
+      `${destDirPath}/${file.filename}`,
+      err => {
+        if (err) reject(err);
+        let destDirName = destDirPath.split(path.sep).pop();
+        resolve(
+          `${destDirName}/${file.filename}`
+        );
+      }
+    );
+  })
+  .then(newPath => res.send(newPath))
+  .catch(err => res.sendStatus(500).send(err.message));
 }
 
 module.exports = {
@@ -91,6 +100,5 @@ module.exports = {
   login,
   forgotPassword,
   resetPassword,
-  getAvatar,
   saveAvatar
 };

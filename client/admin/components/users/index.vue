@@ -8,6 +8,7 @@
     </button>
     <table class="table is-fullwidth is-hoverable">
       <thead>
+        <th>Avatar</th>
         <th>Email</th>
         <th>First Name</th>
         <th>Last Name</th>
@@ -16,16 +17,15 @@
       </thead>
       <tbody>
         <tr v-for="user in users" :key="user._cid">
-          <td>
-            <user-header :image="''">
-              <slot>{{ user.email }}</slot>
-            </user-header>
-          </td>
+          <td><user-avatar :image="user.avatar"/></td>
+          <td>{{ user.email }}</td>
           <td>{{ user.firstName }}</td>
           <td>{{ user.lastName }}</td>
           <td>{{ user.role }}</td>
           <td>
-            <button @click="edit(user)" class="button is-small is-pulled-right is-outlined">
+            <button
+              @click="edit(user)"
+              class="button is-small is-pulled-right is-outlined">
               <span class="mdi mdi-pencil"></span>
             </button>
           </td>
@@ -43,7 +43,7 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import UserModal from './UserModal';
-import UserHeader from '@/common/components/user/Header';
+import UserAvatar from '@/common/components/user/Avatar';
 
 export default {
   name: 'user-list',
@@ -68,6 +68,6 @@ export default {
   mounted() {
     this.fetch();
   },
-  components: { UserModal, UserHeader }
+  components: { UserModal, UserAvatar }
 };
 </script>

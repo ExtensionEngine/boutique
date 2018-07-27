@@ -16,7 +16,7 @@ const saveAvatar = (data, { blob, userId }) => {
       }
     }
   )
-    .then(({ data }) => { return data; });
+    .then(({ status, data }) => { return { status, data }; });
 };
 
 export { get, fetch, save, setApiUrl, saveAvatar };

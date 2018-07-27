@@ -7,26 +7,31 @@
     </div>
     <vue-snotify class="toast-notification"></vue-snotify>
     <form @submit.prevent="submit">
+      <label class="label">Avatar</label>
       <croppa
         @file-size-exceed="onImageWrongUpload"
         @file-type-mismatch="onImageWrongUpload"
-        @image-remove="onImageRemove"
         v-model="imageCropper"
         :width="200"
         :height="200"
         :replace-drop="true"
         :prevent-white-space="true"
         :show-remove-button="false"
+        :initial-image="userData.avatar"
         accept="image/jpeg,image/png">
-        <!-- TODO: display existing user avatar if extant -->
-        <img v-if="userData.avatar" :src="''"/>
-      </croppa>
-      <button
+      <span
         @click="imageCropper.remove()"
         v-if="imageCropper.imageSet"
-        class="remove-image-btn">
-        Remove image
-      </button>
+        class="image-remove icon is-medium mdi mdi-36px mdi-close"/>
+      <span
+        @click="imageCropper.zoom(true, 5)"
+        v-if="imageCropper.imageSet"
+        class="zoom zoom-in icon is-medium mdi mdi-36px mdi-magnify-plus-outline"/>       
+      <span
+        @click="imageCropper.zoom(false, 5)"
+        v-if="imageCropper.imageSet"
+        class="zoom zoom-out icon is-medium mdi mdi-36px mdi-magnify-minus-outline"/>  
+      </croppa>
       <div class="fields">
         <v-input
           v-model="userData.firstName"
@@ -85,7 +90,8 @@ export default {
     isDirty() {
       return this.user.firstName !== this.userData.firstName ||
              this.user.lastName !== this.userData.lastName ||
-             this.imageCropper.chosenFile;
+             this.imageCropper.chosenFile ||
+             (this.user.avatar && !this.imageCropper.imageSet);
     }
   },
   methods: {
@@ -101,14 +107,17 @@ export default {
       this.$snotify.async(
         'Submitting data...',
         '',
-        () => this.uploadCroppedImage()
-          .then(result => {
-            // eslint-disable-next-line prefer-promise-reject-errors
-            if (result === '') return Promise.reject('Picture upload failed.');
-            this.userData.avatar = result;
-            return Promise.resolve();
+        () => this.uploadImage()
+          .then(res => {
+            return (res.status !== 200)
+              // eslint-disable-next-line prefer-promise-reject-errors
+              ? Promise.reject()
+              : Promise.resolve(res.data);
           })
-          .then(() => this.updateUser(user))
+          .then(newAvatarPath => {
+            user.avatar = newAvatarPath;
+            return this.updateUser(user);
+          })
           .then(...this.toast(
             snotifyConfig,
             {
@@ -147,7 +156,10 @@ export default {
         </div>
       `;
     },
-    uploadCroppedImage() {
+    uploadImage() {
+      if (!this.imageCropper.imageSet) {
+        return this.saveAvatar({ blob: null, userId: this.user.id });
+      }
       return this.canvasToBlob(this.imageCropper.getCanvas())
         .then(blob => {
           return this.saveAvatar({blob: blob, userId: this.user.id});
@@ -164,15 +176,12 @@ export default {
         'The image is too large or the file type is incorrect. Please reupload.',
         snotifyConfig
       );
-    },
-    onImageRemove() {
-      // TODO: check if the user previously had an avatar and delete it on form submit
     }
   },
   watch: {
     user: {
-      handler({ id, firstName, lastName }) {
-        Object.assign(this.userData, { id, firstName, lastName });
+      handler({ id, firstName, lastName, avatar }) {
+        Object.assign(this.userData, { id, firstName, lastName, avatar });
       },
       immediate: true
     }
@@ -235,10 +244,39 @@ form .fields {
       background: $error;
     }
   }
+}
 
-  .remove-image-btn {
-    display: block !important;
-    padding: 2px;
+.croppa-container {
+  margin-bottom: 2rem;
+  border: #000 2px solid;
+}
+
+.image-remove {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  padding: 5px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  background: #e96437;
+  border-radius: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.zoom {
+  position: absolute;
+  right: 1px;
+  color: #222;
+  text-shadow: 1px 1px 2px #fff;
+
+  &-in {
+    bottom: 30px;
+  }
+
+  &-out {
+    bottom: 1px;
   }
 }
 </style>
