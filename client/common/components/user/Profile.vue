@@ -7,31 +7,13 @@
     </div>
     <vue-snotify class="toast-notification"></vue-snotify>
     <form @submit.prevent="submit">
-      <label class="label">Avatar</label>
-      <croppa
-        @file-size-exceed="onImageWrongUpload"
-        @file-type-mismatch="onImageWrongUpload"
-        v-model="imageCropper"
-        :width="200"
-        :height="200"
-        :replace-drop="true"
-        :prevent-white-space="true"
-        :show-remove-button="false"
-        :initial-image="userData.avatar"
-        accept="image/jpeg,image/png">
-      <span
-        @click="imageCropper.remove()"
-        v-if="imageCropper.imageSet"
-        class="image-remove icon is-medium mdi mdi-36px mdi-close"/>
-      <span
-        @click="imageCropper.zoom(true, 5)"
-        v-if="imageCropper.imageSet"
-        class="zoom zoom-in icon is-medium mdi mdi-36px mdi-magnify-plus-outline"/>       
-      <span
-        @click="imageCropper.zoom(false, 5)"
-        v-if="imageCropper.imageSet"
-        class="zoom zoom-out icon is-medium mdi mdi-36px mdi-magnify-minus-outline"/>  
-      </croppa>
+      <v-image
+        v-model="avatarData"
+        ref="imageField"
+        :imagePlaceholder="user.avatar"
+        name="avatar"
+        :sizeLimitKb=100>
+      </v-image>
       <div class="fields">
         <v-input
           v-model="userData.firstName"
@@ -60,6 +42,7 @@
 import { mapActions, mapState } from 'vuex';
 import { withValidation } from '@/common/validation';
 import VInput from '@/common/components/form/VInput';
+import VImage from '@/common/components/form/VImage';
 
 const snotifyConfig = {
   timeout: 3000,
@@ -82,7 +65,10 @@ export default {
         lastName: '',
         avatar: ''
       },
-      imageCropper: {}
+      avatarData: {
+        oldImage: '',
+        hasNewImage: false
+      }
     };
   },
   computed: {
@@ -90,8 +76,7 @@ export default {
     isDirty() {
       return this.user.firstName !== this.userData.firstName ||
              this.user.lastName !== this.userData.lastName ||
-             this.imageCropper.chosenFile ||
-             (this.user.avatar && !this.imageCropper.imageSet);
+             this.imageUploadRequired();
     }
   },
   methods: {
@@ -107,15 +92,10 @@ export default {
       this.$snotify.async(
         'Submitting data...',
         '',
-        () => this.uploadImage()
-          .then(res => {
-            return (res.status !== 200)
-              // eslint-disable-next-line prefer-promise-reject-errors
-              ? Promise.reject()
-              : Promise.resolve(res.data);
-          })
-          .then(newAvatarPath => {
-            user.avatar = newAvatarPath;
+        () => this.ensureAvatar()
+          .then(avatarPath => {
+            this.avatarData.hasNewImage = false;
+            user.avatar = avatarPath;
             return this.updateUser(user);
           })
           .then(...this.toast(
@@ -156,37 +136,41 @@ export default {
         </div>
       `;
     },
+    imageUploadRequired() {
+      return this.avatarData.hasNewImage ||
+        (!this.avatarData.hasNewImage && !this.avatarData.oldImage &&
+          this.user.avatar);
+    },
     uploadImage() {
-      if (!this.imageCropper.imageSet) {
-        return this.saveAvatar({ blob: null, userId: this.user.id });
+      return this.$refs.imageField.toBlob()
+        .then(blob => this.saveAvatar({
+          blob: blob,
+          userId: this.user.id
+        }));
+    },
+    ensureAvatar() {
+      if (!this.imageUploadRequired()) {
+        return Promise.resolve(this.userData.avatar);
       }
-      return this.canvasToBlob(this.imageCropper.getCanvas())
-        .then(blob => {
-          return this.saveAvatar({blob: blob, userId: this.user.id});
+      return this.uploadImage()
+        .then(res => {
+          return (res.status !== 200)
+            // eslint-disable-next-line prefer-promise-reject-errors
+            ? Promise.reject()
+            : Promise.resolve(res.data);
         });
-    },
-    canvasToBlob(canvas) {
-      return new Promise((resolve, reject) => {
-        canvas.toBlob(blob => resolve(blob), 'image/jpeg', 0.8);
-      });
-    },
-    onImageWrongUpload() {
-      this.$snotify.error(
-        '',
-        'The image is too large or the file type is incorrect. Please reupload.',
-        snotifyConfig
-      );
     }
   },
   watch: {
     user: {
       handler({ id, firstName, lastName, avatar }) {
         Object.assign(this.userData, { id, firstName, lastName, avatar });
+        this.avatarData.oldImage = avatar;
       },
       immediate: true
     }
   },
-  components: { VInput }
+  components: { VInput, VImage }
 };
 </script>
 
@@ -243,40 +227,6 @@ form .fields {
     &-error {
       background: $error;
     }
-  }
-}
-
-.croppa-container {
-  margin-bottom: 2rem;
-  border: #000 2px solid;
-}
-
-.image-remove {
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  padding: 5px;
-  color: #fff;
-  font-size: 10px;
-  font-weight: bold;
-  background: #e96437;
-  border-radius: 20px;
-  text-align: center;
-  cursor: pointer;
-}
-
-.zoom {
-  position: absolute;
-  right: 1px;
-  color: #222;
-  text-shadow: 1px 1px 2px #fff;
-
-  &-in {
-    bottom: 30px;
-  }
-
-  &-out {
-    bottom: 1px;
   }
 }
 </style>
