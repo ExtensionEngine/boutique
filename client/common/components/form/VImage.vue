@@ -12,6 +12,8 @@
       :show-remove-button="false"
       :initial-image="imageData.oldImage"
       :file-size-limit="sizeLimitInBytes"
+      :disable-scroll-to-zoom="!imageData.hasNewImage"
+      :disable-drag-to-move="!imageData.hasNewImage"
       accept="image/jpeg,image/png"
       data-vv-delay="1000">
     <span
@@ -20,11 +22,11 @@
       class="image-remove icon is-medium mdi mdi-24px mdi-close"/>
     <span
       @click="imageCropper.zoom(true, 5)"
-      v-if="imageCropper.imageSet"
+      v-if="imageData.hasNewImage"
       class="zoom zoom-in icon is-medium mdi mdi-36px mdi-magnify-plus-outline"/>       
     <span
       @click="imageCropper.zoom(false, 5)"
-      v-if="imageCropper.imageSet"
+      v-if="imageData.hasNewImage"
       class="zoom zoom-out icon is-medium mdi mdi-36px mdi-magnify-minus-outline"/>  
     </croppa>
     <p v-visible="showError" class="help is-danger">
@@ -46,7 +48,10 @@ export default {
     name: { type: String, required: true },
     sizeLimitKb: { type: Number, default: 0 },
     fileOutputType: { type: String, default: 'image/jpeg' },
-    imageData: {}
+    imageData: {
+      oldImage: '',
+      hasNewImage: false
+    }
   },
   data() {
     return {
