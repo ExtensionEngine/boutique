@@ -11,7 +11,7 @@
         <div class="navbar-item">
           <dropdown>
             <span slot="header">
-              <user-avatar :image="user.avatar"/>
+              <user-avatar :image="avatar"/>
               <span class="user-email">
                 {{ user.email }}
               </span>
@@ -42,12 +42,21 @@ import UserAvatar from '@/common/components/user/Avatar';
 
 export default {
   name: 'lms-navbar',
+  data() {
+    return { avatar: '' };
+  },
   computed: mapState('auth', ['user']),
   methods: mapActions('auth', ['logout']),
   mounted() {
     // NOTE: Add appropriate css class to <html> element according to:
     //       https://bulma.io/documentation/components/navbar/#fixed-navbar
     document.documentElement.classList.add('has-navbar-fixed-top');
+  },
+  watch: {
+    user: {
+      handler({ avatar }) { this.avatar = avatar; },
+      immediate: true
+    }
   },
   components: { Dropdown, UserAvatar }
 };
