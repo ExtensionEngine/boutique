@@ -3,38 +3,74 @@
     <div class="profile-greeting">
       Welcome, 
       <span class="full-name">{{ user.firstName }} {{ user.lastName }}</span>. 
-      You can modify your data using the following form:
+      You can modify your data using the following forms:
+    </div>
+    <div class="forms">
+      <form
+        @submit.prevent="submit"
+        class="profile-form-data">
+        <div class="fields">
+          <v-input
+            v-model="userData.firstName"
+            autocomplete="given-name"
+            name="firstName"
+            validate="required|alpha|min:2|max:50">
+          </v-input>
+          <v-input
+            v-model="userData.lastName"
+            autocomplete="family-name"
+            name="lastName"
+            validate="required|alpha|min:2|max:50">
+          </v-input>
+        </div>
+        <button 
+          :disabled="!isDirty" 
+          class="button is-primary"
+          type="submit">
+          Submit
+        </button>
+      </form>
+      <form
+        @submit.prevent="uploadImage"
+        class="profile-form-avatar">
+        <v-image
+          @imageReady="imageReadyForUpload=true;"
+          ref="imageField"
+          name="avatar"
+          :imageWidth="200"
+          :imageHeight="200"
+          :placeholder="imagePlaceholder"
+          :fileOutputType="imageOutputMimeType"
+          sizeLimit="100kB">
+        </v-image>
+        <div class="btn-container">
+          <div v-if="enableImageUpload">
+            <button
+              @click="resetImageReady"
+              type="button"
+              class="button is-primary">
+              Cancel
+            </button>
+            <button
+              :disabled="!imageReadyForUpload"
+              type="submit"
+              class="button is-primary image-submit-btn">
+              Submit
+            </button>
+          </div>
+          <div v-if="!enableImageUpload">  
+            <button
+              @click="openFileChooser"
+              type="button"
+              v-if="!imageReadyForUpload"
+              class="button is-primary">
+              Upload New Image
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
     <vue-snotify class="toast-notification"></vue-snotify>
-    <form @submit.prevent="submit">
-      <v-image
-        v-model="avatarData"
-        ref="imageField"
-        :imagePlaceholder="user.avatar"
-        name="avatar"
-        :sizeLimitKb=100>
-      </v-image>
-      <div class="fields">
-        <v-input
-          v-model="userData.firstName"
-          autocomplete="given-name"
-          name="firstName"
-          validate="required|alpha|min:2|max:50">
-        </v-input>
-        <v-input
-          v-model="userData.lastName"
-          autocomplete="family-name"
-          name="lastName"
-          validate="required|alpha|min:2|max:50">
-        </v-input>
-      </div>
-      <button 
-        :disabled="!isDirty" 
-        class="button is-primary"
-        type="submit">
-        Submit
-      </button>
-    </form>
   </div>
 </template>
 
@@ -65,18 +101,19 @@ export default {
         lastName: '',
         avatar: ''
       },
-      avatarData: {
-        oldImage: '',
-        hasNewImage: false
-      }
+      enableImageUpload: false,
+      imageReadyForUpload: false,
+      imageOutputMimeType: 'image/png'
     };
   },
   computed: {
     ...mapState('auth', ['user']),
     isDirty() {
       return this.user.firstName !== this.userData.firstName ||
-             this.user.lastName !== this.userData.lastName ||
-             this.imageUploadRequired();
+             this.user.lastName !== this.userData.lastName;
+    },
+    imagePlaceholder() {
+      return this.enableImageUpload ? '' : this.user.avatar;
     }
   },
   methods: {
@@ -92,12 +129,7 @@ export default {
       this.$snotify.async(
         'Submitting data...',
         '',
-        () => this.ensureAvatar()
-          .then(avatarPath => {
-            this.avatarData.hasNewImage = false;
-            user.avatar = avatarPath;
-            return this.updateUser(user);
-          })
+        () => this.updateUser(user)
           .then(...this.toast(
             snotifyConfig,
             {
@@ -136,36 +168,44 @@ export default {
         </div>
       `;
     },
-    imageUploadRequired() {
-      return this.avatarData.hasNewImage ||
-        (!this.avatarData.hasNewImage && !this.avatarData.oldImage &&
-          this.user.avatar);
+    openFileChooser() {
+      this.enableImageUpload = true;
+      this.$nextTick()
+        .then(() => {
+          setTimeout(() => {
+            this.$refs.imageField.openFileSelectionWindow();
+          }, 150);
+        });
     },
     uploadImage() {
       return this.$refs.imageField.toBlob()
         .then(blob => this.saveAvatar({
           blob: blob,
-          userId: this.user.id
-        }));
-    },
-    ensureAvatar() {
-      if (!this.imageUploadRequired()) {
-        return Promise.resolve(this.userData.avatar);
-      }
-      return this.uploadImage()
+          userId: this.user.id,
+          mimeType: this.imageOutputMimeType
+        }))
         .then(res => {
           return (res.status !== 200)
             // eslint-disable-next-line prefer-promise-reject-errors
             ? Promise.reject()
             : Promise.resolve(res.data);
-        });
+        })
+        .then(avatarPath => {
+          let tempUser = Object.assign({}, this.user);
+          tempUser.avatar = avatarPath;
+          return this.save(tempUser);
+        })
+        .then(() => this.resetImageReady());
+    },
+    resetImageReady() {
+      this.enableImageUpload = false;
+      this.imageReadyForUpload = false;
     }
   },
   watch: {
     user: {
       handler({ id, firstName, lastName, avatar }) {
         Object.assign(this.userData, { id, firstName, lastName, avatar });
-        this.avatarData.oldImage = avatar;
       },
       immediate: true
     }
@@ -190,7 +230,29 @@ $error: #d13d00;
 }
 
 form .fields {
-  width: 60%;
+  width: 80%;
+}
+
+.forms {
+  display: flex;
+}
+
+.profile-form {
+  &-data {
+    width: 65%;
+  }
+
+  &-avatar {
+    width: 30%;
+  }
+}
+
+.btn-container {
+  text-align: center;
+}
+
+.image-submit-btn {
+  margin-left: 1em;
 }
 
 .toast-notification /deep/ {

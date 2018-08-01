@@ -24,6 +24,7 @@ function list({ query: { email, emailLike, role } }, res) {
 function create(req, res) {
   const { body } = req;
   const origin = req.origin();
+  body.avatar = getRandomDefaultAvatar();
   return User.findOne({ where: { email: body.email } })
     .then(user => !user || createError(NOT_FOUND, 'User already exists!'))
     .then(() => User.invite(pick(body, inputAttrs), { origin }))
@@ -73,24 +74,63 @@ function resetPassword({ body, params }, res) {
     .then(() => res.end());
 }
 
-function saveAvatar({ file }, res) {
-  if (!file || !file.path) res.send('');
+function saveAvatar({ file, user }, res) {
   let destDirPath = path.join(__dirname, `./..`);
+  let destSubDir = 'images';
+
+  return saveImage(file, destDirPath, destSubDir)
+    .then(newPath => {
+      return deleteImage(user.avatar, destDirPath, destSubDir)
+        .then(() => { return Promise.resolve(newPath); });
+    })
+    .then(newPath => res.send(newPath))
+    .catch(err => res.sendStatus(500).send(err.message));
+}
+
+function saveImage(file, destDirPath, destSubDir) {
   return new Promise((resolve, reject) => {
     fs.rename(
       file.path,
-      `${destDirPath}/${file.filename}`,
+      `${destDirPath}/${destSubDir}/${file.filename}`,
       err => {
         if (err) reject(err);
         let destDirName = destDirPath.split(path.sep).pop();
-        resolve(
-          `${destDirName}/${file.filename}`
-        );
+        resolve(`${destDirName}/${destSubDir}/${file.filename}`);
       }
     );
-  })
-  .then(newPath => res.send(newPath))
-  .catch(err => res.sendStatus(500).send(err.message));
+  });
+}
+
+function deleteImage(filename, destDirPath, destSubDir) {
+  return new Promise((resolve, reject) => {
+    if (!filename) resolve();
+    fs.unlink(`${destDirPath}/${destSubDir}/${path.basename(filename)}`, err => {
+      if (err && err.code !== 'ENOENT') reject(err);
+      resolve();
+    });
+  });
+}
+
+// TODO: Replace hardcoded data with actual data
+function getRandomDefaultAvatar() {
+  let temporarilyHardcodedImageDirectory = 'server/images';
+  let temporarilyHardcodedImageNames = [
+    'blue_dark.png',
+    'blue_light.png',
+    'green_dark.png',
+    'green_light.png',
+    'orange.png',
+    'pink.png',
+    'purple.png',
+    'red.png',
+    'teal.png',
+    'yellow.png'
+  ];
+  let randomIndex = Math.floor(
+    Math.random() * temporarilyHardcodedImageNames.length
+  );
+  let randomImageName = temporarilyHardcodedImageNames[randomIndex];
+  return `${temporarilyHardcodedImageDirectory}/icon_default_${randomImageName}`;
 }
 
 module.exports = {

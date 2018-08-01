@@ -1,31 +1,39 @@
 <template>
-  <span v-html="imageHtml" class="avatar-container"></span>
+  <div
+    class="avatar-container"
+    :width="width"
+    :height="height">
+    <img
+      :src="image"
+      :width="width"
+      :height="height"
+      class="avatar-image"/>
+  </div>
 </template>
 
 <script>
 export default {
   name: 'user-avatar',
-  props: ['image'],
-  computed: {
-    imageHtml() {
-      if (!this.image) {
-        return `<span class="icon is-medium mdi mdi-36px mdi-account-box"/>`;
-      }
-      return `
-        <span class="icon is-medium mdi mdi-36px">
-          <img src="${this.image}" class="avatar-image"/>
-        </span>
-      `;
-    }
+  props: {
+    image: String,
+    width: { type: Number, default: 30 },
+    height: { type: Number, default: 30 }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.avatar-container /deep/ {
-  .avatar-image {
-    border-radius: 5px;
-    padding: 2px;
+  .avatar {
+    &-container {
+      display: inline-grid;
+      padding: 1px;
+      padding-bottom: 5px !important;
+    }
+
+    &-image {
+      box-sizing: content-box;
+      border-radius: 5px;
+      border: 1px solid #aaa;
+    }
   }
-}
 </style>

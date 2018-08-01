@@ -11,7 +11,7 @@
         <div class="navbar-item">
           <dropdown>
             <span slot="header">
-              <user-avatar :image="avatar"/>
+              <user-avatar :image="avatar" :width="25" :height="25" />
               <span class="user-email">
                 {{ user.email }}
               </span>
@@ -66,6 +66,6 @@ export default {
 .user-email {
   vertical-align: top;
   text-align: center;
-  margin-left: 10px;
+  margin-left: 2px;
 }
 </style>

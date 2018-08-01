@@ -4,11 +4,14 @@ const auth = require('../common/auth').authenticate('jwt');
 const ctrl = require('./user.controller');
 const router = require('express').Router();
 const multer = require('multer');
+const uniqid = require('uniqid');
+const mime = require('mime-types');
 
 const multerStorage = multer.diskStorage({
   destination: (req, file, cb) => { cb(null, './tmp/'); },
   filename: (req, file, cb) => {
-    cb(null, req.user.id + '.jpg');
+    let extension = mime.extension(mime.contentType(file.originalname));
+    cb(null, `${uniqid()}.${extension}`);
   }
 });
 

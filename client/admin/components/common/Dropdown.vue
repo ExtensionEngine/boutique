@@ -54,7 +54,8 @@ export default {
 $dropdownColor: #eee;
 
 .menu-chevron {
-  margin-left: 5px !important;
+  margin-right: 1px !important;
+  margin-bottom: 0.3em;
 }
 
 .dropdown {
@@ -64,6 +65,7 @@ $dropdownColor: #eee;
   }
 
   &-header {
+    padding: 5px;
     color: #0ccce8;
     font-weight: 500;
   }
