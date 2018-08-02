@@ -51,23 +51,27 @@
 
 <script>
 import humanize from 'humanize-string';
+import humanFormat from 'human-format';
+
+const imageDimension = {
+  type: Number,
+  default: 200,
+  validator: value => value && value <= 500
+};
 
 export default {
   name: 'v-image',
   props: {
     name: { type: String, required: true },
-    sizeLimit: { type: String },
+    sizeLimit: { type: String, validator: value => humanFormat.parse(value) },
     fileInputTypes: { type: Array, default: () => ['image/jpeg', 'image/png'] },
     fileOutputType: { type: String, default: 'image/jpeg' },
-    imageWidth: { type: Number, default: 200 },
-    imageHeight: { type: Number, default: 200 },
+    imageWidth: imageDimension,
+    imageHeight: imageDimension,
     placeholder: { type: String, default: '' }
   },
   data() {
-    return {
-      imageCropper: {},
-      sizeLimitInBytes: 220000 // TODO: Temporary; add custom parser to extract size and unit from sizeLimit prop
-    };
+    return { imageCropper: {} };
   },
   computed: {
     hasImage() {
@@ -75,6 +79,9 @@ export default {
     },
     imageInputType() {
       return this.fileInputTypes.join();
+    },
+    sizeLimitInBytes() {
+      return humanFormat.parse(this.sizeLimit);
     },
     label() {
       return humanize(this.name);
@@ -100,12 +107,10 @@ export default {
     onImageSizeExceeded() {
       this.vErrors.add({
         field: this.name,
-        msg: `The image is too large. Maximum image size is ${this.sizeLimitKb} kilobytes.`
+        msg: `The image is too large. Maximum image size: ${this.sizeLimit}`
       });
     },
-    onImageReady() {
-      this.$emit('imageReady');
-    }
+    onImageReady() { this.$emit('imageReady'); }
   },
   inject: ['$validator']
 };

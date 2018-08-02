@@ -41,7 +41,7 @@
           :imageHeight="200"
           :placeholder="imagePlaceholder"
           :fileOutputType="imageOutputMimeType"
-          sizeLimit="100kB">
+          sizeLimit="220 kB">
         </v-image>
         <div class="btn-container">
           <div v-if="enableImageUpload">

@@ -12,12 +12,18 @@
 </template>
 
 <script>
+const avatarDimension = {
+  type: Number,
+  default: 30,
+  validator: value => value && value <= 100
+};
+
 export default {
   name: 'user-avatar',
   props: {
     image: String,
-    width: { type: Number, default: 30 },
-    height: { type: Number, default: 30 }
+    width: avatarDimension,
+    height: avatarDimension
   }
 };
 </script>
