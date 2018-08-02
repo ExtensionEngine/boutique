@@ -55,7 +55,6 @@ $dropdownColor: #eee;
 
 .menu-chevron {
   margin-right: 1px !important;
-  margin-bottom: 0.3em;
 }
 
 .dropdown {

@@ -27,11 +27,10 @@ export default {
     &-container {
       display: inline-grid;
       padding: 1px;
-      padding-bottom: 5px !important;
     }
 
     &-image {
-      box-sizing: content-box;
+      box-sizing: border-box;
       border-radius: 5px;
       border: 1px solid #aaa;
     }

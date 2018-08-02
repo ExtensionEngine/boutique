@@ -11,7 +11,11 @@
         <div class="navbar-item">
           <dropdown>
             <span slot="header">
-              <user-avatar :image="avatar" :width="25" :height="25" />
+              <user-avatar
+                :image="user.avatar"
+                :width="25"
+                :height="25"
+                class="user-avatar"/>
               <span class="user-email">
                 {{ user.email }}
               </span>
@@ -42,9 +46,6 @@ import UserAvatar from '@/common/components/user/Avatar';
 
 export default {
   name: 'lms-navbar',
-  data() {
-    return { avatar: '' };
-  },
   computed: mapState('auth', ['user']),
   methods: mapActions('auth', ['logout']),
   mounted() {
@@ -52,20 +53,20 @@ export default {
     //       https://bulma.io/documentation/components/navbar/#fixed-navbar
     document.documentElement.classList.add('has-navbar-fixed-top');
   },
-  watch: {
-    user: {
-      handler({ avatar }) { this.avatar = avatar; },
-      immediate: true
-    }
-  },
   components: { Dropdown, UserAvatar }
 };
 </script>
 
 <style lang="scss" scoped>
-.user-email {
-  vertical-align: top;
-  text-align: center;
-  margin-left: 2px;
+.user {
+  &-avatar {
+    vertical-align: top;
+  }
+
+  &-email {
+    text-align: center;
+    vertical-align: top;
+    margin-left: 2px;
+  }
 }
 </style>
