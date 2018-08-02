@@ -17,7 +17,9 @@
       </thead>
       <tbody>
         <tr v-for="user in users" :key="user._cid">
-          <td><user-avatar :image="user.avatar"/></td>
+          <td>
+            <img :src="user.avatar" :width="32" :height="32" class="user-avatar"/>
+          </td>
           <td>{{ user.email }}</td>
           <td>{{ user.firstName }}</td>
           <td>{{ user.lastName }}</td>
@@ -43,7 +45,6 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import UserModal from './UserModal';
-import UserAvatar from '@/common/components/user/Avatar';
 
 export default {
   name: 'user-list',
@@ -68,6 +69,6 @@ export default {
   mounted() {
     this.fetch();
   },
-  components: { UserModal, UserAvatar }
+  components: { UserModal }
 };
 </script>

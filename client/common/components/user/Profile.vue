@@ -34,39 +34,37 @@
         @submit.prevent="uploadImage"
         class="profile-form-avatar">
         <v-image
-          @imageReady="imageReadyForUpload=true;"
+          @imageReady="value => { imageReadyForUpload = value; }"
           ref="imageField"
           name="avatar"
           :imageWidth="200"
           :imageHeight="200"
-          :placeholder="imagePlaceholder"
           :fileOutputType="imageOutputMimeType"
+          :placeholderImage="{url: user.avatar, show: showImagePlaceholder}"
+          :fileSelectionButton="fileSelectionButtonParameters"
           sizeLimit="220 kB">
         </v-image>
         <div class="btn-container">
-          <div v-if="enableImageUpload">
+          <div v-if="imageReadyForUpload">
             <button
-              @click="resetImageReady"
+              @click="imageReadyForUpload=false"
               type="button"
-              class="button is-primary">
+              class="button is-primary is-outlined">
               Cancel
             </button>
             <button
-              :disabled="!imageReadyForUpload"
               type="submit"
               class="button is-primary image-submit-btn">
               Submit
             </button>
-          </div>
-          <div v-if="!enableImageUpload">  
-            <button
-              @click="openFileChooser"
-              type="button"
-              v-if="!imageReadyForUpload"
-              class="button is-primary">
-              Upload New Image
-            </button>
-          </div>
+          </div> 
+          <button
+            @click="openFileChooser"
+            v-if="!imageReadyForUpload"
+            type="button"
+            class="button is-primary is-outlined">
+            Upload New Image
+          </button>
         </div>
       </form>
     </div>
@@ -101,7 +99,6 @@ export default {
         lastName: '',
         avatar: ''
       },
-      enableImageUpload: false,
       imageReadyForUpload: false,
       imageOutputMimeType: 'image/png'
     };
@@ -112,8 +109,14 @@ export default {
       return this.user.firstName !== this.userData.firstName ||
              this.user.lastName !== this.userData.lastName;
     },
-    imagePlaceholder() {
-      return this.enableImageUpload ? '' : this.user.avatar;
+    showImagePlaceholder() {
+      return !this.imageReadyForUpload;
+    },
+    fileSelectionButtonParameters() {
+      return {
+        enable: this.imageReadyForUpload,
+        text: this.imageReadyForUpload ? 'Choose...' : ''
+      };
     }
   },
   methods: {
@@ -169,13 +172,7 @@ export default {
       `;
     },
     openFileChooser() {
-      this.enableImageUpload = true;
-      this.$nextTick()
-        .then(() => {
-          setTimeout(() => {
-            this.$refs.imageField.openFileSelectionWindow();
-          }, 150);
-        });
+      this.$refs.imageField.openFileSelectionWindow();
     },
     uploadImage() {
       return this.$refs.imageField.toBlob()
@@ -195,11 +192,10 @@ export default {
           tempUser.avatar = avatarPath;
           return this.save(tempUser);
         })
-        .then(() => this.resetImageReady());
-    },
-    resetImageReady() {
-      this.enableImageUpload = false;
-      this.imageReadyForUpload = false;
+        .then(() => {
+          this.imageReadyForUpload = false;
+          this.$refs.imageField.reset();
+        });
     }
   },
   watch: {

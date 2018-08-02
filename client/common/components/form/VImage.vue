@@ -3,13 +3,13 @@
     <div class="image-container">
       <label class="label">{{ label }}</label>
       <img
-        v-if="placeholder"
-        :src="placeholder"
+        v-if="showPlaceholderImage"
+        :src="placeholderImage.url"
         :width="imageWidth"
         :height="imageHeight"
         class="placeholder-image"/>
       <croppa
-        v-if="!placeholder"
+        v-show="!showPlaceholderImage"
         @file-choose="onImageReady"
         @file-size-exceed="onImageSizeExceeded"
         v-model="imageCropper"
@@ -43,7 +43,17 @@
         </div>
       </croppa>
     </div>
-    <p v-visible="showError" class="help is-danger">
+    <div class="file-choose-btn-container">
+      <button
+        @click="openFileSelectionWindow"
+        v-if="fileSelectionButton.enable"
+        :style="fileSelectionButton.text ? '' : 'visibility: hidden;'"
+        type="button"
+        class="button is-light is-small file-choose-btn">
+        {{ fileSelectionButton.text }}
+      </button>
+    </div>
+    <p v-if="showError" class="help is-danger">
       {{ vErrors.first(name) || '&nbsp;' }}
     </p>
   </div>
@@ -56,19 +66,37 @@ import humanFormat from 'human-format';
 const imageDimension = {
   type: Number,
   default: 200,
-  validator: value => value && value <= 500
+  validator: value => value > 0 && value <= 500
 };
+const sizeLimitFallback = '100 kB';
 
 export default {
   name: 'v-image',
   props: {
     name: { type: String, required: true },
-    sizeLimit: { type: String, validator: value => humanFormat.parse(value) },
+    sizeLimit: {
+      type: String,
+      validator: value => {
+        try {
+          let parsedSize = humanFormat.parse(value);
+          return parsedSize > 0 && parsedSize <= humanFormat.parse('100 MB');
+        } catch (err) {
+          return false;
+        }
+      }
+    },
     fileInputTypes: { type: Array, default: () => ['image/jpeg', 'image/png'] },
     fileOutputType: { type: String, default: 'image/jpeg' },
     imageWidth: imageDimension,
     imageHeight: imageDimension,
-    placeholder: { type: String, default: '' }
+    placeholderImage: {
+      url: { type: String, default: '' },
+      show: { type: Boolean, default: false }
+    },
+    fileSelectionButton: {
+      enable: { type: Boolean, default: false },
+      text: { type: String, default: '' }
+    }
   },
   data() {
     return { imageCropper: {} };
@@ -78,10 +106,18 @@ export default {
       return this.imageCropper.imageSet;
     },
     imageInputType() {
-      return this.fileInputTypes.join();
+      return this.fileInputTypes.join(',');
     },
     sizeLimitInBytes() {
-      return humanFormat.parse(this.sizeLimit);
+      try {
+        return humanFormat.parse(this.sizeLimit);
+      } catch (err) {
+        return humanFormat.parse(sizeLimitFallback);
+      }
+    },
+    showPlaceholderImage() {
+      return this.placeholderImage.show || (this.showError && !this.hasImage &&
+        this.placeholderImage.url);
     },
     label() {
       return humanize(this.name);
@@ -102,7 +138,11 @@ export default {
       });
     },
     openFileSelectionWindow() {
-      this.imageCropper.chooseFile(); // TODO: The file chooser never opens; fix
+      this.imageCropper.chooseFile();
+    },
+    reset() {
+      this.imageCropper.remove();
+      this.vErrors.clear();
     },
     onImageSizeExceeded() {
       this.vErrors.add({
@@ -110,7 +150,15 @@ export default {
         msg: `The image is too large. Maximum image size: ${this.sizeLimit}`
       });
     },
-    onImageReady() { this.$emit('imageReady'); }
+    onImageReady(file) {
+      // TODO: find a better means of validating the image?
+      if (file.size <= this.sizeLimitInBytes) {
+        this.$emit('imageReady', true);
+        this.vErrors.clear();
+      } else {
+        this.$emit('imageReady', false);
+      }
+    }
   },
   inject: ['$validator']
 };
@@ -149,5 +197,11 @@ export default {
     bottom: 1px;
     flex-direction: column;
   }
+}
+
+.file-choose-btn-container {
+  display: block;
+  text-align: center;
+  margin-top: 0.5em;
 }
 </style>

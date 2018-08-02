@@ -11,10 +11,10 @@
         <div class="navbar-item">
           <dropdown>
             <span slot="header">
-              <user-avatar
-                :image="user.avatar"
-                :width="25"
-                :height="25"
+              <img
+                :src="user.avatar"
+                :width="24"
+                :height="24"
                 class="user-avatar"/>
               <span class="user-email">
                 {{ user.email }}
@@ -42,7 +42,6 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import Dropdown from './Dropdown';
-import UserAvatar from '@/common/components/user/Avatar';
 
 export default {
   name: 'lms-navbar',
@@ -53,7 +52,7 @@ export default {
     //       https://bulma.io/documentation/components/navbar/#fixed-navbar
     document.documentElement.classList.add('has-navbar-fixed-top');
   },
-  components: { Dropdown, UserAvatar }
+  components: { Dropdown }
 };
 </script>
 

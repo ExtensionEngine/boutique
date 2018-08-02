@@ -64,6 +64,7 @@ $dropdownColor: #eee;
   }
 
   &-header {
+    height: auto;
     padding: 5px;
     color: #0ccce8;
     font-weight: 500;
