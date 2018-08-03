@@ -68,7 +68,7 @@
         </div>
       </form>
     </div>
-    <vue-snotify class="toast-notification"></vue-snotify>
+    <toast-notification ref="toastMessage"></toast-notification>
   </div>
 </template>
 
@@ -77,16 +77,7 @@ import { mapActions, mapState } from 'vuex';
 import { withValidation } from '@/common/validation';
 import VInput from '@/common/components/form/VInput';
 import VImage from '@/common/components/form/VImage';
-
-const snotifyConfig = {
-  timeout: 3000,
-  showProgressBar: false,
-  closeOnClick: true,
-  pauseOnHover: true,
-  position: 'centerCenter',
-  backdrop: 0.15,
-  icon: false
-};
+import ToastNotification from '@/common/components/toast/Notification';
 
 export default {
   name: 'user-profile',
@@ -129,47 +120,12 @@ export default {
       });
     },
     save(user) {
-      this.$snotify.async(
+      this.$refs.toastMessage.async(
         'Submitting data...',
-        '',
-        () => this.updateUser(user)
-          .then(...this.toast(
-            snotifyConfig,
-            {
-              success: 'Changes saved successfully!',
-              error: 'There was a problem updating your data. Please try again later.'
-            }
-          )),
-        snotifyConfig
+        () => this.updateUser(user),
+        'Changes saved successfully!',
+        'There was a problem updating your data. Please try again later.'
       );
-    },
-    toast(config, { success, error } = { success: 'success', error: 'error' }) {
-      const successConfig = {
-        title: '',
-        body: success,
-        config: {
-          ...config,
-          html: this.innerHtml(success, 'checkbox-marked-circle-outline')
-        }
-      };
-      const errorConfig = {
-        title: '',
-        body: error,
-        config: {
-          ...config,
-          timeout: 0,
-          html: this.innerHtml(error, 'close-circle-outline')
-        }
-      };
-      return [() => successConfig, () => Promise.reject(errorConfig)];
-    },
-    innerHtml(msg, icon) {
-      return `
-        <div class="message">
-          <p>${msg}</p>
-          <span class="icon is-medium mdi mdi-36px mdi-${icon}"/>
-        </div>
-      `;
     },
     openFileChooser() {
       this.$refs.imageField.openFileSelectionWindow();
@@ -206,15 +162,12 @@ export default {
       immediate: true
     }
   },
-  components: { VInput, VImage }
+  components: { VInput, VImage, ToastNotification }
 };
 </script>
 
 <style lang="scss" scoped>
 $userName: #00d1b2;
-$notificationText: #f7f7f7;
-$success: #0ce889;
-$error: #d13d00;
 
 .profile-greeting {
   margin-bottom: 20px;
@@ -249,42 +202,5 @@ form .fields {
 
 .image-submit-btn {
   margin-left: 1em;
-}
-
-.toast-notification /deep/ {
-  .snotify {
-    min-width: 400px;
-
-    &Toast__inner {
-      padding: 5px 15px;
-      color: $notificationText;
-
-      .message {
-        display: flex;
-        width: 100%;
-        align-self: center;
-        justify-content: space-between;
-        background: none;
-
-        p {
-          flex: 1;
-          text-align: center;
-        }
-
-        .icon {
-          display: table-cell;
-          vertical-align: middle;
-        }
-      }
-    }
-
-    &-success {
-      background: $success;
-    }
-
-    &-error {
-      background: $error;
-    }
-  }
 }
 </style>
