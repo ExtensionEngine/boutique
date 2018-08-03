@@ -21,6 +21,7 @@
         :file-size-limit="sizeLimitInBytes"
         :accept="imageInputType"
         data-vv-delay="1000">
+        <transition name="fade">
         <div
           v-if="hasImage"
           class="zoom-controls">
@@ -41,9 +42,11 @@
             </span>
             </button>
         </div>
+        </transition>
       </croppa>
     </div>
     <div class="file-choose-btn-container">
+      <transition name="fade">
       <button
         @click="openFileSelectionWindow"
         v-if="fileSelectionButton.enable"
@@ -52,6 +55,7 @@
         class="button is-light is-small file-choose-btn">
         {{ fileSelectionButton.text }}
       </button>
+      </transition>
     </div>
     <p v-if="showError" class="help is-danger">
       {{ vErrors.first(name) || '&nbsp;' }}
@@ -203,5 +207,13 @@ export default {
   display: block;
   text-align: center;
   margin-top: 0.5em;
+}
+
+.fade-enter-active {
+  transition: opacity 2s;
+}
+
+.fade-enter {
+  opacity: 0;
 }
 </style>

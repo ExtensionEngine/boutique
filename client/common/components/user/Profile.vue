@@ -40,7 +40,7 @@
           :imageWidth="200"
           :imageHeight="200"
           :fileOutputType="imageOutputMimeType"
-          :placeholderImage="{url: user.avatar, show: showImagePlaceholder}"
+          :placeholderImage="{url: user.avatar, show: !imageReadyForUpload}"
           :fileSelectionButton="fileSelectionButtonParameters"
           sizeLimit="220 kB">
         </v-image>
@@ -54,7 +54,7 @@
             </button>
             <button
               type="submit"
-              class="button is-primary image-submit-btn">
+              class="button is-primary">
               Submit
             </button>
           </div> 
@@ -99,9 +99,6 @@ export default {
     isDirty() {
       return this.user.firstName !== this.userData.firstName ||
              this.user.lastName !== this.userData.lastName;
-    },
-    showImagePlaceholder() {
-      return !this.imageReadyForUpload;
     },
     fileSelectionButtonParameters() {
       return {
@@ -148,10 +145,10 @@ export default {
           tempUser.avatar = avatarPath;
           return this.save(tempUser);
         })
-        .then(() => {
-          this.imageReadyForUpload = false;
-          this.$refs.imageField.reset();
-        });
+      .then(() => setTimeout(() => {
+        this.imageReadyForUpload = false;
+        this.$refs.imageField.reset();
+      }, 1000));
     }
   },
   watch: {
@@ -198,9 +195,10 @@ form .fields {
 
 .btn-container {
   text-align: center;
+
+  .button {
+    margin: 0 10px;
+  }
 }
 
-.image-submit-btn {
-  margin-left: 1em;
-}
 </style>
