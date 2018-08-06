@@ -13,48 +13,53 @@ const snotifyConfig = {
   icon: false
 };
 
+const generateHtmlTemplate = (msg, icon) => {
+  return `
+    <div class="message">
+      <p>${msg}</p>
+      <span class="icon is-medium mdi mdi-36px mdi-${icon}"/>
+    </div>
+  `;
+};
+
+const generateToastConfig = (
+  config,
+  { success, error } = { success: 'success', error: 'error' }
+) => {
+  const successConfig = {
+    title: '',
+    body: success,
+    config: {
+      ...config,
+      html: generateHtmlTemplate(success, 'checkbox-marked-circle-outline')
+    }
+  };
+  const errorConfig = {
+    title: '',
+    body: error,
+    config: {
+      ...config,
+      timeout: 0,
+      html: generateHtmlTemplate(error, 'close-circle-outline')
+    }
+  };
+  return [() => successConfig, () => Promise.reject(errorConfig)];
+};
+
 export default {
   name: 'toast-notification',
   methods: {
-    async(loadingMsg, callback, successMsg, errorMsg) {
+    showToastAsync(loadingMsg, callback, successMsg, errorMsg) {
       this.$snotify.async(
         loadingMsg,
         '',
         () => callback()
-          .then(...this.toast(
+          .then(...generateToastConfig(
             snotifyConfig,
             { success: successMsg, error: errorMsg }
           )),
         snotifyConfig
       );
-    },
-    toast(config, { success, error } = { success: 'success', error: 'error' }) {
-      const successConfig = {
-        title: '',
-        body: success,
-        config: {
-          ...config,
-          html: this.innerHtml(success, 'checkbox-marked-circle-outline')
-        }
-      };
-      const errorConfig = {
-        title: '',
-        body: error,
-        config: {
-          ...config,
-          timeout: 0,
-          html: this.innerHtml(error, 'close-circle-outline')
-        }
-      };
-      return [() => successConfig, () => Promise.reject(errorConfig)];
-    },
-    innerHtml(msg, icon) {
-      return `
-        <div class="message">
-          <p>${msg}</p>
-          <span class="icon is-medium mdi mdi-36px mdi-${icon}"/>
-        </div>
-      `;
     }
   }
 };

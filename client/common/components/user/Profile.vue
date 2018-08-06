@@ -117,7 +117,7 @@ export default {
       });
     },
     save(user) {
-      this.$refs.toastMessage.async(
+      this.$refs.toastMessage.showToastAsync(
         'Submitting data...',
         () => this.updateUser(user),
         'Changes saved successfully!',
