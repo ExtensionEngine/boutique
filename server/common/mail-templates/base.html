@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <style>
+    /* CSS reset */
+    body,table,thead,tbody,tr,td,img {
+      padding: 0;
+      margin: 0;
+      border: none;
+      border-spacing: 0px;
+      border-collapse: collapse;
+      vertical-align: top;
+    }
+    /* Padding for small screens */
+    .wrapper {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    h1,h2,h3,h4,h5,h6,p {
+      margin: 0;
+      padding: 0;
+      padding-bottom: 20px;
+      line-height: 1.6;
+      font-family: 'Helvetica', 'Arial', sans-serif;
+    }
+    p,a,li {
+      font-family: 'Helvetica', 'Arial', sans-serif;
+    }
+    img {
+      width: 100%;
+      display: block;
+    }
+    @media only screen and (max-width: 620px) {
+      .wrapper .section {
+        width: 100%;
+      }
+      .wrapper .column {
+        width: 100%;
+        display: block;
+      }
+    }
+    .paleGreen {
+      background: #82e0aa;
+    }
+    .darkGray {
+      color: #363b38;
+    }
+    .justified {
+      text-align: justify;
+    }
+    .contentBody {
+      background: #fff;
+      padding: 20px 20px 0;
+      margin: 0 30px;
+      min-width: 540px;
+      max-width: 540px;
+      text-align: center;
+    }
+    
+    .roundedTop {
+      border-radius: 5px 5px 0 0;
+    }
+    .roundedBottom {
+      border-radius: 0 0 5px 5px;
+    }
+    .headerTable {
+      width: 100%;
+    }
+    .button {
+      background: #58d68d;
+      border-radius: 5px 30px;
+      text-align: center;
+      padding: 10px;
+      margin-bottom: 20px;
+      display: inline-block;
+    }
+    .button a {
+      color: #fff;
+      text-decoration: none;
+      padding: 0 10px 0;
+      text-shadow: 1px 1px 10px #abebc6;
+    }
+  </style>
+</head>
+<body>
+  <table width="100%" bgcolor="#d5f5e3">
+    <tbody>
+      <tr>
+        <td class="wrapper" width="640" align="center">
+          <table class="section header headerTable" cellpadding="0" cellspacing="0" width="640">
+            <tr>
+              <td class="column paleGreen" align="center" style="padding: 8% 0 0;">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td align="left">
+                        <div class="contentBody roundedTop" width="540">
+                          <h1 class="darkGray">{headerText}</h1>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td class="column" align="center" style="padding: 0 0 8%;">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td align="left">
+                        <div class="contentBody roundedBottom" width="540">
+                          <p class="justified darkGray">Dear {userName},</p>
+                          <p class="justified darkGray">{bodyText}</p>
+                          <span class="button">
+                            <a href="{button.url}">{button.text}</a>
+                          </span>
+                          <p class="justified darkGray">If you have any questions or comments, feel free to let us know.</p>
+                          <p class="justified darkGray">Happy learning,<br/>The LMS Team</p>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>
