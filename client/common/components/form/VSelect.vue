@@ -3,15 +3,15 @@
     <label class="label">{{ label }}</label>
     <div class="control">
       <multiselect
+        v-validate="validate"
         :value="resolvedValue"
         :name="name"
         v-bind="options"
-        v-validate="validate"
-        data-vv-delay="1000"
         @input="it => $emit('input', isValueObj ? (it && it.value) : it)"
         @close="close"
         @open="open"
-        @search-change="val => $emit('search-change', val)">
+        @search-change="val => $emit('search-change', val)"
+        data-vv-delay="1000">
       </multiselect>
     </div>
     <p v-visible="showError" class="help is-danger">
@@ -30,7 +30,11 @@ import Multiselect from 'vue-multiselect';
 export default {
   name: 'v-select',
   inheritAttrs: true,
-  props: ['name', 'value', 'validate'],
+  props: {
+    name: { type: String, required: true },
+    value: { type: [String, Number], default: null },
+    validate: { type: [String, Object], default: null }
+  },
   computed: {
     options() {
       return Object.assign({

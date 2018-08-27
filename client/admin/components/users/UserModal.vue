@@ -92,6 +92,13 @@ export default {
       });
     }
   },
+  watch: {
+    show(val) {
+      if (!val) return;
+      this.vErrors.clear();
+      if (!isEmpty(this.userData)) this.user = cloneDeep(this.userData);
+    }
+  },
   mounted() {
     if (this.$validator.rules['unique-email']) return;
     this.$validator.extend('unique-email', {
@@ -102,13 +109,6 @@ export default {
           .then(res => ({ valid: isEmpty(res.data.data) }));
       }
     });
-  },
-  watch: {
-    show(val) {
-      if (!val) return;
-      this.vErrors.clear();
-      if (!isEmpty(this.userData)) this.user = cloneDeep(this.userData);
-    }
   },
   components: { Modal, VInput, VSelect }
 };
