@@ -42,17 +42,17 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-import { role } from '@/../common/config';
-import { withValidation } from '@/common/validation';
 import cloneDeep from 'lodash/cloneDeep';
 import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
+import { mapActions } from 'vuex';
 import Modal from '@/common/components/Modal';
 import request from '@/common/api/request';
+import { role } from '@/../common/config';
 import VInput from '@/common/components/form/VInput';
 import VSelect from '@/common/components/form/VSelect';
+import { withValidation } from '@/common/validation';
 
 const resetUser = () => {
   return {

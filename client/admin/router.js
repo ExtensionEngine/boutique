@@ -1,19 +1,18 @@
-import get from 'lodash/get';
-import Router from 'vue-router';
-import store from './store';
-import Vue from 'vue';
-
 import AdminRoot from '@/admin/components/index';
 import Auth from '@/common/components/auth';
 import Enrollments from '@/admin/components/program-levels/ProgramLevel/Enrollments';
 import ForgotPassword from '@/common/components/auth/ForgotPassword';
+import get from 'lodash/get';
 import Login from '@/common/components/auth/Login';
 import NotFound from '@/admin/components/common/NotFound';
 import ProgramLevel from '@/admin/components/program-levels/ProgramLevel';
 import ProgramLevels from '@/admin/components/program-levels';
 import Programs from '@/admin/components/programs';
 import ResetPassword from '@/common/components/auth/ResetPassword';
+import Router from 'vue-router';
+import store from './store';
 import Users from '@/admin/components/users';
+import Vue from 'vue';
 
 Vue.use(Router);
 

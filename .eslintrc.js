@@ -24,6 +24,7 @@ module.exports = {
       anonymous: 'always',
       named: 'never'
     }],
+    'sort-imports': ['error', { ignoreCase: true }],
     // Vue rules
     'vue/html-self-closing': 'off',
     'vue/attribute-hyphenation': 'off',

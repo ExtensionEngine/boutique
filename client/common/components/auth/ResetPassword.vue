@@ -25,8 +25,8 @@
 
 <script>
 import { mapActions } from 'vuex';
-import { withValidation } from '@/common/validation';
 import VInput from '@/common/components/form/VInput';
+import { withValidation } from '@/common/validation';
 
 export default {
   mixins: [withValidation()],

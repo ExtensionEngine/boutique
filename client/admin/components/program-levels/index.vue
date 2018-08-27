@@ -41,10 +41,10 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
-import isEmpty from 'lodash/isEmpty';
+import { mapActions, mapState } from 'vuex';
 import find from 'lodash/find';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 import ProgramLevelModal from './ProgramLevelModal';
 
 export default {
