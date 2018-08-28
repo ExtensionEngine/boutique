@@ -12,8 +12,8 @@
           required: true,
           'unique-enrollment': { studentId, programLevelId }
         }"
-        name="student"
-        @search-change="search">
+        @search-change="search"
+        name="student">
       </v-select>
       <div class="controls field is-grouped is-grouped-right">
         <button @click="close" class="control button">Cancel</button>
@@ -24,14 +24,14 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-import { withValidation } from '@/common/validation';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
+import { mapActions } from 'vuex';
 import Modal from '@/common/components/Modal';
 import pick from 'lodash/pick';
 import request from '@/common/api/request';
 import VSelect from '@/common/components/form/VSelect';
+import { withValidation } from '@/common/validation';
 
 export default {
   name: 'enollment-modal',

@@ -12,9 +12,9 @@
       </v-input>
       <v-input
         v-model="passwordConfirmation"
+        :validate="{ rules: { required: true, is: password } }"
         type="password"
-        name="passwordConfirmation"
-        :validate="{ rules: { required: true, is: password } }">
+        name="passwordConfirmation">
       </v-input>
       <button class="button is-primary" type="submit">
         Change password
@@ -25,8 +25,8 @@
 
 <script>
 import { mapActions } from 'vuex';
-import { withValidation } from '@/common/validation';
 import VInput from '@/common/components/form/VInput';
+import { withValidation } from '@/common/validation';
 
 export default {
   mixins: [withValidation()],

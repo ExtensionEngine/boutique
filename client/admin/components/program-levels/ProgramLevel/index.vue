@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1 class="title">
-      {{ this.programLevel && this.programLevel.name }}
+      {{ programLevel && programLevel.name }}
     </h1>
     <div class="tabs">
       <ul>

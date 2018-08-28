@@ -48,7 +48,6 @@ export default {
 };
 </script>
 
-
 <style lang="scss" scoped>
 .well {
   font-size: 16px;

@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import isEmpty from 'lodash/isEmpty';
 import ProgramModal from './ProgramModal';
 

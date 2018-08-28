@@ -23,12 +23,12 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-import { withValidation } from '@/common/validation';
 import cloneDeep from 'lodash/cloneDeep';
 import isEmpty from 'lodash/isEmpty';
+import { mapActions } from 'vuex';
 import Modal from '@/common/components/Modal';
 import VInput from '@/common/components/form/VInput';
+import { withValidation } from '@/common/validation';
 
 const reset = () => ({ name: '', description: '' });
 

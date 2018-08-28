@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import UserModal from './UserModal';
 
 export default {

@@ -28,13 +28,13 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import { withValidation } from '@/common/validation';
 import cloneDeep from 'lodash/cloneDeep';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
 import Modal from '@/common/components/Modal';
 import VInput from '@/common/components/form/VInput';
 import VSelect from '@/common/components/form/VSelect';
+import { withValidation } from '@/common/validation';
 
 const reset = () => ({ name: '', programId: null });
 
