@@ -2,13 +2,18 @@
 
 const { Model } = require('sequelize');
 
-class ProgramLevel extends Model {
+class Course extends Model {
   static fields(DataTypes) {
     return {
       name: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: { notEmpty: true, len: [2, 255] }
+      },
+      description: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: { notEmpty: true, len: [2, 2000] }
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -25,21 +30,16 @@ class ProgramLevel extends Model {
     };
   }
 
-  static associate({ Enrollment, Program, Course }) {
-    this.belongsTo(Program, {
-      foreignKey: { name: 'programId', field: 'program_id' }
-    });
-    this.hasMany(Enrollment, {
-      foreignKey: { name: 'program_level_id', field: 'program_level_id' }
-    });
-    this.hasMany(Course, {
-      foreignKey: { name: 'course_id', field: 'course_id' }
+  static associate({ ProgramLevel }) {
+    this.belongsTo(ProgramLevel, {
+      as: 'programLevel',
+      foreignKey: { name: 'programLevelId', field: 'program_level_id' }
     });
   }
 
   static options() {
     return {
-      modelName: 'program_level',
+      modelName: 'course',
       timestamps: true,
       paranoid: true,
       freezeTableName: true
@@ -47,4 +47,4 @@ class ProgramLevel extends Model {
   }
 }
 
-module.exports = ProgramLevel;
+module.exports = Course;

@@ -13,6 +13,7 @@ const User = require('../../user/user.model');
 const Program = require('../../program/program.model');
 const ProgramLevel = require('../../program-level/program-level.model');
 const Enrollment = require('../../enrollment/enrollment.model');
+const Course = require('../../course/course.model');
 
 const isProduction = process.env.NODE_ENV === 'production';
 const sequelize = new Sequelize(config.url, config);
@@ -53,7 +54,8 @@ const models = {
   User: defineModel(User),
   Program: defineModel(Program),
   ProgramLevel: defineModel(ProgramLevel),
-  Enrollment: defineModel(Enrollment)
+  Enrollment: defineModel(Enrollment),
+  Course: defineModel(Course)
 };
 
 forEach(models, model => {
