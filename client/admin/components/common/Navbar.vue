@@ -27,10 +27,10 @@
                 </span>
                 Profile Settings
               </router-link>
-              <a href="#" @click="logout">
+              <a @click="logout" href="#">
                 <span class="icon is-small mdi mdi-18px mdi-logout"></span>
                 Logout
-              </a>              
+              </a>
             </div>
           </dropdown>
         </div>

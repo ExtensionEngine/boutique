@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="profile-greeting">
-      Welcome, 
-      <span class="full-name">{{ user.firstName }} {{ user.lastName }}</span>. 
+      Welcome,
+      <span class="full-name">{{ user.firstName }} {{ user.lastName }}</span>.
       You can modify your data using the following forms:
     </div>
     <div class="forms">
@@ -23,8 +23,8 @@
             validate="required|alpha|min:2|max:50">
           </v-input>
         </div>
-        <button 
-          :disabled="!isDirty" 
+        <button
+          :disabled="!isDirty"
           class="button is-primary"
           type="submit">
           Submit
@@ -34,14 +34,14 @@
         @submit.prevent="uploadImage"
         class="profile-form-avatar">
         <v-image
-          @imageReady="value => { imageReadyForUpload = value; }"
           ref="imageField"
-          name="avatar"
+          :fileSelectionButton="fileSelectionButtonParameters"
           :imageWidth="200"
           :imageHeight="200"
           :fileOutputType="imageOutputMimeType"
           :placeholderImage="{url: user.avatar, show: !imageReadyForUpload}"
-          :fileSelectionButton="fileSelectionButtonParameters"
+          @imageReady="value => { imageReadyForUpload = value; }"
+          name="avatar"
           sizeLimit="220 kB">
         </v-image>
         <div class="btn-container">
@@ -57,10 +57,10 @@
               class="button is-primary">
               Submit
             </button>
-          </div> 
+          </div>
           <button
-            @click="openFileChooser"
             v-if="!imageReadyForUpload"
+            @click="openFileChooser"
             type="button"
             class="button is-primary is-outlined">
             Upload New Image
@@ -74,10 +74,10 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import { withValidation } from '@/common/validation';
-import VInput from '@/common/components/form/VInput';
-import VImage from '@/common/components/form/VImage';
 import ToastNotification from '@/common/components/toast/Notification';
+import VImage from '@/common/components/form/VImage';
+import VInput from '@/common/components/form/VInput';
+import { withValidation } from '@/common/validation';
 
 export default {
   name: 'user-profile',

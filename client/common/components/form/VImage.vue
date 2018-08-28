@@ -10,8 +10,6 @@
         class="placeholder-image"/>
       <croppa
         v-show="!showPlaceholderImage"
-        @file-choose="onImageReady"
-        @file-size-exceed="onImageSizeExceeded"
         v-model="imageCropper"
         :width="imageWidth"
         :height="imageHeight"
@@ -20,41 +18,43 @@
         :show-remove-button="false"
         :file-size-limit="sizeLimitInBytes"
         :accept="imageInputType"
+        @file-choose="onImageReady"
+        @file-size-exceed="onImageSizeExceeded"
         data-vv-delay="1000">
         <transition name="fade">
-        <div
-          v-if="hasImage"
-          class="zoom-controls">
-          <button
-            type="button"
-            @click="imageCropper.zoom(true, 5)"
-            class="zoom">
-            <span
-              class="icon is-medium mdi mdi-36px mdi-magnify-plus-outline">
-            </span>
-          </button>       
-          <button
-            type="button"
-            @click="imageCropper.zoom(false, 5)"
-            class="zoom">
-            <span
-              class="icon is-medium mdi mdi-36px mdi-magnify-minus-outline">
-            </span>
+          <div
+            v-if="hasImage"
+            class="zoom-controls">
+            <button
+              @click="imageCropper.zoom(true, 5)"
+              type="button"
+              class="zoom">
+              <span
+                class="icon is-medium mdi mdi-36px mdi-magnify-plus-outline">
+              </span>
             </button>
-        </div>
+            <button
+              @click="imageCropper.zoom(false, 5)"
+              type="button"
+              class="zoom">
+              <span
+                class="icon is-medium mdi mdi-36px mdi-magnify-minus-outline">
+              </span>
+            </button>
+          </div>
         </transition>
       </croppa>
     </div>
     <div class="file-choose-btn-container">
       <transition name="fade">
-      <button
-        @click="openFileSelectionWindow"
-        v-if="fileSelectionButton.enable"
-        :style="fileSelectionButton.text ? '' : 'visibility: hidden;'"
-        type="button"
-        class="button is-light is-small file-choose-btn">
-        {{ fileSelectionButton.text }}
-      </button>
+        <button
+          v-if="fileSelectionButton.enable"
+          :style="fileSelectionButton.text ? '' : 'visibility: hidden;'"
+          @click="openFileSelectionWindow"
+          type="button"
+          class="button is-light is-small file-choose-btn">
+          {{ fileSelectionButton.text }}
+        </button>
       </transition>
     </div>
     <p v-if="showError" class="help is-danger">
@@ -64,8 +64,8 @@
 </template>
 
 <script>
-import humanize from 'humanize-string';
 import humanFormat from 'human-format';
+import humanize from 'humanize-string';
 
 const imageDimension = {
   type: Number,
@@ -80,6 +80,7 @@ export default {
     name: { type: String, required: true },
     sizeLimit: {
       type: String,
+      default: sizeLimitFallback,
       validator: value => {
         try {
           let parsedSize = humanFormat.parse(value);
@@ -91,15 +92,21 @@ export default {
     },
     fileInputTypes: { type: Array, default: () => ['image/jpeg', 'image/png'] },
     fileOutputType: { type: String, default: 'image/jpeg' },
+    // eslint-disable-next-line vue/require-default-prop
     imageWidth: imageDimension,
+    // eslint-disable-next-line vue/require-default-prop
     imageHeight: imageDimension,
     placeholderImage: {
+      type: Object,
       url: { type: String, default: '' },
-      show: { type: Boolean, default: false }
+      show: { type: Boolean, default: false },
+      default: () => ({ url: '', show: false })
     },
     fileSelectionButton: {
+      type: Object,
       enable: { type: Boolean, default: false },
-      text: { type: String, default: '' }
+      text: { type: String, default: '' },
+      default: () => ({ enable: false, text: '' })
     }
   },
   data() {

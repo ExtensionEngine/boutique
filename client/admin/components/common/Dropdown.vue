@@ -1,26 +1,26 @@
 <template>
   <div
-    class="dropdown is-active"
     v-click-outside="() => { showMenu = false; }"
-    @click="showMenu = !showMenu">
+    @click="showMenu = !showMenu"
+    class="dropdown is-active">
     <div class="dropdown-trigger">
       <button
         class="button dropdown-header is-transparent"
         aria-haspopup="true"
         aria-controls="dropdown-menu">
-          <slot name="header">Options</slot>
-          <span
-            :class="`mdi-chevron-${ showMenu ? 'up' : 'down' }`"
-            class="icon is-small mdi mdi-18px menu-chevron"
-            aria-hidden="true">
-          </span>
+        <slot name="header">Options</slot>
+        <span
+          :class="`mdi-chevron-${ showMenu ? 'up' : 'down' }`"
+          class="icon is-small mdi mdi-18px menu-chevron"
+          aria-hidden="true">
+        </span>
       </button>
     </div>
     <div
+      v-show="showMenu"
       id="dropdown-menu"
       class="dropdown-menu"
-      role="menu"
-      v-show="showMenu">
+      role="menu">
       <div class="dropdown-content">
         <slot name="menuItems"/>
       </div>
