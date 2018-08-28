@@ -5,8 +5,20 @@
     </h1>
     <div class="tabs">
       <ul>
-        <li class="is-active"><a>Enrollments</a></li>
-        <li><a>Content</a></li>
+        <li>
+          <router-link
+            :to="{ name: 'enrollments', params: { programLevelId: programLevel.id } }"
+            exact>
+            Enrollments
+          </router-link>
+        </li>
+        <li>
+          <router-link
+            :to="{ name: 'content', params: { programLevelId: programLevel.id } }"
+            exact>
+            Content
+          </router-link>
+        </li>
       </ul>
     </div>
     <router-view></router-view>
@@ -34,3 +46,10 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.router-link-active {
+  border-bottom-color: #3273dc;
+  color: #3273dc;
+}
+</style>

@@ -1,5 +1,6 @@
 import AdminRoot from '@/admin/components/index';
 import Auth from '@/common/components/auth';
+import Content from '@/admin/components/program-levels/ProgramLevel/Content';
 import Enrollments from '@/admin/components/program-levels/ProgramLevel/Enrollments';
 import ForgotPassword from '@/common/components/auth/ForgotPassword';
 import get from 'lodash/get';
@@ -61,6 +62,11 @@ const router = new Router({
         path: '',
         name: 'enrollments',
         component: Enrollments
+      },
+      {
+        path: 'content',
+        name: 'content',
+        component: Content
       }]
     }, {
       path: '/users',
