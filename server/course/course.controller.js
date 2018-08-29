@@ -1,6 +1,8 @@
 'use strict';
 
+const config = require('../config');
 const createError = require('http-errors');
+const createStorage = require('../common/storage');
 const find = require('lodash/find');
 const HttpStatus = require('http-status');
 const toInteger = require('lodash/toInteger');
@@ -25,7 +27,14 @@ function get(req, res, next) {
   next(createError(HttpStatus.NOT_FOUND, 'Course not found'));
 }
 
+function getCatalog(req, res) {
+  createStorage(config.storage)
+  .getCatalog()
+  .then(data => res.jsend.success(data));
+}
+
 module.exports = {
   index,
-  get
+  get,
+  getCatalog
 };
