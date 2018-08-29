@@ -11,7 +11,17 @@ class Course extends Model {
         validate: { notEmpty: true, len: [2, 255] }
       },
       description: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        validate: { notEmpty: true, len: [2, 2000] }
+      },
+      schema: {
         type: DataTypes.STRING,
+        allowNull: false,
+        validate: { notEmpty: true, len: [2, 255] }
+      },
+      structure: {
+        type: DataTypes.TEXT,
         allowNull: false,
         validate: { notEmpty: true, len: [2, 2000] }
       },

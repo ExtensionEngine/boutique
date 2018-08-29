@@ -22,7 +22,15 @@ module.exports = {
       allowNull: false
     },
     description: {
-      type: Sequelize.STRING(2000),
+      type: Sequelize.TEXT,
+      allowNull: false
+    },
+    schema: {
+      type: Sequelize.STRING,
+      allowNull: false
+    },
+    structure: {
+      type: Sequelize.TEXT,
       allowNull: false
     },
     createdAt: {
