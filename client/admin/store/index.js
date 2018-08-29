@@ -1,4 +1,5 @@
 import auth from '@/common/store/modules/auth';
+import courses from '@/admin/store/modules/courses';
 import enrollments from '@/admin/store/modules/enrollments';
 import plugins from '@/common/store/plugins';
 import programLevels from '@/admin/store/modules/program-levels';
@@ -12,6 +13,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   modules: {
     auth,
+    courses,
     enrollments,
     programLevels,
     programs,

@@ -17,21 +17,26 @@ module.exports = {
       onDelete: 'NO ACTION',
       allowNull: false
     },
+    courseId: {
+      field: 'course_id',
+      type: Sequelize.INTEGER,
+      allowNull: false
+    },
     name: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: true
     },
     description: {
       type: Sequelize.TEXT,
-      allowNull: false
+      allowNull: true
     },
     schema: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: true
     },
     structure: {
       type: Sequelize.TEXT,
-      allowNull: false
+      allowNull: true
     },
     createdAt: {
       type: Sequelize.DATE,

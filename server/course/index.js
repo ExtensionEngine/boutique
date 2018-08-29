@@ -5,10 +5,10 @@ const router = require('express').Router();
 
 router
   .get('/catalog', ctrl.getCatalog)
-  .get('/', ctrl.index)
-  .get('/:id', ctrl.get);
+  .get('/', ctrl.list)
+  .post('/', ctrl.create);
 
 module.exports = {
-  path: '/course',
+  path: '/courses',
   router
 };

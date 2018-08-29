@@ -1,40 +1,36 @@
 'use strict';
 
+const { Course } = require('../common/database');
 const config = require('../config');
-const createError = require('http-errors');
 const createStorage = require('../common/storage');
-const find = require('lodash/find');
-const HttpStatus = require('http-status');
-const toInteger = require('lodash/toInteger');
+const pick = require('lodash/pick');
+const assign = require('lodash/assign');
 
-// TODO: Use data from database!
-const courses = [{
-  id: 42,
-  name: 'Example course: A'
-}, {
-  id: 43,
-  name: 'Example course: B'
-}];
+const Storage = createStorage(config.storage);
+const processInput = input => pick(input, ['courseId', 'programLevelId']);
 
-function index(req, res) {
-  res.jsend.success(courses);
-}
-
-function get(req, res, next) {
-  const id = toInteger(req.params.id);
-  const course = find(courses, { id });
-  if (course) return res.jsend.success(course);
-  next(createError(HttpStatus.NOT_FOUND, 'Course not found'));
+function list(req, res) {
+  return Course.findAll()
+  .then(courses => res.jsend.success(courses));
 }
 
 function getCatalog(req, res) {
-  createStorage(config.storage)
-  .getCatalog()
+  Storage.getCatalog()
   .then(data => res.jsend.success(data));
 }
 
+function create({ body }, res) {
+  const data = processInput(body);
+  return Storage.getRepository(data.courseId)
+    .then(repositoryData => {
+      assign(data, (pick(repositoryData, ['name', 'schema', 'description'])));
+    })
+    .then(() => Course.create(data))
+    .then(course => res.jsend.success(course));
+}
+
 module.exports = {
-  index,
-  get,
-  getCatalog
+  list,
+  getCatalog,
+  create
 };

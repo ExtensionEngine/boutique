@@ -3,8 +3,8 @@
     <div class="content-modal">
       <h2 class="title is-4">Add Content</h2>
       <v-select
-        v-model="catalogItemId"
-        :options="catalog"
+        v-model="courseId"
+        :options="catalogList"
         :searchable="true"
         :isLoading="isLoading"
         :maxHeight="150"
@@ -13,7 +13,7 @@
       </v-select>
       <div class="controls field is-grouped is-grouped-right">
         <button @click="close" class="control button">Cancel</button>
-        <button class="control button is-primary">Add</button>
+        <button @click="add" class="control button is-primary">Add</button>
       </div>
     </div>
   </modal>
@@ -21,7 +21,9 @@
 
 <script>
 import map from 'lodash/map';
+import { mapActions } from 'vuex';
 import Modal from '@/common/components/Modal';
+import pick from 'lodash/pick';
 import request from '@/common/api/request';
 import VSelect from '@/common/components/form/VSelect';
 
@@ -34,19 +36,24 @@ export default {
   data() {
     return {
       isLoading: false,
-      catalogItemId: null,
-      catalog: []
+      courseId: null,
+      catalogList: []
     };
   },
   methods: {
+    ...mapActions('courses', ['save']),
+    add() {
+      this.save(pick(this, ['courseId', 'programLevelId']));
+      this.close();
+    },
     close() {
-      this.catalogItemId = null;
+      this.name = null;
       this.$emit('close');
     },
     search() {
-      request.get('/course/catalog').then(({ data: { data } }) => {
+      request.get('/courses/catalog').then(({ data: { data } }) => {
         this.isLoading = false;
-        this.catalog = map(data, it => ({
+        this.catalogList = map(data, it => ({
           value: it.id, label: `${it.name}`
         }));
       });

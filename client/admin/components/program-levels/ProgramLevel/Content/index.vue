@@ -31,31 +31,35 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex';
 import ContentModal from './ContentModal';
+import filter from 'lodash/filter';
 
 export default {
   name: 'content',
   data() {
     return {
-      showModal: false,
-      courses: [{
-        id: 42,
-        name: 'Example course: A'
-      }, {
-        id: 43,
-        name: 'Example course: B'
-      }]
+      showModal: false
     };
   },
   computed: {
+    ...mapState('courses', { coursesStore: 'items' }),
+    courses() {
+      const programLevelId = 2;
+      return filter(this.coursesStore, { programLevelId });
+    },
     programLevelId() {
       return parseInt(this.$route.params.programLevelId);
     }
   },
   methods: {
+    ...mapActions('courses', { fetchCourses: 'fetch' }),
     add() {
       this.showModal = true;
     }
+  },
+  created() {
+    return this.fetchCourses({ });
   },
   components: { ContentModal }
 };
