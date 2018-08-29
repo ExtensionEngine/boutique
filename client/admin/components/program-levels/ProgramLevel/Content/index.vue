@@ -22,10 +22,16 @@
         </tr>
       </tbody>
     </table>
+    <content-modal
+      :show="showModal"
+      :programLevelId="programLevelId"
+      @close="showModal = false">
+    </content-modal>
   </div>
 </template>
 
 <script>
+import ContentModal from './ContentModal';
 
 export default {
   name: 'content',
@@ -50,7 +56,8 @@ export default {
     add() {
       this.showModal = true;
     }
-  }
+  },
+  components: { ContentModal }
 };
 </script>
 
