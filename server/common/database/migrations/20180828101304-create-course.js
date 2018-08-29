@@ -24,19 +24,19 @@ module.exports = {
     },
     name: {
       type: Sequelize.STRING,
-      allowNull: true
+      allowNull: false
     },
     description: {
       type: Sequelize.TEXT,
-      allowNull: true
+      allowNull: false
     },
     schema: {
       type: Sequelize.STRING,
-      allowNull: true
+      allowNull: false
     },
     structure: {
       type: Sequelize.TEXT,
-      allowNull: true
+      allowNull: false
     },
     createdAt: {
       type: Sequelize.DATE,

@@ -8,17 +8,17 @@
       </button>
     </div>
     <div v-if="!courses.length" class="notification is-warning">
-      Click on the button above to enroll your first student.
+      Click on the button above to add your first course.
     </div>
     <table v-else class="table is-fullwidth is-hoverable">
       <thead>
-        <th>ID</th>
         <th>Name</th>
+        <th>Description</th>
       </thead>
       <tbody>
         <tr v-for="it in courses" :key="it.id">
-          <td>{{ it.id }}</td>
           <td>{{ it.name }}</td>
+          <td>{{ it.description }}</td>
         </tr>
       </tbody>
     </table>
@@ -45,7 +45,7 @@ export default {
   computed: {
     ...mapState('courses', { coursesStore: 'items' }),
     courses() {
-      const programLevelId = 2;
+      const { programLevelId } = this;
       return filter(this.coursesStore, { programLevelId });
     },
     programLevelId() {
