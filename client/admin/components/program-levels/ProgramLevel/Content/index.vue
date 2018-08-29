@@ -36,7 +36,7 @@ import ContentModal from './ContentModal';
 import filter from 'lodash/filter';
 
 export default {
-  name: 'content',
+  name: 'content-component',
   data() {
     return {
       showModal: false

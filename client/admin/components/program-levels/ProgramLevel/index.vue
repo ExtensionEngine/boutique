@@ -7,14 +7,14 @@
       <ul>
         <li>
           <router-link
-            :to="{ name: 'enrollments', params: { programLevelId: programLevel.id } }"
+            :to="{ name: 'enrollments', params: { programLevelId: id } }"
             exact>
             Enrollments
           </router-link>
         </li>
         <li>
           <router-link
-            :to="{ name: 'content', params: { programLevelId: programLevel.id } }"
+            :to="{ name: 'content', params: { programLevelId: id } }"
             exact>
             Content
           </router-link>
