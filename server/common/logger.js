@@ -2,9 +2,9 @@
 
 const Logger = withEmoji(require('bunyan'));
 const pkg = require('../../package.json');
-const stripEmoji = require('emoji-strip');
 
 const isMacOS = process.platform === 'darwin';
+const isProduction = process.env.NODE_ENV === 'production';
 const isString = arg => typeof arg === 'string';
 
 const loggers = {};
@@ -15,6 +15,8 @@ module.exports = (name = pkg.name) => {
 };
 
 function withEmoji(Logger) {
+  if (isProduction) return Logger;
+  const stripEmoji = require('emoji-strip');
   Object.keys(Logger.levelFromName).forEach(name => {
     const log = Logger.prototype[name];
     Logger.prototype[name] = function (...args) {
