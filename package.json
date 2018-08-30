@@ -10,7 +10,7 @@
     "db:seed": "npm run db seed:all",
     "user:add": "node  -r dotenv/config ./server/script/add-user.js",
     "lint:js": "eslint --ext .js,.vue server client",
-    "lint:scss": "stylelint client/**/*.vue client/**/*.scss --syntax scss",
+    "lint:scss": "stylelint client/**/*.vue client/**/*.scss",
     "lint": "npm run lint:js; npm run lint:scss",
     "debug": "nodemon --inspect-brk -r dotenv/config ./server | bunyan",
     "start": "NODE_ENV=production node -r dotenv/config ./server",
@@ -29,7 +29,6 @@
   "homepage": "https://github.com/ExtensionEngine/lms-starter#readme",
   "devDependencies": {
     "@babel/core": "^7.0.0",
-    "@mapbox/stylelint-processor-arbitrary-tags": "^0.2.0",
     "@poi/plugin-bundle-report": "^10.0.1",
     "@poi/plugin-eslint": "^10.0.2",
     "del-cli": "^1.1.0",
@@ -48,9 +47,10 @@
     "poi": "^10.2.10",
     "sass-loader": "^7.1.0",
     "sequelize-cli": "^4.0.0",
-    "stylelint": "^9.2.0",
+    "stylelint": "^9.5.0",
     "stylelint-config-standard": "^18.2.0",
-    "stylelint-order": "^0.8.1",
+    "stylelint-order": "^1.0.0",
+    "stylelint-scss": "^3.3.0",
     "vue-template-compiler": "^2.5.16"
   },
   "dependencies": {
