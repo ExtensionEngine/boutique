@@ -17,9 +17,17 @@ module.exports = {
       onDelete: 'NO ACTION',
       allowNull: false
     },
-    courseId: {
-      field: 'course_id',
+    sourceId: {
+      field: 'source_id',
       type: Sequelize.INTEGER,
+      allowNull: false
+    },
+    uid: {
+      type: Sequelize.UUID,
+      allowNull: false
+    },
+    schema: {
+      type: Sequelize.STRING,
       allowNull: false
     },
     name: {
@@ -30,12 +38,13 @@ module.exports = {
       type: Sequelize.TEXT,
       allowNull: false
     },
-    schema: {
-      type: Sequelize.STRING,
-      allowNull: false
-    },
     structure: {
       type: Sequelize.TEXT,
+      allowNull: false
+    },
+    publishedAt: {
+      type: Sequelize.DATE,
+      field: 'published_at',
       allowNull: false
     },
     createdAt: {

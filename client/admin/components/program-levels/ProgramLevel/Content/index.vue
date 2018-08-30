@@ -13,12 +13,16 @@
     <table v-else class="table is-fullwidth is-hoverable">
       <thead>
         <th>Name</th>
-        <th>Description</th>
+        <th>Published At</th>
+        <th>Updated At</th>
+        <th>Sync</th>
       </thead>
       <tbody>
-        <tr v-for="it in courses" :key="it.id">
+        <tr v-for="it in courses" :key="it._cid">
           <td>{{ it.name }}</td>
-          <td>{{ it.description }}</td>
+          <td>{{ it.publishedAt | formatDate }}</td>
+          <td>{{ it.updatedAt | formatDate }}</td>
+          <td></td>
         </tr>
       </tbody>
     </table>
@@ -60,7 +64,8 @@ export default {
     }
   },
   created() {
-    return this.fetchCourses({ });
+    const { programLevelId } = this;
+    return this.fetchCourses({ programLevelId });
   },
   components: { ContentModal }
 };

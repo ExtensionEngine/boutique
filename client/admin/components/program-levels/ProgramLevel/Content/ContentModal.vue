@@ -3,7 +3,7 @@
     <div class="content-modal">
       <h2 class="title is-4">Add Content</h2>
       <v-select
-        v-model="courseId"
+        v-model="sourceId"
         :options="notImportedCourses"
         :searchable="true"
         :isLoading="isLoading"
@@ -39,24 +39,24 @@ export default {
   data() {
     return {
       isLoading: false,
-      courseId: null,
+      sourceId: null,
       catalog: []
     };
   },
   computed: {
     notImportedCourses: function () {
       return reject(this.catalog,
-        item => find(this.importedCourses, { courseId: item.value }));
+        item => find(this.importedCourses, { sourceId: item.value }));
     }
   },
   methods: {
     ...mapActions('courses', ['save']),
     add() {
-      this.save(pick(this, ['courseId', 'programLevelId']));
+      this.save(pick(this, ['sourceId', 'programLevelId']));
       this.close();
     },
     close() {
-      this.name = null;
+      this.sourceId = null;
       this.$emit('close');
     },
     fetch() {

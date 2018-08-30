@@ -33,7 +33,7 @@ class ProgramLevel extends Model {
       foreignKey: { name: 'program_level_id', field: 'program_level_id' }
     });
     this.hasMany(Course, {
-      foreignKey: { name: 'course_id', field: 'course_id' }
+      foreignKey: { name: 'program_level_id', field: 'program_level_id' }
     });
   }
 

@@ -5,11 +5,21 @@ const { Model } = require('sequelize');
 class Course extends Model {
   static fields(DataTypes) {
     return {
-      courseId: {
+      sourceId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: { notEmpty: true },
-        field: 'course_id'
+        field: 'source_id'
+      },
+      uid: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        validate: { notEmpty: true },
+      },
+      schema: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: { notEmpty: true, len: [2, 255] }
       },
       name: {
         type: DataTypes.STRING,
@@ -21,15 +31,14 @@ class Course extends Model {
         allowNull: false,
         validate: { notEmpty: true, len: [2, 2000] }
       },
-      schema: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: { notEmpty: true, len: [2, 255] }
-      },
       structure: {
         type: DataTypes.TEXT,
         allowNull: false,
         validate: { notEmpty: true, len: [2, 10000] }
+      },
+      publishedAt: {
+        type: DataTypes.DATE,
+        field: 'published_at'
       },
       createdAt: {
         type: DataTypes.DATE,
