@@ -25,6 +25,7 @@
     <content-modal
       :show="showModal"
       :programLevelId="programLevelId"
+      :importedCourses="courses"
       @close="showModal = false">
     </content-modal>
   </div>

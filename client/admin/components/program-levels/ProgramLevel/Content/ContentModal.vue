@@ -4,11 +4,11 @@
       <h2 class="title is-4">Add Content</h2>
       <v-select
         v-model="courseId"
-        :options="catalogList"
+        :options="notImportedCourses"
         :searchable="true"
         :isLoading="isLoading"
         :maxHeight="150"
-        @search-change="search"
+        @search-change="fetch"
         name="catalog">
       </v-select>
       <div class="controls field is-grouped is-grouped-right">
@@ -20,25 +20,34 @@
 </template>
 
 <script>
+import coursesApi from '@/admin/api/coursesApi';
+import find from 'lodash/find';
 import map from 'lodash/map';
 import { mapActions } from 'vuex';
 import Modal from '@/common/components/Modal';
 import pick from 'lodash/pick';
-import request from '@/common/api/request';
+import reject from 'lodash/reject';
 import VSelect from '@/common/components/form/VSelect';
 
 export default {
   name: 'content-modal',
   props: {
     programLevelId: { type: Number, required: true },
-    show: { type: Boolean, default: false }
+    show: { type: Boolean, default: false },
+    importedCourses: { type: Array, default: () => ([]) }
   },
   data() {
     return {
       isLoading: false,
       courseId: null,
-      catalogList: []
+      catalog: []
     };
+  },
+  computed: {
+    notImportedCourses: function () {
+      return reject(this.catalog,
+        item => find(this.importedCourses, { courseId: item.value }));
+    }
   },
   methods: {
     ...mapActions('courses', ['save']),
@@ -50,17 +59,17 @@ export default {
       this.name = null;
       this.$emit('close');
     },
-    search() {
-      request.get('/courses/catalog').then(({ data: { data } }) => {
+    fetch() {
+      return coursesApi.getCatalog().then(({ data: { data } }) => {
         this.isLoading = false;
-        this.catalogList = map(data, it => ({
+        this.catalog = map(data, it => ({
           value: it.id, label: `${it.name}`
         }));
       });
     }
   },
   created() {
-    this.search();
+    this.fetch();
   },
   components: { Modal, VSelect }
 };
