@@ -39,8 +39,26 @@ function create({ body }, res) {
     .then(course => res.jsend.success(processOutput(course)));
 }
 
+function syncCourse(req, res) {
+  const data = pick(req.body, ['courseId', 'sourceId', 'programLevelId']);
+  const attributes =
+    ['uid', 'schema', 'name', 'structure', 'description', 'publishedAt'];
+  Course.findById(data.courseId)
+    .then(course => {
+      return Storage.getRepository(course.sourceId)
+        .then(repository => {
+          Object.assign(data, pick(repository, attributes));
+          Storage.syncRepository(data);
+          data.structure = JSON.stringify(data.structure);
+          course.update(data);
+          return res.jsend.success(processOutput(course));
+        });
+    });
+}
+
 module.exports = {
   list,
   getCatalog,
-  create
+  create,
+  syncCourse
 };

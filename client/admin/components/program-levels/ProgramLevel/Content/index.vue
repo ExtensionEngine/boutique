@@ -22,7 +22,7 @@
           <td>{{ it.name }}</td>
           <td>{{ it.publishedAt | formatDate }}</td>
           <td>{{ it.updatedAt | formatDate }}</td>
-          <td></td>
+          <td><button @click="sync(it.id, it.sourceId)" class="control button">Sync</button></td>
         </tr>
       </tbody>
     </table>
@@ -38,7 +38,10 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import ContentModal from './ContentModal';
+import coursesApi from '@/admin/api/coursesApi';
 import filter from 'lodash/filter';
+import findIndex from 'lodash/findIndex';
+import pick from 'lodash/pick';
 
 export default {
   name: 'content-component',
@@ -61,6 +64,16 @@ export default {
     ...mapActions('courses', { fetchCourses: 'fetch' }),
     add() {
       this.showModal = true;
+    },
+    sync(courseId, sourceId) {
+      const { programLevelId } = this;
+      coursesApi.syncCourse(courseId, programLevelId, sourceId)
+        .then(({ data: { data } }) => {
+          const courseIndex = findIndex(this.courses,
+            pick(data, ['id', 'courseId', 'programLevelId']));
+          this.courses[courseIndex] = data;
+          return this.fetchCourses({ programLevelId });
+        });
     }
   },
   created() {

@@ -5,6 +5,7 @@ const router = require('express').Router();
 
 router
   .get('/catalog', ctrl.getCatalog)
+  .post('/sync', ctrl.syncCourse)
   .get('/', ctrl.list)
   .post('/', ctrl.create);
 
