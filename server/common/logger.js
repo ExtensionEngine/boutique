@@ -1,6 +1,6 @@
 'use strict';
 
-const Bunyan = require('bunyan');
+const Logger = withEmoji(require('bunyan'));
 const pkg = require('../../package.json');
 const safeRequire = require('safe-require');
 
@@ -9,20 +9,26 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 const loggers = {};
 
-class Logger extends Bunyan {
-  addStream(stream, defaultLevel) {
+function createLogger(name, options = {}) {
+  name = pkg.name + (name ? `:${name}` : '');
+  if (!loggers[name]) loggers[name] = new Logger({ ...options, name });
+  return loggers[name];
+}
+Object.assign(createLogger, Logger);
+
+module.exports = createLogger;
+
+function withEmoji(Logger) {
+  const addStream = Logger.prototype.addStream;
+  Logger.prototype.addStream = function (stream, defaultLevel) {
     stream = stream || {};
     if (!isProduction && stream.stream) {
       stream.stream = getOutputStream(stream.stream);
     }
-    return super.addStream(stream, defaultLevel);
-  }
+    return addStream.call(this, stream, defaultLevel);
+  };
+  return Logger;
 }
-
-module.exports = (name = pkg.name, options = {}) => {
-  if (!loggers[name]) loggers[name] = new Logger({ ...options, name });
-  return loggers[name];
-};
 
 function getOutputStream(stream) {
   if (stream !== process.stdout || isMacOS) return stream;
