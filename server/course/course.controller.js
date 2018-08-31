@@ -28,8 +28,12 @@ function create({ body }, res) {
     ['uid', 'schema', 'name', 'structure', 'description', 'publishedAt'];
   return Storage.getRepository(data.sourceId)
     .then(repository => {
-      repository.structure = JSON.stringify(repository.structure);
       Object.assign(data, pick(repository, attributes));
+      Storage.syncRepository(data);
+      return data;
+    })
+    .then(data => {
+      data.structure = JSON.stringify(data.structure);
       return Course.create(data);
     })
     .then(course => res.jsend.success(processOutput(course)));
