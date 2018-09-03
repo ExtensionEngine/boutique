@@ -22,7 +22,15 @@
           <td>{{ it.name }}</td>
           <td>{{ it.publishedAt | formatDate }}</td>
           <td>{{ it.updatedAt | formatDate }}</td>
-          <td><button @click="sync(it.id, it.sourceId)" class="control button">Sync</button></td>
+          <td>
+            <button
+              v-if="it.publishedAt > it.updatedAt"
+              @click="sync(it._cid, it.id, it.sourceId)"
+              type="button"
+              class="control button">Sync
+            </button>
+            <span v-else>Synced</span>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -40,8 +48,6 @@ import { mapActions, mapState } from 'vuex';
 import ContentModal from './ContentModal';
 import coursesApi from '@/admin/api/coursesApi';
 import filter from 'lodash/filter';
-import findIndex from 'lodash/findIndex';
-import pick from 'lodash/pick';
 
 export default {
   name: 'content-component',
@@ -61,18 +67,16 @@ export default {
     }
   },
   methods: {
-    ...mapActions('courses', { fetchCourses: 'fetch' }),
+    ...mapActions('courses', { fetchCourses: 'fetch', saveCourse: 'save' }),
     add() {
       this.showModal = true;
     },
-    sync(courseId, sourceId) {
+    sync(cid, courseId, sourceId) {
       const { programLevelId } = this;
       coursesApi.syncCourse(courseId, programLevelId, sourceId)
         .then(({ data: { data } }) => {
-          const courseIndex = findIndex(this.courses,
-            pick(data, ['id', 'courseId', 'programLevelId']));
-          this.courses[courseIndex] = data;
-          return this.fetchCourses({ programLevelId });
+          data._cid = cid;
+          this.saveCourse(data);
         });
     }
   },
