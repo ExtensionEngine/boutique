@@ -5,9 +5,9 @@ const router = require('express').Router();
 
 router
   .get('/catalog', ctrl.getCatalog)
-  .post('/sync', ctrl.syncCourse)
+  .patch('/:id', ctrl.createOrUpdate)
   .get('/', ctrl.list)
-  .post('/', ctrl.create);
+  .post('/', ctrl.createOrUpdate);
 
 module.exports = {
   path: '/courses',

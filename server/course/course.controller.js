@@ -8,10 +8,10 @@ const forEach = require('lodash/forEach');
 const pick = require('lodash/pick');
 
 const Storage = createStorage(config.storage);
+const inputAttributes = ['courseId', 'sourceId', 'programLevelId'];
 const outputAttributes =
   ['id', 'sourceId', 'programLevelId', 'name', 'updatedAt'];
-const processInput = input => pick(input, ['sourceId', 'programLevelId']);
-const processOutput = output => pick(output, outputAttributes);
+const processInput = input => pick(input, inputAttributes);
 
 function list({ query: { programLevelId } }, res) {
   return Course.findAll({ where: { programLevelId },
@@ -32,46 +32,39 @@ function getCatalog(req, res) {
     .then(data => res.jsend.success(data));
 }
 
-function create({ body }, res) {
+function processOutput(course, repository) {
+  const courseData = pick(course, outputAttributes);
+  courseData.publishedAt = repository.publishedAt;
+  return courseData;
+}
+
+function createOrUpdate({ body, params }, res) {
   const data = processInput(body);
+  const courseId = params.id;
   const attributes =
     ['uid', 'schema', 'name', 'structure', 'description'];
-  return Storage.getRepository(data.sourceId)
+  Storage.getRepository(data.sourceId)
     .then(repository => {
       Object.assign(data, pick(repository, attributes));
       Storage.syncRepository(data);
       data.structure = JSON.stringify(data.structure);
-      return Course.create(data)
-        .then(course => {
-          const courseData = processOutput(course);
-          courseData.publishedAt = repository.publishedAt;
-          return res.jsend.success(courseData);
-        });
-    });
-}
-
-function syncCourse(req, res) {
-  const data = pick(req.body, ['courseId', 'sourceId', 'programLevelId']);
-  const attributes =
-    ['uid', 'schema', 'name', 'structure', 'description'];
-  Course.findById(data.courseId)
-    .then(course => {
-      return Storage.getRepository(course.sourceId)
-        .then(repository => {
-          Object.assign(data, pick(repository, attributes));
-          Storage.syncRepository(data);
-          data.structure = JSON.stringify(data.structure);
-          course.update(data);
-          const courseData = processOutput(course);
-          courseData.publishedAt = repository.publishedAt;
-          return res.jsend.success(courseData);
-        });
+      if (!courseId) {
+        return Course.create(data)
+          .then(course => {
+            return res.jsend.success(processOutput(course, repository));
+          });
+      } else {
+        return Course.findById(courseId)
+          .then(course => {
+            course.update(data);
+            return res.jsend.success(processOutput(course, repository));
+          });
+      }
     });
 }
 
 module.exports = {
   list,
   getCatalog,
-  create,
-  syncCourse
+  createOrUpdate
 };

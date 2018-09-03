@@ -25,7 +25,7 @@
           <td>
             <button
               v-if="it.publishedAt > it.updatedAt"
-              @click="sync(it._cid, it.id, it.sourceId)"
+              @click="sync(it)"
               type="button"
               class="control button">Sync
             </button>
@@ -46,7 +46,6 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import ContentModal from './ContentModal';
-import coursesApi from '@/admin/api/coursesApi';
 import filter from 'lodash/filter';
 
 export default {
@@ -71,13 +70,8 @@ export default {
     add() {
       this.showModal = true;
     },
-    sync(cid, courseId, sourceId) {
-      const { programLevelId } = this;
-      coursesApi.syncCourse(courseId, programLevelId, sourceId)
-        .then(({ data: { data } }) => {
-          data._cid = cid;
-          this.saveCourse(data);
-        });
+    sync(it) {
+      this.saveCourse({ ...it });
     }
   },
   created() {
