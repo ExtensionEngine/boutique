@@ -36,10 +36,6 @@ class Course extends Model {
         allowNull: false,
         validate: { notEmpty: true, len: [2, 10000] }
       },
-      publishedAt: {
-        type: DataTypes.DATE,
-        field: 'published_at'
-      },
       createdAt: {
         type: DataTypes.DATE,
         field: 'created_at'

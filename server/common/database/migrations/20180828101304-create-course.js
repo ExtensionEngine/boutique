@@ -42,11 +42,6 @@ module.exports = {
       type: Sequelize.TEXT,
       allowNull: false
     },
-    publishedAt: {
-      type: Sequelize.DATE,
-      field: 'published_at',
-      allowNull: false
-    },
     createdAt: {
       type: Sequelize.DATE,
       field: 'created_at',
