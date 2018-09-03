@@ -1,5 +1,7 @@
 const getStream = require('get-stream');
 const path = require('path');
+const pipe = require('multipipe');
+const streamToPromise = require('stream-to-promise');
 
 const isFunction = arg => typeof arg === 'function';
 
@@ -25,8 +27,12 @@ class Storage {
   syncRepository(data) {
     const source = `repository/${data.sourceId}/index.json`;
     const dest = `imported/${data.programLevelId}/${data.uid}/index.json`;
-    return this.store.createReadStream({ key: source })
-      .pipe(this.store.createWriteStream({ key: dest }));
+    const stream = pipe(this.store.createReadStream({ key: source }),
+      this.store.createWriteStream({ key: dest }));
+    stream.on('error', err => {
+      return Promise.reject(err);
+    });
+    return streamToPromise(stream);
   }
 
   getItem(key) {
