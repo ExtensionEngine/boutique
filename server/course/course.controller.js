@@ -3,14 +3,13 @@
 const { Course } = require('../common/database');
 const config = require('../config');
 const createStorage = require('../common/storage');
-const find = require('lodash/find');
 const forEach = require('lodash/forEach');
+const keyBy = require('lodash/keyBy');
 const pick = require('lodash/pick');
 
 const Storage = createStorage(config.storage);
 const inputAttributes = ['courseId', 'sourceId', 'programLevelId'];
-const outputAttributes =
-  ['id', 'sourceId', 'programLevelId', 'name', 'updatedAt'];
+const outputAttributes = ['id', 'sourceId', 'programLevelId', 'name', 'updatedAt'];
 const processInput = input => pick(input, inputAttributes);
 
 function list({ query: { programLevelId } }, res) {
@@ -19,8 +18,8 @@ function list({ query: { programLevelId } }, res) {
     .then(courses => {
       return Storage.getCatalog().then(data => {
         forEach(courses, course => {
-          course.dataValues.publishedAt =
-            find(data, { id: course.sourceId }).publishedAt;
+          course.setDataValue('publishedAt',
+            keyBy(data, value => value.id)[course.sourceId].publishedAt);
         });
         return res.jsend.success(courses);
       });
@@ -40,26 +39,23 @@ function processOutput(course, repository) {
 
 function createOrUpdate({ body, params }, res) {
   const data = processInput(body);
-  const courseId = params.id;
-  const attributes =
-    ['uid', 'schema', 'name', 'structure', 'description'];
-  Storage.getRepository(data.sourceId)
+  // const courseId = params.id;
+  const attributes = ['uid', 'schema', 'name', 'structure', 'description'];
+  return Storage.getRepository(data.sourceId)
     .then(repository => {
       Object.assign(data, pick(repository, attributes));
-      Storage.syncRepository(data);
+      return Storage.syncRepository(data)
+        .then(() => {
+          return { repository, data };
+        });
+    })
+    .then(({ repository, data }) => {
       data.structure = JSON.stringify(data.structure);
-      if (!courseId) {
-        return Course.create(data)
-          .then(course => {
-            return res.jsend.success(processOutput(course, repository));
-          });
-      } else {
-        return Course.findById(courseId)
-          .then(course => {
-            course.update(data);
-            return res.jsend.success(processOutput(course, repository));
-          });
-      }
+      Course.findOrCreate({ where: { id: data.id }, defaults: data })
+        .spread((course, created) => {
+          course.update(data);
+          return res.jsend.success(processOutput(course, repository));
+        });
     });
 }
 

@@ -1,6 +1,6 @@
 const getStream = require('get-stream');
 const path = require('path');
-const pipe = require('multipipe');
+const pipe = require('pumpify');
 const streamToPromise = require('stream-to-promise');
 
 const isFunction = arg => typeof arg === 'function';
@@ -29,9 +29,6 @@ class Storage {
     const dest = `imported/${data.programLevelId}/${data.uid}/index.json`;
     const stream = pipe(this.store.createReadStream({ key: source }),
       this.store.createWriteStream({ key: dest }));
-    stream.on('error', err => {
-      return Promise.reject(err);
-    });
     return streamToPromise(stream);
   }
 
