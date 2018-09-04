@@ -17,9 +17,10 @@ function list({ query: { programLevelId } }, res) {
     attributes: outputAttributes })
     .then(courses => {
       return Storage.getCatalog().then(data => {
+        const coursesData = keyBy(data, value => value.id);
         forEach(courses, course => {
           course.setDataValue('publishedAt',
-            keyBy(data, value => value.id)[course.sourceId].publishedAt);
+            coursesData[course.sourceId].publishedAt);
         });
         return res.jsend.success(courses);
       });
@@ -31,15 +32,9 @@ function getCatalog(req, res) {
     .then(data => res.jsend.success(data));
 }
 
-function processOutput(course, repository) {
-  const courseData = pick(course, outputAttributes);
-  courseData.publishedAt = repository.publishedAt;
-  return courseData;
-}
-
 function createOrUpdate({ body, params }, res) {
   const data = processInput(body);
-  // const courseId = params.id;
+  const courseId = params.id;
   const attributes = ['uid', 'schema', 'name', 'structure', 'description'];
   return Storage.getRepository(data.sourceId)
     .then(repository => {
@@ -51,10 +46,12 @@ function createOrUpdate({ body, params }, res) {
     })
     .then(({ repository, data }) => {
       data.structure = JSON.stringify(data.structure);
-      Course.findOrCreate({ where: { id: data.id }, defaults: data })
+      Course.findOrCreate({ where: { id: courseId }, defaults: data })
         .spread((course, created) => {
           course.update(data);
-          return res.jsend.success(processOutput(course, repository));
+          const courseData = pick(course, outputAttributes);
+          courseData.publishedAt = repository.publishedAt;
+          return res.jsend.success(courseData);
         });
     });
 }
