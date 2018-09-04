@@ -48,8 +48,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$ligth-blue: #3273dc;
+
 .router-link-active {
-  border-bottom-color: #3273dc;
-  color: #3273dc;
+  border-bottom-color: $ligth-blue;
+  color: $ligth-blue;
 }
 </style>

@@ -19,8 +19,8 @@ function list({ query: { programLevelId } }, res) {
       return Storage.getCatalog().then(data => {
         const coursesData = keyBy(data, value => value.id);
         forEach(courses, course => {
-          course.setDataValue('publishedAt',
-            coursesData[course.sourceId].publishedAt);
+          const publishedAt = coursesData[course.sourceId].publishedAt;
+          course.setDataValue('publishedAt', publishedAt);
         });
         return res.jsend.success(courses);
       });
@@ -40,9 +40,7 @@ function createOrUpdate({ body, params }, res) {
     .then(repository => {
       Object.assign(data, pick(repository, attributes));
       return Storage.syncRepository(data)
-        .then(() => {
-          return { repository, data };
-        });
+        .then(() => ({ repository, data }));
     })
     .then(({ repository, data }) => {
       data.structure = JSON.stringify(data.structure);

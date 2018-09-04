@@ -25,10 +25,13 @@ class Storage {
   }
 
   syncRepository(data) {
+    const { store } = this;
     const source = `repository/${data.sourceId}/index.json`;
     const dest = `imported/${data.programLevelId}/${data.uid}/index.json`;
-    const stream = pipe(this.store.createReadStream({ key: source }),
-      this.store.createWriteStream({ key: dest }));
+    const stream = pipe(
+      store.createReadStream({ key: source }),
+      store.createWriteStream({ key: dest })
+    );
     return streamToPromise(stream);
   }
 

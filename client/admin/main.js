@@ -17,8 +17,7 @@ Vue.use(VueHotkey);
 Vue.use(VueVisible);
 
 Vue.filter('formatDate', (value, dateFormat = 'MM/DD/YY HH:mm') => {
-  if (!value) return;
-  return format(value, dateFormat);
+  return value && format(value, dateFormat);
 });
 
 // eslint-disable-next-line no-new

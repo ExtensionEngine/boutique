@@ -62,7 +62,9 @@ export default {
     return coursesApi.getCatalog().then(({ data }) => {
       this.isLoading = false;
       this.catalog = map(data, it => ({
-        value: it.id, label: `${it.name}`, sourceId: it.id
+        value: it.id,
+        label: it.name,
+        sourceId: it.id
       }));
     });
   },

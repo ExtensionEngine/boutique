@@ -62,8 +62,7 @@ const router = new Router({
         path: '',
         name: 'enrollments',
         component: Enrollments
-      },
-      {
+      }, {
         path: 'content',
         name: 'content',
         component: Content

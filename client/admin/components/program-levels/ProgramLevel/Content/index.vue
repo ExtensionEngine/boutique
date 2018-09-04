@@ -2,7 +2,7 @@
   <div>
     <div class="actions is-clearfix">
       <button
-        @click="showModal=true"
+        @click="showModal = true"
         class="button is-primary is-pulled-right">
         Add
       </button>
@@ -25,7 +25,7 @@
           <td>
             <button
               v-if="it.publishedAt > it.updatedAt"
-              @click="sync(it)"
+              @click="saveCourse(it)"
               type="button"
               class="control button">
               Sync
@@ -65,10 +65,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('courses', { fetchCourses: 'fetch', saveCourse: 'save' }),
-    sync(it) {
-      this.saveCourse({ ...it });
-    }
+    ...mapActions('courses', { fetchCourses: 'fetch', saveCourse: 'save' })
   },
   created() {
     const { programLevelId } = this;
