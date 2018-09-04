@@ -16,8 +16,8 @@ Vue.use(VeeValidate, {
 Vue.use(VueHotkey);
 Vue.use(VueVisible);
 
-Vue.filter('formatDate', (value, dateFormat) => {
-  if (!dateFormat) { dateFormat = 'MM/DD/YY HH:mm'; }
+Vue.filter('formatDate', (value, dateFormat = 'MM/DD/YY HH:mm') => {
+  if (!value) return;
   return format(value, dateFormat);
 });
 

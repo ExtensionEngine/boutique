@@ -1,32 +1,30 @@
 <template>
   <modal :show="show" @close="close">
-    <div class="content-modal">
+    <form @submit.prevent="add" class="content-modal">
       <h2 class="title is-4">Add Content</h2>
       <v-select
         v-model="sourceId"
-        :options="notImportedCourses"
+        :options="availableCourses"
         :searchable="true"
         :isLoading="isLoading"
         :maxHeight="150"
-        @search-change="fetch"
         name="catalog">
       </v-select>
       <div class="controls field is-grouped is-grouped-right">
-        <button @click="close" class="control button">Cancel</button>
-        <button @click="add" class="control button is-primary">Add</button>
+        <button @click="close" class="control button" type="button">Cancel</button>
+        <button class="control button is-primary" type="submit">Add</button>
       </div>
-    </div>
+    </form>
   </modal>
 </template>
 
 <script>
 import coursesApi from '@/admin/api/coursesApi';
-import find from 'lodash/find';
+import differenceBy from 'lodash/differenceBy';
 import map from 'lodash/map';
 import { mapActions } from 'vuex';
 import Modal from '@/common/components/Modal';
 import pick from 'lodash/pick';
-import reject from 'lodash/reject';
 import VSelect from '@/common/components/form/VSelect';
 
 export default {
@@ -44,9 +42,8 @@ export default {
     };
   },
   computed: {
-    notImportedCourses: function () {
-      return reject(this.catalog,
-        item => find(this.importedCourses, { sourceId: item.value }));
+    availableCourses() {
+      return differenceBy(this.catalog, this.importedCourses, 'sourceId');
     }
   },
   methods: {
@@ -58,22 +55,19 @@ export default {
     close() {
       this.sourceId = null;
       this.$emit('close');
-    },
-    fetch() {
-      return coursesApi.getCatalog().then(({ data: { data } }) => {
-        this.isLoading = false;
-        this.catalog = map(data, it => ({
-          value: it.id, label: `${it.name}`
-        }));
-      });
     }
   },
   created() {
-    this.fetch();
+    this.isLoading = true;
+    return coursesApi.getCatalog().then(({ data }) => {
+      this.isLoading = false;
+      this.catalog = map(data, it => ({
+        value: it.id, label: `${it.name}`, sourceId: it.id
+      }));
+    });
   },
   components: { Modal, VSelect }
 };
-
 </script>
 
 <style lang="scss" scoped>

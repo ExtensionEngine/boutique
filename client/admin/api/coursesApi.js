@@ -5,7 +5,7 @@ const url = {
 };
 
 function getCatalog() {
-  return request.get(url.catalog);
+  return request.get(url.catalog).then(data => data.data);
 }
 
 export default {

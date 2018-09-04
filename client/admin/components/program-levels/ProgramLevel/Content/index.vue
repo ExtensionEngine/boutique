@@ -2,7 +2,7 @@
   <div>
     <div class="actions is-clearfix">
       <button
-        @click="add"
+        @click="showModal=true"
         class="button is-primary is-pulled-right">
         Add
       </button>
@@ -27,9 +27,10 @@
               v-if="it.publishedAt > it.updatedAt"
               @click="sync(it)"
               type="button"
-              class="control button">Sync
+              class="control button">
+              Sync
             </button>
-            <span v-else>Synced</span>
+            <span v-else-if="it.publishedAt">Synced</span>
           </td>
         </tr>
       </tbody>
@@ -51,9 +52,7 @@ import filter from 'lodash/filter';
 export default {
   name: 'content-component',
   data() {
-    return {
-      showModal: false
-    };
+    return { showModal: false };
   },
   computed: {
     ...mapState('courses', { coursesStore: 'items' }),
@@ -67,9 +66,6 @@ export default {
   },
   methods: {
     ...mapActions('courses', { fetchCourses: 'fetch', saveCourse: 'save' }),
-    add() {
-      this.showModal = true;
-    },
     sync(it) {
       this.saveCourse({ ...it });
     }
