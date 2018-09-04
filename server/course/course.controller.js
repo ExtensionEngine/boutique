@@ -9,7 +9,8 @@ const pick = require('lodash/pick');
 
 const Storage = createStorage(config.storage);
 const inputAttributes = ['courseId', 'sourceId', 'programLevelId'];
-const outputAttributes = ['id', 'sourceId', 'programLevelId', 'name', 'updatedAt'];
+const outputAttributes =
+  ['id', 'sourceId', 'programLevelId', 'name', 'publishedAt'];
 const processInput = input => pick(input, inputAttributes);
 
 function list({ query: { programLevelId } }, res) {
@@ -19,8 +20,8 @@ function list({ query: { programLevelId } }, res) {
       return Storage.getCatalog().then(data => {
         const coursesData = keyBy(data, value => value.id);
         forEach(courses, course => {
-          const publishedAt = coursesData[course.sourceId].publishedAt;
-          course.setDataValue('publishedAt', publishedAt);
+          const repoVersion = coursesData[course.sourceId].publishedAt;
+          course.setDataValue('repoVersion', repoVersion);
         });
         return res.jsend.success(courses);
       });
@@ -35,7 +36,8 @@ function getCatalog(req, res) {
 function createOrUpdate({ body, params }, res) {
   const data = processInput(body);
   const courseId = params.id;
-  const attributes = ['uid', 'schema', 'name', 'structure', 'description'];
+  const attributes =
+    ['uid', 'schema', 'name', 'structure', 'description', 'publishedAt'];
   return Storage.getRepository(data.sourceId)
     .then(repository => {
       Object.assign(data, pick(repository, attributes));
@@ -43,12 +45,11 @@ function createOrUpdate({ body, params }, res) {
         .then(() => ({ repository, data }));
     })
     .then(({ repository, data }) => {
-      data.structure = JSON.stringify(data.structure);
-      Course.findOrCreate({ where: { id: courseId }, defaults: data })
+      return Course.findOrCreate({ where: { id: courseId }, defaults: data })
         .spread((course, created) => {
-          course.update(data);
+          if (!created) course.update(data);
           const courseData = pick(course, outputAttributes);
-          courseData.publishedAt = repository.publishedAt;
+          courseData.repoVersion = repository.publishedAt;
           return res.jsend.success(courseData);
         });
     });

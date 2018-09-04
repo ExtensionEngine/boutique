@@ -7,8 +7,7 @@ module.exports = {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      autoIncrement: true,
-      allowNull: false
+      autoIncrement: true
     },
     programLevelId: {
       type: Sequelize.INTEGER,
@@ -27,11 +26,11 @@ module.exports = {
       allowNull: false
     },
     schema: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(20),
       allowNull: false
     },
     name: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(250),
       allowNull: false
     },
     description: {
@@ -39,7 +38,12 @@ module.exports = {
       allowNull: false
     },
     structure: {
-      type: Sequelize.TEXT,
+      type: Sequelize.JSONB,
+      allowNull: false
+    },
+    publishedAt: {
+      type: Sequelize.DATE,
+      field: 'published_at',
       allowNull: false
     },
     createdAt: {

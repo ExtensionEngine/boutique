@@ -13,24 +13,24 @@
     <table v-else class="table is-fullwidth is-hoverable">
       <thead>
         <th>Name</th>
-        <th>Published At</th>
-        <th>Updated At</th>
+        <th>Repo Version</th>
+        <th>Synced Version</th>
         <th>Sync</th>
       </thead>
       <tbody>
         <tr v-for="it in courses" :key="it._cid">
           <td>{{ it.name }}</td>
+          <td>{{ it.repoVersion | formatDate }}</td>
           <td>{{ it.publishedAt | formatDate }}</td>
-          <td>{{ it.updatedAt | formatDate }}</td>
           <td>
             <button
-              v-if="it.publishedAt > it.updatedAt"
+              v-if="it.repoVersion > it.publishedAt"
               @click="saveCourse(it)"
               type="button"
               class="control button">
               Sync
             </button>
-            <span v-else-if="it.publishedAt">Synced</span>
+            <span v-else-if="it.repoVersion">Synced</span>
           </td>
         </tr>
       </tbody>

@@ -8,23 +8,22 @@ class Course extends Model {
       sourceId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        validate: { notEmpty: true },
         field: 'source_id'
       },
       uid: {
         type: DataTypes.UUID,
         allowNull: false,
-        validate: { notEmpty: true },
+        validate: { isUUID: 'all' }
       },
       schema: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: { notEmpty: true, len: [2, 255] }
+        validate: { notEmpty: true, len: [2, 20] }
       },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: { notEmpty: true, len: [2, 255] }
+        validate: { notEmpty: true, len: [2, 250] }
       },
       description: {
         type: DataTypes.TEXT,
@@ -32,9 +31,14 @@ class Course extends Model {
         validate: { notEmpty: true, len: [2, 2000] }
       },
       structure: {
-        type: DataTypes.TEXT,
+        type: DataTypes.JSONB,
         allowNull: false,
-        validate: { notEmpty: true, len: [2, 10000] }
+        validate: { notEmpty: true }
+      },
+      publishedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        field: 'published_at'
       },
       createdAt: {
         type: DataTypes.DATE,
