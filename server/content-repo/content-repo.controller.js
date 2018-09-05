@@ -1,6 +1,6 @@
 'use strict';
 
-const { Course } = require('../common/database');
+const { ContentRepo } = require('../common/database');
 const config = require('../config');
 const createStorage = require('../common/storage');
 const forEach = require('lodash/forEach');
@@ -8,22 +8,22 @@ const keyBy = require('lodash/keyBy');
 const pick = require('lodash/pick');
 
 const Storage = createStorage(config.storage);
-const inputAttributes = ['courseId', 'sourceId', 'programLevelId'];
+const inputAttributes = ['contentRepoId', 'sourceId', 'programLevelId'];
 const outputAttributes =
   ['id', 'sourceId', 'programLevelId', 'name', 'publishedAt'];
 const processInput = input => pick(input, inputAttributes);
 
 function list({ query: { programLevelId } }, res) {
-  return Course.findAll({ where: { programLevelId },
+  return ContentRepo.findAll({ where: { programLevelId },
     attributes: outputAttributes })
-    .then(courses => {
+    .then(contentRepoList => {
       return Storage.getCatalog().then(data => {
-        const coursesData = keyBy(data, value => value.id);
-        forEach(courses, course => {
-          const repoVersion = coursesData[course.sourceId].publishedAt;
-          course.setDataValue('repoVersion', repoVersion);
+        const catalogData = keyBy(data, value => value.id);
+        forEach(contentRepoList, contentRepo => {
+          const repoVersion = catalogData[contentRepo.sourceId].publishedAt;
+          contentRepo.setDataValue('repoVersion', repoVersion);
         });
-        return res.jsend.success(courses);
+        return res.jsend.success(contentRepoList);
       });
     });
 }
@@ -35,7 +35,7 @@ function getCatalog(req, res) {
 
 function createOrUpdate({ body, params }, res) {
   const data = processInput(body);
-  const courseId = params.id;
+  const contentRepoId = params.id;
   const attributes =
     ['uid', 'schema', 'name', 'structure', 'description', 'publishedAt'];
   return Storage.getRepository(data.sourceId)
@@ -45,12 +45,14 @@ function createOrUpdate({ body, params }, res) {
         .then(() => ({ repository, data }));
     })
     .then(({ repository, data }) => {
-      return Course.findOrCreate({ where: { id: courseId }, defaults: data })
-        .spread((course, created) => {
-          if (!created) course.update(data);
-          const courseData = pick(course, outputAttributes);
-          courseData.repoVersion = repository.publishedAt;
-          return res.jsend.success(courseData);
+      return ContentRepo.findOrCreate({
+        where: { id: contentRepoId }, defaults: data
+      })
+        .spread((contentRepo, created) => {
+          if (!created) contentRepo.update(data);
+          const contentRepoData = pick(contentRepo, outputAttributes);
+          contentRepoData.repoVersion = repository.publishedAt;
+          return res.jsend.success(contentRepoData);
         });
     });
 }

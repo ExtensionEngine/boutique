@@ -1,6 +1,6 @@
 'use strict';
 
-const TABLE_NAME = 'course';
+const TABLE_NAME = 'content_repo';
 
 module.exports = {
   up: (queryInterface, Sequelize) => queryInterface.createTable(TABLE_NAME, {

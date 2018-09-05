@@ -7,8 +7,8 @@
         Add
       </button>
     </div>
-    <div v-if="!courses.length" class="notification is-warning">
-      Click on the button above to add your first course.
+    <div v-if="!importedContent.length" class="notification is-warning">
+      Click on the button above to add your first content.
     </div>
     <table v-else class="table is-fullwidth is-hoverable">
       <thead>
@@ -18,14 +18,14 @@
         <th>Sync</th>
       </thead>
       <tbody>
-        <tr v-for="it in courses" :key="it._cid">
+        <tr v-for="it in importedContent" :key="it._cid">
           <td>{{ it.name }}</td>
           <td>{{ it.repoVersion | formatDate }}</td>
           <td>{{ it.publishedAt | formatDate }}</td>
           <td>
             <button
               v-if="it.repoVersion > it.publishedAt"
-              @click="saveCourse(it)"
+              @click="importContentRepo(it)"
               type="button"
               class="control button">
               Sync
@@ -38,7 +38,7 @@
     <content-modal
       :show="showModal"
       :programLevelId="programLevelId"
-      :importedCourses="courses"
+      :importedContent="importedContent"
       @close="showModal = false">
     </content-modal>
   </div>
@@ -55,19 +55,21 @@ export default {
     return { showModal: false };
   },
   computed: {
-    ...mapState('courses', { coursesStore: 'items' }),
-    courses() {
+    ...mapState('contentRepo', { contentRepoStore: 'items' }),
+    importedContent() {
       const { programLevelId } = this;
-      return filter(this.coursesStore, { programLevelId });
+      return filter(this.contentRepoStore, { programLevelId });
     },
     programLevelId() {
       return parseInt(this.$route.params.programLevelId, 10);
     }
   },
-  methods: mapActions('courses', { fetchCourses: 'fetch', saveCourse: 'save' }),
+  methods: mapActions('contentRepo', {
+    fetchImportedContent: 'fetch', importContentRepo: 'save'
+  }),
   created() {
     const { programLevelId } = this;
-    return this.fetchCourses({ programLevelId });
+    return this.fetchImportedContent({ programLevelId });
   },
   components: { ContentModal }
 };

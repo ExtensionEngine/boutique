@@ -4,7 +4,7 @@
       <h2 class="title is-4">Add Content</h2>
       <v-select
         v-model="sourceId"
-        :options="availableCourses"
+        :options="availableContent"
         :searchable="true"
         :isLoading="isLoading"
         :maxHeight="150"
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import coursesApi from '@/admin/api/coursesApi';
+import contentRepoApi from '@/admin/api/contentRepoApi';
 import differenceBy from 'lodash/differenceBy';
 import map from 'lodash/map';
 import { mapActions } from 'vuex';
@@ -32,7 +32,7 @@ export default {
   props: {
     programLevelId: { type: Number, required: true },
     show: { type: Boolean, default: false },
-    importedCourses: { type: Array, default: () => ([]) }
+    importedContent: { type: Array, default: () => ([]) }
   },
   data() {
     return {
@@ -42,12 +42,12 @@ export default {
     };
   },
   computed: {
-    availableCourses() {
-      return differenceBy(this.catalog, this.importedCourses, 'sourceId');
+    availableContent() {
+      return differenceBy(this.catalog, this.importedContent, 'sourceId');
     }
   },
   methods: {
-    ...mapActions('courses', ['save']),
+    ...mapActions('contentRepo', ['save']),
     add() {
       this.save(pick(this, ['sourceId', 'programLevelId']));
       this.close();
@@ -59,7 +59,7 @@ export default {
   },
   created() {
     this.isLoading = true;
-    return coursesApi.getCatalog().then(({ data }) => {
+    return contentRepoApi.getCatalog().then(({ data }) => {
       this.isLoading = false;
       this.catalog = map(data, it => ({
         value: it.id,

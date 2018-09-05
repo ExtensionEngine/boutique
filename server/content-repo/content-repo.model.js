@@ -2,7 +2,7 @@
 
 const { Model } = require('sequelize');
 
-class Course extends Model {
+class ContentRepo extends Model {
   static fields(DataTypes) {
     return {
       sourceId: {
@@ -64,7 +64,7 @@ class Course extends Model {
 
   static options() {
     return {
-      modelName: 'course',
+      modelName: 'content_repo',
       timestamps: true,
       paranoid: true,
       freezeTableName: true
@@ -72,4 +72,4 @@ class Course extends Model {
   }
 }
 
-module.exports = Course;
+module.exports = ContentRepo;

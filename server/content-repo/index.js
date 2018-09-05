@@ -1,6 +1,6 @@
 'use strict';
 
-const ctrl = require('./course.controller');
+const ctrl = require('./content-repo.controller');
 const router = require('express').Router();
 
 router
@@ -10,6 +10,6 @@ router
   .post('/', ctrl.createOrUpdate);
 
 module.exports = {
-  path: '/courses',
+  path: '/content-repo',
   router
 };

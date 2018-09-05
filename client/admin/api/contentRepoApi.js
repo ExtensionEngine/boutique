@@ -1,7 +1,7 @@
 import request from '@/common/api/request';
 
 const url = {
-  catalog: '/courses/catalog'
+  catalog: '/content-repo/catalog'
 };
 
 function getCatalog() {

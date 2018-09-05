@@ -64,13 +64,13 @@ class Storage {
     return this.getItem(key);
   }
 
-  getContainer(id, courseId) {
-    const key = `repository/${courseId}/${id}.container.json`;
+  getContainer(id, contentRepoId) {
+    const key = `repository/${contentRepoId}/${id}.container.json`;
     return this.getItem(key);
   }
 
-  getExam(id, courseId) {
-    const key = `repository/${courseId}/${id}.exam.json`;
+  getExam(id, contentRepoId) {
+    const key = `repository/${contentRepoId}/${id}.exam.json`;
     return this.getItem(key);
   }
 }

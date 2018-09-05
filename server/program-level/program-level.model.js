@@ -25,14 +25,14 @@ class ProgramLevel extends Model {
     };
   }
 
-  static associate({ Enrollment, Program, Course }) {
+  static associate({ Enrollment, Program, ContentRepo }) {
     this.belongsTo(Program, {
       foreignKey: { name: 'programId', field: 'program_id' }
     });
     this.hasMany(Enrollment, {
       foreignKey: { name: 'program_level_id', field: 'program_level_id' }
     });
-    this.hasMany(Course, {
+    this.hasMany(ContentRepo, {
       foreignKey: { name: 'program_level_id', field: 'program_level_id' }
     });
   }
