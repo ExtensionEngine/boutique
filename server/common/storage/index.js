@@ -24,17 +24,6 @@ class Storage {
     return getStream(this.store.createReadStream({ key }));
   }
 
-  syncRepository(data) {
-    const { store } = this;
-    const source = `repository/${data.sourceId}/index.json`;
-    const dest = `imported/${data.programLevelId}/${data.uid}/index.json`;
-    const stream = pipe(
-      store.createReadStream({ key: source }),
-      store.createWriteStream({ key: dest })
-    );
-    return streamToPromise(stream);
-  }
-
   getItem(key) {
     return this.getFile(key)
       .catch(err => {
@@ -72,6 +61,18 @@ class Storage {
   getExam(id, contentRepoId) {
     const key = `repository/${contentRepoId}/${id}.exam.json`;
     return this.getItem(key);
+  }
+
+  importRepo(data) {
+    const { store } = this;
+    const source = `repository/${data.sourceId}/index.json`;
+    const dest = `imported/${data.programLevelId}/${data.sourceId}/index.json`;
+    const repo = this.getRepository(data.sourceId);
+    const stream = pipe(
+      store.createReadStream({ key: source }),
+      store.createWriteStream({ key: dest })
+    );
+    return streamToPromise(stream).then(() => repo);
   }
 }
 

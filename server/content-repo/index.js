@@ -5,9 +5,9 @@ const router = require('express').Router();
 
 router
   .get('/catalog', ctrl.getCatalog)
-  .patch('/:id', ctrl.createOrUpdate)
   .get('/', ctrl.list)
-  .post('/', ctrl.createOrUpdate);
+  .post('/', ctrl.upsert)
+  .patch('/:id', ctrl.upsert);
 
 module.exports = {
   path: '/content-repo',

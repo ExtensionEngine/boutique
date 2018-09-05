@@ -70,6 +70,14 @@ class ContentRepo extends Model {
       freezeTableName: true
     };
   }
+
+  static upsertRepo(repoId, data) {
+    return ContentRepo.findOrCreate({ where: { id: repoId }, defaults: data })
+    .spread((repo, created) => {
+      if (!created) repo.update(data);
+      return repo;
+    });
+  }
 }
 
 module.exports = ContentRepo;

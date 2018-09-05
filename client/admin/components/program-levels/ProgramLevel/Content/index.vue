@@ -69,7 +69,8 @@ export default {
   }),
   created() {
     const { programLevelId } = this;
-    return this.fetchImportedContent({ programLevelId });
+    const includeVersion = true;
+    return this.fetchImportedContent({ programLevelId, includeVersion });
   },
   components: { ContentModal }
 };
