@@ -5,17 +5,15 @@
     </h1>
     <div class="tabs">
       <ul>
-        <li>
+        <li :class="{ 'active-link': $route.name === 'enrollments' }">
           <router-link
-            :to="{ name: 'enrollments', params: { programLevelId: id } }"
-            exact>
+            :to="{ name: 'enrollments', params: { programLevelId: id } }">
             Enrollments
           </router-link>
         </li>
-        <li>
+        <li :class="{ 'active-link': $route.name === 'importedContent' }">
           <router-link
-            :to="{ name: 'content', params: { programLevelId: id } }"
-            exact>
+            :to="{ name: 'importedContent', params: { programLevelId: id } }">
             Content
           </router-link>
         </li>
@@ -34,7 +32,7 @@ export default {
   computed: {
     ...mapState('programLevels', { programLevels: 'items' }),
     id() {
-      return parseInt(this.$route.params.programLevelId);
+      return parseInt(this.$route.params.programLevelId, 10);
     },
     programLevel() {
       return find(this.programLevels, { id: this.id });
@@ -48,10 +46,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$ligth-blue: #3273dc;
+$active-link: #3273dc;
 
-.router-link-active {
-  border-bottom-color: $ligth-blue;
-  color: $ligth-blue;
+.active-link a {
+  border-bottom-color: $active-link;
+  color: $active-link;
 }
 </style>

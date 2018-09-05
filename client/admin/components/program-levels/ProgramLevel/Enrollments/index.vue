@@ -49,7 +49,7 @@ export default {
   computed: {
     ...mapState('enrollments', { enrollmentStore: 'items' }),
     programLevelId() {
-      return parseInt(this.$route.params.programLevelId);
+      return parseInt(this.$route.params.programLevelId, 10);
     },
     enrollments() {
       const { programLevelId } = this;

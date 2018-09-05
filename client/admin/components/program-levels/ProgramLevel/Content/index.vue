@@ -61,12 +61,10 @@ export default {
       return filter(this.coursesStore, { programLevelId });
     },
     programLevelId() {
-      return parseInt(this.$route.params.programLevelId);
+      return parseInt(this.$route.params.programLevelId, 10);
     }
   },
-  methods: {
-    ...mapActions('courses', { fetchCourses: 'fetch', saveCourse: 'save' })
-  },
+  methods: mapActions('courses', { fetchCourses: 'fetch', saveCourse: 'save' }),
   created() {
     const { programLevelId } = this;
     return this.fetchCourses({ programLevelId });

@@ -64,7 +64,7 @@ const router = new Router({
         component: Enrollments
       }, {
         path: 'content',
-        name: 'content',
+        name: 'importedContent',
         component: Content
       }]
     }, {
