@@ -59,9 +59,9 @@ export default {
   },
   created() {
     this.isLoading = true;
-    return contentRepoApi.getCatalog().then(({ data }) => {
+    return contentRepoApi.getCatalog().then(repos => {
       this.isLoading = false;
-      this.catalog = map(data, it => ({
+      this.catalog = map(repos, it => ({
         value: it.id,
         label: it.name,
         sourceId: it.id

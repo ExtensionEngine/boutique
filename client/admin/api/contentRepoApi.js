@@ -4,8 +4,10 @@ const url = {
   catalog: '/content-repo/catalog'
 };
 
+const extractData = res => res.data.data;
+
 function getCatalog() {
-  return request.get(url.catalog).then(data => data.data);
+  return request.get(url.catalog).then(extractData);
 }
 
 export default {
