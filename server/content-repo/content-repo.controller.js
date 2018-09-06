@@ -34,7 +34,7 @@ function getCatalog(req, res) {
 async function upsert({ body, params: { id: contentRepoId } }, res) {
   const data = processInput(body);
   const srcRepo = await Storage.importRepo(data);
-  const dstRepo = await ContentRepo.upsertRepo(contentRepoId, {
+  const dstRepo = await ContentRepo.createOrUpdate(contentRepoId, {
     ...data,
     ...pick(srcRepo, [
       'uid', 'schema', 'name', 'structure', 'description', 'publishedAt'])

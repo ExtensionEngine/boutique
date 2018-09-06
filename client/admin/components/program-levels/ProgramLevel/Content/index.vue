@@ -50,7 +50,7 @@ import ContentModal from './ContentModal';
 import filter from 'lodash/filter';
 
 export default {
-  name: 'content-component',
+  name: 'imported-content',
   data() {
     return { showModal: false };
   },

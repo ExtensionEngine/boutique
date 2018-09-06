@@ -69,12 +69,11 @@ class ContentRepo extends Model {
     };
   }
 
-  static upsertRepo(repoId, data) {
-    return ContentRepo.findOrCreate({ where: { id: repoId }, defaults: data })
-    .spread((repo, created) => {
-      if (!created) repo.update(data);
-      return repo;
-    });
+  static async createOrUpdate(repoId, data) {
+    const opts = { where: { id: repoId }, defaults: data };
+    const [repo, created] = await ContentRepo.findOrCreate(opts);
+    if (!created) await repo.update(data);
+    return repo;
   }
 }
 
