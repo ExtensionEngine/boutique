@@ -64,15 +64,13 @@ class Storage {
   }
 
   importRepo(programLevelId, repoId) {
-    const { store } = this;
     const source = `repository/${repoId}/index.json`;
     const dest = `imported/${programLevelId}/${repoId}/index.json`;
-    const repo = this.getRepository(repoId);
     const stream = pipe(
-      store.createReadStream({ key: source }),
-      store.createWriteStream({ key: dest })
+      this.store.createReadStream({ key: source }),
+      this.store.createWriteStream({ key: dest })
     );
-    return streamToPromise(stream).then(() => repo);
+    return streamToPromise(stream).then(() => this.getRepository(repoId));
   }
 }
 
