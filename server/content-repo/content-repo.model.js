@@ -41,10 +41,12 @@ class ContentRepo extends Model {
       },
       createdAt: {
         type: DataTypes.DATE,
+        allowNull: false,
         field: 'created_at'
       },
       updatedAt: {
         type: DataTypes.DATE,
+        allowNull: false,
         field: 'updated_at'
       },
       deletedAt: {
@@ -69,11 +71,10 @@ class ContentRepo extends Model {
     };
   }
 
-  static async createOrUpdate(repoId, data) {
-    const opts = { where: { id: repoId }, defaults: data };
-    const [repo, created] = await ContentRepo.findOrCreate(opts);
-    if (!created) await repo.update(data);
-    return repo;
+  static createOrUpdate(id, data) {
+    return !id
+      ? ContentRepo.create(data)
+      : ContentRepo.update(data, { where: { id } }).then(([_, rows]) => rows[0]);
   }
 }
 

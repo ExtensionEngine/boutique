@@ -8,16 +8,16 @@ const keyBy = require('lodash/keyBy');
 const pick = require('lodash/pick');
 
 const Storage = createStorage(config.storage);
-const inputAttributes = ['contentRepoId', 'sourceId', 'programLevelId'];
+const processInput = input => pick(input,
+  ['contentRepoId', 'sourceId', 'programLevelId']);
 const outputAttributes = [
   'id', 'sourceId', 'programLevelId', 'name', 'publishedAt'
 ];
-const processInput = input => pick(input, inputAttributes);
 
-async function list({ query: { programLevelId, includeVersion = false } }, res) {
+async function list({ query: { programLevelId, srcVersion = false } }, res) {
   const opts = { where: { programLevelId }, attributes: outputAttributes };
   const repos = await ContentRepo.findAll(opts);
-  if (includeVersion) {
+  if (srcVersion) {
     const reposById = keyBy(await Storage.getCatalog(), 'id');
     forEach(repos, it => {
       it.setDataValue('repoVersion', reposById[it.sourceId].publishedAt);
@@ -41,7 +41,7 @@ async function upsert({ body }, res) {
   });
   return res.jsend.success({
     ...pick(dstRepo, outputAttributes),
-    repoVersion: srcRepo.publishedAt
+    repoVersion: dstRepo.publishedAt
   });
 }
 
