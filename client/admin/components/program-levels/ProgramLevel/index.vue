@@ -7,13 +7,13 @@
       <ul>
         <li :class="{ 'active-link': $route.name === 'enrollments' }">
           <router-link
-            :to="{ name: 'enrollments', params: { programLevelId: id } }">
+            :to="{ name: 'enrollments', params: { programLevelId } }">
             Enrollments
           </router-link>
         </li>
         <li :class="{ 'active-link': $route.name === 'importedContent' }">
           <router-link
-            :to="{ name: 'importedContent', params: { programLevelId: id } }">
+            :to="{ name: 'importedContent', params: { programLevelId } }">
             Content
           </router-link>
         </li>
@@ -29,18 +29,16 @@ import find from 'lodash/find';
 
 export default {
   name: 'program-level',
+  props: { programLevelId: { type: Number, required: true } },
   computed: {
     ...mapState('programLevels', { programLevels: 'items' }),
-    id() {
-      return parseInt(this.$route.params.programLevelId, 10);
-    },
     programLevel() {
-      return find(this.programLevels, { id: this.id });
+      return find(this.programLevels, { id: this.programLevelId });
     }
   },
   methods: mapActions('programLevels', ['get']),
   created() {
-    this.get(this.id.toString());
+    this.get(this.programLevelId.toString());
   }
 };
 </script>

@@ -51,6 +51,7 @@ import filter from 'lodash/filter';
 
 export default {
   name: 'imported-content',
+  props: { programLevelId: { type: Number, required: true } },
   data() {
     return { showModal: false };
   },
@@ -59,9 +60,6 @@ export default {
     importedContent() {
       const { programLevelId } = this;
       return filter(this.contentRepoStore, { programLevelId });
-    },
-    programLevelId() {
-      return parseInt(this.$route.params.programLevelId, 10);
     }
   },
   methods: mapActions('contentRepo', {

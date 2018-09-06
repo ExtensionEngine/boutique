@@ -17,6 +17,10 @@ import Vue from 'vue';
 
 Vue.use(Router);
 
+const parseProgramLevelId = route => ({
+  programLevelId: parseInt(route.params.programLevelId, 10)
+});
+
 // Handle 404
 const fallbackRoute = {
   path: '*',
@@ -58,14 +62,17 @@ const router = new Router({
       path: '/program-levels/:programLevelId',
       name: 'programLevel',
       component: ProgramLevel,
+      props: parseProgramLevelId,
       children: [{
         path: '',
         name: 'enrollments',
-        component: Enrollments
+        component: Enrollments,
+        props: parseProgramLevelId
       }, {
         path: 'content',
         name: 'importedContent',
-        component: Content
+        component: Content,
+        props: parseProgramLevelId
       }]
     }, {
       path: '/users',

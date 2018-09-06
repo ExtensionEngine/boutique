@@ -41,6 +41,7 @@ import filter from 'lodash/filter';
 
 export default {
   name: 'enrollments',
+  props: { programLevelId: { type: Number, required: true } },
   data() {
     return {
       showModal: false
@@ -48,9 +49,6 @@ export default {
   },
   computed: {
     ...mapState('enrollments', { enrollmentStore: 'items' }),
-    programLevelId() {
-      return parseInt(this.$route.params.programLevelId, 10);
-    },
     enrollments() {
       const { programLevelId } = this;
       return filter(this.enrollmentStore, { programLevelId });
