@@ -1,9 +1,9 @@
 'use strict';
 
 const auth = require('./common/auth').authenticate('jwt');
-const express = require('express');
 const contentRepo = require('./content-repo');
 const enrollment = require('./enrollment');
+const express = require('express');
 const program = require('./program');
 const programLevel = require('./program-level');
 const user = require('./user');

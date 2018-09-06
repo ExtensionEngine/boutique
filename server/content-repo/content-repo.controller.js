@@ -9,7 +9,9 @@ const pick = require('lodash/pick');
 
 const Storage = createStorage(config.storage);
 const inputAttributes = ['contentRepoId', 'sourceId', 'programLevelId'];
-const outputAttributes = ['id', 'sourceId', 'programLevelId', 'name', 'publishedAt'];
+const outputAttributes = [
+  'id', 'sourceId', 'programLevelId', 'name', 'publishedAt'
+];
 const processInput = input => pick(input, inputAttributes);
 
 async function list({ query: { programLevelId, includeVersion = false } }, res) {

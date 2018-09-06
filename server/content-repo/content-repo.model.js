@@ -32,8 +32,7 @@ class ContentRepo extends Model {
       },
       structure: {
         type: DataTypes.JSONB,
-        allowNull: false,
-        validate: { notEmpty: true }
+        allowNull: false
       },
       publishedAt: {
         type: DataTypes.DATE,
@@ -57,7 +56,6 @@ class ContentRepo extends Model {
 
   static associate({ ProgramLevel }) {
     this.belongsTo(ProgramLevel, {
-      as: 'programLevel',
       foreignKey: { name: 'programLevelId', field: 'program_level_id' }
     });
   }

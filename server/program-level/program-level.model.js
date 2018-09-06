@@ -30,10 +30,10 @@ class ProgramLevel extends Model {
       foreignKey: { name: 'programId', field: 'program_id' }
     });
     this.hasMany(Enrollment, {
-      foreignKey: { name: 'program_level_id', field: 'program_level_id' }
+      foreignKey: { name: 'programLevelId', field: 'program_level_id' }
     });
     this.hasMany(ContentRepo, {
-      foreignKey: { name: 'program_level_id', field: 'program_level_id' }
+      foreignKey: { name: 'programLevelId', field: 'program_level_id' }
     });
   }
 
