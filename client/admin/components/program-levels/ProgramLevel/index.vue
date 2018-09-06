@@ -38,7 +38,7 @@ export default {
   },
   methods: mapActions('programLevels', ['get']),
   created() {
-    this.get(this.programLevelId.toString());
+    this.get(this.programLevelId);
   }
 };
 </script>

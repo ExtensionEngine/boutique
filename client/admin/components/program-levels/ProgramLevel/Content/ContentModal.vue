@@ -1,18 +1,18 @@
 <template>
   <modal :show="show" @close="close">
-    <form @submit.prevent="add" class="content-modal">
-      <h2 class="title is-4">Add Content</h2>
+    <form @submit.prevent="importRepo" class="content-modal">
+      <h2 class="title is-4">Import Content</h2>
       <v-select
         v-model="sourceId"
-        :options="availableContent"
+        :options="availableRepos"
         :searchable="true"
         :isLoading="isLoading"
         :maxHeight="150"
-        name="catalog">
+        name="repo">
       </v-select>
       <div class="controls field is-grouped is-grouped-right">
         <button @click="close" class="control button" type="button">Cancel</button>
-        <button class="control button is-primary" type="submit">Add</button>
+        <button class="control button is-primary" type="submit">Import</button>
       </div>
     </form>
   </modal>
@@ -30,9 +30,9 @@ import VSelect from '@/common/components/form/VSelect';
 export default {
   name: 'content-modal',
   props: {
-    programLevelId: { type: Number, required: true },
     show: { type: Boolean, default: false },
-    importedContent: { type: Array, default: () => ([]) }
+    programLevelId: { type: Number, required: true },
+    importedRepos: { type: Array, default: () => ([]) }
   },
   data() {
     return {
@@ -42,13 +42,13 @@ export default {
     };
   },
   computed: {
-    availableContent() {
-      return differenceBy(this.catalog, this.importedContent, 'sourceId');
+    availableRepos() {
+      return differenceBy(this.catalog, this.importedRepos, 'sourceId');
     }
   },
   methods: {
     ...mapActions('contentRepo', ['save']),
-    add() {
+    importRepo() {
       this.save(pick(this, ['sourceId', 'programLevelId']));
       this.close();
     },

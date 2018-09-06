@@ -7,25 +7,25 @@
         Add
       </button>
     </div>
-    <div v-if="!importedContent.length" class="notification is-warning">
-      Click on the button above to add your first content.
+    <div v-if="!importedRepos.length" class="notification is-warning">
+      Click on the button above to import content.
     </div>
     <table v-else class="table is-fullwidth is-hoverable">
       <thead>
         <th>Name</th>
-        <th>Repo Version</th>
-        <th>Synced Version</th>
+        <th>Published Version</th>
+        <th>Imported Version</th>
         <th>Sync</th>
       </thead>
       <tbody>
-        <tr v-for="it in importedContent" :key="it._cid">
+        <tr v-for="it in importedRepos" :key="it._cid">
           <td>{{ it.name }}</td>
           <td>{{ it.repoVersion | formatDate }}</td>
           <td>{{ it.publishedAt | formatDate }}</td>
           <td>
             <button
               v-if="it.repoVersion > it.publishedAt"
-              @click="importContentRepo(it)"
+              @click="save(it)"
               type="button"
               class="control button">
               Sync
@@ -38,9 +38,8 @@
     <content-modal
       :show="showModal"
       :programLevelId="programLevelId"
-      :importedContent="importedContent"
-      @close="showModal = false">
-    </content-modal>
+      :importedRepos="importedRepos"
+      @close="showModal = false"/>
   </div>
 </template>
 
@@ -56,19 +55,16 @@ export default {
     return { showModal: false };
   },
   computed: {
-    ...mapState('contentRepo', { contentRepoStore: 'items' }),
-    importedContent() {
+    ...mapState('contentRepo', { repoStore: 'items' }),
+    importedRepos() {
       const { programLevelId } = this;
-      return filter(this.contentRepoStore, { programLevelId });
+      return filter(this.repoStore, { programLevelId });
     }
   },
-  methods: mapActions('contentRepo', {
-    fetchImportedContent: 'fetch', importContentRepo: 'save'
-  }),
-  created() {
+  methods: mapActions('contentRepo', ['fetch', 'save']),
+  mounted() {
     const { programLevelId } = this;
-    const srcVersion = true;
-    return this.fetchImportedContent({ programLevelId, srcVersion });
+    return this.fetch({ programLevelId, srcVersion: true });
   },
   components: { ContentModal }
 };
