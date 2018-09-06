@@ -53,21 +53,21 @@ class Storage {
     return this.getItem(key);
   }
 
-  getContainer(id, contentRepoId) {
+  getContainer(contentRepoId, id) {
     const key = `repository/${contentRepoId}/${id}.container.json`;
     return this.getItem(key);
   }
 
-  getExam(id, contentRepoId) {
+  getExam(contentRepoId, id) {
     const key = `repository/${contentRepoId}/${id}.exam.json`;
     return this.getItem(key);
   }
 
-  importRepo(data) {
+  importRepo(programLevelId, repoId) {
     const { store } = this;
-    const source = `repository/${data.sourceId}/index.json`;
-    const dest = `imported/${data.programLevelId}/${data.sourceId}/index.json`;
-    const repo = this.getRepository(data.sourceId);
+    const source = `repository/${repoId}/index.json`;
+    const dest = `imported/${programLevelId}/${repoId}/index.json`;
+    const repo = this.getRepository(repoId);
     const stream = pipe(
       store.createReadStream({ key: source }),
       store.createWriteStream({ key: dest })
