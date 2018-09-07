@@ -8,8 +8,6 @@ const keyBy = require('lodash/keyBy');
 const pick = require('lodash/pick');
 
 const Storage = createStorage(config.storage);
-const processInput = input => pick(input,
-  ['contentRepoId', 'sourceId', 'programLevelId']);
 const outputAttributes = [
   'id', 'sourceId', 'programLevelId', 'name', 'publishedAt'
 ];
@@ -32,9 +30,9 @@ function getCatalog(req, res) {
 }
 
 async function upsert({ body }, res) {
-  const data = processInput(body);
+  const data = pick(body, ['id', 'sourceId', 'programLevelId']);
   const srcRepo = await Storage.importRepo(data.programLevelId, data.sourceId);
-  const dstRepo = await ContentRepo.createOrUpdate(data.contentRepoId, {
+  const dstRepo = await ContentRepo.createOrUpdate(data.id, {
     ...data,
     ...pick(srcRepo, [
       'uid', 'schema', 'name', 'structure', 'description', 'publishedAt'])
