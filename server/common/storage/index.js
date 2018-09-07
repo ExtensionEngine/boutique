@@ -1,7 +1,6 @@
+
 const getStream = require('get-stream');
 const path = require('path');
-const pipe = require('pumpify');
-const streamToPromise = require('stream-to-promise');
 
 const isFunction = arg => typeof arg === 'function';
 
@@ -64,13 +63,10 @@ class Storage {
   }
 
   importRepo(programLevelId, repoId) {
-    const source = `repository/${repoId}/index.json`;
-    const dest = `imported/${programLevelId}/${repoId}/index.json`;
-    const stream = pipe(
-      this.store.createReadStream({ key: source }),
-      this.store.createWriteStream({ key: dest })
-    );
-    return streamToPromise(stream).then(() => this.getRepository(repoId));
+    const src = `repository/${repoId}/`;
+    const dest = `imported/${programLevelId}/${repoId}/`;
+    return this.store.copyDir(src, dest)
+      .then(() => this.getRepository(repoId));
   }
 }
 
