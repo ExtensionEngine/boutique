@@ -9,11 +9,11 @@ const pick = require('lodash/pick');
 
 const Storage = createStorage(config.storage);
 const outputAttributes = [
-  'id', 'sourceId', 'programLevelId', 'name', 'publishedAt'
+  'id', 'sourceId', 'cohortId', 'name', 'publishedAt'
 ];
 
-async function list({ query: { programLevelId, srcVersion = false } }, res) {
-  const opts = { where: { programLevelId }, attributes: outputAttributes };
+async function list({ query: { cohortId, srcVersion = false } }, res) {
+  const opts = { where: { cohortId }, attributes: outputAttributes };
   const repos = await ContentRepo.findAll(opts);
   if (srcVersion) {
     const reposById = keyBy(await Storage.getCatalog(), 'id');
@@ -30,8 +30,8 @@ function getCatalog(req, res) {
 }
 
 async function upsert({ body }, res) {
-  const data = pick(body, ['id', 'sourceId', 'programLevelId']);
-  const srcRepo = await Storage.importRepo(data.programLevelId, data.sourceId);
+  const data = pick(body, ['id', 'sourceId', 'cohortId']);
+  const srcRepo = await Storage.importRepo(data.cohortId, data.sourceId);
   const dstRepo = await ContentRepo.createOrUpdate(data.id, {
     ...data,
     ...pick(srcRepo, [

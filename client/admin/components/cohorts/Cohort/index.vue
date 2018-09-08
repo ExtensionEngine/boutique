@@ -1,25 +1,21 @@
 <template>
   <div>
-    <h1 class="title">
-      {{ programLevel && programLevel.name }}
-    </h1>
+    <h1 class="title">{{ cohort && cohort.name }}</h1>
     <div class="tabs">
       <ul>
         <li :class="{ 'active-link': $route.name === 'enrollments' }">
-          <router-link
-            :to="{ name: 'enrollments', params: { programLevelId } }">
+          <router-link :to="{ name: 'enrollments', params: { cohortId } }">
             Enrollments
           </router-link>
         </li>
         <li :class="{ 'active-link': $route.name === 'importedContent' }">
-          <router-link
-            :to="{ name: 'importedContent', params: { programLevelId } }">
+          <router-link :to="{ name: 'importedContent', params: { cohortId } }">
             Content
           </router-link>
         </li>
       </ul>
     </div>
-    <router-view></router-view>
+    <router-view/>
   </div>
 </template>
 
@@ -28,17 +24,17 @@ import { mapActions, mapState } from 'vuex';
 import find from 'lodash/find';
 
 export default {
-  name: 'program-level',
-  props: { programLevelId: { type: Number, required: true } },
+  name: 'cohort',
+  props: { cohortId: { type: Number, required: true } },
   computed: {
-    ...mapState('programLevels', { programLevels: 'items' }),
-    programLevel() {
-      return find(this.programLevels, { id: this.programLevelId });
+    ...mapState('cohorts', { cohorts: 'items' }),
+    cohort() {
+      return find(this.cohorts, { id: this.cohortId });
     }
   },
-  methods: mapActions('programLevels', ['get']),
+  methods: mapActions('cohorts', ['get']),
   created() {
-    this.get(this.programLevelId);
+    this.get(this.cohortId);
   }
 };
 </script>
