@@ -37,7 +37,7 @@
     </table>
     <content-modal
       :show="showModal"
-      :programLevelId="programLevelId"
+      :cohortId="cohortId"
       :importedRepos="importedRepos"
       @close="showModal = false"/>
   </div>
@@ -50,21 +50,21 @@ import filter from 'lodash/filter';
 
 export default {
   name: 'imported-content',
-  props: { programLevelId: { type: Number, required: true } },
+  props: { cohortId: { type: Number, required: true } },
   data() {
     return { showModal: false };
   },
   computed: {
     ...mapState('contentRepo', { repoStore: 'items' }),
     importedRepos() {
-      const { programLevelId } = this;
-      return filter(this.repoStore, { programLevelId });
+      const { cohortId } = this;
+      return filter(this.repoStore, { cohortId });
     }
   },
   methods: mapActions('contentRepo', ['fetch', 'save']),
   mounted() {
-    const { programLevelId } = this;
-    return this.fetch({ programLevelId, srcVersion: true });
+    const { cohortId } = this;
+    return this.fetch({ cohortId, srcVersion: true });
   },
   components: { ContentModal }
 };

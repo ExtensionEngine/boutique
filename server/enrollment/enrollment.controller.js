@@ -9,12 +9,12 @@ const pick = require('lodash/pick');
 const { BAD_REQUEST } = HttpStatus;
 const Op = Sequelize.Op;
 
-const processInput = input => pick(input, ['studentId', 'programLevelId']);
+const processInput = input => pick(input, ['studentId', 'cohortId']);
 const processOutput = it => ({ ...it.dataValues, student: it.student.profile });
 
-function list({ query: { programLevelId, studentId } }, res) {
+function list({ query: { cohortId, studentId } }, res) {
   const cond = [];
-  if (programLevelId) cond.push({ programLevelId });
+  if (cohortId) cond.push({ cohortId });
   if (studentId) cond.push({ studentId });
   return Enrollment.findAll({ where: { [Op.and]: cond }, include: ['student'] })
     .then(enrollments => res.jsend.success(map(enrollments, processOutput)));

@@ -1,19 +1,12 @@
 <template>
   <modal :show="show" @close="close">
-    <div class="program-level-modal">
+    <div class="cohort-modal">
       <h2 class="title is-4">
-        {{ programLevelData ? 'Edit' : 'Create' }} Program Level
+        {{ cohortData ? 'Edit' : 'Create' }} Cohort
       </h2>
       <form @submit.prevent="save">
-        <v-select
-          v-model="programLevel.programId"
-          :options="programOptions"
-          :max-height="150"
-          name="program"
-          validate="required">
-        </v-select>
         <v-input
-          v-model="programLevel.name"
+          v-model="cohort.name"
           name="name"
           validate="required|min:2|max:255">
         </v-input>
@@ -27,43 +20,36 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
 import cloneDeep from 'lodash/cloneDeep';
 import isEmpty from 'lodash/isEmpty';
-import map from 'lodash/map';
+import { mapActions } from 'vuex';
 import Modal from '@/common/components/Modal';
 import VInput from '@/common/components/form/VInput';
 import VSelect from '@/common/components/form/VSelect';
 import { withValidation } from '@/common/validation';
 
-const reset = () => ({ name: '', programId: null });
+const getDefaultData = () => ({ name: '' });
 
 export default {
-  name: 'program-level-modal',
+  name: 'cohort-modal',
   mixins: [withValidation()],
   props: {
     show: { type: Boolean, default: false },
-    programLevelData: { type: Object, default: () => ({}) }
+    cohortData: { type: Object, default: () => ({}) }
   },
   data() {
-    return { programLevel: reset() };
-  },
-  computed: {
-    ...mapState('programs', { programs: 'items' }),
-    programOptions() {
-      return map(this.programs, it => ({ label: it.name, value: it.id }));
-    }
+    return { cohort: getDefaultData() };
   },
   methods: {
-    ...mapActions('programLevels', { saveProgramLevel: 'save' }),
+    ...mapActions('cohorts', { saveCohort: 'save' }),
     close() {
-      this.programLevel = reset();
+      this.cohort = getDefaultData();
       this.$emit('close');
     },
     save() {
       this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
-        this.saveProgramLevel(this.programLevel);
+        this.saveCohort(this.cohort);
         this.close();
       });
     }
@@ -72,8 +58,8 @@ export default {
     show(val) {
       if (!val) return;
       this.vErrors.clear();
-      if (isEmpty(this.programLevelData)) return;
-      this.programLevel = cloneDeep(this.programLevelData);
+      if (isEmpty(this.cohortData)) return;
+      this.cohort = cloneDeep(this.cohortData);
     }
   },
   components: { Modal, VInput, VSelect }

@@ -62,9 +62,9 @@ class Storage {
     return this.getItem(key);
   }
 
-  importRepo(programLevelId, repoId) {
+  importRepo(cohortId, repoId) {
     const src = `repository/${repoId}/`;
-    const dest = `imported/${programLevelId}/${repoId}/`;
+    const dest = `imported/${cohortId}/${repoId}/`;
     return this.store.copyDir(src, dest)
       .then(() => this.getRepository(repoId));
   }

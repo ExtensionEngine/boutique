@@ -8,8 +8,7 @@
         :searchable="true"
         :isLoading="isLoading"
         :maxHeight="150"
-        name="repo">
-      </v-select>
+        name="repo"/>
       <div class="controls field is-grouped is-grouped-right">
         <button @click="close" class="control button" type="button">Cancel</button>
         <button class="control button is-primary" type="submit">Import</button>
@@ -31,7 +30,7 @@ export default {
   name: 'content-modal',
   props: {
     show: { type: Boolean, default: false },
-    programLevelId: { type: Number, required: true },
+    cohortId: { type: Number, required: true },
     importedRepos: { type: Array, default: () => ([]) }
   },
   data() {
@@ -49,7 +48,7 @@ export default {
   methods: {
     ...mapActions('contentRepo', ['save']),
     importRepo() {
-      this.save(pick(this, ['sourceId', 'programLevelId']));
+      this.save(pick(this, ['sourceId', 'cohortId']));
       this.close();
     },
     close() {
