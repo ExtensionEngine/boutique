@@ -1,4 +1,5 @@
 import App from './App';
+import format from 'date-fns/format';
 import router from './router';
 import store from './store';
 import VeeValidate from '@/common/validation';
@@ -14,6 +15,10 @@ Vue.use(VeeValidate, {
 });
 Vue.use(VueHotkey);
 Vue.use(VueVisible);
+
+Vue.filter('formatDate', (value, dateFormat = 'MM/DD/YY HH:mm') => {
+  return value && format(value, dateFormat);
+});
 
 // eslint-disable-next-line no-new
 new Vue({

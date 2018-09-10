@@ -1,5 +1,6 @@
 import AdminRoot from '@/admin/components/index';
 import Auth from '@/common/components/auth';
+import Content from '@/admin/components/program-levels/ProgramLevel/Content';
 import Enrollments from '@/admin/components/program-levels/ProgramLevel/Enrollments';
 import ForgotPassword from '@/common/components/auth/ForgotPassword';
 import get from 'lodash/get';
@@ -15,6 +16,10 @@ import Users from '@/admin/components/users';
 import Vue from 'vue';
 
 Vue.use(Router);
+
+const parseProgramLevelId = route => ({
+  programLevelId: parseInt(route.params.programLevelId, 10)
+});
 
 // Handle 404
 const fallbackRoute = {
@@ -57,10 +62,17 @@ const router = new Router({
       path: '/program-levels/:programLevelId',
       name: 'programLevel',
       component: ProgramLevel,
+      props: parseProgramLevelId,
       children: [{
         path: '',
         name: 'enrollments',
-        component: Enrollments
+        component: Enrollments,
+        props: parseProgramLevelId
+      }, {
+        path: 'content',
+        name: 'importedContent',
+        component: Content,
+        props: parseProgramLevelId
       }]
     }, {
       path: '/users',

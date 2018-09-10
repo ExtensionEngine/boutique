@@ -1,3 +1,4 @@
+
 const getStream = require('get-stream');
 const path = require('path');
 
@@ -51,14 +52,21 @@ class Storage {
     return this.getItem(key);
   }
 
-  getContainer(id, courseId) {
-    const key = `repository/${courseId}/${id}.container.json`;
+  getContainer(contentRepoId, id) {
+    const key = `repository/${contentRepoId}/${id}.container.json`;
     return this.getItem(key);
   }
 
-  getExam(id, courseId) {
-    const key = `repository/${courseId}/${id}.exam.json`;
+  getExam(contentRepoId, id) {
+    const key = `repository/${contentRepoId}/${id}.exam.json`;
     return this.getItem(key);
+  }
+
+  importRepo(programLevelId, repoId) {
+    const src = `repository/${repoId}/`;
+    const dest = `imported/${programLevelId}/${repoId}/`;
+    return this.store.copyDir(src, dest)
+      .then(() => this.getRepository(repoId));
   }
 }
 
