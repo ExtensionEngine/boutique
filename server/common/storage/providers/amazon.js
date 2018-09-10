@@ -1,6 +1,8 @@
 const Joi = require('joi');
+const path = require('path');
+const Promise = require('bluebird');
 const S3 = require('aws-sdk/clients/s3');
-const s3blobs = require('s3-blob-store');
+const S3BlobStore = require('s3-blob-store');
 
 const API_VERSION = '2006-03-01';
 
@@ -17,6 +19,22 @@ const errors = {
   }
 };
 
+class S3Store extends S3BlobStore {
+  async copyDir(src, dest) {
+    const Bucket = this.bucket;
+    const opts = { Bucket, Delimiter: '/', Prefix: src };
+    const { Contents } = await this.s3.listObjectsV2(opts).promise();
+    return Promise.map(Contents, it => {
+      const opts = {
+        Bucket,
+        CopySource: path.join(Bucket, it.Key),
+        Key: path.join(dest, path.basename(it.Key))
+      };
+      return this.s3.copyObject(opts).promise();
+    });
+  }
+}
+
 function createStore(config) {
   const client = new S3({
     accessKeyId: config.key,
@@ -25,7 +43,8 @@ function createStore(config) {
     apiVersion: API_VERSION,
     ...config
   });
-  return s3blobs({ client, bucket: config.bucket });
+
+  return new S3Store({ client, bucket: config.bucket });
 }
 
 module.exports = { schema, errors, createStore };
