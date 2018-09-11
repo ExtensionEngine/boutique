@@ -1,7 +1,6 @@
 const { ContentRepo, Enrollment } = require('../common/database');
 const { createError } = require('../common/errors');
 const ctrl = require('./content-delivery.controller');
-const forEach = require('lodash/forEach');
 const HttpStatus = require('http-status');
 const router = require('express').Router();
 
@@ -17,21 +16,11 @@ router
 
 function hasAccess({ cohort, user }, res, next) {
   if (user.isAdmin()) return next();
-  const opts = { where: { studentId: user.id }, attributes: ['cohortId'] };
-  return Enrollment.all(opts)
-    .then(enrollments => {
-      let enrolledToCohort = false;
-      forEach(enrollments, it => {
-        if (it.cohortId === cohort.id) {
-          enrolledToCohort = true;
-          return false;
-        }
-      });
-      if (enrolledToCohort) {
-        next();
-      } else {
-        return createError(UNAUTHORIZED, 'Access restricted');
-      }
+  const opts = { where: { studentId: user.id, cohortId: cohort.id } };
+  return Enrollment.count(opts)
+    .then(count => {
+      if (count) return next();
+      return createError(UNAUTHORIZED, 'Access restricted');
     });
 }
 
