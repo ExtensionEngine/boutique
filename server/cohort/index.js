@@ -38,11 +38,14 @@ function hasAccess(req, res, next) {
   const opts = { where: { studentId: user.id }, attributes: ['cohortId'] };
   return Enrollment.all(opts)
     .then(enrollments => {
-      const userEnrollments = [];
+      let enrolledToCohort = false;
       forEach(enrollments, it => {
-        userEnrollments.push(it.cohortId);
+        if (it.cohortId === cohort.id) {
+          enrolledToCohort = true;
+          return false;
+        }
       });
-      if (includes(userEnrollments, parseInt(cohort.id, 10))) {
+      if (enrolledToCohort) {
         next();
       } else {
         return createError(UNAUTHORIZED, 'Access restricted');
@@ -51,12 +54,10 @@ function hasAccess(req, res, next) {
 }
 
 function getRepo(req, res, next) {
-  return ContentRepo.findById(req.params.contentId)
+  const opts = { where: { id: req.params.contentId, cohortId: req.cohort.id } };
+  return ContentRepo.findOne(opts)
     .then(repo => repo || createError(NOT_FOUND, 'Not found!'))
     .then(repo => {
-      if (repo.cohortId !== req.cohort.id) {
-        return createError(NOT_FOUND, 'Not found!');
-      }
       req.repo = repo;
       next();
     });
