@@ -2,7 +2,7 @@
 
 const { Model } = require('sequelize');
 
-class ProgramLevel extends Model {
+class Cohort extends Model {
   static fields(DataTypes) {
     return {
       name: {
@@ -25,18 +25,18 @@ class ProgramLevel extends Model {
     };
   }
 
-  static associate({ Enrollment, Program }) {
-    this.belongsTo(Program, {
-      foreignKey: { name: 'programId', field: 'program_id' }
-    });
+  static associate({ Enrollment, ContentRepo }) {
     this.hasMany(Enrollment, {
-      foreignKey: { name: 'program_level_id', field: 'program_level_id' }
+      foreignKey: { name: 'cohortId', field: 'cohort_id' }
+    });
+    this.hasMany(ContentRepo, {
+      foreignKey: { name: 'cohortId', field: 'cohort_id' }
     });
   }
 
   static options() {
     return {
-      modelName: 'program_level',
+      modelName: 'cohort',
       timestamps: true,
       paranoid: true,
       freezeTableName: true
@@ -44,4 +44,4 @@ class ProgramLevel extends Model {
   }
 }
 
-module.exports = ProgramLevel;
+module.exports = Cohort;

@@ -1,19 +1,16 @@
 'use strict';
 
+const TABLE_NAME = 'cohort';
+
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('program', {
+  up: (queryInterface, Sequelize) => queryInterface.createTable(TABLE_NAME, {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      autoIncrement: true,
-      allowNull: false
+      autoIncrement: true
     },
     name: {
-      type: Sequelize.STRING,
-      allowNull: false
-    },
-    description: {
-      type: Sequelize.STRING(2000),
+      type: Sequelize.STRING(255),
       allowNull: false
     },
     createdAt: {
@@ -31,5 +28,5 @@ module.exports = {
       field: 'deleted_at'
     }
   }),
-  down: (queryInterface, Sequelize) => queryInterface.dropTable('program')
+  down: (queryInterface) => queryInterface.dropTable(TABLE_NAME)
 };

@@ -1,13 +1,19 @@
 module.exports = {
-  processors: [['@mapbox/stylelint-processor-arbitrary-tags', {
-    fileFilterRegex: [/\.vue$/]
-  }]],
   extends: 'stylelint-config-standard',
-  plugins: ['stylelint-order'],
+  plugins: ['stylelint-scss', 'stylelint-order'],
   rules: {
     // NOTE: Required due to:
     // https://github.com/mapbox/stylelint-processor-arbitrary-tags/tree/5e302529f447f4d18dc16d2a9e5a16ca98d3b378#caveats
     'no-empty-source': null,
+    'at-rule-no-unknown': null,
+    'scss/at-rule-no-unknown': true,
+    'at-rule-empty-line-before': ['always', {
+      except: ['blockless-after-blockless'],
+      ignore: ['after-comment', 'inside-block']
+    }],
+    'function-name-case': ['lower', {
+      ignoreFunctions: ['findColorInvert']
+    }],
     'selector-list-comma-newline-after': 'never-multi-line',
     'function-comma-space-after': null,
     'order/properties-order': [
@@ -39,6 +45,7 @@ module.exports = {
       'font-size',
       'font-weight',
       'line-height',
+      'text-transform',
       'background',
       'background-color',
       'border',

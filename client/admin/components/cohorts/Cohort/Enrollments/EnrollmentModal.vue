@@ -10,11 +10,10 @@
         :maxHeight="150"
         :validate="{
           required: true,
-          'unique-enrollment': { studentId, programLevelId }
+          'unique-enrollment': { studentId, cohortId }
         }"
         @search-change="search"
-        name="student">
-      </v-select>
+        name="student"/>
       <div class="controls field is-grouped is-grouped-right">
         <button @click="close" class="control button">Cancel</button>
         <button @click="add" class="control button is-primary">Add</button>
@@ -37,8 +36,8 @@ export default {
   name: 'enollment-modal',
   mixins: [withValidation()],
   props: {
-    programLevelId: { type: Number, required: true },
-    show: { type: Boolean, default: false }
+    show: { type: Boolean, default: false },
+    cohortId: { type: Number, required: true }
   },
   data() {
     return {
@@ -52,7 +51,7 @@ export default {
     add() {
       this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
-        this.save(pick(this, ['studentId', 'programLevelId']));
+        this.save(pick(this, ['studentId', 'cohortId']));
         this.close();
       });
     },

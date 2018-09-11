@@ -3,7 +3,7 @@ import * as mutations from './mutations';
 
 const state = {
   items: {},
-  $apiUrl: '/programs'
+  $apiUrl: '/content-repo'
 };
 
 export default {

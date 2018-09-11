@@ -1,5 +1,6 @@
 import App from './App';
 import Croppa from 'vue-croppa';
+import format from 'date-fns/format';
 import router from './router';
 import Snotify from 'vue-snotify';
 import store from './store';
@@ -18,6 +19,10 @@ Vue.use(VeeValidate, {
 });
 Vue.use(VueHotkey);
 Vue.use(VueVisible);
+
+Vue.filter('formatDate', (value, dateFormat = 'MM/DD/YY HH:mm') => {
+  return value && format(value, dateFormat);
+});
 
 // eslint-disable-next-line no-new
 new Vue({
