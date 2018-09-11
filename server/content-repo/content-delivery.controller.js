@@ -7,28 +7,26 @@ const createStorage = require('../common/storage');
 
 const Storage = createStorage(config.storage);
 
-function list(req, res) {
+function list({ cohort }, res) {
   const opts = {
-    where: { cohortId: req.cohort.id },
+    where: { cohortId: cohort.id },
     attributes: { exclude: ['structure'] }
   };
   return ContentRepo.all(opts)
     .then(repos => res.jsend.success(repos));
 }
 
-function get(req, res) {
-  return res.jsend.success(req.repo);
+function get({ repo }, res) {
+  return res.jsend.success(repo);
 }
 
-function getContainer(req, res) {
-  const { cohort, params, repo } = req;
+function getContainer({ cohort, params, repo }, res) {
   return Storage.getContainer(cohort.id, repo.sourceId, params.containerId)
     .catch(() => createError())
     .then(container => res.jsend.success(container));
 }
 
-function getExam(req, res) {
-  const { cohort, params, repo } = req;
+function getExam({ cohort, params, repo }, res) {
   return Storage.getExam(cohort.id, repo.sourceId, params.examId)
     .catch(() => createError())
     .then(exam => res.jsend.success(exam));

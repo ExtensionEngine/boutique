@@ -15,8 +15,7 @@ router
   .get('/:contentId/container/:containerId', ctrl.getContainer)
   .get('/:contentId/exam/:examId', ctrl.getExam);
 
-function hasAccess(req, res, next) {
-  const { cohort, user } = req;
+function hasAccess({ cohort, user }, res, next) {
   if (user.isAdmin()) return next();
   const opts = { where: { studentId: user.id }, attributes: ['cohortId'] };
   return Enrollment.all(opts)
