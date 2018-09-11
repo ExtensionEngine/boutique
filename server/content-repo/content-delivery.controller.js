@@ -4,7 +4,7 @@ const { ContentRepo } = require('../common/database');
 
 function list(req, res) {
   const opts = {
-    where: { cohortId: req.params.id },
+    where: { cohortId: req.cohort.id },
     attributes: { exclude: ['structure'] }
   };
   return ContentRepo.all(opts)

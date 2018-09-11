@@ -3,7 +3,7 @@ const { createError } = require('../common/errors');
 const ctrl = require('./content-delivery.controller');
 const forEach = require('lodash/forEach');
 const HttpStatus = require('http-status');
-const router = require('express').Router({ mergeParams: true });
+const router = require('express').Router();
 
 const { NOT_FOUND, UNAUTHORIZED } = HttpStatus;
 
@@ -14,7 +14,7 @@ router
   .get('/:contentId', ctrl.get);
 
 function hasAccess(req, res, next) {
-  const { user, cohort } = req;
+  const { cohort, user } = req;
   if (user.isAdmin()) return next();
   const opts = { where: { studentId: user.id }, attributes: ['cohortId'] };
   return Enrollment.all(opts)
@@ -35,7 +35,8 @@ function hasAccess(req, res, next) {
 }
 
 function getRepo(req, res, next) {
-  const opts = { where: { id: req.params.contentId, cohortId: req.params.id } };
+  const { cohort, params } = req;
+  const opts = { where: { id: params.contentId, cohortId: cohort.id } };
   return ContentRepo.findOne(opts)
     .then(repo => repo || createError(NOT_FOUND, 'Not found!'))
     .then(repo => {
