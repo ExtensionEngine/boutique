@@ -10,11 +10,10 @@
         :maxHeight="150"
         :validate="{
           required: true,
-          'unique-enrollment': { studentId, programLevelId }
+          'unique-enrollment': { studentId, cohortId }
         }"
-        name="student"
-        @search-change="search">
-      </v-select>
+        @search-change="search"
+        name="student"/>
       <div class="controls field is-grouped is-grouped-right">
         <button @click="close" class="control button">Cancel</button>
         <button @click="add" class="control button is-primary">Add</button>
@@ -24,21 +23,21 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-import { withValidation } from '@/common/validation';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
+import { mapActions } from 'vuex';
 import Modal from '@/common/components/Modal';
 import pick from 'lodash/pick';
 import request from '@/common/api/request';
 import VSelect from '@/common/components/form/VSelect';
+import { withValidation } from '@/common/validation';
 
 export default {
   name: 'enollment-modal',
   mixins: [withValidation()],
   props: {
-    programLevelId: { type: Number, required: true },
-    show: { type: Boolean, default: false }
+    show: { type: Boolean, default: false },
+    cohortId: { type: Number, required: true }
   },
   data() {
     return {
@@ -52,7 +51,7 @@ export default {
     add() {
       this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
-        this.save(pick(this, ['studentId', 'programLevelId']));
+        this.save(pick(this, ['studentId', 'cohortId']));
         this.close();
       });
     },

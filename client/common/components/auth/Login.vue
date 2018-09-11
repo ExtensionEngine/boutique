@@ -29,9 +29,9 @@
 
 <script>
 import { mapActions } from 'vuex';
-import { withValidation } from '@/common/validation';
 import pick from 'lodash/pick';
 import VInput from '@/common/components/form/VInput';
+import { withValidation } from '@/common/validation';
 
 const LOGIN_ERR_MESSAGE = 'User email and password do not match';
 

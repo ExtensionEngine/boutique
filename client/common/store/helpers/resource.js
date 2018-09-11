@@ -1,11 +1,10 @@
 import assign from 'lodash/assign';
+import axios from '@/common/api/request';
 import cloneDeep from 'lodash/cloneDeep';
 import cuid from 'cuid';
 import join from 'url-join';
 import omit from 'lodash/omit';
 import Queue from 'promise-queue';
-
-import axios from '@/common/api/request';
 
 // Used to serialize api calls that modify data.
 const queue = new Queue(1, Infinity);
@@ -18,7 +17,7 @@ export default class Resource {
   }
 
   url(path = '') {
-    return join(this.baseUrl, path);
+    return join(this.baseUrl, path.toString());
   }
 
   /**

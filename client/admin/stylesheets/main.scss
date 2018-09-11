@@ -1,11 +1,10 @@
 @import '~bulma/bulma';
 // Google Web Fonts
 @import '~sass-web-fonts';
-/* stylelint-disable function-comma-newline-after */
+/* stylelint-disable-next-line function-comma-newline-after */
 $web-font-path: web-fonts-url(('Roboto': (300, 400, 500, 700)));
-/* stylelint-enable */
 $mdi-font-path: '~mdi/fonts';
-/* stylelint-disable-next-line at-rule-empty-line-before */
+
 @import '~mdi/scss/materialdesignicons';
 
 .system-font-stack {

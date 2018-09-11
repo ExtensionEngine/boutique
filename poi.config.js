@@ -6,16 +6,27 @@ const aliases = {
   '@': path.resolve(__dirname, './client')
 };
 
+const devServer = {
+  headers: {
+    'X-Powered-By': 'Webpack DevSever'
+  },
+  proxy: {
+    '/api': {
+      target: `http://${config.ip}:${config.port}`
+    }
+  }
+};
+
 module.exports = (options, req) => ({
-  presets: [
-    require('poi-preset-eslint')({ mode: '*' }),
-    require('poi-preset-bundle-report')()
+  plugins: [
+    require('@poi/plugin-eslint')({ command: '*' }),
+    require('@poi/plugin-bundle-report')()
   ],
   entry: {
     admin: 'client/admin/main.js',
     student: 'client/student/main.js'
   },
-  dist: 'dist',
+  outDir: 'dist',
   html: [{
     filename: 'admin/index.html',
     excludeChunks: ['student']
@@ -23,7 +34,7 @@ module.exports = (options, req) => ({
     filename: 'index.html',
     excludeChunks: ['admin']
   }],
-  extendWebpack(config) {
+  chainWebpack(config) {
     configureModuleResolution(config);
     config.resolve.alias.merge(aliases);
   },
@@ -32,16 +43,7 @@ module.exports = (options, req) => ({
   generateStats: true,
   // Override using: `npm run dev:server -- --port <number>`
   port: 8081,
-  devServer: {
-    headers: {
-      'X-Powered-By': 'Webpack DevSever'
-    },
-    proxy: {
-      '/api': {
-        target: `http://${config.ip}:${config.port}`
-      }
-    }
-  }
+  devServer
 });
 
 // NOTE: Remove absolute path to local `node_modules` from configuration

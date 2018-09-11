@@ -4,11 +4,11 @@
       <button
         @click="add"
         class="button is-primary is-pulled-right">
-        Add
+        Enroll learner
       </button>
     </div>
     <div v-if="!enrollments.length" class="notification is-warning">
-      Click on the button above to enroll your first student.
+      Click on the button above to enroll learner.
     </div>
     <table v-else class="table is-fullwidth is-hoverable">
       <thead>
@@ -28,9 +28,8 @@
     </table>
     <enrollment-modal
       :show="showModal"
-      :programLevelId="programLevelId"
-      @close="showModal = false">
-    </enrollment-modal>
+      :cohortId="cohortId"
+      @close="showModal = false"/>
   </div>
 </template>
 
@@ -41,6 +40,7 @@ import filter from 'lodash/filter';
 
 export default {
   name: 'enrollments',
+  props: { cohortId: { type: Number, required: true } },
   data() {
     return {
       showModal: false
@@ -48,23 +48,19 @@ export default {
   },
   computed: {
     ...mapState('enrollments', { enrollmentStore: 'items' }),
-    programLevelId() {
-      return parseInt(this.$route.params.programLevelId);
-    },
     enrollments() {
-      const { programLevelId } = this;
-      return filter(this.enrollmentStore, { programLevelId });
+      const { cohortId } = this;
+      return filter(this.enrollmentStore, { cohortId });
     }
   },
   methods: {
-    ...mapActions('enrollments', { fetchEnrollments: 'fetch' }),
+    ...mapActions('enrollments', ['fetch']),
     add() {
       this.showModal = true;
     }
   },
   created() {
-    const { programLevelId } = this;
-    return this.fetchEnrollments({ programLevelId });
+    return this.fetch({ cohortId: this.cohortId });
   },
   components: { EnrollmentModal }
 };

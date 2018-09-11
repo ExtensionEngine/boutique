@@ -42,17 +42,17 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-import { role } from '@/../common/config';
-import { withValidation } from '@/common/validation';
 import cloneDeep from 'lodash/cloneDeep';
 import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
+import { mapActions } from 'vuex';
 import Modal from '@/common/components/Modal';
 import request from '@/common/api/request';
+import { role } from '@/../common/config';
 import VInput from '@/common/components/form/VInput';
 import VSelect from '@/common/components/form/VSelect';
+import { withValidation } from '@/common/validation';
 
 const resetUser = () => {
   return {
@@ -92,6 +92,13 @@ export default {
       });
     }
   },
+  watch: {
+    show(val) {
+      if (!val) return;
+      this.vErrors.clear();
+      if (!isEmpty(this.userData)) this.user = cloneDeep(this.userData);
+    }
+  },
   mounted() {
     if (this.$validator.rules['unique-email']) return;
     this.$validator.extend('unique-email', {
@@ -102,13 +109,6 @@ export default {
           .then(res => ({ valid: isEmpty(res.data.data) }));
       }
     });
-  },
-  watch: {
-    show(val) {
-      if (!val) return;
-      this.vErrors.clear();
-      if (!isEmpty(this.userData)) this.user = cloneDeep(this.userData);
-    }
   },
   components: { Modal, VInput, VSelect }
 };

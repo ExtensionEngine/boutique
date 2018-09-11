@@ -1,7 +1,7 @@
 <template>
   <div
-    :class="{ 'is-active': show }"
     v-hotkey="{ escape: () => $emit('close') }"
+    :class="{ 'is-active': show }"
     class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
