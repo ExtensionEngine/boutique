@@ -1,6 +1,6 @@
 'use strict';
 
-const ctrl = require('./content-repo.controller');
+const ctrl = require('./content-import.controller');
 const router = require('express').Router();
 
 router

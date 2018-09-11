@@ -16,7 +16,6 @@ const config = require('./config');
 const logger = require('./common/logger')();
 const origin = require('./common/origin');
 const router = require('./router');
-const studentRouter = require('./studentRouter');
 
 const app = express();
 app.use(helmet());
@@ -40,7 +39,6 @@ app.use(morgan(format, {
 }));
 
 // Mount main router
-app.use('/api/v1/student', nocache(), studentRouter);
 app.use('/api/v1', nocache(), router);
 
 // Global error handler.
