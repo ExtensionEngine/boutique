@@ -52,13 +52,13 @@ class Storage {
     return this.getItem(key);
   }
 
-  getContainer(contentRepoId, id) {
-    const key = `repository/${contentRepoId}/${id}.container.json`;
+  getContainer(cohortId, repoId, id) {
+    const key = `imported/${cohortId}/${repoId}/${id}.container.json`;
     return this.getItem(key);
   }
 
-  getExam(contentRepoId, id) {
-    const key = `repository/${contentRepoId}/${id}.exam.json`;
+  getExam(cohortId, repoId, id) {
+    const key = `imported/${cohortId}/${repoId}/${id}.exam.json`;
     return this.getItem(key);
   }
 

@@ -11,7 +11,9 @@ router
   .use('/*', hasAccess)
   .get('/', ctrl.list)
   .use('/:contentId*', getRepo)
-  .get('/:contentId', ctrl.get);
+  .get('/:contentId', ctrl.get)
+  .get('/:contentId/container/:containerId', ctrl.getContainer)
+  .get('/:contentId/exam/:examId', ctrl.getExam);
 
 function hasAccess(req, res, next) {
   const { cohort, user } = req;
