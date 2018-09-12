@@ -52,18 +52,24 @@ class Storage {
     return this.getItem(key);
   }
 
-  getContainer(cohortId, repoId, id) {
-    const key = `imported/${cohortId}/${repoId}/${id}.container.json`;
+  getContainer(repoId, id, cohortId = false) {
+    const key = cohortId
+      ? `imported/${cohortId}/${repoId}/${id}.container.json`
+      : `repository/${repoId}/${id}.container.json`;
     return this.getItem(key);
   }
 
-  getExam(cohortId, repoId, id) {
-    const key = `imported/${cohortId}/${repoId}/${id}.exam.json`;
+  getExam(repoId, id, cohortId = false) {
+    const key = cohortId
+      ? `imported/${cohortId}/${repoId}/${id}.exam.json`
+      : `repository/${repoId}/${id}.exam.json`;
     return this.getItem(key);
   }
 
-  getAssessments(cohortId, repoId, id) {
-    const key = `imported/${cohortId}/${repoId}/${id}.assessments.json`;
+  getAssessments(repoId, id, cohortId = false) {
+    const key = cohortId
+      ? `imported/${cohortId}/${repoId}/${id}.assessments.json`
+      : `repository/${repoId}/${id}.assessments.json`;
     return this.getItem(key);
   }
 

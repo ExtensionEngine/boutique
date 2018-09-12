@@ -23,13 +23,13 @@ function get({ cohort, params }, res) {
 }
 
 function getContainer({ cohort, params, sourceId }, res) {
-  return Storage.getContainer(cohort.id, sourceId, params.containerId)
+  return Storage.getContainer(sourceId, params.containerId, cohort.id)
     .catch(() => createError())
     .then(container => res.jsend.success(container));
 }
 
 function getExam({ cohort, params, sourceId }, res) {
-  return Storage.getExam(cohort.id, sourceId, params.examId)
+  return Storage.getExam(sourceId, params.examId, cohort.id)
     .catch(() => createError())
     .then(exam => {
       forEach(exam.groups, group => {
@@ -42,7 +42,7 @@ function getExam({ cohort, params, sourceId }, res) {
 }
 
 function getAssessments({ cohort, params, sourceId }, res) {
-  return Storage.getAssessments(cohort.id, sourceId, params.assessmentsId)
+  return Storage.getAssessments(sourceId, params.assessmentsId, cohort.id)
     .catch(() => createError())
     .then(assessments => {
       forEach(assessments, it => {
