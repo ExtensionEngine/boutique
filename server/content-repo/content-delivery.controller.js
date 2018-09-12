@@ -4,7 +4,9 @@ const config = require('../config');
 const { ContentRepo } = require('../common/database');
 const { createError } = require('../common/errors');
 const createStorage = require('../common/storage');
+const HttpStatus = require('http-status');
 
+const { NOT_FOUND } = HttpStatus;
 const Storage = createStorage(config.storage);
 
 function list({ cohort }, res) {
@@ -16,24 +18,27 @@ function list({ cohort }, res) {
     .then(repos => res.jsend.success(repos));
 }
 
-function get({ repo }, res) {
-  return res.jsend.success(repo);
+function get({ cohort, params }, res) {
+  const opts = { where: { id: params.contentId, cohortId: cohort.id } };
+  return ContentRepo.findOne(opts)
+    .then(repo => repo || createError(NOT_FOUND, 'Not found!'))
+    .then(repo => res.jsend.success(repo));
 }
 
-function getContainer({ cohort, params, repo }, res) {
-  return Storage.getContainer(cohort.id, repo.sourceId, params.containerId)
+function getContainer({ cohort, params }, res) {
+  return Storage.getContainer(cohort.id, params.contentId, params.containerId)
     .catch(() => createError())
     .then(container => res.jsend.success(container));
 }
 
-function getExam({ cohort, params, repo }, res) {
-  return Storage.getExam(cohort.id, repo.sourceId, params.examId)
+function getExam({ cohort, params }, res) {
+  return Storage.getExam(cohort.id, params.contentId, params.examId)
     .catch(() => createError())
     .then(exam => res.jsend.success(exam));
 }
 
-function getAssessments({ cohort, params, repo }, res) {
-  return Storage.getAssessments(cohort.id, repo.sourceId, params.assessmentsId)
+function getAssessments({ cohort, params }, res) {
+  return Storage.getAssessments(cohort.id, params.contentId, params.assessmentsId)
     .catch(() => createError())
     .then(assessments => res.jsend.success(assessments));
 }
