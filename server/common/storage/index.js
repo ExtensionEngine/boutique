@@ -62,6 +62,11 @@ class Storage {
     return this.getItem(key);
   }
 
+  getAssessments(cohortId, repoId, id) {
+    const key = `imported/${cohortId}/${repoId}/${id}.assessments.json`;
+    return this.getItem(key);
+  }
+
   importRepo(cohortId, repoId) {
     const src = `repository/${repoId}/`;
     const dest = `imported/${cohortId}/${repoId}/`;

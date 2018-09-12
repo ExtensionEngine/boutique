@@ -32,9 +32,16 @@ function getExam({ cohort, params, repo }, res) {
     .then(exam => res.jsend.success(exam));
 }
 
+function getAssessments({ cohort, params, repo }, res) {
+  return Storage.getAssessments(cohort.id, repo.sourceId, params.assessmentsId)
+    .catch(() => createError())
+    .then(assessments => res.jsend.success(assessments));
+}
+
 module.exports = {
   list,
   get,
   getContainer,
-  getExam
+  getExam,
+  getAssessments
 };

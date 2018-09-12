@@ -12,7 +12,8 @@ router
   .use('/:contentId*', getRepo)
   .get('/:contentId', ctrl.get)
   .get('/:contentId/container/:containerId', ctrl.getContainer)
-  .get('/:contentId/exam/:examId', ctrl.getExam);
+  .get('/:contentId/exam/:examId', ctrl.getExam)
+  .get('/:contentId/assessments/:assessmentsId', ctrl.getAssessments);
 
 function hasAccess({ cohort, user }, res, next) {
   if (user.isAdmin()) return next();
