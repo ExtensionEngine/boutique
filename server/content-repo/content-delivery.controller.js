@@ -11,11 +11,7 @@ const { NOT_FOUND } = HttpStatus;
 const Storage = createStorage(config.storage);
 
 function list({ cohort }, res) {
-  const opts = {
-    where: { cohortId: cohort.id },
-    attributes: { exclude: ['structure'] }
-  };
-  return ContentRepo.all(opts)
+  return cohort.getContent_repos({ attributes: { exclude: ['structure'] } })
     .then(repos => res.jsend.success(repos));
 }
 
@@ -26,14 +22,14 @@ function get({ cohort, params }, res) {
     .then(repo => res.jsend.success(repo));
 }
 
-function getContainer({ cohort, params }, res) {
-  return Storage.getContainer(cohort.id, params.contentId, params.containerId)
+function getContainer({ cohort, params, sourceId }, res) {
+  return Storage.getContainer(cohort.id, sourceId, params.containerId)
     .catch(() => createError())
     .then(container => res.jsend.success(container));
 }
 
-function getExam({ cohort, params }, res) {
-  return Storage.getExam(cohort.id, params.contentId, params.examId)
+function getExam({ cohort, params, sourceId }, res) {
+  return Storage.getExam(cohort.id, sourceId, params.examId)
     .catch(() => createError())
     .then(exam => {
       forEach(exam.groups, group => {
@@ -45,8 +41,8 @@ function getExam({ cohort, params }, res) {
     });
 }
 
-function getAssessments({ cohort, params }, res) {
-  return Storage.getAssessments(cohort.id, params.contentId, params.assessmentsId)
+function getAssessments({ cohort, params, sourceId }, res) {
+  return Storage.getAssessments(cohort.id, sourceId, params.assessmentsId)
     .catch(() => createError())
     .then(assessments => {
       forEach(assessments, it => {
