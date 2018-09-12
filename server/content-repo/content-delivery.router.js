@@ -26,9 +26,8 @@ function hasAccess({ cohort, user }, res, next) {
 }
 
 function getRepoSourceId(req, res, next) {
-  const { cohort, params } = req;
   const opts = {
-    where: { id: params.contentId, cohortId: cohort.id },
+    where: { id: req.params.contentId, cohortId: req.cohort.id },
     attributes: ['sourceId']
   };
   return ContentRepo.findOne(opts)
