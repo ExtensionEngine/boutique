@@ -4,6 +4,7 @@ const config = require('../config');
 const { ContentRepo } = require('../common/database');
 const { createError } = require('../common/errors');
 const createStorage = require('../common/storage');
+const forEach = require('lodash/forEach');
 const HttpStatus = require('http-status');
 
 const { NOT_FOUND } = HttpStatus;
@@ -34,13 +35,25 @@ function getContainer({ cohort, params }, res) {
 function getExam({ cohort, params }, res) {
   return Storage.getExam(cohort.id, params.contentId, params.examId)
     .catch(() => createError())
-    .then(exam => res.jsend.success(exam));
+    .then(exam => {
+      forEach(exam.groups, group => {
+        forEach(group.assessments, it => {
+          delete it.data.correct;
+        });
+      });
+      return res.jsend.success(exam);
+    });
 }
 
 function getAssessments({ cohort, params }, res) {
   return Storage.getAssessments(cohort.id, params.contentId, params.assessmentsId)
     .catch(() => createError())
-    .then(assessments => res.jsend.success(assessments));
+    .then(assessments => {
+      forEach(assessments, it => {
+        delete it.data.correct;
+      });
+      return res.jsend.success(assessments);
+    });
 }
 
 module.exports = {
