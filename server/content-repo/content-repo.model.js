@@ -64,10 +64,10 @@ class ContentRepo extends Model {
 
   static options() {
     return {
-      modelName: 'content_repo',
       timestamps: true,
       paranoid: true,
-      freezeTableName: true
+      freezeTableName: true,
+      tableName: 'content_repo'
     };
   }
 

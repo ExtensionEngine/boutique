@@ -9,11 +9,11 @@ const { NOT_FOUND, FORBIDDEN } = HttpStatus;
 router
   .use('/*', hasAccess)
   .get('/', ctrl.list)
-  .get('/:contentId', ctrl.get)
-  .use('/:contentId/*', getRepoSourceId)
-  .get('/:contentId/container/:containerId', ctrl.getContainer)
-  .get('/:contentId/exam/:examId', ctrl.getExam)
-  .get('/:contentId/assessments/:assessmentsId', ctrl.getAssessments);
+  .use('/:repositoryId*', getRepo)
+  .get('/:repositoryId', ctrl.get)
+  .get('/:repositoryId/container/:containerId', ctrl.getContainer)
+  .get('/:repositoryId/exam/:examId', ctrl.getExam)
+  .get('/:repositoryId/assessments/:assessmentsId', ctrl.getAssessments);
 
 function hasAccess({ cohort, user }, res, next) {
   if (user.isAdmin()) return next();
@@ -24,15 +24,14 @@ function hasAccess({ cohort, user }, res, next) {
   });
 }
 
-function getRepoSourceId(req, res, next) {
+function getRepo(req, res, next) {
   const opts = {
-    where: { id: req.params.contentId, cohortId: req.cohort.id },
-    attributes: ['sourceId']
+    where: { id: req.params.repositoryId, cohortId: req.cohort.id }
   };
   return ContentRepo.findOne(opts)
     .then(repo => repo || createError(NOT_FOUND, 'Not found!'))
     .then(repo => {
-      req.sourceId = repo.sourceId;
+      req.repo = repo;
       next();
     });
 }

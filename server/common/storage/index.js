@@ -17,6 +17,8 @@ class Storage {
     if (!isStore(store)) throw new TypeError('Invalid store provided');
     this.store = store;
     this.errors = errors;
+    this.publishedRepo = 'repository';
+    this.importedRepo = 'imported';
   }
 
   getFile(key) {
@@ -44,38 +46,38 @@ class Storage {
   }
 
   getCatalog() {
-    return this.getItem('repository/index.json');
+    return this.getItem(`${this.publishedRepo}/index.json`);
   }
 
   getRepository(id) {
-    const key = `repository/${id}/index.json`;
+    const key = `${this.publishedRepo}/${id}/index.json`;
     return this.getItem(key);
   }
 
-  getContainer(repoId, id, cohortId = false) {
+  getContainer(repoId, id, cohortId) {
     const key = cohortId
-      ? `imported/${cohortId}/${repoId}/${id}.container.json`
-      : `repository/${repoId}/${id}.container.json`;
+      ? `${this.importedRepo}/${cohortId}/${repoId}/${id}.container.json`
+      : `${this.publishedRepo}/${repoId}/${id}.container.json`;
     return this.getItem(key);
   }
 
-  getExam(repoId, id, cohortId = false) {
+  getExam(repoId, id, cohortId) {
     const key = cohortId
-      ? `imported/${cohortId}/${repoId}/${id}.exam.json`
-      : `repository/${repoId}/${id}.exam.json`;
+      ? `${this.importedRepo}/${cohortId}/${repoId}/${id}.exam.json`
+      : `${this.publishedRepo}/${repoId}/${id}.exam.json`;
     return this.getItem(key);
   }
 
-  getAssessments(repoId, id, cohortId = false) {
+  getAssessments(repoId, id, cohortId) {
     const key = cohortId
-      ? `imported/${cohortId}/${repoId}/${id}.assessments.json`
-      : `repository/${repoId}/${id}.assessments.json`;
+      ? `${this.importedRepo}/${cohortId}/${repoId}/${id}.assessments.json`
+      : `${this.publishedRepo}/${repoId}/${id}.assessments.json`;
     return this.getItem(key);
   }
 
   importRepo(cohortId, repoId) {
-    const src = `repository/${repoId}/`;
-    const dest = `imported/${cohortId}/${repoId}/`;
+    const src = `${this.publishedRepo}/${repoId}/`;
+    const dest = `${this.importedRepo}/${cohortId}/${repoId}/`;
     return this.store.copyDir(src, dest)
       .then(() => this.getRepository(repoId));
   }
