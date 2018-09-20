@@ -4,7 +4,7 @@ const config = require('../config');
 const { ContentRepo } = require('../common/database');
 const { createError } = require('../common/errors');
 const createStorage = require('../common/storage');
-const deleteKey = require('key-del');
+const forEach = require('lodash/forEach');
 const HttpStatus = require('http-status');
 
 const { NOT_FOUND } = HttpStatus;
@@ -31,13 +31,25 @@ function getContainer({ cohort, params, sourceId }, res) {
 function getExam({ cohort, params, sourceId }, res) {
   return Storage.getExam(sourceId, params.examId, cohort.id)
     .catch(() => createError(NOT_FOUND, 'Not found!'))
-    .then(exam => res.jsend.success(deleteKey(exam, 'correct')));
+    .then(exam => {
+      forEach(exam.groups, group => {
+        forEach(group.assessments, it => {
+          delete it.data.correct;
+        });
+      });
+      return res.jsend.success(exam);
+    });
 }
 
 function getAssessments({ cohort, params, sourceId }, res) {
   return Storage.getAssessments(sourceId, params.assessmentsId, cohort.id)
     .catch(() => createError(NOT_FOUND, 'Not found!'))
-    .then(assessments => res.jsend.success(deleteKey(assessments, 'correct')));
+    .then(assessments => {
+      forEach(assessments, it => {
+        delete it.data.correct;
+      });
+      return res.jsend.success(assessments);
+    });
 }
 
 module.exports = {
