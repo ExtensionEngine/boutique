@@ -4,7 +4,7 @@ const ctrl = require('./content-delivery.controller');
 const HttpStatus = require('http-status');
 const router = require('express').Router();
 
-const { NOT_FOUND, UNAUTHORIZED } = HttpStatus;
+const { NOT_FOUND, FORBIDDEN } = HttpStatus;
 
 router
   .use('/*', hasAccess)
@@ -18,11 +18,10 @@ router
 function hasAccess({ cohort, user }, res, next) {
   if (user.isAdmin()) return next();
   const opts = { where: { studentId: user.id, cohortId: cohort.id } };
-  return Enrollment.findOne(opts)
-    .then(enrollment => {
-      if (enrollment) return next();
-      return createError(UNAUTHORIZED, 'Access restricted');
-    });
+  return Enrollment.findOne(opts).then(enrollment => {
+    if (enrollment) return next();
+    return createError(FORBIDDEN, 'Access denied');
+  });
 }
 
 function getRepoSourceId(req, res, next) {
