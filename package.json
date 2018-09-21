@@ -95,6 +95,7 @@
     "safe-require": "^1.0.3",
     "sass-web-fonts": "^2.0.2",
     "sequelize": "^4.37.6",
+    "truncate": "^2.0.1",
     "umzug": "^2.1.0",
     "url-join": "^4.0.0",
     "v-hotkey": "^0.2.0",

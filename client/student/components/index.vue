@@ -3,7 +3,7 @@
     <header class="app-header">
       <navbar>LMS STUDENT</navbar>
     </header>
-    <main class="app-content container">
+    <main class="app-content">
       <div class="columns">
         <div class="column is-12">
           <router-view></router-view>
@@ -28,6 +28,8 @@ export default {
   height: 100%;
   padding: 32px 0;
   flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .app-content {

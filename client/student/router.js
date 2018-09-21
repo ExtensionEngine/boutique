@@ -1,4 +1,5 @@
 import Auth from '@/common/components/auth';
+import Courses from '@/student/components/Courses/index';
 import ForgotPassword from '@/common/components/auth/ForgotPassword';
 import get from 'lodash/get';
 import Greet from '@/student/components/Greet';
@@ -42,6 +43,10 @@ const router = new Router({
     component: Home,
     meta: { auth: true },
     children: [{
+      path: '',
+      name: 'courses',
+      component: Courses
+    }, {
       path: '/greet',
       name: 'greet',
       component: Greet
