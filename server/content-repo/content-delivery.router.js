@@ -1,4 +1,3 @@
-const { ContentRepo, Enrollment } = require('../common/database');
 const { createError } = require('../common/errors');
 const ctrl = require('./content-delivery.controller');
 const HttpStatus = require('http-status');
@@ -17,22 +16,19 @@ router
 
 function hasAccess({ cohort, user }, res, next) {
   if (user.isAdmin()) return next();
-  const opts = { where: { studentId: user.id, cohortId: cohort.id } };
-  return Enrollment.findOne(opts).then(enrollment => {
-    if (enrollment) return next();
-    return createError(FORBIDDEN, 'Access denied');
-  });
+  return cohort.getEnrollments({ where: { studentId: user.id } })
+    .then(enrollments => {
+      if (!enrollments.length) return createError(FORBIDDEN, 'Access denied');
+      return next();
+    });
 }
 
 function getRepo(req, res, next) {
-  const opts = {
-    where: { id: req.params.repositoryId, cohortId: req.cohort.id }
-  };
-  return ContentRepo.findOne(opts)
-    .then(repo => repo || createError(NOT_FOUND, 'Not found!'))
-    .then(repo => {
-      req.repo = repo;
-      next();
+  return req.cohort.getContentRepos({ where: { id: req.params.repositoryId } })
+    .then(repos => {
+      if (!repos.length) return createError(NOT_FOUND, 'Not found!');
+      req.repo = repos[0];
+      return next();
     });
 }
 

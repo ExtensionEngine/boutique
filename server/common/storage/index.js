@@ -17,8 +17,14 @@ class Storage {
     if (!isStore(store)) throw new TypeError('Invalid store provided');
     this.store = store;
     this.errors = errors;
-    this.publishedRepo = 'repository';
-    this.importedRepo = 'imported';
+    this.publishedContentLocation = 'repository';
+    this.importedContentLocation = 'imported';
+  }
+
+  getRepoLocation(repoId, cohortId) {
+    return cohortId
+      ? `${this.importedContentLocation}/${cohortId}/${repoId}`
+      : `${this.publishedContentLocation}/${repoId}`;
   }
 
   getFile(key) {
@@ -46,38 +52,34 @@ class Storage {
   }
 
   getCatalog() {
-    return this.getItem(`${this.publishedRepo}/index.json`);
+    return this.getItem(`${this.publishedContentLocation}/index.json`);
   }
 
-  getRepository(id) {
-    const key = `${this.publishedRepo}/${id}/index.json`;
+  getRepository(repoId) {
+    const key = `${this.getRepoLocation(repoId)}/index.json`;
     return this.getItem(key);
   }
 
   getContainer(repoId, id, cohortId) {
-    const key = cohortId
-      ? `${this.importedRepo}/${cohortId}/${repoId}/${id}.container.json`
-      : `${this.publishedRepo}/${repoId}/${id}.container.json`;
+    const key =
+      `${this.getRepoLocation(repoId, cohortId)}/${id}.container.json`;
     return this.getItem(key);
   }
 
   getExam(repoId, id, cohortId) {
-    const key = cohortId
-      ? `${this.importedRepo}/${cohortId}/${repoId}/${id}.exam.json`
-      : `${this.publishedRepo}/${repoId}/${id}.exam.json`;
+    const key = `${this.getRepoLocation(repoId, cohortId)}/${id}.exam.json`;
     return this.getItem(key);
   }
 
   getAssessments(repoId, id, cohortId) {
-    const key = cohortId
-      ? `${this.importedRepo}/${cohortId}/${repoId}/${id}.assessments.json`
-      : `${this.publishedRepo}/${repoId}/${id}.assessments.json`;
+    const key =
+      `${this.getRepoLocation(repoId, cohortId)}/${id}.assessments.json`;
     return this.getItem(key);
   }
 
   importRepo(cohortId, repoId) {
-    const src = `${this.publishedRepo}/${repoId}/`;
-    const dest = `${this.importedRepo}/${cohortId}/${repoId}/`;
+    const src = `${this.getRepoLocation(repoId)}/`;
+    const dest = `${this.getRepoLocation(repoId, cohortId)}/`;
     return this.store.copyDir(src, dest)
       .then(() => this.getRepository(repoId));
   }
