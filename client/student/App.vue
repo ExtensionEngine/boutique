@@ -1,23 +1,17 @@
 <template>
-  <div id="app" class="system-font-stack">
-    <img class="logo" src="./static/logo.png" alt="Logo">
-    <greet message="Hello world! 😉"></greet>
+  <div id="app">
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import Greet from '@/student/components/Greet';
-
 export default {
-  name: 'app',
-  components: {
-    Greet
-  }
+  name: 'app'
 };
 </script>
 
 <style lang="scss">
-@import "./stylesheets/main";
+@import "../common/stylesheets/main";
 
 * {
   box-sizing: border-box;
@@ -35,12 +29,5 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
-}
-
-.logo {
-  display: block;
-  width: auto;
-  height: 64px;
-  margin: 16px auto;
 }
 </style>

@@ -1,14 +1,11 @@
 <template>
   <div class="app-container">
     <header class="app-header">
-      <navbar>LMS ADMIN</navbar>
+      <navbar>LMS STUDENT</navbar>
     </header>
     <main class="app-content container">
       <div class="columns">
-        <div class="column is-2">
-          <sidebar/>
-        </div>
-        <div class="column is-10">
+        <div class="column is-12">
           <router-view></router-view>
         </div>
       </div>
@@ -18,11 +15,10 @@
 
 <script>
 import Navbar from '@/common/components/Navbar';
-import Sidebar from '@/admin/components/common/Sidebar';
 
 export default {
   name: 'admin',
-  components: { Navbar, Sidebar }
+  components: { Navbar }
 };
 </script>
 

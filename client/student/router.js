@@ -1,24 +1,16 @@
-import AdminRoot from '@/admin/components/index';
 import Auth from '@/common/components/auth';
-import Cohort from '@/admin/components/cohorts/Cohort';
-import Cohorts from '@/admin/components/cohorts';
-import Content from '@/admin/components/cohorts/Cohort/Content';
-import Enrollments from '@/admin/components/cohorts/Cohort/Enrollments';
 import ForgotPassword from '@/common/components/auth/ForgotPassword';
 import get from 'lodash/get';
+import Greet from '@/student/components/Greet';
+import Home from '@/student/components/index';
 import Login from '@/common/components/auth/Login';
 import NotFound from '@/common/components/NotFound';
 import ResetPassword from '@/common/components/auth/ResetPassword';
 import Router from 'vue-router';
 import store from './store';
-import Users from '@/admin/components/users';
 import Vue from 'vue';
 
 Vue.use(Router);
-
-const parseCohortId = ({ params }) => ({
-  cohortId: parseInt(params.cohortId, 10)
-});
 
 // Handle 404
 const fallbackRoute = {
@@ -47,33 +39,13 @@ const router = new Router({
   }, {
     path: '/',
     name: 'home',
-    component: AdminRoot,
+    component: Home,
     meta: { auth: true },
     children: [{
-      path: '',
-      name: 'cohorts',
-      component: Cohorts
-    }, {
-      path: '/cohorts/:cohortId',
-      name: 'cohort',
-      component: Cohort,
-      props: parseCohortId,
-      children: [{
-        path: '',
-        name: 'enrollments',
-        component: Enrollments,
-        props: parseCohortId
-      }, {
-        path: 'content',
-        name: 'importedContent',
-        component: Content,
-        props: parseCohortId
-      }]
-    }, {
-      path: '/users',
-      name: 'users',
-      component: Users
-    }, fallbackRoute]
+      path: '/greet',
+      name: 'greet',
+      component: Greet
+    }]
   }, fallbackRoute]
 });
 

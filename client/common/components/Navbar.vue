@@ -4,7 +4,9 @@
     role="navigation"
     aria-label="main navigation">
     <div class="navbar-brand">
-      <router-link to="/" class="navbar-item">LMS ADMIN</router-link>
+      <router-link to="/" class="navbar-item">
+        <slot></slot>
+      </router-link>
     </div>
     <div class="navbar-menu">
       <div v-if="user" class="navbar-end">
