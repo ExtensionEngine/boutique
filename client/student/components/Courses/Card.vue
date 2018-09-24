@@ -19,10 +19,10 @@ export default {
   },
   computed: {
     name() {
-      return truncate(this.content.name || this.content.meta.name, 75);
+      return truncate(this.content.name, 75);
     },
     description() {
-      return truncate(this.content.description || this.content.type, 180);
+      return truncate(this.content.description, 180);
     }
   }
 };
