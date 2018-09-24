@@ -15,14 +15,14 @@ import truncate from 'truncate';
 export default {
   name: 'card',
   props: {
-    course: { type: Object, required: true }
+    content: { type: Object, required: true }
   },
   computed: {
     name() {
-      return truncate(this.course.name, 75);
+      return truncate(this.content.name || this.content.meta.name, 75);
     },
     description() {
-      return truncate(this.course.description, 180);
+      return truncate(this.content.description || this.content.type, 180);
     }
   }
 };

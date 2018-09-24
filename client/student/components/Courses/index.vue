@@ -2,24 +2,24 @@
   <div class="courses container is-fluid">
     <div class="columns is-multiline">
       <card
-        v-for="it in courses"
+        v-for="it in getContent"
         :key="it._cid"
-        :course="it"
+        :content="it"
       />
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import Card from './Card';
 
 export default {
   name: 'courses',
-  computed: mapState('courses', { courses: 'items' }),
+  computed: mapGetters('courses', ['getContent']),
   methods: mapActions('courses', ['fetch']),
   created() {
-    this.fetch();
+    this.fetch({ includeStructure: true });
   },
   components: { Card }
 };

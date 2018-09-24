@@ -11,8 +11,9 @@ const { NOT_FOUND } = HttpStatus;
 const Storage = createStorage(config.storage);
 const excludeCorrect = data => forEach(data, it => delete it.data.correct);
 
-function list({ cohort }, res) {
+function list({ cohort, query: { includeStructure } }, res) {
   const attributes = ['id', 'schema', 'name', 'description', 'publishedAt'];
+  if (includeStructure) attributes.push('structure');
   return cohort.getContentRepos({ attributes })
     .then(repos => res.jsend.success(repos));
 }
