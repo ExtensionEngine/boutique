@@ -15,7 +15,7 @@ const Enrollment = require('../../enrollment/enrollment.model');
 const ContentRepo = require('../../content-repo/content-repo.model');
 
 const isProduction = process.env.NODE_ENV === 'production';
-const sequelize = new Sequelize(config.url, config);
+const sequelize = createConnection(config);
 const { Sequelize: { DataTypes } } = sequelize;
 
 const defineModel = Model => {
@@ -72,3 +72,8 @@ const db = {
 sequelize.model = name => sequelize.models[name] || db[name];
 
 module.exports = db;
+
+function createConnection(config) {
+  if (!config.url) return new Sequelize(config);
+  return new Sequelize(config.url, config);
+}

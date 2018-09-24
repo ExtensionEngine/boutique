@@ -6,6 +6,7 @@ const { promisify } = require('util');
 const { role } = require('../../common/config');
 const email = require('emailjs');
 
+const from = `${config.sender.name} <${config.sender.address}>`;
 const server = email.server.connect(config);
 const send = promisify(server.send.bind(server));
 const isAdmin = user => user.role && user.role === role.ADMIN;
@@ -24,7 +25,7 @@ function invite(user, { origin }) {
     Please click <a href="${href}">here</a> to complete your registration.`;
 
   return send({
-    from: `LMS <${config.sender}>`,
+    from,
     to: user.email,
     subject: 'Invite',
     attachment: [{ data: `<html>${message}</html>`, alternative: true }]
@@ -38,7 +39,7 @@ function resetPassword(user, { origin }) {
     Please click <a href="${href}">here</a> to complete the reset process.`;
 
   return send({
-    from: `LMS <${config.sender}>`,
+    from,
     to: user.email,
     subject: 'Reset password',
     attachment: [{ data: `<html>${message}</html>`, alternative: true }]

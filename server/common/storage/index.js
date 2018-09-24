@@ -2,6 +2,7 @@
 const { storage } = require('../../config');
 const getStream = require('get-stream');
 const path = require('path');
+const safeRequire = require('safe-require');
 
 const isFunction = arg => typeof arg === 'function';
 
@@ -108,12 +109,9 @@ module.exports = createStorage;
 module.exports.NotFoundError = NotFoundError;
 
 function loadProvider(name) {
-  try {
-    return require(path.join(__dirname, './providers/', name));
-  } catch (err) {
-    if (err.code === 'MODULE_NOT_FOUND') throw new Error('Unsupported provider');
-    throw err;
-  }
+  const provider = safeRequire(path.join(__dirname, './providers/', name));
+  if (!provider) throw new Error('Unsupported provider');
+  return provider;
 }
 
 function isStore(obj = {}) {

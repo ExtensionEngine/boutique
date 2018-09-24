@@ -1,14 +1,31 @@
 'use strict';
 
 require('dotenv').config();
+const log = require('../../common/logger');
+const logger = log('db', { level: log.DEBUG });
 
 const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
-  url: process.env.DATABASE_URI,
-  dialect: 'postgres',
+  ...readConfig(),
   operatorsAliases: false,
   migrationStorageTableName: 'sequelize_meta',
-  // TODO: Use bunyan for SQL logging.
-  benchmark: !isProduction
+  benchmark: !isProduction,
+  logging(query, time) {
+    const info = { query };
+    if (time) info.duration = `${time}ms`;
+    return logger.debug(info);
+  }
 };
+
+function readConfig(config = process.env) {
+  if ('DATABASE_URI' in config) return { url: config.DATABASE_URI };
+  return {
+    database: config.DATABASE_NAME,
+    username: config.DATABASE_USER,
+    password: config.DATABASE_PASSWORD,
+    host: config.DATABASE_HOST,
+    port: config.DATABASE_PORT,
+    dialect: config.DATABASE_ADAPTER || 'postgres'
+  };
+}

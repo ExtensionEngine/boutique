@@ -23,7 +23,7 @@ client.interceptors.request.use(config => {
 client.interceptors.response.use(res => res, err => {
   if (err.response.status === 401) {
     window.localStorage.removeItem('LMS_TOKEN');
-    window.location.reload();
+    window.location.replace(window.location.origin);
   } else {
     throw err;
   }
