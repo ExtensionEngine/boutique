@@ -1,6 +1,6 @@
 <template>
   <div class="column is-4">
-    <div class="card">
+    <div @click="navigateTo" class="card">
       <div class="body">
         <div class="title">{{ name }}</div>
         <div class="description">{{ description }}</div>
@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import head from 'lodash/head';
 import truncate from 'truncate';
 
 export default {
@@ -19,10 +20,25 @@ export default {
   },
   computed: {
     name() {
-      return truncate(this.content.name, 75);
+      return truncate(this.content.name || this.content.meta.name, 75);
     },
     description() {
-      return truncate(this.content.description, 180);
+      return truncate(this.content.description || this.content.type, 180);
+    },
+    hasContent() {
+      return !!this.content.contentContainers.length;
+    }
+  },
+  methods: {
+    navigateTo() {
+      if (this.hasContent) {
+        if (window.getSelection().toString()) return;
+        const teId = head(this.content.contentContainers).id;
+        this.$router.push({
+          name: 'teaching-element',
+          params: { teId }
+        });
+      }
     }
   }
 };

@@ -9,6 +9,7 @@ import NotFound from '@/common/components/NotFound';
 import ResetPassword from '@/common/components/auth/ResetPassword';
 import Router from 'vue-router';
 import store from './store';
+import TeachingElement from '@/student/components/Courses/TeachingElement/index';
 import Vue from 'vue';
 
 Vue.use(Router);
@@ -46,6 +47,10 @@ const router = new Router({
       path: '',
       name: 'courses',
       component: Courses
+    }, {
+      path: '/teaching-element/:teId',
+      name: 'teaching-element',
+      component: TeachingElement
     }, {
       path: '/greet',
       name: 'greet',
