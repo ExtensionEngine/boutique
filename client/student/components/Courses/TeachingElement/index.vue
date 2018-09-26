@@ -1,42 +1,49 @@
 <template>
-  <div v-if="elements" class="columns is-multiline elements">
-    <tailorTeachingElements
-      v-for="it in elements"
-      :key="it.id"
-      :element="it"
-      :class="getWidth(it.data.width)"
-      class="column element"
-    />
+  <div class="elements">
+    <nav class="navbar">
+      <router-link
+        v-for="it in siblings"
+        :key="it.id"
+        :to="{ name: 'teaching-element', params: { teId: getId(it)}}"
+        class="navbar-item"
+      >
+        {{ it.meta.name }}
+      </router-link>
+    </nav>
+    <div class="columns is-multiline">
+      <TE :teId="teId" :key="teId"></TE>
+    </div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
-import find from 'lodash/find';
-import tailorTeachingElements from 'tailor-teaching-elements';
+import filter from 'lodash/filter';
+import get from 'lodash/get';
+import head from 'lodash/head';
+import { mapGetters } from 'vuex';
+import TE from './Te';
 
 export default {
-  name: 'courses',
+  name: 'elements',
   computed: {
-    ...mapState('containers', { containers: 'items' }),
-    elements() {
-      const { teId } = this.$route.params;
-      const container = find(this.containers, { id: teId });
-      if (!container) return;
-      return container.elements;
+    teId() {
+      return this.$route.params.teId;
+    },
+    siblings() {
+      const content = this.getContent();
+      const parentId = head(filter(content, it => {
+        return get(head(it.contentContainers), 'id', '') === this.teId;
+      })).parentId;
+      return filter(this.getContent(), { parentId });
     }
   },
   methods: {
-    ...mapActions('containers', ['get']),
-    getWidth(width) {
-      return `is-${width}`;
+    ...mapGetters('courses', ['getContent']),
+    getId(it) {
+      return head(it.contentContainers).id;
     }
   },
-  created() {
-    const { teId } = this.$route.params;
-    this.get(teId);
-  },
-  components: { tailorTeachingElements }
+  components: { TE }
 };
 </script>
 
