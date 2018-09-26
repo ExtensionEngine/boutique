@@ -1,53 +1,47 @@
 <template>
   <div>
     <tailorTeachingElements
-      v-for="it in elements"
+      v-for="it in teachingElements"
       :key="it.id"
       :element="it"
-      :class="getWidth(it.data.width)"
+      :class="getElementWidth(it)"
       class="column element"
     />
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import find from 'lodash/find';
 import tailorTeachingElements from 'tailor-teaching-elements';
 
 export default {
-  name: 'te',
+  name: 'teaching-elements',
   computed: {
     ...mapState('containers', { containers: 'items' }),
-    teId() {
-      const { teId } = this.$route.params;
-      return teId;
+    containerId() {
+      return parseInt(this.$route.params.containerId, 10);
     },
-    elements() {
-      const container = find(this.containers, { id: this.teId });
+    teachingElements() {
+      const container = find(this.containers, { id: this.containerId });
       if (!container) return;
       return container.elements;
     }
   },
   methods: {
     ...mapActions('containers', ['get']),
-    ...mapGetters('courses', ['getContent']),
-    getWidth(width) {
-      return `is-${width}`;
+    getElementWidth(it) {
+      return it.data.width === 6 ? 'is-6' : 'is-12';
     }
   },
   created() {
-    this.get(this.teId);
+    this.get(this.containerId);
   },
   components: { tailorTeachingElements }
 };
 </script>
 
 <style lang="scss" scoped>
-.elements {
-  padding: 30px 300px 100px;
-}
-
 .element {
   padding: 10px !important;
 }

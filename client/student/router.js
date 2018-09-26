@@ -1,5 +1,6 @@
 import Auth from '@/common/components/auth';
-import Courses from '@/student/components/Courses/index';
+import Container from '@/student/components/Container/index';
+import Content from '@/student/components/Content/index';
 import ForgotPassword from '@/common/components/auth/ForgotPassword';
 import get from 'lodash/get';
 import Greet from '@/student/components/Greet';
@@ -9,7 +10,6 @@ import NotFound from '@/common/components/NotFound';
 import ResetPassword from '@/common/components/auth/ResetPassword';
 import Router from 'vue-router';
 import store from './store';
-import TeachingElement from '@/student/components/Courses/TeachingElement/index';
 import Vue from 'vue';
 
 Vue.use(Router);
@@ -45,12 +45,12 @@ const router = new Router({
     meta: { auth: true },
     children: [{
       path: '',
-      name: 'courses',
-      component: Courses
+      name: 'content',
+      component: Content
     }, {
-      path: '/teaching-element/:teId',
-      name: 'teaching-element',
-      component: TeachingElement
+      path: '/container/:containerId',
+      name: 'container',
+      component: Container
     }, {
       path: '/greet',
       name: 'greet',

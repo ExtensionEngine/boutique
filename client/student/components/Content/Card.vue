@@ -33,10 +33,10 @@ export default {
     navigateTo() {
       if (this.hasContent) {
         if (window.getSelection().toString()) return;
-        const teId = head(this.content.contentContainers).id;
+        const containerId = head(this.content.contentContainers).id;
         this.$router.push({
-          name: 'teaching-element',
-          params: { teId }
+          name: 'container',
+          params: { containerId }
         });
       }
     }

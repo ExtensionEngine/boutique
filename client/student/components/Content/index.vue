@@ -1,5 +1,5 @@
 <template>
-  <div class="courses container is-fluid">
+  <div class="content container is-fluid">
     <div class="columns is-multiline">
       <card
         v-for="it in getContent"
@@ -15,9 +15,9 @@ import { mapActions, mapGetters } from 'vuex';
 import Card from './Card';
 
 export default {
-  name: 'courses',
-  computed: mapGetters('courses', ['getContent']),
-  methods: mapActions('courses', ['fetch']),
+  name: 'content-list',
+  computed: mapGetters('content', ['getContent']),
+  methods: mapActions('content', ['fetch']),
   created() {
     this.fetch({ includeStructure: true });
   },
@@ -26,7 +26,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.courses {
+.content {
   padding: 30px 100px 100px;
 
   @media (min-width: 1700px) {

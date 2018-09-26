@@ -17,7 +17,7 @@
 import Navbar from '@/common/components/Navbar';
 
 export default {
-  name: 'admin',
+  name: 'student',
   components: { Navbar }
 };
 </script>
