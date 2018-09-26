@@ -20,8 +20,6 @@
 </template>
 
 <script>
-import filter from 'lodash/filter';
-import get from 'lodash/get';
 import head from 'lodash/head';
 import { mapGetters } from 'vuex';
 import TeachingElements from './TeachingElements';
@@ -33,15 +31,11 @@ export default {
       return parseInt(this.$route.params.containerId, 10);
     },
     siblings() {
-      const content = this.getContent();
-      const parentId = get(head(filter(content, it => {
-        return get(head(it.contentContainers), 'id', '') === this.containerId;
-      })), 'parentId', '');
-      return filter(this.getContent(), { parentId });
+      return this.getSiblings()(this.containerId);
     }
   },
   methods: {
-    ...mapGetters('content', ['getContent']),
+    ...mapGetters('content', ['getContent', 'getSiblings']),
     getId(it) {
       return head(it.contentContainers).id;
     }
