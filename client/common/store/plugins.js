@@ -1,4 +1,4 @@
-const auth = (mutationType, storageKey = 'APP_USER') => {
+const auth = (mutationType, storageKey = 'LMS_USER') => {
   return store => {
     store.subscribe((mutation, store) => {
       if (mutation.type !== mutationType) return;
