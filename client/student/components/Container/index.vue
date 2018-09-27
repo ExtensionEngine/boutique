@@ -5,6 +5,7 @@
         v-for="it in siblings"
         :key="it.id"
         :to="{ name: 'container', params: { containerId: getId(it)}}"
+        :class="{ 'active-link': containerId === getId(it) }"
         class="navbar-item"
       >
         {{ it.meta.name }}
@@ -47,5 +48,10 @@ export default {
 <style lang="scss" scoped>
 .elements {
   padding: 30px 300px 100px;
+}
+
+.active-link {
+  color: #3273dc;
+  background-color: whitesmoke;
 }
 </style>

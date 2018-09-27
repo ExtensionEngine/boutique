@@ -26,7 +26,7 @@ export default {
       return truncate(this.content.description || this.content.type, 180);
     },
     hasContent() {
-      return !!this.content.contentContainers.length;
+      return !!(this.content.contentContainers && this.content.contentContainers.length);
     }
   },
   methods: {
