@@ -2,7 +2,7 @@
   <div class="content container is-fluid">
     <div class="columns is-multiline">
       <card
-        v-for="it in getContent"
+        v-for="it in courseware"
         :key="it._cid"
         :content="it"
       />
@@ -17,12 +17,12 @@ import Card from './Card';
 export default {
   name: 'content-list',
   computed: {
-    ...mapGetters('content', ['getContent']),
-    ...mapGetters('auth', ['getUserCohort'])
+    ...mapGetters('content', ['courseware']),
+    ...mapGetters('auth', ['userCohortId'])
   },
   methods: mapActions('content', ['fetch', 'setApiUrl']),
   created() {
-    this.setApiUrl({ cohortId: this.getUserCohort }).then(() => {
+    this.setApiUrl({ cohortId: this.userCohortId }).then(() => {
       this.fetch({ includeStructure: true });
     });
   },

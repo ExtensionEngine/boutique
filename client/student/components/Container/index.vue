@@ -29,18 +29,18 @@ import TeachingElements from './TeachingElements';
 export default {
   name: 'container',
   computed: {
-    ...mapGetters('content', ['getContent']),
+    ...mapGetters('content', ['courseware']),
     containerId() {
       return this.$route.params.containerId;
     },
     content() {
-      return find(this.getContent, it => it.container.id === this.containerId);
+      return find(this.courseware, it => it.container.id === this.containerId);
     },
     parentId() {
       return this.content.parentId;
     },
     siblings() {
-      return filter(this.getContent, { parentId: this.parentId });
+      return filter(this.courseware, { parentId: this.parentId });
     }
   },
   methods: {

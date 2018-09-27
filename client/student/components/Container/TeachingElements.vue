@@ -11,42 +11,42 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
+import contentApi from '@/student/api/contentApi';
 import find from 'lodash/find';
-import get from 'lodash/get';
+import { mapGetters } from 'vuex';
 import tailorTeachingElements from 'tailor-teaching-elements';
 
 export default {
   name: 'teaching-elements',
+  data() {
+    return { container: {} };
+  },
   computed: {
-    ...mapState('containers', { containers: 'items' }),
-    ...mapGetters('auth', ['getUserCohort']),
-    ...mapGetters('content', ['getContent']),
+    ...mapGetters('auth', ['userCohortId']),
+    ...mapGetters('content', ['courseware']),
     containerId() {
       return this.$route.params.containerId;
     },
-    container() {
-      return find(this.containers, { id: this.containerId });
-    },
     teachingElements() {
-      return get(this.container, 'elements', []);
+      return this.container.elements;
     },
     content() {
-      return find(this.getContent, it => it.container.id === this.containerId);
+      return find(this.courseware, it => it.container.id === this.containerId);
     },
     courseId() {
       return this.content.courseId;
     }
   },
   methods: {
-    ...mapActions('containers', ['get', 'setApiUrl']),
     getElementWidth(it) {
       return it.data.width === 6 ? 'is-6' : 'is-12';
     }
   },
   created() {
-    this.setApiUrl({ cohortId: this.getUserCohort, courseId: this.courseId })
-      .then(() => this.get(this.containerId));
+    contentApi.getContainer(this.userCohortId, this.courseId, this.containerId)
+      .then(container => {
+        this.container = container;
+      });
   },
   components: { tailorTeachingElements }
 };
