@@ -1,44 +1,47 @@
 <template>
-  <modal :show="show" @close="close">
-    <div class="user-modal">
-      <h2 class="title is-4">{{ userData ? 'Edit' : 'Create' }} User</h2>
-      <form @submit.prevent="save">
-        <v-input
+  <v-dialog v-model="show" width="700">
+    <v-card class="pa-3">
+      <v-card-title class="headline">
+        {{ userData ? 'Edit' : 'Create' }} User
+      </v-card-title>
+      <v-card-text>
+        <v-text-field
+          v-validate="'required|email|unique-email'"
           v-model="user.email"
-          :validate="{
-            required: true,
-            email: true,
-            max: 255,
-            'unique-email': userData
-          }"
-          autocomplete="email"
-          name="email">
-        </v-input>
+          :error-messages="vErrors.collect('email')"
+          label="E-mail"
+          data-vv-name="email"
+          class="mb-3"/>
         <v-select
+          v-validate="'required'"
           v-model="user.role"
-          :options="roles"
-          name="role"
-          validate="required">
-        </v-select>
-        <v-input
+          :items="roles"
+          :error-messages="vErrors.collect('role')"
+          label="Role"
+          data-vv-name="role"
+          class="mb-3"/>
+        <v-text-field
+          v-validate="'required|alpha|min:2|max:50'"
           v-model="user.firstName"
-          autocomplete="given-name"
-          name="firstName"
-          validate="required|alpha|min:2|max:50">
-        </v-input>
-        <v-input
+          :error-messages="vErrors.collect('firstName')"
+          label="First Name"
+          data-vv-name="firstName"
+          class="mb-3"/>
+        <v-text-field
+          v-validate="'required|alpha|min:2|max:50'"
           v-model="user.lastName"
-          autocomplete="family-name"
-          name="lastName"
-          validate="required|alpha|min:2|max:50">
-        </v-input>
-        <div class="controls field is-grouped is-grouped-right">
-          <button @click="close" class="control button" type="button">Cancel</button>
-          <button class="control button is-primary" type="submit">Save</button>
-        </div>
-      </form>
-    </div>
-  </modal>
+          :error-messages="vErrors.collect('lastName')"
+          label="Last Name"
+          data-vv-name="lastName"
+          class="mb-3"/>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer/>
+        <v-btn @click="close">Cancel</v-btn>
+        <v-btn @click="save" color="success">Save</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -47,11 +50,8 @@ import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
 import { mapActions } from 'vuex';
-import Modal from '@/common/components/Modal';
 import request from '@/common/api/request';
 import { role } from '@/../common/config';
-import VInput from '@/common/components/form/VInput';
-import VSelect from '@/common/components/form/VSelect';
 import { withValidation } from '@/common/validation';
 
 const resetUser = () => {
@@ -67,22 +67,30 @@ export default {
   name: 'user-modal',
   mixins: [withValidation()],
   props: {
-    show: { type: Boolean, default: false },
-    userData: { type: Object, default() { return {}; } }
+    visible: { type: Boolean, default: false },
+    userData: { type: Object, default: () => ({}) }
   },
   data() {
     return { user: resetUser() };
   },
   computed: {
+    show: {
+      get() {
+        return this.visible;
+      },
+      set(value) {
+        if (!value) this.close();
+      }
+    },
     roles() {
-      return map(role, it => ({ label: humanize(it), value: it }));
+      return map(role, it => ({ text: humanize(it), value: it }));
     }
   },
   methods: {
     ...mapActions('users', { saveUser: 'save' }),
     close() {
       this.user = resetUser();
-      this.$emit('close');
+      this.$emit('update:visible', false);
     },
     save() {
       this.$validator.validateAll().then(isValid => {
@@ -109,7 +117,6 @@ export default {
           .then(res => ({ valid: isEmpty(res.data.data) }));
       }
     });
-  },
-  components: { Modal, VInput, VSelect }
+  }
 };
 </script>
