@@ -9,7 +9,7 @@ export const logout = () => {
   return auth.logout()
     .then(() => setTimeout(() => {
       window.localStorage.removeItem('LMS_USER');
-      window.location.reload();
+      document.location.replace(document.location.origin);
     }, 0));
 };
 

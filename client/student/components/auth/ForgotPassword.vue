@@ -11,7 +11,7 @@
     <div v-else>
       <form @submit.prevent="submit">
         <v-input v-model="email" name="email" validate="required|email"></v-input>
-        <button type="submit" class="button is-primary">Send reset email</button>
+        <button type="submit" class="button">Send reset email</button>
         <div class="options">
           <a @click="$router.go(-1)">Back</a>
         </div>
@@ -62,6 +62,7 @@ export default {
 
   a {
     display: inline-block;
+    color: #444;
     font-size: 14px;
   }
 }

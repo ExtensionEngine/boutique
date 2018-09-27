@@ -21,7 +21,7 @@
         <router-link :to="{ name: 'forgot-password' }">
           Forgot password ?
         </router-link>
-        <button class="button is-primary" type="submit">Login</button>
+        <button class="button" type="submit">Login</button>
       </div>
     </form>
   </div>
@@ -69,6 +69,7 @@ export default {
   a {
     display: inline-block;
     padding: 6px 20px;
+    color: #444;
   }
 }
 </style>
