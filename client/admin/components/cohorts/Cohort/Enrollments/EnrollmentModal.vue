@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="visible" width="600">
-    <v-btn slot="activator">Enroll learner</v-btn>
+    <v-btn slot="activator" color="success" outline>Enroll learner</v-btn>
     <v-card class="pa-3">
       <v-card-title class="headline">Enroll learner</v-card-title>
       <v-card-text>

@@ -1,35 +1,22 @@
 <template>
-  <div>
-    <div class="actions is-clearfix">
-      <button
-        @click="add"
-        class="button is-primary is-pulled-right">
-        Enroll learner
-      </button>
-    </div>
-    <div v-if="!enrollments.length" class="notification is-warning">
+  <div class="mt-3">
+    <v-toolbar color="f5f5f5" flat>
+      <v-spacer/>
+      <enrollment-modal :cohortId="cohortId"/>
+    </v-toolbar>
+    <v-alert v-if="!enrollments.length" :value="true" color="#aaa">
       Click on the button above to enroll learner.
+    </v-alert>
+    <div v-else class="elevation-1 mx-4">
+      <v-data-table :headers="headers" :items="enrollments" hide-actions>
+        <template slot="items" slot-scope="props">
+          <td>{{ props.item.student.email }}</td>
+          <td>{{ props.item.student.firstName }}</td>
+          <td>{{ props.item.student.lastName }}</td>
+          <td>{{ props.item.createdAt | formatDate }}</td>
+        </template>
+      </v-data-table>
     </div>
-    <table v-else class="table is-fullwidth is-hoverable">
-      <thead>
-        <th>Email</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Enrolled At</th>
-      </thead>
-      <tbody>
-        <tr v-for="it in enrollments" :key="it._cid">
-          <td>{{ it.student.email }}</td>
-          <td>{{ it.student.firstName }}</td>
-          <td>{{ it.student.lastName }}</td>
-          <td>{{ it.createdAt }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <enrollment-modal
-      :show="showModal"
-      :cohortId="cohortId"
-      @close="showModal = false"/>
   </div>
 </template>
 
@@ -41,33 +28,23 @@ import filter from 'lodash/filter';
 export default {
   name: 'enrollments',
   props: { cohortId: { type: Number, required: true } },
-  data() {
-    return {
-      showModal: false
-    };
-  },
   computed: {
     ...mapState('enrollments', { enrollmentStore: 'items' }),
+    headers: () => ([
+      { text: 'Email', value: 'email', align: 'left' },
+      { text: 'First Name', value: 'firstName' },
+      { text: 'Last Name', value: 'lastName' },
+      { text: 'Created At', value: 'createdAt' }
+    ]),
     enrollments() {
       const { cohortId } = this;
       return filter(this.enrollmentStore, { cohortId });
     }
   },
-  methods: {
-    ...mapActions('enrollments', ['fetch']),
-    add() {
-      this.showModal = true;
-    }
-  },
+  methods: mapActions('enrollments', ['fetch']),
   created() {
     return this.fetch({ cohortId: this.cohortId });
   },
   components: { EnrollmentModal }
 };
 </script>
-
-<style lang="scss" scoped>
-.notification {
-  margin-top: 10px;
-}
-</style>
