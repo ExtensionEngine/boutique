@@ -5,6 +5,7 @@ import store from './store';
 import VeeValidate from '@/common/validation';
 import Vue from 'vue';
 import VueHotkey from 'v-hotkey';
+import Vuetify from 'vuetify';
 import VueVisible from 'vue-visible';
 
 Vue.use(VeeValidate, {
@@ -15,6 +16,7 @@ Vue.use(VeeValidate, {
 });
 Vue.use(VueHotkey);
 Vue.use(VueVisible);
+Vue.use(Vuetify);
 
 Vue.filter('formatDate', (value, dateFormat = 'MM/DD/YY HH:mm') => {
   return value && format(value, dateFormat);
