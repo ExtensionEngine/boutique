@@ -1,3 +1,4 @@
 export {
-  fetch
+  fetch,
+  setApiUrl
 } from '@/common/store/helpers/mutations';

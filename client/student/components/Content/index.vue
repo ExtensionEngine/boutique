@@ -16,10 +16,15 @@ import Card from './Card';
 
 export default {
   name: 'content-list',
-  computed: mapGetters('content', ['getContent']),
-  methods: mapActions('content', ['fetch']),
+  computed: {
+    ...mapGetters('content', ['getContent']),
+    ...mapGetters('auth', ['getUserCohort'])
+  },
+  methods: mapActions('content', ['fetch', 'setApiUrl']),
   created() {
-    this.fetch({ includeStructure: true });
+    this.setApiUrl({ cohortId: this.getUserCohort }).then(() => {
+      this.fetch({ includeStructure: true });
+    });
   },
   components: { Card }
 };
