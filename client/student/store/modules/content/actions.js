@@ -1,7 +1,7 @@
 import generateActions from '@/common/store/helpers/actions';
-const { fetch, setApiUrl: SetApiUrl } = generateActions('/cohorts/0/content');
+const { fetch, setApiUrl: SetApiUrl } = generateActions('');
 
-const setApiUrl = (context, { cohortId = 0 }) => {
+const setApiUrl = (context, { cohortId }) => {
   return SetApiUrl(context, `/cohorts/${cohortId}/content`);
 };
 

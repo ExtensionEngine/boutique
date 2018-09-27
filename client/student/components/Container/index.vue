@@ -33,11 +33,11 @@ export default {
     containerId() {
       return this.$route.params.containerId;
     },
-    content() {
+    activity() {
       return find(this.courseware, it => it.container.id === this.containerId);
     },
     parentId() {
-      return this.content.parentId;
+      return this.activity.parentId;
     },
     siblings() {
       return filter(this.courseware, { parentId: this.parentId });

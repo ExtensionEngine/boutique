@@ -30,11 +30,11 @@ export default {
     teachingElements() {
       return this.container.elements;
     },
-    content() {
+    activity() {
       return find(this.courseware, it => it.container.id === this.containerId);
     },
     courseId() {
-      return this.content.courseId;
+      return this.activity.courseId;
     }
   },
   methods: {
