@@ -1,8 +1,8 @@
 'use strict';
 
 require('dotenv').config();
-const log = require('../../common/logger');
-const logger = log('db', { level: log.DEBUG });
+const { createLogger, Level } = require('../../common/logger');
+const logger = createLogger('db', { level: Level.DEBUG });
 
 const isProduction = process.env.NODE_ENV === 'production';
 
