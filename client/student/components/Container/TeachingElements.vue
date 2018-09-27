@@ -20,20 +20,23 @@ export default {
   name: 'teaching-elements',
   computed: {
     ...mapState('containers', { containers: 'items' }),
+    ...mapGetters('auth', ['getUserCohort']),
+    ...mapGetters('content', ['getContent']),
     containerId() {
-      return parseInt(this.$route.params.containerId, 10);
+      return this.$route.params.containerId;
     },
     container() {
       return find(this.containers, { id: this.containerId });
     },
-    courseId() {
-      return this.getCourseId(this.containerId);
-    },
     teachingElements() {
       return get(this.container, 'elements', []);
     },
-    ...mapGetters('auth', ['getUserCohort']),
-    ...mapGetters('content', ['getCourseId'])
+    content() {
+      return find(this.getContent, it => it.container.id === this.containerId);
+    },
+    courseId() {
+      return this.content.courseId;
+    }
   },
   methods: {
     ...mapActions('containers', ['get', 'setApiUrl']),
@@ -43,9 +46,7 @@ export default {
   },
   created() {
     this.setApiUrl({ cohortId: this.getUserCohort, courseId: this.courseId })
-      .then(() => {
-        this.get(this.containerId);
-      });
+      .then(() => this.get(this.containerId));
   },
   components: { tailorTeachingElements }
 };

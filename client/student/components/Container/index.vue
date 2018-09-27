@@ -8,7 +8,7 @@
         :class="{ 'active-link': containerId === getId(it) }"
         class="navbar-item"
       >
-        {{ it.meta.name }}
+        {{ it.name }}
       </router-link>
     </nav>
     <div class="columns is-multiline">
@@ -21,24 +21,31 @@
 </template>
 
 <script>
-import head from 'lodash/head';
+import filter from 'lodash/filter';
+import find from 'lodash/find';
 import { mapGetters } from 'vuex';
 import TeachingElements from './TeachingElements';
 
 export default {
   name: 'container',
   computed: {
+    ...mapGetters('content', ['getContent']),
     containerId() {
-      return parseInt(this.$route.params.containerId, 10);
+      return this.$route.params.containerId;
+    },
+    content() {
+      return find(this.getContent, it => it.container.id === this.containerId);
+    },
+    parentId() {
+      return this.content.parentId;
     },
     siblings() {
-      return this.getSiblings()(this.containerId);
+      return filter(this.getContent, { parentId: this.parentId });
     }
   },
   methods: {
-    ...mapGetters('content', ['getContent', 'getSiblings']),
     getId(it) {
-      return head(it.contentContainers).id;
+      return it.container.id;
     }
   },
   components: { TeachingElements }

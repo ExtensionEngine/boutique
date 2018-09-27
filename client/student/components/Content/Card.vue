@@ -10,7 +10,6 @@
 </template>
 
 <script>
-import head from 'lodash/head';
 import truncate from 'truncate';
 
 export default {
@@ -20,20 +19,20 @@ export default {
   },
   computed: {
     name() {
-      return truncate(this.content.name || this.content.meta.name, 75);
+      return truncate(this.content.name, 75);
     },
     description() {
-      return truncate(this.content.description || this.content.type, 180);
+      return truncate(this.content.description, 180);
     },
     hasContent() {
-      return !!(this.content.contentContainers && this.content.contentContainers.length);
+      return !!this.content.container;
     }
   },
   methods: {
     navigateTo() {
       if (this.hasContent) {
         if (window.getSelection().toString()) return;
-        const containerId = head(this.content.contentContainers).id;
+        const containerId = this.content.container.id;
         this.$router.push({
           name: 'container',
           params: { containerId }
