@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="visible" width="700">
-    <v-btn slot="activator">Import Content</v-btn>
+    <v-btn slot="activator" color="success" outline>Import Content</v-btn>
     <v-card class="pa-3">
       <v-card-title class="headline">Import Content</v-card-title>
       <v-card-text>
