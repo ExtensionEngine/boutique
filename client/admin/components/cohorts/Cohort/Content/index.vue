@@ -4,10 +4,10 @@
       <v-spacer/>
       <content-modal :cohortId="cohortId" :importedRepos="importedRepos"/>
     </v-toolbar>
-    <v-alert v-if="!importedRepos.length" :value="true" color="#aaa">
+    <v-alert v-if="!importedRepos.length" :value="true" color="#aaa" class="mr-4">
       Click on the button above to import content.
     </v-alert>
-    <div v-else class="elevation-1 mx-4">
+    <div v-else class="elevation-1 ml-2 mr-4">
       <v-data-table :headers="headers" :items="importedRepos" hide-actions>
         <template slot="items" slot-scope="props">
           <td>{{ props.item.name }}</td>

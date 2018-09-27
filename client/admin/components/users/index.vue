@@ -6,7 +6,7 @@
           <v-spacer/>
           <v-btn @click.stop="showDialog()" color="success" outline>Add user</v-btn>
         </v-toolbar>
-        <div class="elevation-1 mx-4">
+        <div class="elevation-1 ml-2 mr-4">
           <v-data-table :headers="headers" :items="users" hide-actions>
             <template slot="items" slot-scope="props">
               <td>{{ props.item.email }}</td>

@@ -4,10 +4,10 @@
       <v-spacer/>
       <enrollment-modal :cohortId="cohortId"/>
     </v-toolbar>
-    <v-alert v-if="!enrollments.length" :value="true" color="#aaa">
+    <v-alert v-if="!enrollments.length" :value="true" color="#aaa" class="mr-4">
       Click on the button above to enroll learner.
     </v-alert>
-    <div v-else class="elevation-1 mx-4">
+    <div v-else class="elevation-1 ml-2 mr-4">
       <v-data-table :headers="headers" :items="enrollments" hide-actions>
         <template slot="items" slot-scope="props">
           <td>{{ props.item.student.email }}</td>
