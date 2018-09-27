@@ -2,6 +2,7 @@
 
 const { createError } = require('../common/errors');
 const { Enrollment, Sequelize, User } = require('../common/database');
+const get = require('lodash/get');
 const HttpStatus = require('http-status');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
@@ -50,7 +51,7 @@ function login({ body }, res) {
       Enrollment.findOne({ where: { studentId: user.id } }).then(data => {
         res.jsend.success({
           token,
-          user: { ...user.profile, cohortId: data.cohortId }
+          user: { ...user.profile, cohortId: get(data, 'cohortId', 0) }
         });
       });
     });
