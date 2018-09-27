@@ -1,9 +1,14 @@
 'use strict';
 
-const { join } = require('path');
+const { join, resolve } = require('path');
+
 // Disable query logging for Sequelize CLI
-const config = require('./server/common/database/config.js');
-config.logging = false;
+const cli = resolve(__dirname, './server/script/sequelize.js');
+const program = resolve(require.main.filename);
+if (program === cli) {
+  const config = require('./server/common/database/config.js');
+  config.logging = false;
+}
 
 module.exports = {
   config: join(__dirname, './server/common/database/config.js'),
