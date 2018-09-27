@@ -11,8 +11,9 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import find from 'lodash/find';
+import get from 'lodash/get';
 import tailorTeachingElements from 'tailor-teaching-elements';
 
 export default {
@@ -22,20 +23,29 @@ export default {
     containerId() {
       return parseInt(this.$route.params.containerId, 10);
     },
+    container() {
+      return find(this.containers, { id: this.containerId });
+    },
+    courseId() {
+      return this.getCourseId(this.containerId);
+    },
     teachingElements() {
-      const container = find(this.containers, { id: this.containerId });
-      if (!container) return;
-      return container.elements;
-    }
+      return get(this.container, 'elements', []);
+    },
+    ...mapGetters('auth', ['getUserCohort']),
+    ...mapGetters('content', ['getCourseId'])
   },
   methods: {
-    ...mapActions('containers', ['get']),
+    ...mapActions('containers', ['get', 'setApiUrl']),
     getElementWidth(it) {
       return it.data.width === 6 ? 'is-6' : 'is-12';
     }
   },
   created() {
-    this.get(this.containerId);
+    this.setApiUrl({ cohortId: this.getUserCohort, courseId: this.courseId })
+      .then(() => {
+        this.get(this.containerId);
+      });
   },
   components: { tailorTeachingElements }
 };

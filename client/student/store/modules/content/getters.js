@@ -1,4 +1,3 @@
-import concat from 'lodash/concat';
 import filter from 'lodash/filter';
 import forEach from 'lodash/forEach';
 import get from 'lodash/get';
@@ -14,9 +13,18 @@ const getContent = state => {
   let content = [];
   forEach(filter(state.items, { schema: filterBySchema }), course => {
     if (!filterByActivity) return content.push(course);
-    content = concat(content, filter(course.structure, { type: filterBy }));
+    forEach(filter(course.structure, { type: filterBy }), it => {
+      content.push({ ...it, courseId: course.id });
+    });
   });
   return content;
+};
+
+const getCourseId = state => containerId => {
+  const content = getContent(state);
+  return get(head(filter(content, it => {
+    return get(head(it.contentContainers), 'id', '') === containerId;
+  })), 'courseId', '');
 };
 
 const getSiblings = state => containerId => {
@@ -29,5 +37,6 @@ const getSiblings = state => containerId => {
 
 export {
   getContent,
+  getCourseId,
   getSiblings
 };
