@@ -1,7 +1,6 @@
 import AdminRoot from '@/admin/components/index';
 import Auth from '@/common/components/auth';
 import Cohort from '@/admin/components/cohorts/Cohort';
-import Cohorts from '@/admin/components/cohorts';
 import Content from '@/admin/components/cohorts/Cohort/Content';
 import Enrollments from '@/admin/components/cohorts/Cohort/Enrollments';
 import ForgotPassword from '@/common/components/auth/ForgotPassword';
@@ -45,15 +44,11 @@ const router = new Router({
       component: ResetPassword
     }]
   }, {
-    path: '/',
+    path: '',
     name: 'home',
     component: AdminRoot,
     meta: { auth: true },
     children: [{
-      path: '',
-      name: 'cohorts',
-      component: Cohorts
-    }, {
       path: '/cohorts/:cohortId',
       name: 'cohort',
       component: Cohort,
