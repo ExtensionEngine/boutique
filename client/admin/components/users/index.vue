@@ -1,63 +1,61 @@
 <template>
-  <div>
-    <h1 class="title">Users</h1>
-    <button
-      @click="create"
-      class="btn-create button is-primary is-pulled-right">
-      Create
-    </button>
-    <table class="table is-fullwidth is-hoverable">
-      <thead>
-        <th>Email</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Role</th>
-        <th></th>
-      </thead>
-      <tbody>
-        <tr v-for="user in users" :key="user._cid">
-          <td>{{ user.email }}</td>
-          <td>{{ user.firstName }}</td>
-          <td>{{ user.lastName }}</td>
-          <td>{{ user.role }}</td>
-          <td>
-            <button @click="edit(user)" class="button is-small is-pulled-right is-outlined">
-              <span class="mdi mdi-pencil"></span>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <user-modal
-      :show="showModal"
-      :userData="context"
-      @close="showModal = false">
-    </user-modal>
-  </div>
+  <v-layout justify-center>
+    <v-flex>
+      <div class="mt-5">
+        <v-toolbar color="f5f5f5" flat>
+          <v-spacer/>
+          <v-btn @click.stop="showDialog()" color="success" outline>Add user</v-btn>
+        </v-toolbar>
+        <div class="elevation-1 mx-4">
+          <v-data-table :headers="headers" :items="users" hide-actions>
+            <template slot="items" slot-scope="props">
+              <td>{{ props.item.email }}</td>
+              <td>{{ props.item.role }}</td>
+              <td>{{ props.item.firstName }}</td>
+              <td>{{ props.item.lastName }}</td>
+              <td>
+                <v-icon @click="showDialog(props.item)" small>edit</v-icon>
+              </td>
+            </template>
+          </v-data-table>
+        </div>
+        <user-modal :visible.sync="dialogVisible" :userData="editedUser"/>
+      </div>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex';
 import UserModal from './UserModal';
+import values from 'lodash/values';
 
 export default {
   name: 'user-list',
   data() {
     return {
-      showModal: false,
-      context: null
+      dialogVisible: false,
+      editedUser: null
     };
   },
-  computed: mapState('users', { users: 'items' }),
+  computed: {
+    ...mapState('users', ['items']),
+    users() {
+      return values(this.items);
+    },
+    headers: () => ([
+      { text: 'Email', value: 'email', align: 'left' },
+      { text: 'Role', value: 'role' },
+      { text: 'First Name', value: 'firstName' },
+      { text: 'Last Name', value: 'lastName' },
+      { text: 'Actions', value: 'email', sortable: false }
+    ])
+  },
   methods: {
     ...mapActions('users', ['fetch']),
-    create() {
-      this.context = null;
-      this.showModal = true;
-    },
-    edit(user) {
-      this.context = user;
-      this.showModal = true;
+    showDialog(user = null) {
+      this.editedUser = user;
+      this.dialogVisible = true;
     }
   },
   mounted() {
