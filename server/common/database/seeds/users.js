@@ -1,9 +1,10 @@
 'use strict';
 
+const { auth: config = {} } = require('../../../config');
 const bcrypt = require('bcrypt');
 const Promise = require('bluebird');
-const { auth: config = {} } = require('../../../config');
 const { role } = require('../../../../common/config');
+const times = require('lodash/times');
 
 const now = new Date();
 const users = [{
@@ -14,15 +15,20 @@ const users = [{
   role: role.ADMIN,
   created_at: now,
   updated_at: now
-}, {
-  first_name: 'Student',
-  last_name: 'Example',
-  email: 'student@example.org',
-  password: 'student123',
-  role: role.STUDENT,
-  created_at: now,
-  updated_at: now
 }];
+
+times(10, i => {
+  const suffix = i || '';
+  users.push({
+    first_name: `Student ${suffix}`,
+    last_name: 'Example',
+    email: `student${suffix}@example.org`,
+    password: 'student123',
+    role: role.STUDENT,
+    created_at: now,
+    updated_at: now
+  });
+});
 
 module.exports = {
   up(queryInterface, Sequelize) {

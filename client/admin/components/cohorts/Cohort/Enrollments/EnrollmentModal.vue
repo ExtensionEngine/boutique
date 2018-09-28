@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="visible" width="600">
+  <v-dialog v-model="visible" width="500">
     <v-btn slot="activator" color="success" outline>Enroll learner</v-btn>
     <v-card class="pa-3">
       <v-card-title class="headline">Enroll learner</v-card-title>
@@ -17,6 +17,7 @@
           label="Learner"
           placeholder="Start typing to Search"
           prepend-icon="search"
+          clearable
           name="learner"/>
       </v-card-text>
       <v-card-actions>
@@ -29,6 +30,7 @@
 </template>
 
 <script>
+import api from '@/admin/api/user';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
 import { mapActions } from 'vuex';
@@ -65,11 +67,12 @@ export default {
       this.studentId = null;
     },
     fetch(email) {
+      if (this.studentId) return;
       this.isLoading = true;
       const params = { emailLike: email, role: 'STUDENT' };
-      request.get('/users', { params }).then(({ data: { data } }) => {
+      api.fetch({ params }).then(({ items: students }) => {
         this.isLoading = false;
-        this.students = map(data, it => ({
+        this.students = map(students, it => ({
           text: `${it.email} - ${it.firstName} ${it.lastName}`, value: it.id
         }));
       });

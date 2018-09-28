@@ -14,9 +14,9 @@
         item-key="_cid"
         hide-actions>
         <template slot="items" slot-scope="{ item }">
-          <td>{{ item.student.email }}</td>
-          <td>{{ item.student.firstName }}</td>
-          <td>{{ item.student.lastName }}</td>
+          <td>{{ get(item.student, 'email') }}</td>
+          <td>{{ get(item.student, 'firstName') }}</td>
+          <td>{{ get(item.student, 'lastName') }}</td>
           <td>{{ item.createdAt | formatDate }}</td>
         </template>
       </v-data-table>
@@ -28,6 +28,7 @@
 import { mapActions, mapState } from 'vuex';
 import EnrollmentModal from './EnrollmentModal';
 import filter from 'lodash/filter';
+import get from 'lodash/get';
 
 export default {
   name: 'enrollments',
@@ -45,7 +46,10 @@ export default {
       return filter(this.enrollmentStore, { cohortId });
     }
   },
-  methods: mapActions('enrollments', ['fetch']),
+  methods: {
+    ...mapActions('enrollments', ['fetch']),
+    get
+  },
   created() {
     return this.fetch({ cohortId: this.cohortId });
   },
