@@ -1,4 +1,5 @@
 
+const { storage } = require('../../config');
 const getStream = require('get-stream');
 const path = require('path');
 
@@ -17,6 +18,12 @@ class Storage {
     if (!isStore(store)) throw new TypeError('Invalid store provided');
     this.store = store;
     this.errors = errors;
+  }
+
+  getRepoLocation(repoId, cohortId) {
+    return cohortId
+      ? `${storage.importedContentLocation}/${cohortId}/${repoId}`
+      : `${storage.publishedContentLocation}/${repoId}`;
   }
 
   getFile(key) {
@@ -44,27 +51,34 @@ class Storage {
   }
 
   getCatalog() {
-    return this.getItem('repository/index.json');
+    return this.getItem(`${storage.publishedContentLocation}/index.json`);
   }
 
-  getRepository(id) {
-    const key = `repository/${id}/index.json`;
+  getRepository(repoId) {
+    const key = `${this.getRepoLocation(repoId)}/index.json`;
     return this.getItem(key);
   }
 
-  getContainer(contentRepoId, id) {
-    const key = `repository/${contentRepoId}/${id}.container.json`;
+  getContainer(repoId, id, cohortId) {
+    const key =
+      `${this.getRepoLocation(repoId, cohortId)}/${id}.container.json`;
     return this.getItem(key);
   }
 
-  getExam(contentRepoId, id) {
-    const key = `repository/${contentRepoId}/${id}.exam.json`;
+  getExam(repoId, id, cohortId) {
+    const key = `${this.getRepoLocation(repoId, cohortId)}/${id}.exam.json`;
+    return this.getItem(key);
+  }
+
+  getAssessments(repoId, id, cohortId) {
+    const key =
+      `${this.getRepoLocation(repoId, cohortId)}/${id}.assessments.json`;
     return this.getItem(key);
   }
 
   importRepo(cohortId, repoId) {
-    const src = `repository/${repoId}/`;
-    const dest = `imported/${cohortId}/${repoId}/`;
+    const src = `${this.getRepoLocation(repoId)}/`;
+    const dest = `${this.getRepoLocation(repoId, cohortId)}/`;
     return this.store.copyDir(src, dest)
       .then(() => this.getRepository(repoId));
   }

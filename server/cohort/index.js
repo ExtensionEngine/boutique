@@ -1,6 +1,8 @@
 'use strict';
 
+const { authorize } = require('../common/auth/mw');
 const { Cohort } = require('../common/database');
+const contentRouter = require('../content-repo/content-delivery.router');
 const { createError } = require('../common/errors');
 const ctrl = require('./cohort.controller');
 const HttpStatus = require('http-status');
@@ -10,10 +12,11 @@ const { NOT_FOUND } = HttpStatus;
 
 router
   .use('/:id*', getCohort)
-  .get('/', ctrl.list)
-  .post('/', ctrl.create)
-  .get('/:id', ctrl.get)
-  .patch('/:id', ctrl.patch);
+  .get('/', authorize(), ctrl.list)
+  .post('/', authorize(), ctrl.create)
+  .get('/:id', authorize(), ctrl.get)
+  .patch('/:id', authorize(), ctrl.patch)
+  .use('/:id/content', contentRouter.router);
 
 function getCohort(req, res, next) {
   return Cohort.findById(req.params.id, { paranoid: false })

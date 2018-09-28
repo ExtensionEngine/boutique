@@ -9,6 +9,7 @@ const logger = require('../common/logger')();
 const mail = require('../common/mail');
 const pick = require('lodash/pick');
 const Promise = require('bluebird');
+const Role = require('../../common/config/role');
 const values = require('lodash/values');
 
 class User extends Model {
@@ -122,6 +123,10 @@ class User extends Model {
   createToken(options = {}) {
     const payload = pick(this, ['id', 'email']);
     return jwt.sign(payload, config.secret, options);
+  }
+
+  isAdmin() {
+    return this.role === Role.ADMIN;
   }
 }
 

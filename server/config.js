@@ -38,6 +38,8 @@ module.exports = {
     filesystem: {
       path: process.env.STORAGE_PATH
     },
-    provider: process.env.STORAGE_PROVIDER
+    provider: process.env.STORAGE_PROVIDER,
+    publishedContentLocation: process.env.PUBLISHED_CONTENT,
+    importedContentLocation: process.env.IMPORTED_CONTENT
   }
 };
