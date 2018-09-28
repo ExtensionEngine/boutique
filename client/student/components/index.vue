@@ -1,7 +1,6 @@
 <template>
   <div class="app-container">
     <header class="app-header">
-      <navbar>LMS STUDENT</navbar>
     </header>
     <main class="app-content">
       <div class="columns">
@@ -14,11 +13,8 @@
 </template>
 
 <script>
-import Navbar from '@/common/components/Navbar';
-
 export default {
-  name: 'student',
-  components: { Navbar }
+  name: 'student'
 };
 </script>
 

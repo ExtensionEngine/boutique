@@ -5,7 +5,7 @@
     aria-label="main navigation">
     <div class="navbar-brand">
       <router-link to="/" class="navbar-item">
-        <slot></slot>
+        LMS STUDENT
       </router-link>
     </div>
     <div class="navbar-menu">
@@ -19,7 +19,6 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-
 export default {
   name: 'lms-navbar',
   computed: mapState('auth', ['user']),

@@ -1,22 +1,17 @@
 <template>
-  <div>
-    <h1 class="title">{{ cohort && cohort.name }}</h1>
-    <div class="tabs">
-      <ul>
-        <li :class="{ 'active-link': $route.name === 'enrollments' }">
-          <router-link :to="{ name: 'enrollments', params: { cohortId } }">
-            Enrollments
-          </router-link>
-        </li>
-        <li :class="{ 'active-link': $route.name === 'importedContent' }">
-          <router-link :to="{ name: 'importedContent', params: { cohortId } }">
-            Content
-          </router-link>
-        </li>
-      </ul>
-    </div>
-    <router-view/>
-  </div>
+  <v-layout>
+    <v-flex>
+      <v-tabs color="#f5f5f5" class="mt-2">
+        <v-tab :to="{ name: 'enrollments', params: { cohortId } }" ripple>
+          Enrollments
+        </v-tab>
+        <v-tab :to="{ name: 'importedContent', params: { cohortId } }" ripple>
+          Content
+        </v-tab>
+      </v-tabs>
+      <router-view/>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
@@ -38,12 +33,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-$active-link: #3273dc;
-
-.active-link a {
-  border-bottom-color: $active-link;
-  color: $active-link;
-}
-</style>

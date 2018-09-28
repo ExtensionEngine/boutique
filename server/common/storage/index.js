@@ -1,4 +1,5 @@
 
+const { storage } = require('../../config');
 const getStream = require('get-stream');
 const path = require('path');
 
@@ -17,14 +18,12 @@ class Storage {
     if (!isStore(store)) throw new TypeError('Invalid store provided');
     this.store = store;
     this.errors = errors;
-    this.publishedContentLocation = 'repository';
-    this.importedContentLocation = 'imported';
   }
 
   getRepoLocation(repoId, cohortId) {
     return cohortId
-      ? `${this.importedContentLocation}/${cohortId}/${repoId}`
-      : `${this.publishedContentLocation}/${repoId}`;
+      ? `${storage.importedContentLocation}/${cohortId}/${repoId}`
+      : `${storage.publishedContentLocation}/${repoId}`;
   }
 
   getFile(key) {
@@ -52,7 +51,7 @@ class Storage {
   }
 
   getCatalog() {
-    return this.getItem(`${this.publishedContentLocation}/index.json`);
+    return this.getItem(`${storage.publishedContentLocation}/index.json`);
   }
 
   getRepository(repoId) {

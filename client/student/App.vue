@@ -1,17 +1,21 @@
 <template>
-  <div id="app">
-    <router-view></router-view>
+  <div id="app" class="system-font-stack">
+    <navbar/>
+    <router-view/>
   </div>
 </template>
 
 <script>
+import Navbar from '@/student/components/common/Navbar';
+
 export default {
-  name: 'app'
+  name: 'app',
+  components: { Navbar }
 };
 </script>
 
 <style lang="scss">
-@import "../common/stylesheets/main";
+@import "./stylesheets/main";
 
 * {
   box-sizing: border-box;
@@ -23,6 +27,7 @@ html, body {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  background-color: #e5e5e5;
 }
 
 #app {

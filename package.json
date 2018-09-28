@@ -84,6 +84,7 @@
     "jsend": "^1.0.2",
     "jsonwebtoken": "^8.2.1",
     "lodash": "^4.17.5",
+    "material-design-icons-iconfont": "^3.0.3",
     "mdi": "^2.2.43",
     "morgan": "^1.9.0",
     "nocache": "^2.0.0",
@@ -105,6 +106,7 @@
     "vue-multiselect": "^2.1.0",
     "vue-router": "^3.0.1",
     "vue-visible": "^1.0.2",
+    "vuetify": "^1.2.3",
     "vuex": "^3.0.1"
   },
   "engines": {

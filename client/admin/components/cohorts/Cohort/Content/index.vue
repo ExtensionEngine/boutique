@@ -1,45 +1,33 @@
 <template>
-  <div>
-    <div class="actions is-clearfix">
-      <button
-        @click="showModal = true"
-        class="button is-primary is-pulled-right">
-        Add
-      </button>
-    </div>
-    <div v-if="!importedRepos.length" class="notification is-warning">
+  <div class="mt-3">
+    <v-toolbar color="#f5f5f5" flat>
+      <v-spacer/>
+      <content-modal :cohortId="cohortId" :importedRepos="importedRepos"/>
+    </v-toolbar>
+    <v-alert :value="!importedRepos.length" color="#aaa" class="mr-4">
       Click on the button above to import content.
-    </div>
-    <table v-else class="table is-fullwidth is-hoverable">
-      <thead>
-        <th>Name</th>
-        <th>Published Version</th>
-        <th>Imported Version</th>
-        <th>Sync</th>
-      </thead>
-      <tbody>
-        <tr v-for="it in importedRepos" :key="it._cid">
-          <td>{{ it.name }}</td>
-          <td>{{ it.repoVersion | formatDate }}</td>
-          <td>{{ it.publishedAt | formatDate }}</td>
+    </v-alert>
+    <div v-if="importedRepos.length" class="elevation-1 ml-2 mr-4">
+      <v-data-table
+        :headers="headers"
+        :items="importedRepos"
+        item-key="_cid"
+        hide-actions>
+        <template slot="items" slot-scope="{ item }">
+          <td>{{ item.name }}</td>
+          <td>{{ item.repoVersion | formatDate }}</td>
+          <td>{{ item.publishedAt | formatDate }}</td>
           <td>
-            <button
-              v-if="it.repoVersion > it.publishedAt"
-              @click="save(it)"
-              type="button"
-              class="control button">
+            <v-btn
+              v-if="item.repoVersion > item.publishedAt"
+              @click="save(item)">
               Sync
-            </button>
-            <span v-else-if="it.repoVersion">Synced</span>
+            </v-btn>
+            <span v-else-if="item.repoVersion">Synced</span>
           </td>
-        </tr>
-      </tbody>
-    </table>
-    <content-modal
-      :show="showModal"
-      :cohortId="cohortId"
-      :importedRepos="importedRepos"
-      @close="showModal = false"/>
+        </template>
+      </v-data-table>
+    </div>
   </div>
 </template>
 
@@ -51,11 +39,14 @@ import filter from 'lodash/filter';
 export default {
   name: 'imported-content',
   props: { cohortId: { type: Number, required: true } },
-  data() {
-    return { showModal: false };
-  },
   computed: {
     ...mapState('contentRepo', { repoStore: 'items' }),
+    headers: () => ([
+      { text: 'Name', value: 'name', align: 'left' },
+      { text: 'Published Version', value: 'repoVersion' },
+      { text: 'Imported Version', value: 'publishedAt' },
+      { text: 'Sync', value: 'publishedAt' }
+    ]),
     importedRepos() {
       const { cohortId } = this;
       return filter(this.repoStore, { cohortId });
@@ -69,9 +60,3 @@ export default {
   components: { ContentModal }
 };
 </script>
-
-<style lang="scss" scoped>
-.notification {
-  margin-top: 10px;
-}
-</style>

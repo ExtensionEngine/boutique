@@ -1,31 +1,29 @@
 <template>
-  <modal :show="show" @close="close">
-    <div class="cohort-modal">
-      <h2 class="title is-4">
-        {{ cohortData ? 'Edit' : 'Create' }} Cohort
-      </h2>
-      <form @submit.prevent="save">
-        <v-input
+  <v-dialog v-model="visible" width="600">
+    <v-btn slot="activator" small flat>Create</v-btn>
+    <v-card class="pa-3">
+      <v-card-title class="headline">New Cohort</v-card-title>
+      <v-card-text>
+        <v-text-field
+          v-validate="'required|min:2|max:255'"
           v-model="cohort.name"
-          name="name"
-          validate="required|min:2|max:255">
-        </v-input>
-        <div class="controls field is-grouped is-grouped-right">
-          <button @click="close" class="control button" type="button">Cancel</button>
-          <button class="control button is-primary" type="submit">Save</button>
-        </div>
-      </form>
-    </div>
-  </modal>
+          :error-messages="vErrors.collect('name')"
+          label="Name"
+          data-vv-name="name"/>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer/>
+        <v-btn @click="close">Cancel</v-btn>
+        <v-btn @click="save" color="success" outline>Save</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
 import cloneDeep from 'lodash/cloneDeep';
 import isEmpty from 'lodash/isEmpty';
 import { mapActions } from 'vuex';
-import Modal from '@/common/components/Modal';
-import VInput from '@/common/components/form/VInput';
-import VSelect from '@/common/components/form/VSelect';
 import { withValidation } from '@/common/validation';
 
 const getDefaultData = () => ({ name: '' });
@@ -33,18 +31,16 @@ const getDefaultData = () => ({ name: '' });
 export default {
   name: 'cohort-modal',
   mixins: [withValidation()],
-  props: {
-    show: { type: Boolean, default: false },
-    cohortData: { type: Object, default: () => ({}) }
-  },
   data() {
-    return { cohort: getDefaultData() };
+    return {
+      visible: false,
+      cohort: getDefaultData()
+    };
   },
   methods: {
     ...mapActions('cohorts', { saveCohort: 'save' }),
     close() {
-      this.cohort = getDefaultData();
-      this.$emit('close');
+      this.visible = false;
     },
     save() {
       this.$validator.validateAll().then(isValid => {
@@ -55,13 +51,13 @@ export default {
     }
   },
   watch: {
-    show(val) {
+    visible(val) {
       if (!val) return;
+      this.cohort = isEmpty(this.cohortData)
+        ? getDefaultData()
+        : cloneDeep(this.cohortData);
       this.vErrors.clear();
-      if (isEmpty(this.cohortData)) return;
-      this.cohort = cloneDeep(this.cohortData);
     }
-  },
-  components: { Modal, VInput, VSelect }
+  }
 };
 </script>
