@@ -13,18 +13,17 @@ class NotFoundError extends Error {
 }
 
 class Storage {
-  constructor(store, { errors = {} } = {}) {
+  constructor(store, { errors = {} } = {}, options = {}) {
     if (!isStore(store)) throw new TypeError('Invalid store provided');
     this.store = store;
     this.errors = errors;
-    this.publishedContentLocation = 'repository';
-    this.importedContentLocation = 'imported';
+    this.options = options;
   }
 
   getRepoLocation(repoId, cohortId) {
     return cohortId
-      ? `${this.importedContentLocation}/${cohortId}/${repoId}`
-      : `${this.publishedContentLocation}/${repoId}`;
+      ? `${this.options.importedContentLocation}/${cohortId}/${repoId}`
+      : `${this.options.publishedContentLocation}/${repoId}`;
   }
 
   getFile(key) {
@@ -52,7 +51,7 @@ class Storage {
   }
 
   getCatalog() {
-    return this.getItem(`${this.publishedContentLocation}/index.json`);
+    return this.getItem(`${this.options.publishedContentLocation}/index.json`);
   }
 
   getRepository(repoId) {
@@ -102,7 +101,7 @@ function createStorage(options = {}) {
   // Create store & client instance.
   const store = provider.createStore(config);
   const { errors } = provider;
-  return new Storage(store, { errors });
+  return new Storage(store, { errors }, options);
 }
 
 module.exports = createStorage;

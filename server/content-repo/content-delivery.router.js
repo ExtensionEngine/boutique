@@ -1,3 +1,4 @@
+const { ContentRepo } = require('../common/database');
 const { createError } = require('../common/errors');
 const ctrl = require('./content-delivery.controller');
 const HttpStatus = require('http-status');
@@ -24,10 +25,12 @@ function hasAccess({ cohort, user }, res, next) {
 }
 
 function getRepo(req, res, next) {
-  return req.cohort.getContentRepos({ where: { id: req.params.repositoryId } })
-    .then(repos => {
-      if (!repos.length) return createError(NOT_FOUND, 'Not found!');
-      req.repo = repos[0];
+  return ContentRepo.findById(req.params.repositoryId)
+    .then(repo => {
+      if (!repo || repo.cohortId !== req.cohort.id) {
+        return createError(NOT_FOUND, 'Not found!');
+      }
+      req.repo = repo;
       return next();
     });
 }
