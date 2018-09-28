@@ -10,7 +10,7 @@
           :loading="isLoading"
           item-value="sourceId"
           no-data-text="No available repositories for import"
-          prepend-icon="mdi-database-search"
+          prepend-icon="search"
           label="Repository"
           placeholder="Start typing to Search"
           hide-selected/>

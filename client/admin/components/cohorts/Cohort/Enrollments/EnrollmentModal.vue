@@ -17,7 +17,7 @@
           hide-selected
           label="Learner"
           placeholder="Start typing to Search"
-          prepend-icon="mdi-database-search"/>
+          prepend-icon="search"/>
       </v-card-text>
       <v-card-actions>
         <v-spacer/>
