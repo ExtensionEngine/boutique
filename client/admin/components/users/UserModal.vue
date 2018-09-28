@@ -45,12 +45,12 @@
 </template>
 
 <script>
+import api from '@/admin/api/user';
 import cloneDeep from 'lodash/cloneDeep';
 import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
 import { mapActions } from 'vuex';
-import request from '@/common/api/request';
 import { role } from '@/../common/config';
 import { withValidation } from '@/common/validation';
 
@@ -113,8 +113,8 @@ export default {
       getMessage: field => `The ${field} is not unique.`,
       validate: (email, [userData]) => {
         if (userData && email === userData.email) return true;
-        return request.get('/users', { params: { email } })
-          .then(res => ({ valid: isEmpty(res.data.data) }));
+        return api.fetch({ params: { email } })
+          .then(({ total }) => ({ valid: !total }));
       }
     });
   }
