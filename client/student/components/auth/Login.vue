@@ -30,6 +30,7 @@
 <script>
 import { mapActions } from 'vuex';
 import pick from 'lodash/pick';
+import role from '@/../common/config/role';
 import VInput from '@/common/components/form/VInput';
 import { withValidation } from '@/common/validation';
 
@@ -52,7 +53,10 @@ export default {
       this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
         this.login(pick(this, ['email', 'password']))
-          .then(() => this.$router.push('/'))
+          .then(user => {
+            if (user.role !== role.ADMIN) return this.$router.push('/');
+            document.location.replace(`${document.location.origin}/admin`);
+          })
           .catch(() => (this.message = LOGIN_ERR_MESSAGE));
       });
     }

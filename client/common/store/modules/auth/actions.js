@@ -2,7 +2,7 @@ import auth from '@/common/api/auth';
 
 export const login = ({ commit }, credentials) => {
   return auth.login(credentials)
-    .then(user => commit('login', user));
+    .then(user => commit('login', user) || user);
 };
 
 export const logout = () => {
