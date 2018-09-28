@@ -6,7 +6,7 @@
       </v-card-title>
       <v-card-text>
         <v-text-field
-          v-validate="'required|email|unique-email'"
+          v-validate="{ required: true, email: true, 'unique-email': userData }"
           v-model="user.email"
           :error-messages="vErrors.collect('email')"
           label="E-mail"
