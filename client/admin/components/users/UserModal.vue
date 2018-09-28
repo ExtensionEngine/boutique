@@ -50,7 +50,6 @@ import cloneDeep from 'lodash/cloneDeep';
 import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
-import { mapActions } from 'vuex';
 import { role } from '@/../common/config';
 import { withValidation } from '@/common/validation';
 
@@ -87,7 +86,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions('users', { saveUser: 'save' }),
     close() {
       this.user = resetUser();
       this.$emit('update:visible', false);
@@ -95,7 +93,8 @@ export default {
     save() {
       this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
-        this.saveUser(this.user);
+        const action = this.user.id ? 'update' : 'create';
+        api[action](this.user).then(() => this.$emit(`${action}d`));
         this.close();
       });
     }
