@@ -67,6 +67,7 @@ export default {
       this.studentId = null;
     },
     fetch(email) {
+      if (this.studentId) return;
       this.isLoading = true;
       const params = { emailLike: email, role: 'STUDENT' };
       api.fetch({ params }).then(({ items: students }) => {
