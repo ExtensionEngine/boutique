@@ -21,7 +21,7 @@
         <router-link :to="{ name: 'forgot-password' }">
           Forgot password ?
         </router-link>
-        <button class="button is-primary" type="submit">Login</button>
+        <button class="button" type="submit">Login</button>
       </div>
     </form>
   </div>
@@ -30,6 +30,7 @@
 <script>
 import { mapActions } from 'vuex';
 import pick from 'lodash/pick';
+import role from '@/../common/config/role';
 import VInput from '@/common/components/form/VInput';
 import { withValidation } from '@/common/validation';
 
@@ -52,7 +53,10 @@ export default {
       this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
         this.login(pick(this, ['email', 'password']))
-          .then(() => this.$router.push('/'))
+          .then(user => {
+            if (user.role !== role.ADMIN) return this.$router.push('/');
+            document.location.replace(`${document.location.origin}/admin`);
+          })
           .catch(() => (this.message = LOGIN_ERR_MESSAGE));
       });
     }
@@ -69,6 +73,7 @@ export default {
   a {
     display: inline-block;
     padding: 6px 20px;
+    color: #444;
   }
 }
 </style>

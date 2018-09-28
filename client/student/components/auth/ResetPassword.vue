@@ -16,7 +16,7 @@
         type="password"
         name="passwordConfirmation">
       </v-input>
-      <button class="button is-primary" type="submit">
+      <button class="button" type="submit">
         Change password
       </button>
     </form>

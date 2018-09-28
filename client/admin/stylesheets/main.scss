@@ -1,11 +1,10 @@
-@import '~bulma/bulma';
 // Google Web Fonts
 @import '~sass-web-fonts';
 /* stylelint-disable-next-line function-comma-newline-after */
 $web-font-path: web-fonts-url(('Roboto': (300, 400, 500, 700)));
-$mdi-font-path: '~mdi/fonts';
 
-@import '~mdi/scss/materialdesignicons';
+@import "~vuetify/dist/vuetify.css";
+@import '~material-design-icons-iconfont/dist/material-design-icons.css';
 
 .system-font-stack {
   /* stylelint-disable value-list-comma-newline-after */
