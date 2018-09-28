@@ -1,4 +1,5 @@
 
+const { storage } = require('../../config');
 const getStream = require('get-stream');
 const path = require('path');
 
@@ -13,17 +14,16 @@ class NotFoundError extends Error {
 }
 
 class Storage {
-  constructor(store, { errors = {} } = {}, options = {}) {
+  constructor(store, { errors = {} } = {}) {
     if (!isStore(store)) throw new TypeError('Invalid store provided');
     this.store = store;
     this.errors = errors;
-    this.options = options;
   }
 
   getRepoLocation(repoId, cohortId) {
     return cohortId
-      ? `${this.options.importedContentLocation}/${cohortId}/${repoId}`
-      : `${this.options.publishedContentLocation}/${repoId}`;
+      ? `${storage.importedContentLocation}/${cohortId}/${repoId}`
+      : `${storage.publishedContentLocation}/${repoId}`;
   }
 
   getFile(key) {
@@ -51,7 +51,7 @@ class Storage {
   }
 
   getCatalog() {
-    return this.getItem(`${this.options.publishedContentLocation}/index.json`);
+    return this.getItem(`${storage.publishedContentLocation}/index.json`);
   }
 
   getRepository(repoId) {
@@ -101,7 +101,7 @@ function createStorage(options = {}) {
   // Create store & client instance.
   const store = provider.createStore(config);
   const { errors } = provider;
-  return new Storage(store, { errors }, options);
+  return new Storage(store, { errors });
 }
 
 module.exports = createStorage;
