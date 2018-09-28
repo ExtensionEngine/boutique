@@ -28,12 +28,7 @@ function get({ repo }, res) {
 function getContainer({ cohort, params, repo }, res) {
   return Storage.getContainer(repo.sourceId, params.containerId, cohort.id)
     .catch(() => createError(NOT_FOUND, 'Not found!'))
-    .then(container => {
-      return res.jsend.success({
-        ...container,
-        elements: excludeCorrect(container.elements)
-      });
-    });
+    .then(container => res.jsend.success(container));
 }
 
 function getExam({ cohort, params, repo }, res) {

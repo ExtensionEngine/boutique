@@ -1,6 +1,6 @@
 <template>
-  <div class="elements">
-    <nav class="navbar">
+  <div class="container">
+    <nav class="columns navbar">
       <router-link
         v-for="it in siblings"
         :key="it.id"
@@ -53,10 +53,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.elements {
-  padding: 30px 300px 100px;
-}
-
 .active-link {
   color: #3273dc;
   background-color: whitesmoke;

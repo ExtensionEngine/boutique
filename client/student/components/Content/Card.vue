@@ -31,11 +31,9 @@ export default {
   methods: {
     navigateTo() {
       if (this.hasContent) {
-        if (window.getSelection().toString()) return;
-        const containerId = this.content.container.id;
         this.$router.push({
           name: 'container',
-          params: { containerId }
+          params: { containerId: this.content.container.id }
         });
       }
     }

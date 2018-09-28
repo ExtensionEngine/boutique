@@ -15,7 +15,7 @@ import { mapActions, mapGetters } from 'vuex';
 import Card from './Card';
 
 export default {
-  name: 'content-list',
+  name: 'student-root',
   computed: {
     ...mapGetters('content', ['courseware']),
     ...mapGetters('auth', ['userCohortId'])

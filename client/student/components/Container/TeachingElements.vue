@@ -5,7 +5,7 @@
       :key="it.id"
       :element="it"
       :class="getElementWidth(it)"
-      class="column element"
+      class="column"
     />
   </div>
 </template>
@@ -53,7 +53,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.element {
-  padding: 10px !important;
-}
 </style>

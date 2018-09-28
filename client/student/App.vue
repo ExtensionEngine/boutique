@@ -1,7 +1,15 @@
 <template>
   <div id="app" class="system-font-stack">
-    <navbar/>
-    <router-view/>
+    <header class="app-header">
+      <navbar/>
+    </header>
+    <main>
+      <div class="columns">
+        <div class="column is-12">
+          <router-view></router-view>
+        </div>
+      </div>
+    </main>
   </div>
 </template>
 
@@ -27,13 +35,16 @@ html, body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #e5e5e5;
 }
 
 #app {
+  display: flex;
   height: 100%;
+  padding: 32px 0;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: hidden;
 }
 </style>
