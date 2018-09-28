@@ -10,13 +10,17 @@ const { BAD_REQUEST, NOT_FOUND } = HttpStatus;
 const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
 const Op = Sequelize.Op;
 
-function list({ query: { email, emailLike, role } }, res) {
-  const cond = [];
-  if (email) cond.push({ email });
-  if (emailLike) cond.push({ email: { [Op.iLike]: `%${emailLike}%` } });
-  if (role) cond.push({ role });
-  return User.findAll({ where: { [Op.and]: cond } })
-    .then(users => res.jsend.success(map(users, 'profile')));
+const createFilter = q => map(['email', 'firstName', 'lastName'],
+  it => ({ [it]: { [Op.iLike]: `%${q}%` } }));
+
+function list({ query: { email, role, filter }, options }, res) {
+  const where = { [Op.and]: [] };
+  if (filter) where[Op.or] = createFilter(filter);
+  if (email) where[Op.and].push({ email });
+  if (role) where[Op.and].push({ role });
+  return User.findAndCountAll({ where, ...options }).then(({ rows, count }) => {
+    return res.jsend.success({ items: map(rows, 'profile'), total: count });
+  });
 }
 
 function create(req, res) {
