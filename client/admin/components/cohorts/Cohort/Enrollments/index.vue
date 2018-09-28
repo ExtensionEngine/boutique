@@ -1,19 +1,23 @@
 <template>
   <div class="mt-3">
-    <v-toolbar color="f5f5f5" flat>
+    <v-toolbar color="#f5f5f5" flat>
       <v-spacer/>
       <enrollment-modal :cohortId="cohortId"/>
     </v-toolbar>
-    <v-alert v-if="!enrollments.length" :value="true" color="#aaa" class="mr-4">
+    <v-alert :value="!enrollments.length" color="#aaa" class="mr-4">
       Click on the button above to enroll learner.
     </v-alert>
-    <div v-else class="elevation-1 ml-2 mr-4">
-      <v-data-table :headers="headers" :items="enrollments" hide-actions>
-        <template slot="items" slot-scope="props">
-          <td>{{ props.item.student.email }}</td>
-          <td>{{ props.item.student.firstName }}</td>
-          <td>{{ props.item.student.lastName }}</td>
-          <td>{{ props.item.createdAt | formatDate }}</td>
+    <div v-if="enrollments.length" class="elevation-1 ml-2 mr-4">
+      <v-data-table
+        :headers="headers"
+        :items="enrollments"
+        item-key="_cid"
+        hide-actions>
+        <template slot="items" slot-scope="{ item }">
+          <td>{{ item.student.email }}</td>
+          <td>{{ item.student.firstName }}</td>
+          <td>{{ item.student.lastName }}</td>
+          <td>{{ item.createdAt | formatDate }}</td>
         </template>
       </v-data-table>
     </div>

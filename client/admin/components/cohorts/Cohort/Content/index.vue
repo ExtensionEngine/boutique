@@ -1,25 +1,29 @@
 <template>
   <div class="mt-3">
-    <v-toolbar color="f5f5f5" flat>
+    <v-toolbar color="#f5f5f5" flat>
       <v-spacer/>
       <content-modal :cohortId="cohortId" :importedRepos="importedRepos"/>
     </v-toolbar>
-    <v-alert v-if="!importedRepos.length" :value="true" color="#aaa" class="mr-4">
+    <v-alert :value="!importedRepos.length" color="#aaa" class="mr-4">
       Click on the button above to import content.
     </v-alert>
-    <div v-else class="elevation-1 ml-2 mr-4">
-      <v-data-table :headers="headers" :items="importedRepos" hide-actions>
-        <template slot="items" slot-scope="props">
-          <td>{{ props.item.name }}</td>
-          <td>{{ props.item.repoVersion | formatDate }}</td>
-          <td>{{ props.item.publishedAt | formatDate }}</td>
+    <div v-if="importedRepos.length" class="elevation-1 ml-2 mr-4">
+      <v-data-table
+        :headers="headers"
+        :items="importedRepos"
+        item-key="_cid"
+        hide-actions>
+        <template slot="items" slot-scope="{ item }">
+          <td>{{ item.name }}</td>
+          <td>{{ item.repoVersion | formatDate }}</td>
+          <td>{{ item.publishedAt | formatDate }}</td>
           <td>
             <v-btn
-              v-if="props.item.repoVersion > props.item.publishedAt"
-              @click="save(props.item)">
+              v-if="item.repoVersion > item.publishedAt"
+              @click="save(item)">
               Sync
             </v-btn>
-            <span v-else-if="props.item.repoVersion">Synced</span>
+            <span v-else-if="item.repoVersion">Synced</span>
           </td>
         </template>
       </v-data-table>

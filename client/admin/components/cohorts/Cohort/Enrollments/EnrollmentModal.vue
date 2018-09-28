@@ -12,12 +12,12 @@
           v-model="studentId"
           :items="students"
           :search-input.sync="email"
+          :error-messages="vErrors.collect('learner')"
           :loading="isLoading"
-          color="white"
-          hide-selected
           label="Learner"
           placeholder="Start typing to Search"
-          prepend-icon="search"/>
+          prepend-icon="search"
+          name="learner"/>
       </v-card-text>
       <v-card-actions>
         <v-spacer/>
@@ -86,7 +86,7 @@ export default {
   mounted() {
     if (this.$validator.rules['unique-enrollment']) return;
     this.$validator.extend('unique-enrollment', {
-      getMessage: field => `Student is already enrolled!`,
+      getMessage: field => `Learner is already enrolled!`,
       validate: (option, [params]) => {
         return request.get('/enrollments', { params })
           .then(res => ({ valid: isEmpty(res.data.data) }));

@@ -1,15 +1,13 @@
 <template>
-  <div id="app">
-    <v-app>
-      <sidebar :drawer="drawer"/>
-      <navbar :drawer.sync="drawer"/>
-      <v-content>
-        <v-container fluid fill-height class="grey lighten-4">
-          <router-view/>
-        </v-container>
-      </v-content>
-    </v-app>
-  </div>
+  <v-app id="app">
+    <sidebar :drawer="drawer"/>
+    <navbar :drawer.sync="drawer"/>
+    <v-content>
+      <v-container fluid fill-height class="grey lighten-4">
+        <router-view/>
+      </v-container>
+    </v-content>
+  </v-app>
 </template>
 
 <script>
@@ -18,7 +16,7 @@ import Navbar from '@/admin/components/common/Navbar';
 import Sidebar from '@/admin/components/common/Sidebar';
 
 export default {
-  name: 'admin',
+  name: 'admin-app',
   data() {
     return { drawer: true };
   },

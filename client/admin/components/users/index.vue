@@ -2,19 +2,23 @@
   <v-layout justify-center>
     <v-flex>
       <div class="mt-5">
-        <v-toolbar color="f5f5f5" flat>
+        <v-toolbar color="#f5f5f5" flat>
           <v-spacer/>
           <v-btn @click.stop="showDialog()" color="success" outline>Add user</v-btn>
         </v-toolbar>
         <div class="elevation-1 ml-2 mr-4">
-          <v-data-table :headers="headers" :items="users" hide-actions>
-            <template slot="items" slot-scope="props">
-              <td>{{ props.item.email }}</td>
-              <td>{{ props.item.role }}</td>
-              <td>{{ props.item.firstName }}</td>
-              <td>{{ props.item.lastName }}</td>
+          <v-data-table
+            :headers="headers"
+            :items="users"
+            item-key="_cid"
+            hide-actions>
+            <template slot="items" slot-scope="{ item }">
+              <td>{{ item.email }}</td>
+              <td>{{ item.role }}</td>
+              <td>{{ item.firstName }}</td>
+              <td>{{ item.lastName }}</td>
               <td>
-                <v-icon @click="showDialog(props.item)" small>edit</v-icon>
+                <v-icon @click="showDialog(item)" small>edit</v-icon>
               </td>
             </template>
           </v-data-table>
