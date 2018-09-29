@@ -19,8 +19,13 @@ function update(item) {
   return request.patch(url.resource(item), item).then(extractData);
 }
 
+function remove(item) {
+  return request.delete(url.resource(item));
+}
+
 export default {
   fetch,
   create,
-  update
+  update,
+  remove
 };
