@@ -6,7 +6,7 @@ const HttpStatus = require('http-status');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
 
-const { BAD_REQUEST, NOT_FOUND } = HttpStatus;
+const { BAD_REQUEST, CONFLICT, NOT_FOUND } = HttpStatus;
 const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
 const Op = Sequelize.Op;
 
@@ -25,10 +25,12 @@ function list({ query: { email, role, filter }, options }, res) {
 
 function create(req, res) {
   const { body } = req;
-  const origin = req.origin();
-  return User.findOne({ where: { email: body.email } })
-    .then(user => !user || createError(NOT_FOUND, 'User already exists!'))
-    .then(() => User.invite(pick(body, inputAttrs), { origin }))
+  return User.findOne({ where: { email: body.email }, paranoid: false })
+    .then(existingUser => {
+      if (existingUser && !existingUser.deletedAt) createError(CONFLICT);
+      const opts = { existingUser, origin: req.origin() };
+      return User.invite(pick(body, inputAttrs), opts);
+    })
     .then(user => res.jsend.success(user.profile));
 }
 
@@ -37,6 +39,12 @@ function patch({ params, body }, res) {
     .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
     .then(user => user.update(pick(body, inputAttrs)))
     .then(user => res.jsend.success(user.profile));
+}
+
+function destroy({ params }, res) {
+  return User.findById(params.id)
+    .then(user => user ? user.destroy() : createError(NOT_FOUND))
+    .then(() => res.end());
 }
 
 function login({ body }, res) {
@@ -79,6 +87,7 @@ module.exports = {
   list,
   create,
   patch,
+  destroy,
   login,
   forgotPassword,
   resetPassword
