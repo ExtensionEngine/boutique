@@ -14,7 +14,7 @@
                 append-icon="search"
                 label="Search"
                 single-line
-                hide-details/>
+                clearable/>
             </v-flex>
           </v-layout>
           <v-data-table
@@ -31,6 +31,7 @@
               <td>{{ item.createdAt | formatDate }}</td>
               <td>
                 <v-icon @click="showDialog(item)" small>edit</v-icon>
+                <v-icon @click="removeUser(item)" small class="ml-3">delete</v-icon>
               </td>
             </template>
           </v-data-table>
@@ -40,6 +41,12 @@
           :userData="editedUser"
           @updated="fetch()"
           @created="fetch({ sortBy: 'createdAt', descending: true, page: 1 })"/>
+        <confirmation-dialog
+          :visible.sync="confirmationDialog"
+          :action="confirmationAction"
+          @confirmed="fetch()"
+          heading="Remove user"
+          message="Are you sure you want to remove user?"/>
       </div>
     </v-flex>
   </v-layout>
@@ -47,6 +54,7 @@
 
 <script>
 import api from '@/admin/api/user';
+import ConfirmationDialog from '../common/ConfirmationDialog';
 import throttle from 'lodash/throttle';
 import UserModal from './UserModal';
 
@@ -65,7 +73,9 @@ export default {
         descending: true
       },
       totalItems: 0,
-      isLoading: false
+      isLoading: false,
+      confirmationDialog: null,
+      confirmationAction: null
     };
   },
   computed: {
@@ -91,7 +101,11 @@ export default {
       this.users = items;
       this.totalItems = total;
       this.isLoading = false;
-    }, 400)
+    }, 400),
+    removeUser(user) {
+      this.confirmationAction = () => api.remove(user);
+      this.confirmationDialog = true;
+    }
   },
   watch: {
     dataTable() {
@@ -101,7 +115,7 @@ export default {
       this.fetch();
     }
   },
-  components: { UserModal }
+  components: { ConfirmationDialog, UserModal }
 };
 </script>
 
