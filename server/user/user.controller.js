@@ -1,7 +1,7 @@
 'use strict';
 
 const { createError } = require('../common/errors');
-const { Sequelize, User } = require('../common/database');
+const { Enrollment, Sequelize, sequelize, User } = require('../common/database');
 const HttpStatus = require('http-status');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
@@ -42,9 +42,13 @@ function patch({ params, body }, res) {
 }
 
 function destroy({ params }, res) {
-  return User.findById(params.id)
-    .then(user => user ? user.destroy() : createError(NOT_FOUND))
-    .then(() => res.end());
+  sequelize.transaction(async transaction => {
+    const user = await User.findById(params.id, { transaction });
+    if (!user) createError(NOT_FOUND);
+    await Enrollment.destroy({ where: { studentId: user.id }, transaction });
+    await user.destroy({ transaction });
+  });
+  res.end();
 }
 
 function login({ body }, res) {
