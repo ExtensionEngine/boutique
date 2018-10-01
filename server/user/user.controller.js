@@ -47,8 +47,8 @@ function destroy({ params }, res) {
     if (!user) createError(NOT_FOUND);
     await Enrollment.destroy({ where: { studentId: user.id }, transaction });
     await user.destroy({ transaction });
+    res.end();
   });
-  res.end();
 }
 
 function login({ body }, res) {
