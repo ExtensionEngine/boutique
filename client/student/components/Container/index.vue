@@ -29,7 +29,7 @@ import TeachingElements from './TeachingElements';
 export default {
   name: 'container',
   computed: {
-    ...mapGetters('content', ['courseware']),
+    ...mapGetters('learner', ['courseware']),
     containerId() {
       return this.$route.params.containerId;
     },

@@ -11,9 +11,9 @@
 </template>
 
 <script>
+import { mapGetters, mapState } from 'vuex';
 import contentApi from '@/student/api/contentApi';
 import find from 'lodash/find';
-import { mapGetters } from 'vuex';
 import tailorTeachingElements from 'tailor-teaching-elements';
 
 export default {
@@ -22,8 +22,9 @@ export default {
     return { container: {} };
   },
   computed: {
+    ...mapState('learner', ['selectedProgram']),
     ...mapGetters('auth', ['userCohortId']),
-    ...mapGetters('content', ['courseware']),
+    ...mapGetters('learner', ['courseware']),
     containerId() {
       return this.$route.params.containerId;
     },
@@ -43,7 +44,7 @@ export default {
     }
   },
   created() {
-    contentApi.getContainer(this.userCohortId, this.courseId, this.containerId)
+    contentApi.getContainer(this.selectedProgram, this.courseId, this.containerId)
       .then(container => {
         this.container = container;
       });

@@ -11,20 +11,25 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import Card from './Card';
 
 export default {
   name: 'student-root',
   computed: {
-    ...mapGetters('content', ['courseware']),
-    ...mapGetters('auth', ['userCohortId'])
+    ...mapGetters('learner', ['courseware']),
+    ...mapGetters('auth', ['userCohortId']),
+    ...mapState('learner', ['selectedProgram'])
   },
-  methods: mapActions('content', ['fetch', 'setApiUrl']),
+  methods: {
+    ...mapActions('content', ['fetch', 'setApiUrl']),
+    ...mapActions('learner', ['fetchSyllabus'])
+  },
   created() {
-    this.setApiUrl({ cohortId: this.userCohortId }).then(() => {
-      this.fetch({ includeStructure: true });
-    });
+    // this.setApiUrl({ cohortId: this.userCohortId }).then(() => {
+    //   this.fetch({ includeStructure: true });
+    // });
+    this.fetchSyllabus(this.selectedProgram);
   },
   components: { Card }
 };

@@ -9,6 +9,7 @@ import ResetPassword from '@/student/components/auth/ResetPassword';
 import role from '@/../common/config/role';
 import Router from 'vue-router';
 import store from './store';
+import StudentHome from '@/student/components/Home/index';
 import StudentRoot from '@/student/components/index';
 import Vue from 'vue';
 
@@ -42,6 +43,10 @@ const router = new Router({
     meta: { auth: true },
     children: [{
       path: '',
+      name: 'student-home',
+      component: StudentHome
+    }, {
+      path: 'content',
       name: 'content',
       component: Content
     }, {
