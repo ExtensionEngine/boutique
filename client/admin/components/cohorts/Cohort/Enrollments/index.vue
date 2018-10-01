@@ -4,7 +4,10 @@
       <v-spacer/>
       <enrollment-modal :cohortId="cohortId"/>
     </v-toolbar>
-    <v-alert :value="!enrollments.length" color="#aaa" class="mr-4">
+    <v-alert
+      :value="!isLoading && !enrollments.length"
+      color="#aaa"
+      class="mr-4">
       Click on the button above to enroll learner.
     </v-alert>
     <div v-if="enrollments.length" class="elevation-1 ml-2 mr-4">
@@ -33,6 +36,9 @@ import get from 'lodash/get';
 export default {
   name: 'enrollments',
   props: { cohortId: { type: Number, required: true } },
+  data() {
+    return { isLoading: true };
+  },
   computed: {
     ...mapState('enrollments', { enrollmentStore: 'items' }),
     headers: () => ([
@@ -51,7 +57,8 @@ export default {
     get
   },
   created() {
-    return this.fetch({ cohortId: this.cohortId });
+    return this.fetch({ cohortId: this.cohortId })
+      .then(() => (this.isLoading = false));
   },
   components: { EnrollmentModal }
 };
