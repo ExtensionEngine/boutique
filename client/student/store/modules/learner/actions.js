@@ -1,7 +1,8 @@
-import api from '@/student/api/learner';
+import contentApi from '@/student/api/contentApi';
+import learnerApi from '@/student/api/learnerApi';
 
 export const fetchPrograms = ({ commit }, learnerId) => {
-  api.fetchPrograms(learnerId).then(res => commit('fetchPrograms', res));
+  learnerApi.fetchPrograms(learnerId).then(res => commit('fetchPrograms', res));
 };
 
 export const selectProgram = ({ commit }, programId) => {
@@ -9,5 +10,5 @@ export const selectProgram = ({ commit }, programId) => {
 };
 
 export const fetchSyllabus = ({ commit }, programId) => {
-  api.fetchSyllabus(programId).then(res => commit('fetchSyllabus', res));
+  contentApi.fetchSyllabus(programId).then(res => commit('fetchSyllabus', res));
 };
