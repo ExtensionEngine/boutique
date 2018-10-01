@@ -2,28 +2,22 @@
   <div class="column is-4">
     <div @click="navigateTo" class="card">
       <div class="body">
-        <div class="title">{{ name }}</div>
-        <div class="description">{{ description }}</div>
+        <div class="title">{{ courseware.name | truncate(75) }}</div>
+        <div class="description">
+          {{ courseware.description | truncate(180) }}
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import truncate from 'truncate';
-
 export default {
   name: 'card',
   props: {
     courseware: { type: Object, required: true }
   },
   computed: {
-    name() {
-      return truncate(this.courseware.name, 75);
-    },
-    description() {
-      return truncate(this.courseware.description, 180);
-    },
     hasContainer() {
       return !!this.courseware.container;
     }
