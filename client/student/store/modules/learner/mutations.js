@@ -1,8 +1,5 @@
-import forEach from 'lodash/forEach';
-import Vue from 'vue';
-
 export const fetchPrograms = (state, programs) => {
-  forEach(programs, it => Vue.set(state.programs, it.id, it));
+  state.programs = programs;
 };
 
 export const selectProgram = (state, programId) => {

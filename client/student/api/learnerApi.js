@@ -3,12 +3,11 @@ import request from '@/common/api/request';
 const extractData = res => res.data.data;
 
 const url = {
-  programs: '/enrollments'
+  programs: '/enrollments/currentUser'
 };
 
-function fetchPrograms(studentId) {
-  const params = { studentId, includeCohort: true };
-  return request.get(url.programs, { params }).then(extractData);
+function fetchPrograms() {
+  return request.get(url.programs).then(extractData);
 }
 
 export default {

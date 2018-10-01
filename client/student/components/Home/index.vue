@@ -24,7 +24,6 @@ import { mapActions, mapMutations, mapState } from 'vuex';
 export default {
   name: 'learner-home',
   computed: {
-    ...mapState('auth', ['user']),
     ...mapState('learner', ['programs'])
   },
   methods: {
@@ -32,7 +31,7 @@ export default {
     ...mapMutations('learner', ['selectProgram'])
   },
   created() {
-    this.fetchPrograms(this.user.id);
+    this.fetchPrograms();
   }
 };
 </script>
