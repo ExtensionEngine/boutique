@@ -6,12 +6,10 @@
         <li
           v-for="it in programs"
           :key="it.id"
-          @click="selectProgram(it.cohortId)"
-        >
+          @click="selectProgram(it.cohortId)">
           <router-link
             :to="{ name: 'courseware' }"
-            class="button is-medium is-fullwidth"
-          >
+            class="button is-medium is-fullwidth">
             {{ it.cohort.name }}
           </router-link>
         </li>
@@ -35,6 +33,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss">
-</style>

@@ -4,8 +4,7 @@
       <card
         v-for="it in courseware"
         :key="it._cid"
-        :courseware="it"
-      />
+        :courseware="it"/>
     </div>
   </div>
 </template>

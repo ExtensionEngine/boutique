@@ -1,12 +1,11 @@
 <template>
   <div>
-    <tailorTeachingElements
+    <tailor-teaching-elements
       v-for="it in teachingElements"
       :key="it.id"
       :element="it"
       :class="getElementWidth(it)"
-      class="column"
-    />
+      class="column"/>
   </div>
 </template>
 
@@ -14,7 +13,7 @@
 import { mapGetters, mapState } from 'vuex';
 import api from '@/student/api/contentApi';
 import find from 'lodash/find';
-import tailorTeachingElements from 'tailor-teaching-elements';
+import TailorTeachingElements from 'tailor-teaching-elements';
 
 export default {
   name: 'teaching-elements',
@@ -48,9 +47,6 @@ export default {
         this.container = container;
       });
   },
-  components: { tailorTeachingElements }
+  components: { TailorTeachingElements }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

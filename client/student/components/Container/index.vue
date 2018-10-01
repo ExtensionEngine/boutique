@@ -6,16 +6,14 @@
         :key="it.id"
         :to="{ name: 'container', params: { containerId: getId(it)}}"
         :class="{ 'active-link': containerId === getId(it) }"
-        class="navbar-item"
-      >
+        class="navbar-item">
         {{ it.name }}
       </router-link>
     </nav>
     <div class="columns is-multiline">
       <TeachingElements
         :containerId="containerId"
-        :key="containerId"
-      />
+        :key="containerId"/>
     </div>
   </div>
 </template>

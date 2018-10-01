@@ -1,6 +1,6 @@
 import Auth from '@/student/components/auth';
 import Container from '@/student/components/Container/index';
-import Courseware from '@/student/components/Content/index';
+import Courseware from '@/student/components/Courseware/index';
 import ForgotPassword from '@/student/components/auth/ForgotPassword';
 import get from 'lodash/get';
 import LearnerHome from '@/student/components/Home/index';
