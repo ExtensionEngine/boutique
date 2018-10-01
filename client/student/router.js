@@ -1,5 +1,6 @@
 import Auth from '@/student/components/auth';
 import Container from '@/student/components/Container/index';
+import Content from '@/student/components/Content/index';
 import ForgotPassword from '@/student/components/auth/ForgotPassword';
 import get from 'lodash/get';
 import Login from '@/student/components/auth/Login';
@@ -8,7 +9,7 @@ import ResetPassword from '@/student/components/auth/ResetPassword';
 import role from '@/../common/config/role';
 import Router from 'vue-router';
 import store from './store';
-import StudentRoot from '@/student/components/Content/index';
+import StudentRoot from '@/student/components/index';
 import Vue from 'vue';
 
 Vue.use(Router);
@@ -36,13 +37,18 @@ const router = new Router({
     }]
   }, {
     path: '/',
-    name: 'home',
+    name: 'student-root',
     component: StudentRoot,
-    meta: { auth: true }
-  }, {
-    path: '/container/:containerId',
-    name: 'container',
-    component: Container
+    meta: { auth: true },
+    children: [{
+      path: '',
+      name: 'content',
+      component: Content
+    }, {
+      path: 'container/:containerId',
+      name: 'container',
+      component: Container
+    }]
   }, fallbackRoute]
 });
 

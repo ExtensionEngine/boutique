@@ -1,24 +1,12 @@
 <template>
   <div id="app" class="system-font-stack">
-    <header class="app-header">
-      <navbar/>
-    </header>
-    <main>
-      <div class="columns">
-        <div class="column is-12">
-          <router-view></router-view>
-        </div>
-      </div>
-    </main>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import Navbar from '@/student/components/common/Navbar';
-
 export default {
-  name: 'app',
-  components: { Navbar }
+  name: 'app'
 };
 </script>
 
