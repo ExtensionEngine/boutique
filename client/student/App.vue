@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="system-font-stack">
-    <router-view></router-view>
+    <router-view/>
   </div>
 </template>
 

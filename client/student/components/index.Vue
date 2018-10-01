@@ -6,7 +6,7 @@
     <main>
       <div class="columns">
         <div class="column is-12">
-          <router-view></router-view>
+          <router-view/>
         </div>
       </div>
     </main>
