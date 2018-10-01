@@ -1,12 +1,12 @@
 'use strict';
 
 const { createError } = require('../common/errors');
-const { Sequelize, User } = require('../common/database');
+const { Enrollment, Sequelize, sequelize, User } = require('../common/database');
 const HttpStatus = require('http-status');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
 
-const { BAD_REQUEST, NOT_FOUND } = HttpStatus;
+const { BAD_REQUEST, CONFLICT, NOT_FOUND } = HttpStatus;
 const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
 const Op = Sequelize.Op;
 
@@ -25,10 +25,12 @@ function list({ query: { email, role, filter }, options }, res) {
 
 function create(req, res) {
   const { body } = req;
-  const origin = req.origin();
-  return User.findOne({ where: { email: body.email } })
-    .then(user => !user || createError(NOT_FOUND, 'User already exists!'))
-    .then(() => User.invite(pick(body, inputAttrs), { origin }))
+  return User.findOne({ where: { email: body.email }, paranoid: false })
+    .then(existingUser => {
+      if (existingUser && !existingUser.deletedAt) createError(CONFLICT);
+      const opts = { existingUser, origin: req.origin() };
+      return User.invite(pick(body, inputAttrs), opts);
+    })
     .then(user => res.jsend.success(user.profile));
 }
 
@@ -37,6 +39,16 @@ function patch({ params, body }, res) {
     .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
     .then(user => user.update(pick(body, inputAttrs)))
     .then(user => res.jsend.success(user.profile));
+}
+
+function destroy({ params }, res) {
+  sequelize.transaction(async transaction => {
+    const user = await User.findById(params.id, { transaction });
+    if (!user) createError(NOT_FOUND);
+    await Enrollment.destroy({ where: { studentId: user.id }, transaction });
+    await user.destroy({ transaction });
+    res.end();
+  });
 }
 
 function login({ body }, res) {
@@ -79,6 +91,7 @@ module.exports = {
   list,
   create,
   patch,
+  destroy,
   login,
   forgotPassword,
   resetPassword

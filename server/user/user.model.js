@@ -4,6 +4,7 @@ const { auth: config = {} } = require('../config');
 const { Model } = require('sequelize');
 const { role } = require('../../common/config');
 const bcrypt = require('bcrypt');
+const forEach = require('lodash/forEach');
 const jwt = require('jsonwebtoken');
 const logger = require('../common/logger')();
 const mail = require('../common/mail');
@@ -96,11 +97,15 @@ class User extends Model {
   }
 
   static async invite(userData, options) {
-    const user = await this.create(userData);
-    user.token = user.createToken({ expiresIn: '5 days' });
+    const user = options.existingUser || this.build(userData);
+    if (options.existingUser) {
+      forEach(userData, (val, key) => user.setDataValue(key, val));
+      user.setDataValue('deletedAt', null);
+    }
+    user.token = user.createToken({ expiresIn: '3 days' });
     mail.invite(user, options).catch(err =>
       logger.error('Error: Sending invite email failed:', err.message));
-    return user.save();
+    return user.save({ paranoid: false });
   }
 
   async encryptPassword() {
