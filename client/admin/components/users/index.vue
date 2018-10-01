@@ -1,53 +1,53 @@
 <template>
   <v-layout justify-center>
-    <v-flex>
-      <div class="mt-5">
-        <v-toolbar color="#f5f5f5" flat>
-          <v-spacer/>
-          <v-btn @click.stop="showDialog()" color="success" outline>Add user</v-btn>
-        </v-toolbar>
-        <div class="elevation-1 ml-2 mr-4">
-          <v-layout class="px-4 py-3 table-toolbar">
-            <v-flex lg3 offset-lg9>
-              <v-text-field
-                v-model="filter"
-                append-icon="search"
-                label="Search"
-                single-line
-                clearable/>
-            </v-flex>
-          </v-layout>
-          <v-data-table
-            :headers="headers"
-            :items="users"
-            :pagination.sync="dataTable"
-            :total-items="totalItems"
-            :must-sort="true">
-            <template slot="items" slot-scope="{ item }">
-              <td>{{ item.email }}</td>
-              <td>{{ item.role }}</td>
-              <td>{{ item.firstName }}</td>
-              <td>{{ item.lastName }}</td>
-              <td>{{ item.createdAt | formatDate }}</td>
-              <td>
-                <v-icon @click="showDialog(item)" small>edit</v-icon>
-                <v-icon @click="removeUser(item)" small class="ml-3">delete</v-icon>
-              </td>
-            </template>
-          </v-data-table>
-        </div>
-        <user-modal
-          :visible.sync="dialogVisible"
-          :userData="editedUser"
-          @updated="fetch()"
-          @created="fetch({ sortBy: 'createdAt', descending: true, page: 1 })"/>
-        <confirmation-dialog
-          :visible.sync="confirmationDialog"
-          :action="confirmationAction"
-          @confirmed="fetch()"
-          heading="Remove user"
-          message="Are you sure you want to remove user?"/>
+    <v-flex class="mt-5">
+      <v-toolbar color="#f5f5f5" flat>
+        <v-spacer/>
+        <v-btn @click.stop="showUserDialog()" color="success" outline>
+          Add user
+        </v-btn>
+      </v-toolbar>
+      <div class="elevation-1 ml-2 mr-4">
+        <v-layout class="px-4 py-3 table-toolbar">
+          <v-flex lg3 offset-lg9>
+            <v-text-field
+              v-model="filter"
+              append-icon="search"
+              label="Search"
+              single-line
+              clearable/>
+          </v-flex>
+        </v-layout>
+        <v-data-table
+          :headers="headers"
+          :items="users"
+          :pagination.sync="dataTable"
+          :total-items="totalItems"
+          :must-sort="true">
+          <template slot="items" slot-scope="{ item }">
+            <td>{{ item.email }}</td>
+            <td>{{ item.role }}</td>
+            <td>{{ item.firstName }}</td>
+            <td>{{ item.lastName }}</td>
+            <td>{{ item.createdAt | formatDate }}</td>
+            <td>
+              <v-icon @click="showUserDialog(item)" small>edit</v-icon>
+              <v-icon @click="removeUser(item)" small class="ml-3">delete</v-icon>
+            </td>
+          </template>
+        </v-data-table>
       </div>
+      <user-modal
+        :visible.sync="userDialog"
+        :userData="editedUser"
+        @updated="fetch(defaultPage)"
+        @created="fetch(defaultPage)"/>
+      <confirmation-dialog
+        :visible.sync="confirmationDialog"
+        :action="confirmationAction"
+        @confirmed="fetch()"
+        heading="Remove user"
+        message="Are you sure you want to remove user?"/>
     </v-flex>
   </v-layout>
 </template>
@@ -58,24 +58,21 @@ import ConfirmationDialog from '../common/ConfirmationDialog';
 import throttle from 'lodash/throttle';
 import UserModal from './UserModal';
 
+const defaultPage = () => ({ sortBy: 'updatedAt', descending: true, page: 1 });
+
 export default {
   name: 'user-list',
   data() {
     return {
-      dialogVisible: false,
-      editedUser: null,
       users: [],
       filter: null,
-      dataTable: {
-        page: 1,
-        rowsPerPage: 10,
-        sortBy: 'createdAt',
-        descending: true
-      },
-      totalItems: 0,
-      isLoading: false,
+      userDialog: false,
+      editedUser: null,
       confirmationDialog: null,
-      confirmationAction: null
+      confirmationAction: null,
+      dataTable: defaultPage(),
+      totalItems: 0,
+      isLoading: false
     };
   },
   computed: {
@@ -86,12 +83,13 @@ export default {
       { text: 'Last Name', value: 'lastName' },
       { text: 'Date Created', value: 'createdAt' },
       { text: 'Actions', value: 'email', sortable: false }
-    ])
+    ]),
+    defaultPage
   },
   methods: {
-    showDialog(user = null) {
+    showUserDialog(user = null) {
       this.editedUser = user;
-      this.dialogVisible = true;
+      this.userDialog = true;
     },
     fetch: throttle(async function (opts) {
       this.isLoading = true;
