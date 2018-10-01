@@ -12,12 +12,14 @@ const Op = Sequelize.Op;
 const processInput = input => pick(input, ['studentId', 'cohortId']);
 const processOutput = it => ({ ...it.dataValues, student: it.student.profile });
 
-function list({ query: { cohortId, studentId } }, res) {
+function list({ query: { cohortId, studentId }, options }, res) {
   const cond = [];
   if (cohortId) cond.push({ cohortId });
   if (studentId) cond.push({ studentId });
-  return Enrollment.findAll({ where: { [Op.and]: cond }, include: ['student'] })
-    .then(enrollments => res.jsend.success(map(enrollments, processOutput)));
+  const opts = { where: { [Op.and]: cond }, include: ['student'], ...options };
+  return Enrollment.findAndCountAll(opts).then(({ rows, count }) => {
+    res.jsend.success({ items: map(rows, processOutput), total: count });
+  });
 }
 
 function create({ body }, res) {
