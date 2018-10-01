@@ -2,7 +2,7 @@
   <div class="mt-3">
     <v-toolbar color="#f5f5f5" flat>
       <v-spacer/>
-      <enrollment-modal :cohortId="cohortId" @enrolled="fetch(defaultPage)"/>
+      <enrollment-dialog :cohortId="cohortId" @enrolled="fetch(defaultPage)"/>
     </v-toolbar>
     <v-alert
       :value="!isLoading && !totalItems"
@@ -30,7 +30,7 @@
 
 <script>
 import api from '@/admin/api/enrollment';
-import EnrollmentModal from './EnrollmentModal';
+import EnrollmentDialog from './EnrollmentDialog';
 import get from 'lodash/get';
 import throttle from 'lodash/throttle';
 
@@ -73,6 +73,6 @@ export default {
       this.fetch();
     }
   },
-  components: { EnrollmentModal }
+  components: { EnrollmentDialog }
 };
 </script>
