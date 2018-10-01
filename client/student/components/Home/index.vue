@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapMutations, mapState } from 'vuex';
 
 export default {
   name: 'learner-home',
@@ -27,7 +27,10 @@ export default {
     ...mapState('auth', ['user']),
     ...mapState('learner', ['programs'])
   },
-  methods: mapActions('learner', ['fetchPrograms', 'selectProgram']),
+  methods: {
+    ...mapActions('learner', ['fetchPrograms']),
+    ...mapMutations('learner', ['selectProgram'])
+  },
   created() {
     this.fetchPrograms(this.user.id);
   }
