@@ -4,21 +4,29 @@ const extractData = res => res.data.data;
 
 const url = {
   programs: '/enrollments',
-  syllabus: programId => `/cohorts/${programId}/content`
+  syllabus: programId => `/cohorts/${programId}/content`,
+  container: (programId, courseId, containerId) => {
+    return `/cohorts/${programId}/content/${courseId}/container/${containerId}`;
+  }
 };
 
 function fetchPrograms(studentId) {
-  return request.get(url.programs, { params: { studentId } }).then(extractData);
+  const params = { studentId, includeCohort: true };
+  return request.get(url.programs, { params }).then(extractData);
 }
 
 function fetchSyllabus(programId) {
-  return request.get(
-    url.syllabus(programId),
-    { params: { includeStructure: true } })
-  .then(extractData);
+  const params = { includeStructure: true };
+  return request.get(url.syllabus(programId), { params }).then(extractData);
+}
+
+function getContainer(programId, courseId, containerId) {
+  return request.get(url.container(programId, courseId, containerId))
+    .then(extractData);
 }
 
 export default {
   fetchPrograms,
-  fetchSyllabus
+  fetchSyllabus,
+  getContainer
 };

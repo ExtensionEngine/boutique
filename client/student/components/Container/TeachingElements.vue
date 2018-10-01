@@ -12,7 +12,7 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex';
-import contentApi from '@/student/api/contentApi';
+import api from '@/student/api/learner';
 import find from 'lodash/find';
 import tailorTeachingElements from 'tailor-teaching-elements';
 
@@ -43,7 +43,7 @@ export default {
     }
   },
   created() {
-    contentApi.getContainer(this.selectedProgram, this.courseId, this.containerId)
+    api.getContainer(this.selectedProgram, this.courseId, this.containerId)
       .then(container => {
         this.container = container;
       });
