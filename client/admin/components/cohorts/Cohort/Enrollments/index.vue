@@ -2,20 +2,21 @@
   <div class="mt-3">
     <v-toolbar color="#f5f5f5" flat>
       <v-spacer/>
-      <enrollment-modal :cohortId="cohortId"/>
+      <enrollment-modal :cohortId="cohortId" @enrolled="fetch(defaultPage)"/>
     </v-toolbar>
     <v-alert
-      :value="!isLoading && !enrollments.length"
+      :value="!isLoading && !totalItems"
       color="#aaa"
       class="mr-4">
       Click on the button above to enroll learner.
     </v-alert>
-    <div v-if="enrollments.length" class="elevation-1 ml-2 mr-4">
+    <div v-show="totalItems" class="elevation-1 ml-2 mr-4">
       <v-data-table
         :headers="headers"
         :items="enrollments"
-        item-key="_cid"
-        hide-actions>
+        :pagination.sync="dataTable"
+        :total-items="totalItems"
+        :must-sort="true">
         <template slot="items" slot-scope="{ item }">
           <td>{{ get(item.student, 'email') }}</td>
           <td>{{ get(item.student, 'firstName') }}</td>
@@ -28,37 +29,49 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import api from '@/admin/api/enrollment';
 import EnrollmentModal from './EnrollmentModal';
-import filter from 'lodash/filter';
 import get from 'lodash/get';
+import throttle from 'lodash/throttle';
+
+const defaultPage = () => ({ sortBy: 'updatedAt', descending: true, page: 1 });
 
 export default {
   name: 'enrollments',
   props: { cohortId: { type: Number, required: true } },
   data() {
-    return { isLoading: true };
+    return {
+      enrollments: [],
+      dataTable: { rowsPerPage: 10, ...defaultPage() },
+      totalItems: 0,
+      isLoading: true
+    };
   },
   computed: {
-    ...mapState('enrollments', { enrollmentStore: 'items' }),
     headers: () => ([
-      { text: 'Email', value: 'email', align: 'left' },
-      { text: 'First Name', value: 'firstName' },
-      { text: 'Last Name', value: 'lastName' },
+      { text: 'Email', value: 'student.email', align: 'left' },
+      { text: 'First Name', value: 'student.first_name' },
+      { text: 'Last Name', value: 'student.last_name' },
       { text: 'Created At', value: 'createdAt' }
     ]),
-    enrollments() {
-      const { cohortId } = this;
-      return filter(this.enrollmentStore, { cohortId });
-    }
+    defaultPage
   },
   methods: {
-    ...mapActions('enrollments', ['fetch']),
-    get
+    get,
+    fetch: throttle(async function (opts) {
+      this.isLoading = true;
+      Object.assign(this.dataTable, opts);
+      const params = { cohortId: this.cohortId };
+      const { items, total } = await api.fetch({ ...this.dataTable, params });
+      this.enrollments = items;
+      this.totalItems = total;
+      this.isLoading = false;
+    }, 400)
   },
-  created() {
-    return this.fetch({ cohortId: this.cohortId })
-      .then(() => (this.isLoading = false));
+  watch: {
+    dataTable() {
+      this.fetch();
+    }
   },
   components: { EnrollmentModal }
 };
