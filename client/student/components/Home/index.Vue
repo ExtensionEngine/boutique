@@ -4,8 +4,8 @@
       <table class="table is-fullwidth is-hoverable">
         <thead>
           <th>Id</th>
-          <th>Student Id</th>
-          <th>Cohort Id</th>
+          <th>Learner Id</th>
+          <th>Program Id</th>
         </thead>
         <tbody>
           <tr v-for="it in programs" :key="it.id" @click="navigateTo(it)">
@@ -23,16 +23,16 @@
 import { mapActions, mapState } from 'vuex';
 
 export default {
-  name: 'student-home',
+  name: 'learner-home',
   computed: {
     ...mapState('auth', ['user']),
     ...mapState('learner', ['programs'])
   },
   methods: {
-    ...mapActions('learner', ['fetchPrograms', 'selectProgram', 'fetchSyllabus']),
+    ...mapActions('learner', ['fetchPrograms', 'selectProgram']),
     navigateTo(it) {
       this.selectProgram(it.cohortId);
-      this.$router.push({ name: 'content' });
+      this.$router.push({ name: 'courseware' });
     }
   },
   created() {

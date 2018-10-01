@@ -15,25 +15,25 @@ import truncate from 'truncate';
 export default {
   name: 'card',
   props: {
-    content: { type: Object, required: true }
+    courseware: { type: Object, required: true }
   },
   computed: {
     name() {
-      return truncate(this.content.name, 75);
+      return truncate(this.courseware.name, 75);
     },
     description() {
-      return truncate(this.content.description, 180);
+      return truncate(this.courseware.description, 180);
     },
-    hasContent() {
-      return !!this.content.container;
+    hasContainer() {
+      return !!this.courseware.container;
     }
   },
   methods: {
     navigateTo() {
-      if (this.hasContent) {
+      if (this.hasContainer) {
         this.$router.push({
           name: 'container',
-          params: { containerId: this.content.container.id }
+          params: { containerId: this.courseware.container.id }
         });
       }
     }

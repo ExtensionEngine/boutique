@@ -23,7 +23,6 @@ export default {
   },
   computed: {
     ...mapState('learner', ['selectedProgram']),
-    ...mapGetters('auth', ['userCohortId']),
     ...mapGetters('learner', ['courseware']),
     containerId() {
       return this.$route.params.containerId;

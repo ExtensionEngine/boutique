@@ -10,6 +10,5 @@ export const selectProgram = (state, programId) => {
 };
 
 export const fetchSyllabus = (state, syllabus) => {
-  // forEach(syllabus, it => Vue.set(state.syllabus, it.id, it));
   state.syllabus = syllabus;
 };

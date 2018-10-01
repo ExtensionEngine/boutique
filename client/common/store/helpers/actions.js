@@ -37,7 +37,7 @@ export default function ($apiUrl) {
 
   const setApiUrl = ({ state, commit }, apiUrl) => {
     if (state.$apiUrl !== apiUrl) {
-      api = new Resource(apiUrl);
+      api = new Resource(state.$apiUrl);
       commit('setApiUrl', apiUrl);
     }
   };

@@ -17,7 +17,7 @@
 import Navbar from '@/student/components/common/Navbar';
 
 export default {
-  name: 'student-root',
+  name: 'learner-root',
   components: { Navbar }
 };
 </script>

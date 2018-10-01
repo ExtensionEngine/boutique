@@ -1,8 +1,7 @@
 'use strict';
 
 const { createError } = require('../common/errors');
-const { Enrollment, Sequelize, User } = require('../common/database');
-const get = require('lodash/get');
+const { Sequelize, User } = require('../common/database');
 const HttpStatus = require('http-status');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
@@ -52,12 +51,7 @@ function login({ body }, res) {
     .then(user => user || createError(NOT_FOUND, 'Wrong password!'))
     .then(user => {
       const token = user.createToken({ expiresIn: '5 days' });
-      Enrollment.findOne({ where: { studentId: user.id } }).then(data => {
-        res.jsend.success({
-          token,
-          user: { ...user.profile, cohortId: get(data, 'cohortId', 0) }
-        });
-      });
+      res.jsend.success({ token, user: user.profile });
     });
 }
 

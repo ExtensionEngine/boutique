@@ -4,7 +4,7 @@
       <card
         v-for="it in courseware"
         :key="it._cid"
-        :content="it"
+        :courseware="it"
       />
     </div>
   </div>
@@ -15,20 +15,13 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import Card from './Card';
 
 export default {
-  name: 'student-root',
+  name: 'courseware',
   computed: {
     ...mapGetters('learner', ['courseware']),
-    ...mapGetters('auth', ['userCohortId']),
     ...mapState('learner', ['selectedProgram'])
   },
-  methods: {
-    ...mapActions('content', ['fetch', 'setApiUrl']),
-    ...mapActions('learner', ['fetchSyllabus'])
-  },
+  methods: mapActions('learner', ['fetchSyllabus']),
   created() {
-    // this.setApiUrl({ cohortId: this.userCohortId }).then(() => {
-    //   this.fetch({ includeStructure: true });
-    // });
     this.fetchSyllabus(this.selectedProgram);
   },
   components: { Card }
