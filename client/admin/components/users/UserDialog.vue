@@ -65,7 +65,7 @@ const resetUser = () => {
 };
 
 export default {
-  name: 'user-modal',
+  name: 'user-dialog',
   mixins: [withValidation()],
   props: {
     visible: { type: Boolean, default: false },

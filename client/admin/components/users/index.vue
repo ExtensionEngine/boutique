@@ -37,7 +37,7 @@
           </template>
         </v-data-table>
       </div>
-      <user-modal
+      <user-dialog
         :visible.sync="userDialog"
         :userData="editedUser"
         @updated="fetch(defaultPage)"
@@ -56,7 +56,7 @@
 import api from '@/admin/api/user';
 import ConfirmationDialog from '../common/ConfirmationDialog';
 import throttle from 'lodash/throttle';
-import UserModal from './UserModal';
+import UserDialog from './UserDialog';
 
 const defaultPage = () => ({ sortBy: 'updatedAt', descending: true, page: 1 });
 
@@ -113,7 +113,7 @@ export default {
       this.fetch();
     }
   },
-  components: { ConfirmationDialog, UserModal }
+  components: { ConfirmationDialog, UserDialog }
 };
 </script>
 
