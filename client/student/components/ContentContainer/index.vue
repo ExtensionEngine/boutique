@@ -1,18 +1,20 @@
 <template>
   <div class="container">
-    <nav class="columns navbar">
+    <nav class="navbar">
       <router-link
         v-for="it in siblings"
         :key="it.id"
-        :to="{ name: 'container', params: { containerId: getId(it)}}"
-        :class="{ 'active-link': containerId === getId(it) }"
+        :to="{
+          name: 'content-container',
+          params: { containerId: it.container.id}}"
         class="navbar-item">
         {{ it.name }}
       </router-link>
     </nav>
-    <div class="columns is-multiline">
-      <TeachingElements
+    <div>
+      <teaching-elements
         :containerId="containerId"
+        :courseId="activity.courseId"
         :key="containerId"/>
     </div>
   </div>
@@ -25,25 +27,17 @@ import { mapGetters } from 'vuex';
 import TeachingElements from './TeachingElements';
 
 export default {
-  name: 'container',
+  name: 'content-container',
   computed: {
     ...mapGetters('learner', ['courseware']),
     containerId() {
       return this.$route.params.containerId;
     },
     activity() {
-      return find(this.courseware, it => it.container.id === this.containerId);
-    },
-    parentId() {
-      return this.activity.parentId;
+      return find(this.courseware, { container: { id: this.containerId } });
     },
     siblings() {
-      return filter(this.courseware, { parentId: this.parentId });
-    }
-  },
-  methods: {
-    getId(it) {
-      return it.container.id;
+      return filter(this.courseware, { parentId: this.activity.parentId });
     }
   },
   components: { TeachingElements }
@@ -51,7 +45,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.active-link {
+.router-link-exact-active {
   color: #3273dc;
   background-color: whitesmoke;
 }

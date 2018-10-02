@@ -26,7 +26,7 @@ export default {
     navigateTo() {
       if (this.hasContainer) {
         this.$router.push({
-          name: 'container',
+          name: 'content-container',
           params: { containerId: this.courseware.container.id }
         });
       }

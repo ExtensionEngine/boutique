@@ -1,5 +1,5 @@
 import Auth from '@/student/components/auth';
-import Container from '@/student/components/Container/index';
+import ContentContainer from '@/student/components/ContentContainer/index';
 import Courseware from '@/student/components/Courseware/index';
 import ForgotPassword from '@/student/components/auth/ForgotPassword';
 import get from 'lodash/get';
@@ -51,8 +51,8 @@ const router = new Router({
       component: Courseware
     }, {
       path: 'container/:containerId',
-      name: 'container',
-      component: Container
+      name: 'content-container',
+      component: ContentContainer
     }]
   }, fallbackRoute]
 });

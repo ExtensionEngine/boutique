@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="columns is-multiline">
     <tailor-teaching-elements
       v-for="it in teachingElements"
       :key="it.id"
@@ -10,30 +10,24 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
 import api from '@/student/api/content';
-import find from 'lodash/find';
+import get from 'lodash/get';
+import { mapState } from 'vuex';
 import TailorTeachingElements from 'tailor-teaching-elements';
 
 export default {
   name: 'teaching-elements',
+  props: {
+    containerId: { type: Number, required: true },
+    courseId: { type: Number, required: true }
+  },
   data() {
-    return { container: {} };
+    return { container: null };
   },
   computed: {
     ...mapState('learner', ['selectedProgram']),
-    ...mapGetters('learner', ['courseware']),
-    containerId() {
-      return this.$route.params.containerId;
-    },
     teachingElements() {
-      return this.container.elements;
-    },
-    activity() {
-      return find(this.courseware, it => it.container.id === this.containerId);
-    },
-    courseId() {
-      return this.activity.courseId;
+      return get(this.container, 'elements', []);
     }
   },
   methods: {
@@ -43,9 +37,7 @@ export default {
   },
   created() {
     api.getContainer(this.selectedProgram, this.courseId, this.containerId)
-      .then(container => {
-        this.container = container;
-      });
+      .then(container => (this.container = container));
   },
   components: { TailorTeachingElements }
 };
