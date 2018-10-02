@@ -1,4 +1,4 @@
-export const fetchPrograms = (state, programs) => {
+export const setPrograms = (state, programs) => {
   state.programs = programs;
 };
 

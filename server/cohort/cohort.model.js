@@ -26,7 +26,7 @@ class Cohort extends Model {
   }
 
   static associate({ Enrollment, ContentRepo }) {
-    this.hasMany(Enrollment, {
+    this.hasOne(Enrollment, {
       foreignKey: { name: 'cohortId', field: 'cohort_id' }
     });
     this.hasMany(ContentRepo, {

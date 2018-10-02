@@ -29,14 +29,7 @@ function create({ body }, res) {
     .then(enrollment => res.jsend.success(processOutput(enrollment)));
 }
 
-function getUserEnrollments({ user }, res) {
-  const opts = { where: { studentId: user.id }, include: ['cohort'] };
-  return Enrollment.findAll(opts)
-    .then(enrollments => res.jsend.success(enrollments));
-}
-
 module.exports = {
   list,
-  create,
-  getUserEnrollments
+  create
 };

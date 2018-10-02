@@ -17,9 +17,9 @@ router
 
 function hasAccess({ cohort, user }, res, next) {
   if (user.isAdmin()) return next();
-  return cohort.getEnrollments({ where: { studentId: user.id } })
-    .then(enrollments => {
-      if (!enrollments.length) return createError(FORBIDDEN, 'Access denied');
+  return cohort.getEnrollment({ where: { studentId: user.id } })
+    .then(enrollment => {
+      if (!enrollment) return createError(FORBIDDEN, 'Access denied');
       return next();
     });
 }

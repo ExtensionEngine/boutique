@@ -2,7 +2,7 @@ import { extractData } from '@/common/api/helpers';
 import request from '@/common/api/request';
 
 const url = {
-  programs: '/enrollments/current-user'
+  programs: '/cohorts/current-user'
 };
 
 function fetchPrograms() {

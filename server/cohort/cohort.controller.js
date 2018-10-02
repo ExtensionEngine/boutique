@@ -1,6 +1,6 @@
 'use strict';
 
-const { Cohort } = require('../common/database');
+const { Cohort, Enrollment } = require('../common/database');
 const pick = require('lodash/pick');
 
 const processInput = input => pick(input, ['name']);
@@ -23,9 +23,16 @@ function patch({ body, cohort }, res) {
     .then(cohort => res.jsend.success(cohort));
 }
 
+function getEnrolledCohorts({ user }, res) {
+  const include = [{ model: Enrollment, where: { studentId: user.id } }];
+  return Cohort.findAll({ include })
+    .then(cohorts => res.jsend.success(cohorts));
+}
+
 module.exports = {
   list,
   get,
   create,
-  patch
+  patch,
+  getEnrolledCohorts
 };

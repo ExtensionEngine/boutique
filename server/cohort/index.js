@@ -11,6 +11,7 @@ const router = require('express').Router();
 const { NOT_FOUND } = HttpStatus;
 
 router
+  .get('/current-user', ctrl.getEnrolledCohorts)
   .use('/:id*', getCohort)
   .get('/', authorize(), ctrl.list)
   .post('/', authorize(), ctrl.create)
