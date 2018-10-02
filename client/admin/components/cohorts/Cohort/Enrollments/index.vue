@@ -22,14 +22,24 @@
           <td>{{ get(item.student, 'firstName') }}</td>
           <td>{{ get(item.student, 'lastName') }}</td>
           <td>{{ item.createdAt | formatDate }}</td>
+          <td class="text-md-center">
+            <v-icon @click="unenroll(item)" small>delete</v-icon>
+          </td>
         </template>
       </v-data-table>
     </div>
+    <confirmation-dialog
+      :visible.sync="confirmationDialog"
+      :action="confirmationAction"
+      @confirmed="fetch()"
+      heading="Unenroll"
+      message="Are you sure you want to unenroll learner?"/>
   </div>
 </template>
 
 <script>
 import api from '@/admin/api/enrollment';
+import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
 import EnrollmentDialog from './EnrollmentDialog';
 import get from 'lodash/get';
 import throttle from 'lodash/throttle';
@@ -44,6 +54,8 @@ export default {
       enrollments: [],
       dataTable: { rowsPerPage: 10, ...defaultPage() },
       totalItems: 0,
+      confirmationDialog: null,
+      confirmationAction: null,
       isLoading: true
     };
   },
@@ -52,7 +64,8 @@ export default {
       { text: 'Email', value: 'student.email', align: 'left' },
       { text: 'First Name', value: 'student.first_name' },
       { text: 'Last Name', value: 'student.last_name' },
-      { text: 'Created At', value: 'createdAt' }
+      { text: 'Created At', value: 'createdAt' },
+      { text: 'Actions', value: 'id', sortable: false, align: 'center' }
     ]),
     defaultPage
   },
@@ -66,13 +79,17 @@ export default {
       this.enrollments = items;
       this.totalItems = total;
       this.isLoading = false;
-    }, 400)
+    }, 400),
+    unenroll(enrollment) {
+      this.confirmationDialog = true;
+      this.confirmationAction = () => api.remove(enrollment);
+    }
   },
   watch: {
     dataTable() {
       this.fetch();
     }
   },
-  components: { EnrollmentDialog }
+  components: { ConfirmationDialog, EnrollmentDialog }
 };
 </script>
