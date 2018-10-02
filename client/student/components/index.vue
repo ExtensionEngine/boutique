@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <header class="app-header">
+  <div class="app-container">
+    <header>
       <navbar/>
     </header>
     <main>
@@ -21,3 +21,11 @@ export default {
   components: { Navbar }
 };
 </script>
+
+<style lang="scss" scoped>
+.app-container {
+  display: flex;
+  padding: 50px 0;
+  flex-direction: column;
+}
+</style>

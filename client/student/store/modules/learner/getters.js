@@ -16,7 +16,7 @@ export const courseware = state => {
             ...it.meta,
             ...pick(it, ['id', 'parentId']),
             container: headContainer,
-            courseId: course.id
+            repositoryId: course.id
           });
         }
       });

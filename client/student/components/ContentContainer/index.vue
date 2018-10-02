@@ -1,33 +1,32 @@
 <template>
   <div class="container">
-    <nav class="navbar">
+    <nav class="navbar is-light" role="navigation">
       <router-link
         v-for="it in siblings"
         :key="it.id"
-        :to="{
-          name: 'content-container',
-          params: { containerId: it.container.id}}"
+        :to="{ name: 'content-container', params: { containerId: it.container.id}}"
         class="navbar-item">
-        {{ it.name }}
+        {{ it.name | truncate(25) }}
       </router-link>
     </nav>
     <teaching-elements
       :containerId="containerId"
-      :courseId="activity.courseId"
+      :repositoryId="activity.repositoryId"
       :key="containerId"/>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapState } from 'vuex';
 import filter from 'lodash/filter';
 import find from 'lodash/find';
-import { mapGetters } from 'vuex';
 import TeachingElements from './TeachingElements';
 
 export default {
   name: 'content-container',
   computed: {
     ...mapGetters('learner', ['courseware']),
+    ...mapState('learner', ['selectedProgram']),
     containerId() {
       return this.$route.params.containerId;
     },
@@ -38,6 +37,9 @@ export default {
       return filter(this.courseware, { parentId: this.activity.parentId });
     }
   },
+  created() {
+    if (!this.selectedProgram) return this.$router.push({ name: 'home' });
+  },
   components: { TeachingElements }
 };
 </script>
@@ -45,6 +47,5 @@ export default {
 <style lang="scss" scoped>
 .router-link-exact-active {
   color: #3273dc;
-  background-color: whitesmoke;
 }
 </style>

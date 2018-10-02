@@ -1,11 +1,18 @@
 <template>
-  <div class="content container is-fluid">
-    <circular-progress v-show="isLoading" class="loader"/>
-    <div v-show="!isLoading" class="columns is-multiline">
-      <card
-        v-for="it in courseware"
-        :key="it.id"
-        :card="it"/>
+  <div class="container is-fluid">
+    <circular-progress v-if="isLoading" class="loader"/>
+    <div v-else>
+      <div v-if="!courseware.length" class="columns is-centered">
+        <div class="notification is-warning has-text-centered">
+          This Program doesn't have any courseware
+        </div>
+      </div>
+      <div v-else class="columns is-multiline">
+        <card
+          v-for="it in courseware"
+          :key="it.id"
+          :card="it"/>
+      </div>
     </div>
   </div>
 </template>
@@ -25,7 +32,8 @@ export default {
     ...mapState('learner', ['selectedProgram'])
   },
   methods: mapActions('learner', ['fetchSyllabus']),
-  mounted() {
+  created() {
+    if (!this.selectedProgram) return this.$router.push({ name: 'home' });
     this.fetchSyllabus(this.selectedProgram).then(() => (this.isLoading = false));
   },
   components: { Card, CircularProgress }
@@ -33,12 +41,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.content {
-  padding: 30px 100px 100px;
-
-  @media (min-width: 1700px) {
-    padding: 30px 300px 100px;
-  }
+.container {
+  padding: 0 300px;
 }
 
 .loader {

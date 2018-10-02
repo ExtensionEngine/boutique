@@ -1,6 +1,6 @@
 <template>
   <nav
-    class="navbar is-fixed-top is-light"
+    class="navbar is-fixed-top is-info"
     role="navigation"
     aria-label="main navigation">
     <div class="navbar-brand">
@@ -19,6 +19,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
+
 export default {
   name: 'lms-navbar',
   computed: mapState('auth', ['user']),

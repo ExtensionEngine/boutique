@@ -26,12 +26,9 @@ html, body {
 }
 
 #app {
-  display: flex;
   height: 100%;
-  padding: 32px 0;
-  flex-direction: column;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: scroll;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

@@ -1,13 +1,12 @@
 <template>
-  <div>
-    <circular-progress v-show="isLoading" class="loader"/>
-    <div v-show="!isLoading" class="columns is-multiline">
+  <div class="elements">
+    <circular-progress v-if="isLoading" class="loader"/>
+    <div v-else class="columns is-multiline">
       <tailor-teaching-elements
         v-for="it in teachingElements"
         :key="it.id"
         :element="it"
-        :class="getElementWidth(it)"
-        class="column"/>
+        :class="['column', getElementWidth(it)]"/>
     </div>
   </div>
 </template>
@@ -23,7 +22,7 @@ export default {
   name: 'teaching-elements',
   props: {
     containerId: { type: Number, required: true },
-    courseId: { type: Number, required: true }
+    repositoryId: { type: Number, required: true }
   },
   data() {
     return {
@@ -43,7 +42,7 @@ export default {
     }
   },
   created() {
-    api.getContainer(this.selectedProgram, this.courseId, this.containerId)
+    api.getContainer(this.selectedProgram, this.repositoryId, this.containerId)
       .then(container => {
         this.container = container;
         this.isLoading = false;
@@ -56,12 +55,21 @@ export default {
 <style lang="scss" scoped>
 .loader {
   position: absolute;
-  top: 0;
+  top: auto;
   right: 0;
-  bottom: 0;
+  bottom: auto;
   left: 0;
   width: 50px;
   height: 50px;
   margin: auto;
+}
+
+.elements {
+  min-height: 100px;
+  margin: 25px 0;
+  padding: 20px;
+  color: #363636;
+  border: 1px solid lightgrey;
+  border-radius: 3px;
 }
 </style>
