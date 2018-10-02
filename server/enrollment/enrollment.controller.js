@@ -29,7 +29,7 @@ function create({ body }, res) {
     .then(enrollment => res.jsend.success(processOutput(enrollment)));
 }
 
-function listUserEnrollments({ user }, res) {
+function getUserEnrollments({ user }, res) {
   const opts = { where: { studentId: user.id }, include: ['cohort'] };
   return Enrollment.findAll(opts)
     .then(enrollments => res.jsend.success(enrollments));
@@ -38,5 +38,5 @@ function listUserEnrollments({ user }, res) {
 module.exports = {
   list,
   create,
-  listUserEnrollments
+  getUserEnrollments
 };

@@ -11,7 +11,7 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex';
-import api from '@/student/api/contentApi';
+import api from '@/student/api/content';
 import find from 'lodash/find';
 import TailorTeachingElements from 'tailor-teaching-elements';
 

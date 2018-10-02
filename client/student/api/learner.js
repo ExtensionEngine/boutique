@@ -1,9 +1,8 @@
+import { extractData } from '@/common/api/helpers';
 import request from '@/common/api/request';
 
-const extractData = res => res.data.data;
-
 const url = {
-  programs: '/enrollments/currentUser'
+  programs: '/enrollments/current-user'
 };
 
 function fetchPrograms() {

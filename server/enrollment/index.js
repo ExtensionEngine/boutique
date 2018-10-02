@@ -4,7 +4,7 @@ const ctrl = require('./enrollment.controller');
 const router = require('express').Router();
 
 router
-  .get('/currentUser', ctrl.listUserEnrollments)
+  .get('/current-user', ctrl.getUserEnrollments)
   .get('/', ctrl.list)
   .post('/', ctrl.create);
 
