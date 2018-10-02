@@ -22,7 +22,7 @@
 import { mapActions, mapMutations, mapState } from 'vuex';
 
 export default {
-  name: 'learner-home',
+  name: 'home',
   computed: {
     ...mapState('learner', ['programs'])
   },

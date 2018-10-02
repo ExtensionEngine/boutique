@@ -3,12 +3,12 @@ import Container from '@/student/components/Container/index';
 import Courseware from '@/student/components/Courseware/index';
 import ForgotPassword from '@/student/components/auth/ForgotPassword';
 import get from 'lodash/get';
-import LearnerHome from '@/student/components/Home/index';
-import LearnerRoot from '@/student/components/index';
+import Home from '@/student/components/Home/index';
 import Login from '@/student/components/auth/Login';
 import NotFound from '@/admin/components/common/NotFound';
 import ResetPassword from '@/student/components/auth/ResetPassword';
 import role from '@/../common/config/role';
+import Root from '@/student/components/index';
 import Router from 'vue-router';
 import store from './store';
 import Vue from 'vue';
@@ -38,13 +38,13 @@ const router = new Router({
     }]
   }, {
     path: '/',
-    name: 'learner-root',
-    component: LearnerRoot,
+    name: 'root',
+    component: Root,
     meta: { auth: true },
     children: [{
       path: '',
-      name: 'learner-home',
-      component: LearnerHome
+      name: 'home',
+      component: Home
     }, {
       path: 'courseware',
       name: 'courseware',
