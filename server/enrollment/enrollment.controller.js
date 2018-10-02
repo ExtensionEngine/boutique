@@ -24,14 +24,24 @@ function list({ query: { cohortId, studentId }, options }, res) {
 
 function create({ body }, res) {
   const data = processInput(body);
-  return Enrollment.findOne({ where: data })
-    .then(existing => existing && createError(BAD_REQUEST, 'Enrollment exists!'))
-    .then(() => Enrollment.create(data))
+  return Enrollment.findOne({ where: data, paranoid: false })
+    .then(existing => {
+      if (!existing) return Enrollment.create(data);
+      if (!existing.deletedAt) createError(BAD_REQUEST, 'Enrollment exists!');
+      existing.setDataValue('deletedAt', null);
+      return existing.save();
+    })
     .then(({ id }) => Enrollment.findById(id, { include: ['student'] }))
     .then(enrollment => res.jsend.success(processOutput(enrollment)));
 }
 
+function destroy({ params }, res) {
+  return Enrollment.destroy({ where: { id: params.id } })
+    .then(() => res.end());
+}
+
 module.exports = {
   list,
-  create
+  create,
+  destroy
 };

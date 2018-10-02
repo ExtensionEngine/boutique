@@ -15,7 +15,12 @@ function create(item) {
   return request.post(url.root, item).then(extractData);
 }
 
+function remove(item) {
+  return request.delete(url.resource(item));
+}
+
 export default {
   fetch,
-  create
+  create,
+  remove
 };
