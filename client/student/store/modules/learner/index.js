@@ -3,9 +3,9 @@ import * as getters from './getters';
 import * as mutations from './mutations';
 
 const state = {
-  programs: {},
-  selectedProgram: '',
-  syllabus: {}
+  programs: [],
+  selectedProgram: null,
+  syllabus: []
 };
 
 export default {

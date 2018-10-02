@@ -2,9 +2,9 @@
   <div class="column is-4">
     <div @click="navigateTo" class="card">
       <div class="body">
-        <div class="title">{{ courseware.name | truncate(75) }}</div>
+        <div class="title">{{ card.name | truncate(75) }}</div>
         <div class="description">
-          {{ courseware.description | truncate(180) }}
+          {{ card.description | truncate(180) }}
         </div>
       </div>
     </div>
@@ -15,21 +15,14 @@
 export default {
   name: 'card',
   props: {
-    courseware: { type: Object, required: true }
-  },
-  computed: {
-    hasContainer() {
-      return !!this.courseware.container;
-    }
+    card: { type: Object, required: true }
   },
   methods: {
     navigateTo() {
-      if (this.hasContainer) {
-        this.$router.push({
-          name: 'content-container',
-          params: { containerId: this.courseware.container.id }
-        });
-      }
+      this.$router.push({
+        name: 'content-container',
+        params: { containerId: this.card.container.id }
+      });
     }
   }
 };
