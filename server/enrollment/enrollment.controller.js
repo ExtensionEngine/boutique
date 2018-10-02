@@ -12,24 +12,36 @@ const Op = Sequelize.Op;
 const processInput = input => pick(input, ['studentId', 'cohortId']);
 const processOutput = it => ({ ...it.dataValues, student: it.student.profile });
 
-function list({ query: { cohortId, studentId } }, res) {
+function list({ query: { cohortId, studentId }, options }, res) {
   const cond = [];
   if (cohortId) cond.push({ cohortId });
   if (studentId) cond.push({ studentId });
-  return Enrollment.findAll({ where: { [Op.and]: cond }, include: ['student'] })
-    .then(enrollments => res.jsend.success(map(enrollments, processOutput)));
+  const opts = { where: { [Op.and]: cond }, include: ['student'], ...options };
+  return Enrollment.findAndCountAll(opts).then(({ rows, count }) => {
+    res.jsend.success({ items: map(rows, processOutput), total: count });
+  });
 }
 
 function create({ body }, res) {
   const data = processInput(body);
-  return Enrollment.findOne({ where: data })
-    .then(existing => existing && createError(BAD_REQUEST, 'Enrollment exists!'))
-    .then(() => Enrollment.create(data))
+  return Enrollment.findOne({ where: data, paranoid: false })
+    .then(existing => {
+      if (!existing) return Enrollment.create(data);
+      if (!existing.deletedAt) createError(BAD_REQUEST, 'Enrollment exists!');
+      existing.setDataValue('deletedAt', null);
+      return existing.save();
+    })
     .then(({ id }) => Enrollment.findById(id, { include: ['student'] }))
     .then(enrollment => res.jsend.success(processOutput(enrollment)));
 }
 
+function destroy({ params }, res) {
+  return Enrollment.destroy({ where: { id: params.id } })
+    .then(() => res.end());
+}
+
 module.exports = {
   list,
-  create
+  create,
+  destroy
 };

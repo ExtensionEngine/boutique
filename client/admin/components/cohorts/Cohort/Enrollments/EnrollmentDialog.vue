@@ -1,45 +1,45 @@
 <template>
   <v-dialog v-model="visible" width="500">
     <v-btn slot="activator" color="success" outline>Enroll learner</v-btn>
-    <v-card class="pa-3">
-      <v-card-title class="headline">Enroll learner</v-card-title>
-      <v-card-text>
-        <v-autocomplete
-          v-validate="{
-            required: true,
-            'unique-enrollment': { studentId, cohortId }
-          }"
-          v-model="studentId"
-          :items="students"
-          :search-input.sync="email"
-          :error-messages="vErrors.collect('learner')"
-          :loading="isLoading"
-          label="Learner"
-          placeholder="Start typing to Search"
-          prepend-icon="search"
-          clearable
-          name="learner"/>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer/>
-        <v-btn @click="close">Cancel</v-btn>
-        <v-btn @click="enroll" color="success" outline>Enroll</v-btn>
-      </v-card-actions>
-    </v-card>
+    <v-form @submit.prevent="enroll">
+      <v-card class="pa-3">
+        <v-card-title class="headline">Enroll learner</v-card-title>
+        <v-card-text>
+          <v-autocomplete
+            v-validate="{
+              required: true,
+              'unique-enrollment': { studentId, cohortId }
+            }"
+            v-model="studentId"
+            :items="students"
+            :search-input.sync="email"
+            :error-messages="vErrors.collect('learner')"
+            :loading="isLoading"
+            label="Learner"
+            placeholder="Start typing to Search"
+            prepend-icon="search"
+            clearable
+            name="learner"/>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer/>
+          <v-btn @click="close">Cancel</v-btn>
+          <v-btn color="success" outline type="submit">Enroll</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-form>
   </v-dialog>
 </template>
 
 <script>
-import api from '@/admin/api/user';
-import isEmpty from 'lodash/isEmpty';
+import enrollmentApi from '@/admin/api/enrollment';
 import map from 'lodash/map';
-import { mapActions } from 'vuex';
 import pick from 'lodash/pick';
-import request from '@/common/api/request';
+import userApi from '@/admin/api/user';
 import { withValidation } from '@/common/validation';
 
 export default {
-  name: 'enollment-modal',
+  name: 'enrollment-dialog',
   mixins: [withValidation()],
   props: {
     cohortId: { type: Number, required: true }
@@ -54,12 +54,13 @@ export default {
     };
   },
   methods: {
-    ...mapActions('enrollments', ['save']),
     enroll() {
       this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
-        this.save(pick(this, ['studentId', 'cohortId']));
-        this.close();
+        enrollmentApi.create(pick(this, ['studentId', 'cohortId'])).then(() => {
+          this.close();
+          this.$emit('enrolled');
+        });
       });
     },
     close() {
@@ -70,7 +71,7 @@ export default {
       if (this.studentId) return;
       this.isLoading = true;
       const params = { emailLike: email, role: 'STUDENT' };
-      api.fetch({ params }).then(({ items: students }) => {
+      return userApi.fetch({ params }).then(({ items: students }) => {
         this.isLoading = false;
         this.students = map(students, it => ({
           text: `${it.email} - ${it.firstName} ${it.lastName}`, value: it.id
@@ -81,6 +82,9 @@ export default {
   watch: {
     email(val) {
       if (val) this.fetch(val);
+    },
+    visible(val) {
+      if (val) this.vErrors.clear();
     }
   },
   created() {
@@ -91,8 +95,7 @@ export default {
     this.$validator.extend('unique-enrollment', {
       getMessage: field => `Learner is already enrolled!`,
       validate: (option, [params]) => {
-        return request.get('/enrollments', { params })
-          .then(res => ({ valid: isEmpty(res.data.data) }));
+        return enrollmentApi.fetch({ params }).then(res => !res.total);
       }
     });
   }
