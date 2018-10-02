@@ -1,6 +1,7 @@
 import filter from 'lodash/filter';
 import forEach from 'lodash/forEach';
 import head from 'lodash/head';
+import pick from 'lodash/pick';
 
 const FILTER_BY = 'DEFAULT_SCHEMA/TOPIC';
 
@@ -13,8 +14,8 @@ export const courseware = state => {
         if (headContainer.elementCount) {
           courseware.push({
             ...it.meta,
+            ...pick(it, ['id', 'parentId']),
             container: headContainer,
-            parentId: it.parentId,
             courseId: course.id
           });
         }

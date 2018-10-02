@@ -1,9 +1,9 @@
 <template>
   <div class="content container is-fluid">
-    <div class="columns is-multiline">
+    <div v-if="!isLoading" class="columns is-multiline">
       <card
         v-for="it in courseware"
-        :key="it._cid"
+        :key="it.id"
         :card="it"/>
     </div>
   </div>
@@ -15,13 +15,16 @@ import Card from './Card';
 
 export default {
   name: 'courseware',
+  data() {
+    return { isLoading: true };
+  },
   computed: {
     ...mapGetters('learner', ['courseware']),
     ...mapState('learner', ['selectedProgram'])
   },
   methods: mapActions('learner', ['fetchSyllabus']),
   created() {
-    this.fetchSyllabus(this.selectedProgram);
+    this.fetchSyllabus(this.selectedProgram).then(() => (this.isLoading = false));
   },
   components: { Card }
 };

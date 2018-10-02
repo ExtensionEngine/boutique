@@ -6,12 +6,9 @@
         <li
           v-for="it in programs"
           :key="it.id"
-          @click="selectProgram(it.cohortId)">
-          <router-link
-            :to="{ name: 'courseware' }"
-            class="button is-medium is-fullwidth">
-            {{ it.cohort.name }}
-          </router-link>
+          @click="navigateTo(it.cohortId)"
+          class="button is-medium is-fullwidth">
+          {{ it.cohort.name }}
         </li>
       </ul>
     </div>
@@ -28,7 +25,11 @@ export default {
   },
   methods: {
     ...mapActions('learner', ['fetchPrograms']),
-    ...mapMutations('learner', ['selectProgram'])
+    ...mapMutations('learner', ['selectProgram']),
+    navigateTo(programId) {
+      this.selectProgram(programId);
+      this.$router.push({ name: 'courseware' });
+    }
   },
   created() {
     this.fetchPrograms();
