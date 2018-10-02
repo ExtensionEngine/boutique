@@ -1,6 +1,7 @@
 <template>
   <div class="content container is-fluid">
-    <div v-if="!isLoading" class="columns is-multiline">
+    <circular-progress v-show="isLoading" class="loader"/>
+    <div v-show="!isLoading" class="columns is-multiline">
       <card
         v-for="it in courseware"
         :key="it.id"
@@ -12,6 +13,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import Card from './Card';
+import CircularProgress from '../common/CircularProgress';
 
 export default {
   name: 'courseware',
@@ -23,10 +25,10 @@ export default {
     ...mapState('learner', ['selectedProgram'])
   },
   methods: mapActions('learner', ['fetchSyllabus']),
-  created() {
+  mounted() {
     this.fetchSyllabus(this.selectedProgram).then(() => (this.isLoading = false));
   },
-  components: { Card }
+  components: { Card, CircularProgress }
 };
 </script>
 
@@ -37,5 +39,16 @@ export default {
   @media (min-width: 1700px) {
     padding: 30px 300px 100px;
   }
+}
+
+.loader {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 50px;
+  margin: auto;
 }
 </style>

@@ -11,12 +11,10 @@
         {{ it.name }}
       </router-link>
     </nav>
-    <div>
-      <teaching-elements
-        :containerId="containerId"
-        :courseId="activity.courseId"
-        :key="containerId"/>
-    </div>
+    <teaching-elements
+      :containerId="containerId"
+      :courseId="activity.courseId"
+      :key="containerId"/>
   </div>
 </template>
 
