@@ -9,7 +9,7 @@
           Content
         </v-tab>
       </v-tabs>
-      <router-view/>
+      <router-view :key="cohortId"/>
     </v-flex>
   </v-layout>
 </template>

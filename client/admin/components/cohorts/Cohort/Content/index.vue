@@ -4,7 +4,10 @@
       <v-spacer/>
       <content-modal :cohortId="cohortId" :importedRepos="importedRepos"/>
     </v-toolbar>
-    <v-alert :value="!importedRepos.length" color="#aaa" class="mr-4">
+    <v-alert
+      :value="!isLoading && !importedRepos.length"
+      color="#aaa"
+      class="mr-4">
       Click on the button above to import content.
     </v-alert>
     <div v-if="importedRepos.length" class="elevation-1 ml-2 mr-4">
@@ -39,6 +42,9 @@ import filter from 'lodash/filter';
 export default {
   name: 'imported-content',
   props: { cohortId: { type: Number, required: true } },
+  data() {
+    return { isLoading: true };
+  },
   computed: {
     ...mapState('contentRepo', { repoStore: 'items' }),
     headers: () => ([
@@ -55,7 +61,8 @@ export default {
   methods: mapActions('contentRepo', ['fetch', 'save']),
   mounted() {
     const { cohortId } = this;
-    return this.fetch({ cohortId, srcVersion: true });
+    return this.fetch({ cohortId, srcVersion: true })
+      .then(() => (this.isLoading = false));
   },
   components: { ContentModal }
 };
