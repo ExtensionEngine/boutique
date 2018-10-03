@@ -8,10 +8,10 @@
         </div>
       </div>
       <div v-else class="columns is-multiline">
-        <card
+        <activity-card
           v-for="it in courseware"
           :key="it.id"
-          :card="it"/>
+          :activity="it"/>
       </div>
     </div>
   </div>
@@ -19,7 +19,7 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import Card from './Card';
+import ActivityCard from './ActivityCard';
 import CircularProgress from '../common/CircularProgress';
 
 export default {
@@ -36,7 +36,7 @@ export default {
     if (!this.selectedProgram) return this.$router.push({ name: 'home' });
     this.fetchSyllabus(this.selectedProgram).then(() => (this.isLoading = false));
   },
-  components: { Card, CircularProgress }
+  components: { ActivityCard, CircularProgress }
 };
 </script>
 

@@ -2,11 +2,13 @@
   <div class="column is-4">
     <div @click="navigateTo" class="card">
       <div class="card-header">
-        <div class="card-header-title">{{ card.name | truncate(75) }}</div>
+        <div class="card-header-title">
+          {{ activity.name | truncate(75) }}
+        </div>
       </div>
       <div class="card-content">
         <div class="content">
-          {{ card.description | truncate(180) }}
+          {{ activity.description | truncate(180) }}
         </div>
       </div>
     </div>
@@ -15,15 +17,20 @@
 
 <script>
 export default {
-  name: 'card',
+  name: 'activity-card',
   props: {
-    card: { type: Object, required: true }
+    activity: { type: Object, required: true }
+  },
+  computed: {
+    contentContainers() {
+      return this.activity.contentContainers;
+    }
   },
   methods: {
     navigateTo() {
       this.$router.push({
         name: 'content-container',
-        params: { containerId: this.card.container.id }
+        params: { containerId: this.activity.container.id }
       });
     }
   }

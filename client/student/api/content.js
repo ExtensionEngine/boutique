@@ -2,10 +2,10 @@ import { extractData } from '@/common/api/helpers';
 import request from '@/common/api/request';
 
 const url = {
-  base: programId => `/cohorts/${programId}/content`,
-  syllabus: programId => `${url.base(programId)}`,
-  container: (programId, repositoryId, containerId) => {
-    return `${url.base(programId)}/${repositoryId}/container/${containerId}`;
+  root: programId => `/cohorts/${programId}/content`,
+  syllabus: programId => `${url.root(programId)}`,
+  contentContainer: (programId, repositoryId, id) => {
+    return `${url.root(programId)}/${repositoryId}/container/${id}`;
   }
 };
 
@@ -14,9 +14,9 @@ function fetchSyllabus(programId) {
   return request.get(url.syllabus(programId), { params }).then(extractData);
 }
 
-function getContainer(programId, repositoryId, containerId) {
-  return request.get(url.container(programId, repositoryId, containerId))
-    .then(extractData);
+function getContainer(programId, repositoryId, id) {
+  const containerUrl = url.contentContainer(programId, repositoryId, id);
+  return request.get(containerUrl).then(extractData);
 }
 
 export default {
