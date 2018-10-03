@@ -2,23 +2,22 @@
   <div class="container">
     <nav class="navbar is-light" role="navigation">
       <router-link
-        v-for="it in siblings"
+        v-for="it in activity.subActivites"
         :key="it.id"
-        :to="{ name: 'content-container', params: { containerId: it.container.id}}"
+        :to="{ name: 'content-container', params: { activityId: it.id, containerId: it.contentContainers[0].id }}"
         class="navbar-item">
         {{ it.name | truncate(25) }}
       </router-link>
     </nav>
     <teaching-elements
-      :containerId="containerId"
-      :repositoryId="activity.repositoryId"
-      :key="containerId"/>
+      :containerId="routeParams.containerId"
+      :repositoryId="routeParams.repositoryId"
+      :key="routeParams.containerId"/>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapState } from 'vuex';
-import filter from 'lodash/filter';
 import find from 'lodash/find';
 import TeachingElements from './TeachingElements';
 
@@ -27,14 +26,11 @@ export default {
   computed: {
     ...mapGetters('learner', ['courseware']),
     ...mapState('learner', ['selectedProgram']),
-    containerId() {
-      return this.$route.params.containerId;
+    routeParams() {
+      return this.$route.params;
     },
     activity() {
-      return find(this.courseware, { container: { id: this.containerId } });
-    },
-    siblings() {
-      return filter(this.courseware, { parentId: this.activity.parentId });
+      return find(this.courseware, { subActivites: [{ id: this.routeParams.activityId }] });
     }
   },
   created() {

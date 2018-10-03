@@ -21,16 +21,13 @@ export default {
   props: {
     activity: { type: Object, required: true }
   },
-  computed: {
-    contentContainers() {
-      return this.activity.contentContainers;
-    }
-  },
   methods: {
     navigateTo() {
+      console.log(this.activity);
+      const { id: activityId, repositoryId, contentContainers } = this.activity.subActivites[0];
       this.$router.push({
         name: 'content-container',
-        params: { containerId: this.activity.container.id }
+        params: { repositoryId, activityId, containerId: contentContainers[0].id }
       });
     }
   }

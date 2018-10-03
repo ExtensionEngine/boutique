@@ -50,7 +50,7 @@ const router = new Router({
       name: 'courseware',
       component: Courseware
     }, {
-      path: 'container/:containerId',
+      path: 'container/:repositoryId/:activityId/:containerId',
       name: 'content-container',
       component: ContentContainer
     }]
