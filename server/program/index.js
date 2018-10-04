@@ -1,34 +1,34 @@
 'use strict';
 
 const { authorize } = require('../common/auth/mw');
-const { Cohort } = require('../common/database');
 const contentRouter = require('../content-repo/content-delivery.router');
 const { createError } = require('../common/errors');
-const ctrl = require('./cohort.controller');
+const ctrl = require('./program.controller');
 const HttpStatus = require('http-status');
+const { Program } = require('../common/database');
 const router = require('express').Router();
 
 const { NOT_FOUND } = HttpStatus;
 
 router
-  .get('/current-user', ctrl.getEnrolledCohorts)
-  .use('/:id*', getCohort)
+  .get('/current-user', ctrl.getEnrolledPrograms)
+  .use('/:id*', getProgram)
   .get('/', authorize(), ctrl.list)
   .post('/', authorize(), ctrl.create)
   .get('/:id', authorize(), ctrl.get)
   .patch('/:id', authorize(), ctrl.patch)
   .use('/:id/content', contentRouter.router);
 
-function getCohort(req, res, next) {
-  return Cohort.findById(req.params.id, { paranoid: false })
-    .then(cohort => cohort || createError(NOT_FOUND, 'Not found!'))
-    .then(cohort => {
-      req.cohort = cohort;
+function getProgram(req, _, next) {
+  return Program.findById(req.params.id, { paranoid: false })
+    .then(program => program || createError(NOT_FOUND, 'Not found!'))
+    .then(program => {
+      req.program = program;
       next();
     });
 }
 
 module.exports = {
-  path: '/cohorts',
+  path: '/programs',
   router
 };

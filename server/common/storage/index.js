@@ -20,9 +20,9 @@ class Storage {
     this.errors = errors;
   }
 
-  getRepoLocation(repoId, cohortId) {
-    return cohortId
-      ? `${storage.importedContentLocation}/${cohortId}/${repoId}`
+  getRepoLocation(repoId, programId) {
+    return programId
+      ? `${storage.importedContentLocation}/${programId}/${repoId}`
       : `${storage.publishedContentLocation}/${repoId}`;
   }
 
@@ -59,26 +59,26 @@ class Storage {
     return this.getItem(key);
   }
 
-  getContainer(repoId, id, cohortId) {
+  getContainer(repoId, id, programId) {
     const key =
-      `${this.getRepoLocation(repoId, cohortId)}/${id}.container.json`;
+      `${this.getRepoLocation(repoId, programId)}/${id}.container.json`;
     return this.getItem(key);
   }
 
-  getExam(repoId, id, cohortId) {
-    const key = `${this.getRepoLocation(repoId, cohortId)}/${id}.exam.json`;
+  getExam(repoId, id, programId) {
+    const key = `${this.getRepoLocation(repoId, programId)}/${id}.exam.json`;
     return this.getItem(key);
   }
 
-  getAssessments(repoId, id, cohortId) {
+  getAssessments(repoId, id, programId) {
     const key =
-      `${this.getRepoLocation(repoId, cohortId)}/${id}.assessments.json`;
+      `${this.getRepoLocation(repoId, programId)}/${id}.assessments.json`;
     return this.getItem(key);
   }
 
-  importRepo(cohortId, repoId) {
+  importRepo(programId, repoId) {
     const src = `${this.getRepoLocation(repoId)}/`;
-    const dest = `${this.getRepoLocation(repoId, cohortId)}/`;
+    const dest = `${this.getRepoLocation(repoId, programId)}/`;
     return this.store.copyDir(src, dest)
       .then(() => this.getRepository(repoId));
   }

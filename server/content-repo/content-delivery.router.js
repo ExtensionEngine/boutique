@@ -15,9 +15,9 @@ router
   .get('/:repositoryId/exam/:examId', ctrl.getExam)
   .get('/:repositoryId/assessments/:assessmentsId', ctrl.getAssessments);
 
-function hasAccess({ cohort, user }, res, next) {
+function hasAccess({ program, user }, res, next) {
   if (user.isAdmin()) return next();
-  return cohort.getEnrollment({ where: { studentId: user.id } })
+  return program.getEnrollment({ where: { studentId: user.id } })
     .then(enrollment => {
       if (!enrollment) return createError(FORBIDDEN, 'Access denied');
       return next();
@@ -27,7 +27,7 @@ function hasAccess({ cohort, user }, res, next) {
 function getRepo(req, res, next) {
   return ContentRepo.findById(req.params.repositoryId)
     .then(repo => {
-      if (!repo || repo.cohortId !== req.cohort.id) {
+      if (!repo || repo.programId !== req.program.id) {
         return createError(NOT_FOUND, 'Not found!');
       }
       req.repo = repo;

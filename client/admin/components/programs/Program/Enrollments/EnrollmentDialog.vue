@@ -8,7 +8,7 @@
           <v-autocomplete
             v-validate="{
               required: true,
-              'unique-enrollment': { studentId, cohortId }
+              'unique-enrollment': { studentId, programId }
             }"
             v-model="studentId"
             :items="students"
@@ -42,7 +42,7 @@ export default {
   name: 'enrollment-dialog',
   mixins: [withValidation()],
   props: {
-    cohortId: { type: Number, required: true }
+    programId: { type: Number, required: true }
   },
   data() {
     return {
@@ -57,7 +57,7 @@ export default {
     enroll() {
       this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
-        enrollmentApi.create(pick(this, ['studentId', 'cohortId'])).then(() => {
+        enrollmentApi.create(pick(this, ['studentId', 'programId'])).then(() => {
           this.close();
           this.$emit('enrolled');
         });
@@ -70,7 +70,7 @@ export default {
     fetch(email) {
       if (this.studentId) return;
       this.isLoading = true;
-      const params = { emailLike: email, role: 'STUDENT' };
+      const params = { emailLike: email, role: 'STUDENT', limit: 30 };
       return userApi.fetch({ params }).then(({ items: students }) => {
         this.isLoading = false;
         this.students = map(students, it => ({
@@ -84,11 +84,10 @@ export default {
       if (val) this.fetch(val);
     },
     visible(val) {
-      if (val) this.vErrors.clear();
+      if (!val) return;
+      this.vErrors.clear();
+      this.fetch();
     }
-  },
-  created() {
-    this.fetch();
   },
   mounted() {
     if (this.$validator.rules['unique-enrollment']) return;

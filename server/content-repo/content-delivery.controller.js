@@ -12,10 +12,10 @@ const { NOT_FOUND } = HttpStatus;
 const Storage = createStorage(config.storage);
 const excludeCorrect = data => map(data, it => omit(it, 'data.correct'));
 
-function list({ cohort, query: { includeStructure } }, res) {
+function list({ program, query: { includeStructure } }, res) {
   const attributes = ['id', 'schema', 'name', 'description', 'publishedAt'];
   if (includeStructure) attributes.push('structure');
-  return cohort.getContentRepos({ attributes })
+  return program.getContentRepos({ attributes })
     .then(repos => res.jsend.success(repos));
 }
 
@@ -25,14 +25,14 @@ function get({ repo }, res) {
   return res.jsend.success(pick(repo, attributes));
 }
 
-function getContainer({ cohort, params, repo }, res) {
-  return Storage.getContainer(repo.sourceId, params.containerId, cohort.id)
+function getContainer({ program, params, repo }, res) {
+  return Storage.getContainer(repo.sourceId, params.containerId, program.id)
     .catch(() => createError(NOT_FOUND, 'Not found!'))
     .then(container => res.jsend.success(container));
 }
 
-function getExam({ cohort, params, repo }, res) {
-  return Storage.getExam(repo.sourceId, params.examId, cohort.id)
+function getExam({ program, params, repo }, res) {
+  return Storage.getExam(repo.sourceId, params.examId, program.id)
     .catch(() => createError(NOT_FOUND, 'Not found!'))
     .then(exam => {
       return res.jsend.success({
@@ -47,8 +47,8 @@ function getExam({ cohort, params, repo }, res) {
     });
 }
 
-function getAssessments({ cohort, params, repo }, res) {
-  return Storage.getAssessments(repo.sourceId, params.assessmentsId, cohort.id)
+function getAssessments({ program, params, repo }, res) {
+  return Storage.getAssessments(repo.sourceId, params.assessmentsId, program.id)
     .catch(() => createError(NOT_FOUND, 'Not found!'))
     .then(assessments => {
       return res.jsend.success(excludeCorrect(assessments));

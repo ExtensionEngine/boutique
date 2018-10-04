@@ -2,7 +2,7 @@
   <div class="mt-3">
     <v-toolbar color="#f5f5f5" flat>
       <v-spacer/>
-      <enrollment-dialog :cohortId="cohortId" @enrolled="fetch(defaultPage)"/>
+      <enrollment-dialog :programId="programId" @enrolled="fetch(defaultPage)"/>
     </v-toolbar>
     <v-alert
       :value="!isLoading && !totalItems"
@@ -48,7 +48,7 @@ const defaultPage = () => ({ sortBy: 'updatedAt', descending: true, page: 1 });
 
 export default {
   name: 'enrollments',
-  props: { cohortId: { type: Number, required: true } },
+  props: { programId: { type: Number, required: true } },
   data() {
     return {
       enrollments: [],
@@ -74,7 +74,7 @@ export default {
     fetch: throttle(async function (opts) {
       this.isLoading = true;
       Object.assign(this.dataTable, opts);
-      const params = { cohortId: this.cohortId };
+      const params = { programId: this.programId };
       const { items, total } = await api.fetch({ ...this.dataTable, params });
       this.enrollments = items;
       this.totalItems = total;

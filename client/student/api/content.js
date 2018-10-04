@@ -2,7 +2,7 @@ import { extractData } from '@/common/api/helpers';
 import request from '@/common/api/request';
 
 const url = {
-  root: programId => `/cohorts/${programId}/content`,
+  root: programId => `/programs/${programId}/content`,
   syllabus: programId => `${url.root(programId)}`,
   contentContainer: (programId, repositoryId, id) => {
     return `${url.root(programId)}/${repositoryId}/container/${id}`;
