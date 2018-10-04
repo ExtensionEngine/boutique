@@ -10,6 +10,9 @@
     </div>
     <div class="navbar-menu">
       <div v-if="user" class="navbar-end">
+        <router-link to="/courseware" class="navbar-item">
+          DASHBOARD
+        </router-link>
         <div class="navbar-item">{{ user.email }}</div>
         <a @click="logout" href="#" class="navbar-item">Logout</a>
       </div>
