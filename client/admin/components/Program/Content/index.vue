@@ -51,7 +51,7 @@ export default {
       { text: 'Name', value: 'name', align: 'left' },
       { text: 'Published Version', value: 'repoVersion' },
       { text: 'Imported Version', value: 'publishedAt' },
-      { text: 'Sync', value: 'publishedAt' }
+      { text: 'Sync', value: 'id', sortable: false }
     ]),
     importedRepos() {
       const { programId } = this;
