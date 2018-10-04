@@ -5,7 +5,7 @@
         v-for="it in navigationItems"
         :key="it.id"
         :to="{
-          name: 'content-container',
+          name: 'activity',
           params: {
             repositoryId,
             activityId: it.id,
@@ -16,7 +16,7 @@
         {{ it.name | truncate(25) }}
       </router-link>
     </nav>
-    <teaching-elements
+    <content-container
       :containerId="containerId"
       :repositoryId="repositoryId"
       :key="containerId"/>
@@ -25,11 +25,11 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex';
+import ContentContainer from './ContentContainer';
 import find from 'lodash/find';
-import TeachingElements from './TeachingElements';
 
 export default {
-  name: 'content-container',
+  name: 'activity',
   props: {
     repositoryId: { type: Number, required: true },
     activityId: { type: Number, required: true },
@@ -48,7 +48,7 @@ export default {
   created() {
     if (!this.selectedProgram) return this.$router.push({ name: 'home' });
   },
-  components: { TeachingElements }
+  components: { ContentContainer }
 };
 </script>
 

@@ -1,5 +1,5 @@
+import Activity from '@/student/components/Activity/index';
 import Auth from '@/student/components/auth';
-import ContentContainer from '@/student/components/ContentContainer/index';
 import Courseware from '@/student/components/Courseware/index';
 import ForgotPassword from '@/student/components/auth/ForgotPassword';
 import get from 'lodash/get';
@@ -50,9 +50,9 @@ const router = new Router({
       name: 'courseware',
       component: Courseware
     }, {
-      path: 'container/:repositoryId/:activityId/:containerId',
-      name: 'content-container',
-      component: ContentContainer,
+      path: 'repository/:repositoryId/activity/:activityId/:containerId',
+      name: 'activity',
+      component: Activity,
       props: ({ params }) => ({ ...params })
     }]
   }, fallbackRoute]

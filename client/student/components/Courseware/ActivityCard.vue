@@ -32,7 +32,7 @@ export default {
         activityId: id,
         containerId: head(contentContainers).id
       };
-      this.$router.push({ name: 'content-container', params });
+      this.$router.push({ name: 'activity', params });
     }
   }
 };
