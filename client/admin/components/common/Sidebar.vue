@@ -39,7 +39,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import ProgramModal from '../programs/ProgramModal';
+import ProgramModal from '../Program/CreateDialog';
 
 export default {
   props: {

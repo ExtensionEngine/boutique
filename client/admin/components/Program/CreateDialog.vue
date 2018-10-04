@@ -27,7 +27,7 @@ import { withValidation } from '@/common/validation';
 const getDefaultData = () => ({ name: '' });
 
 export default {
-  name: 'program-modal',
+  name: 'program-dialog',
   mixins: [withValidation()],
   data() {
     return {
