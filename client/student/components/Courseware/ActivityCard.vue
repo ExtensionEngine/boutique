@@ -16,6 +16,8 @@
 </template>
 
 <script>
+import head from 'lodash/head';
+
 export default {
   name: 'activity-card',
   props: {
@@ -23,11 +25,14 @@ export default {
   },
   methods: {
     navigateTo() {
-      const { id: activityId, repositoryId, contentContainers } = this.activity.subActivites[0];
-      this.$router.push({
-        name: 'content-container',
-        params: { repositoryId, activityId, containerId: contentContainers[0].id }
-      });
+      const firstSubActivity = head(this.activity.subActivities) || this.activity;
+      const { id, repositoryId, contentContainers } = firstSubActivity;
+      const params = {
+        repositoryId,
+        activityId: id,
+        containerId: head(contentContainers).id
+      };
+      this.$router.push({ name: 'content-container', params });
     }
   }
 };

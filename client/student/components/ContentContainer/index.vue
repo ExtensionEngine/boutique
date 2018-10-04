@@ -2,9 +2,16 @@
   <div class="container">
     <nav class="navbar is-light" role="navigation">
       <router-link
-        v-for="it in activity.subActivites"
+        v-for="it in navigationItems"
         :key="it.id"
-        :to="{ name: 'content-container', params: { activityId: it.id, containerId: it.contentContainers[0].id }}"
+        :to="{
+          name: 'content-container',
+          params: {
+            repositoryId,
+            activityId: it.id,
+            containerId: it.contentContainers[0].id
+          }
+        }"
         class="navbar-item">
         {{ it.name | truncate(25) }}
       </router-link>
@@ -29,10 +36,16 @@ export default {
     containerId: { type: Number, required: true }
   },
   computed: {
-    ...mapGetters('learner', ['courseware']),
+    ...mapGetters('learner', ['isSingleLevel', 'courseware']),
     ...mapState('learner', ['selectedProgram']),
-    activity() {
-      return find(this.courseware, { subActivites: [{ id: this.activityId }] });
+    parentActivity() {
+      return find(this.courseware, { subActivities: [{ id: this.activityId }] });
+    },
+    navigationItems() {
+      const findCond = { subActivities: [{ id: this.activityId }] };
+      return this.isSingleLevel
+        ? this.courseware
+        : find(this.courseware, findCond).subActivities;
     }
   },
   created() {
