@@ -27,7 +27,6 @@ html, body {
 
 #app {
   height: 100%;
-  overflow-x: hidden;
   overflow-y: scroll;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

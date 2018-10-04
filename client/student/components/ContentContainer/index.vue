@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     <nav class="navbar is-light" role="navigation">
       <router-link
         v-for="it in navigationItems"
@@ -38,9 +38,6 @@ export default {
   computed: {
     ...mapGetters('learner', ['isSingleLevel', 'courseware']),
     ...mapState('learner', ['selectedProgram']),
-    parentActivity() {
-      return find(this.courseware, { subActivities: [{ id: this.activityId }] });
-    },
     navigationItems() {
       const findCond = { subActivities: [{ id: this.activityId }] };
       return this.isSingleLevel

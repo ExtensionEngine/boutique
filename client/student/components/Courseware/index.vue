@@ -1,5 +1,5 @@
 <template>
-  <div class="container is-fluid">
+  <div>
     <circular-progress v-if="isLoading" class="loader"/>
     <div v-else>
       <div v-if="!courseware.length" class="columns is-centered">
@@ -41,10 +41,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container {
-  padding: 0 300px;
-}
-
 .loader {
   position: absolute;
   top: 0;

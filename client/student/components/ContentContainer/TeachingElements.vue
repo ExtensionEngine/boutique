@@ -6,7 +6,7 @@
         v-for="it in teachingElements"
         :key="it.id"
         :element="it"
-        :class="['column', getElementWidth(it)]"/>
+        :class="['column', it.data.width === 6 ? 'is-6' : 'is-12']"/>
     </div>
   </div>
 </template>
@@ -34,11 +34,6 @@ export default {
     ...mapState('learner', ['selectedProgram']),
     teachingElements() {
       return get(this.container, 'elements', []);
-    }
-  },
-  methods: {
-    getElementWidth(it) {
-      return it.data.width === 6 ? 'is-6' : 'is-12';
     }
   },
   created() {

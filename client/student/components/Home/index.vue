@@ -7,7 +7,7 @@
           You aren't enrolled in any Program
         </div>
       </div>
-      <div v-else class="column is-2">
+      <div v-else class="column is-3">
         <h1 class="subtitle has-text-centered">Select your Program:</h1>
         <a
           v-for="it in programs"
@@ -59,9 +59,9 @@ export default {
 
 .loader {
   position: absolute;
-  top: 0;
+  top: auto;
   right: 0;
-  bottom: 0;
+  bottom: auto;
   left: 0;
   width: 50px;
   height: 50px;
