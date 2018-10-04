@@ -23,7 +23,6 @@ export default {
   },
   methods: {
     navigateTo() {
-      console.log(this.activity);
       const { id: activityId, repositoryId, contentContainers } = this.activity.subActivites[0];
       this.$router.push({
         name: 'content-container',

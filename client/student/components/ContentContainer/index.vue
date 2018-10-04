@@ -10,9 +10,9 @@
       </router-link>
     </nav>
     <teaching-elements
-      :containerId="routeParams.containerId"
-      :repositoryId="routeParams.repositoryId"
-      :key="routeParams.containerId"/>
+      :containerId="containerId"
+      :repositoryId="repositoryId"
+      :key="containerId"/>
   </div>
 </template>
 
@@ -23,14 +23,16 @@ import TeachingElements from './TeachingElements';
 
 export default {
   name: 'content-container',
+  props: {
+    repositoryId: { type: Number, required: true },
+    activityId: { type: Number, required: true },
+    containerId: { type: Number, required: true }
+  },
   computed: {
     ...mapGetters('learner', ['courseware']),
     ...mapState('learner', ['selectedProgram']),
-    routeParams() {
-      return this.$route.params;
-    },
     activity() {
-      return find(this.courseware, { subActivites: [{ id: this.routeParams.activityId }] });
+      return find(this.courseware, { subActivites: [{ id: this.activityId }] });
     }
   },
   created() {

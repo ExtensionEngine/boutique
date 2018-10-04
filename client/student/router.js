@@ -52,7 +52,8 @@ const router = new Router({
     }, {
       path: 'container/:repositoryId/:activityId/:containerId',
       name: 'content-container',
-      component: ContentContainer
+      component: ContentContainer,
+      props: ({ params }) => ({ ...params })
     }]
   }, fallbackRoute]
 });
