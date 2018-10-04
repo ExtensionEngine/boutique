@@ -1,6 +1,6 @@
 'use strict';
 
-const TABLE_NAME = 'cohort';
+const TABLE_NAME = 'program';
 
 module.exports = {
   up: (queryInterface, Sequelize) => queryInterface.createTable(TABLE_NAME, {

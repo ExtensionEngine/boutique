@@ -17,10 +17,10 @@ module.exports = {
       onDelete: 'NO ACTION',
       allowNull: false
     },
-    cohortId: {
+    programId: {
       type: Sequelize.INTEGER,
-      field: 'cohort_id',
-      references: { model: 'cohort', key: 'id' },
+      field: 'program_id',
+      references: { model: 'program', key: 'id' },
       onDelete: 'NO ACTION',
       allowNull: false
     },

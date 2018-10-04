@@ -16,19 +16,19 @@
         <v-divider dark class="my-3"/>
         <v-layout row align-center>
           <v-flex xs6>
-            <v-subheader>Cohorts</v-subheader>
+            <v-subheader>Programs</v-subheader>
           </v-flex>
           <v-flex xs6 class="text-xs-right">
-            <cohort-modal/>
+            <program-modal/>
           </v-flex>
         </v-layout>
         <v-list-tile
-          v-for="cohort in cohorts"
-          :key="cohort._cid"
-          :to="{ name: 'enrollments', params: { cohortId: cohort.id } }">
+          v-for="program in programs"
+          :key="program._cid"
+          :to="{ name: 'enrollments', params: { programId: program.id } }">
           <v-list-tile-content>
             <v-list-tile-title class="grey--text">
-              {{ cohort.name }}
+              {{ program.name }}
             </v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
@@ -38,15 +38,15 @@
 </template>
 
 <script>
-import CohortModal from '../cohorts/CohortModal';
 import { mapState } from 'vuex';
+import ProgramModal from '../programs/ProgramModal';
 
 export default {
   props: {
     drawer: { type: Boolean, default: true }
   },
-  computed: mapState('cohorts', { cohorts: 'items' }),
-  components: { CohortModal }
+  computed: mapState('programs', { programs: 'items' }),
+  components: { ProgramModal }
 };
 </script>
 

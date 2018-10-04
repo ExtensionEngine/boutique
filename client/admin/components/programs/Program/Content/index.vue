@@ -2,7 +2,7 @@
   <div class="mt-3">
     <v-toolbar color="#f5f5f5" flat>
       <v-spacer/>
-      <content-modal :cohortId="cohortId" :importedRepos="importedRepos"/>
+      <content-modal :programId="programId" :importedRepos="importedRepos"/>
     </v-toolbar>
     <v-alert
       :value="!isLoading && !importedRepos.length"
@@ -41,7 +41,7 @@ import filter from 'lodash/filter';
 
 export default {
   name: 'imported-content',
-  props: { cohortId: { type: Number, required: true } },
+  props: { programId: { type: Number, required: true } },
   data() {
     return { isLoading: true };
   },
@@ -54,14 +54,14 @@ export default {
       { text: 'Sync', value: 'publishedAt' }
     ]),
     importedRepos() {
-      const { cohortId } = this;
-      return filter(this.repoStore, { cohortId });
+      const { programId } = this;
+      return filter(this.repoStore, { programId });
     }
   },
   methods: mapActions('contentRepo', ['fetch', 'save']),
   mounted() {
-    const { cohortId } = this;
-    return this.fetch({ cohortId, srcVersion: true })
+    const { programId } = this;
+    return this.fetch({ programId, srcVersion: true })
       .then(() => (this.isLoading = false));
   },
   components: { ContentModal }

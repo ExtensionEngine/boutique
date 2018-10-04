@@ -20,7 +20,7 @@ export default {
   data() {
     return { drawer: true };
   },
-  methods: mapActions('cohorts', ['fetch']),
+  methods: mapActions('programs', ['fetch']),
   created() {
     this.fetch();
   },

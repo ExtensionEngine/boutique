@@ -8,7 +8,7 @@
           <v-autocomplete
             v-validate="{
               required: true,
-              'unique-enrollment': { studentId, cohortId }
+              'unique-enrollment': { studentId, programId }
             }"
             v-model="studentId"
             :items="students"
@@ -42,7 +42,7 @@ export default {
   name: 'enrollment-dialog',
   mixins: [withValidation()],
   props: {
-    cohortId: { type: Number, required: true }
+    programId: { type: Number, required: true }
   },
   data() {
     return {
@@ -57,7 +57,7 @@ export default {
     enroll() {
       this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
-        enrollmentApi.create(pick(this, ['studentId', 'cohortId'])).then(() => {
+        enrollmentApi.create(pick(this, ['studentId', 'programId'])).then(() => {
           this.close();
           this.$emit('enrolled');
         });
