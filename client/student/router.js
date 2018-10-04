@@ -17,9 +17,6 @@ import Vue from 'vue';
 Vue.use(Router);
 
 const parseParams = ({ params }) => {
-  console.log(transform(params, (acc, value, key) => {
-    return (acc[key] = parseInt(value, 10));
-  }, {}));
   return transform(params, (acc, value, key) => {
     return (acc[key] = parseInt(value, 10));
   }, {});
