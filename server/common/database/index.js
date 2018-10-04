@@ -10,7 +10,7 @@ const Umzug = require('umzug');
 
 // Require models.
 const User = require('../../user/user.model');
-const Cohort = require('../../cohort/cohort.model');
+const Program = require('../../program/program.model');
 const Enrollment = require('../../enrollment/enrollment.model');
 const ContentRepo = require('../../content-repo/content-repo.model');
 
@@ -51,7 +51,7 @@ function initialize() {
 
 const models = {
   User: defineModel(User),
-  Cohort: defineModel(Cohort),
+  Program: defineModel(Program),
   Enrollment: defineModel(Enrollment),
   ContentRepo: defineModel(ContentRepo)
 };

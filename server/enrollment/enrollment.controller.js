@@ -1,7 +1,7 @@
 'use strict';
 
-const { createError } = require('../common/errors');
 const { Enrollment, Sequelize } = require('../common/database');
+const { createError } = require('../common/errors');
 const HttpStatus = require('http-status');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
@@ -9,12 +9,12 @@ const pick = require('lodash/pick');
 const { BAD_REQUEST } = HttpStatus;
 const Op = Sequelize.Op;
 
-const processInput = input => pick(input, ['studentId', 'cohortId']);
+const processInput = input => pick(input, ['studentId', 'programId']);
 const processOutput = it => ({ ...it.dataValues, student: it.student.profile });
 
-function list({ query: { cohortId, studentId }, options }, res) {
+function list({ query: { programId, studentId }, options }, res) {
   const cond = [];
-  if (cohortId) cond.push({ cohortId });
+  if (programId) cond.push({ programId });
   if (studentId) cond.push({ studentId });
   const opts = { where: { [Op.and]: cond }, include: ['student'], ...options };
   return Enrollment.findAndCountAll(opts).then(({ rows, count }) => {

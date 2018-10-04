@@ -34,7 +34,7 @@ import pick from 'lodash/pick';
 export default {
   name: 'content-import-dialog',
   props: {
-    cohortId: { type: Number, required: true },
+    programId: { type: Number, required: true },
     importedRepos: { type: Array, default: () => ([]) }
   },
   data() {
@@ -53,7 +53,7 @@ export default {
   methods: {
     ...mapActions('contentRepo', ['save']),
     importRepo() {
-      this.save(pick(this, ['sourceId', 'cohortId']));
+      this.save(pick(this, ['sourceId', 'programId']));
       this.close();
     },
     close() {

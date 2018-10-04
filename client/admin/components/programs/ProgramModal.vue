@@ -2,11 +2,11 @@
   <v-dialog v-model="visible" width="600">
     <v-btn slot="activator" small flat>Create</v-btn>
     <v-card class="pa-3">
-      <v-card-title class="headline">New Cohort</v-card-title>
+      <v-card-title class="headline">New Program</v-card-title>
       <v-card-text>
         <v-text-field
           v-validate="'required|min:2|max:255'"
-          v-model="cohort.name"
+          v-model="program.name"
           :error-messages="vErrors.collect('name')"
           label="Name"
           data-vv-name="name"/>
@@ -21,31 +21,29 @@
 </template>
 
 <script>
-import cloneDeep from 'lodash/cloneDeep';
-import isEmpty from 'lodash/isEmpty';
 import { mapActions } from 'vuex';
 import { withValidation } from '@/common/validation';
 
 const getDefaultData = () => ({ name: '' });
 
 export default {
-  name: 'cohort-modal',
+  name: 'program-modal',
   mixins: [withValidation()],
   data() {
     return {
       visible: false,
-      cohort: getDefaultData()
+      program: getDefaultData()
     };
   },
   methods: {
-    ...mapActions('cohorts', { saveCohort: 'save' }),
+    ...mapActions('programs', { saveProgram: 'save' }),
     close() {
       this.visible = false;
     },
     save() {
       this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
-        this.saveCohort(this.cohort);
+        this.saveProgram(this.program);
         this.close();
       });
     }
@@ -53,9 +51,7 @@ export default {
   watch: {
     visible(val) {
       if (!val) return;
-      this.cohort = isEmpty(this.cohortData)
-        ? getDefaultData()
-        : cloneDeep(this.cohortData);
+      this.program = getDefaultData();
       this.vErrors.clear();
     }
   }

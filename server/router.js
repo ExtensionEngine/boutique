@@ -1,11 +1,11 @@
 'use strict';
 
 const auth = require('./common/auth').authenticate('jwt');
-const cohort = require('./cohort');
 const contentRepo = require('./content-repo');
 const enrollment = require('./enrollment');
 const express = require('express');
 const get = require('lodash/get');
+const program = require('./program');
 const { Sequelize } = require('./common/database');
 const user = require('./user');
 
@@ -15,7 +15,7 @@ router.use('/ping', (_, res) => res.jsend.success(null));
 router.use('/', parseOptions);
 router.use(user.path, user.router);
 router.use(contentRepo.path, auth, contentRepo.router);
-router.use(cohort.path, auth, cohort.router);
+router.use(program.path, auth, program.router);
 router.use(enrollment.path, auth, enrollment.router);
 
 module.exports = router;

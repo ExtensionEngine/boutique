@@ -1,8 +1,8 @@
-import Cohort from '@/admin/components/cohorts/Cohort';
-import Content from '@/admin/components/cohorts/Cohort/Content';
-import Enrollments from '@/admin/components/cohorts/Cohort/Enrollments';
+import Content from '@/admin/components/programs/Program/Content';
+import Enrollments from '@/admin/components/programs/Program/Enrollments';
 import get from 'lodash/get';
 import NotFound from '@/admin/components/common/NotFound';
+import Program from '@/admin/components/programs/Program';
 import role from '@/../common/config/role';
 import Router from 'vue-router';
 import store from './store';
@@ -11,8 +11,8 @@ import Vue from 'vue';
 
 Vue.use(Router);
 
-const parseCohortId = ({ params }) => ({
-  cohortId: parseInt(params.cohortId, 10)
+const parseProgramId = ({ params }) => ({
+  programId: parseInt(params.programId, 10)
 });
 
 // Handle 404
@@ -25,20 +25,20 @@ const router = new Router({
     component: Users,
     meta: { auth: true }
   }, {
-    path: '/cohorts/:cohortId',
-    name: 'cohort',
-    component: Cohort,
-    props: parseCohortId,
+    path: '/programs/:programId',
+    name: 'program',
+    component: Program,
+    props: parseProgramId,
     children: [{
       path: '',
       name: 'enrollments',
       component: Enrollments,
-      props: parseCohortId
+      props: parseProgramId
     }, {
       path: 'content',
       name: 'importedContent',
       component: Content,
-      props: parseCohortId
+      props: parseProgramId
     }]
   }, fallbackRoute]
 });
