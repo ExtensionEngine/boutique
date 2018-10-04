@@ -12,8 +12,9 @@ const { NOT_FOUND } = HttpStatus;
 const Storage = createStorage(config.storage);
 const excludeCorrect = data => map(data, it => omit(it, 'data.correct'));
 
-function list({ program }, res) {
+function list({ program, query: { includeStructure } }, res) {
   const attributes = ['id', 'schema', 'name', 'description', 'publishedAt'];
+  if (includeStructure) attributes.push('structure');
   return program.getContentRepos({ attributes })
     .then(repos => res.jsend.success(repos));
 }
@@ -27,12 +28,7 @@ function get({ repo }, res) {
 function getContainer({ program, params, repo }, res) {
   return Storage.getContainer(repo.sourceId, params.containerId, program.id)
     .catch(() => createError(NOT_FOUND, 'Not found!'))
-    .then(container => {
-      return res.jsend.success({
-        ...container,
-        elements: excludeCorrect(container.elements)
-      });
-    });
+    .then(container => res.jsend.success(container));
 }
 
 function getExam({ program, params, repo }, res) {

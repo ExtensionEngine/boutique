@@ -1,6 +1,6 @@
 'use strict';
 
-const { Program } = require('../common/database');
+const { Enrollment, Program } = require('../common/database');
 const pick = require('lodash/pick');
 
 const processInput = input => pick(input, ['name']);
@@ -23,9 +23,16 @@ function patch({ body, program }, res) {
     .then(program => res.jsend.success(program));
 }
 
+function getEnrolledPrograms({ user }, res) {
+  const include = [{ model: Enrollment, where: { studentId: user.id } }];
+  return Program.findAll({ include })
+    .then(programs => res.jsend.success(programs));
+}
+
 module.exports = {
   list,
   get,
   create,
-  patch
+  patch,
+  getEnrolledPrograms
 };

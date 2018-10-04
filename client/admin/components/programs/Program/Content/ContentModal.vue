@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import api from '@/admin/api/contentRepoApi';
+import api from '@/admin/api/contentRepo';
 import differenceBy from 'lodash/differenceBy';
 import map from 'lodash/map';
 import { mapActions } from 'vuex';

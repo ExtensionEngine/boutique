@@ -22,13 +22,13 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #e5e5e5;
+  overflow: hidden;
 }
 
 #app {
   height: 100%;
+  overflow-y: scroll;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: hidden;
 }
 </style>

@@ -1,4 +1,4 @@
-import { extractData, processParams } from './helpers';
+import { extractData, processParams } from '@/common/api/helpers';
 import request from '@/common/api/request';
 
 const url = {
