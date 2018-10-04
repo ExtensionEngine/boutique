@@ -2,7 +2,7 @@
   <div class="mt-3">
     <v-toolbar color="#f5f5f5" flat>
       <v-spacer/>
-      <content-modal :programId="programId" :importedRepos="importedRepos"/>
+      <content-dialog :programId="programId" :importedRepos="importedRepos"/>
     </v-toolbar>
     <v-alert
       :value="!isLoading && !importedRepos.length"
@@ -36,7 +36,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import ContentModal from './ContentModal';
+import ContentDialog from './ContentDialog';
 import filter from 'lodash/filter';
 
 export default {
@@ -64,6 +64,6 @@ export default {
     return this.fetch({ programId, srcVersion: true })
       .then(() => (this.isLoading = false));
   },
-  components: { ContentModal }
+  components: { ContentDialog }
 };
 </script>
