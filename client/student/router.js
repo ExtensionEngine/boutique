@@ -11,9 +11,19 @@ import role from '@/../common/config/role';
 import Root from '@/student/components/index';
 import Router from 'vue-router';
 import store from './store';
+import transform from 'lodash/transform';
 import Vue from 'vue';
 
 Vue.use(Router);
+
+const parseParams = ({ params }) => {
+  console.log(transform(params, (acc, value, key) => {
+    return (acc[key] = parseInt(value, 10));
+  }, {}));
+  return transform(params, (acc, value, key) => {
+    return (acc[key] = parseInt(value, 10));
+  }, {});
+};
 
 // Handle 404
 const fallbackRoute = { path: '*', component: NotFound };
@@ -53,7 +63,7 @@ const router = new Router({
       path: 'repository/:repositoryId/activity/:activityId/:containerId',
       name: 'activity',
       component: Activity,
-      props: ({ params }) => ({ ...params })
+      props: parseParams
     }]
   }, fallbackRoute]
 });

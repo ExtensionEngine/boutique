@@ -17,8 +17,8 @@
       </router-link>
     </nav>
     <content-container
-      :containerId="containerId"
       :repositoryId="repositoryId"
+      :containerId="containerId"
       :key="containerId"/>
   </div>
 </template>
@@ -36,13 +36,13 @@ export default {
     containerId: { type: Number, required: true }
   },
   computed: {
-    ...mapGetters('learner', ['isSingleLevel', 'courseware']),
+    ...mapGetters('learner', ['courseware', 'isCoursewareFlat']),
     ...mapState('learner', ['selectedProgramId']),
     navigationItems() {
-      const findCond = { subActivities: [{ id: this.activityId }] };
-      return this.isSingleLevel
-        ? this.courseware
-        : find(this.courseware, findCond).subActivities;
+      const { activityId: id, courseware, isCoursewareFlat } = this;
+      return isCoursewareFlat
+        ? courseware
+        : find(courseware, { subActivities: [{ id }] }).subActivities;
     }
   },
   created() {

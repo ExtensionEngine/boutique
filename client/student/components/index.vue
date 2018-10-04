@@ -18,8 +18,6 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  display: flex;
   padding: 50px 0;
-  flex-direction: column;
 }
 </style>

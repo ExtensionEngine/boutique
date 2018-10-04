@@ -7,7 +7,7 @@ const CARD_ACTIVITY = 'DEFAULT_SCHEMA/COMPETENCY';
 const CARD_SUBACTIVITIES = ['DEFAULT_SCHEMA/TOPIC'];
 const LIST_REPOSITORIES = !CARD_ACTIVITY.includes('/');
 
-export const isSingleLevel = () => CARD_SUBACTIVITIES.includes(CARD_ACTIVITY);
+export const isCoursewareFlat = () => CARD_SUBACTIVITIES.includes(CARD_ACTIVITY);
 
 export const courseware = state => {
   const activities = processActivities(state.syllabus);
@@ -19,7 +19,7 @@ export const courseware = state => {
     it.subActivities = getSubActivities({ id: parentId }, activities);
     it.subActivities = filter(it.subActivities, it => it.contentContainers.length);
   });
-  const filterCond = isSingleLevel() ? 'contentContainers' : 'subActivities';
+  const filterCond = isCoursewareFlat() ? 'contentContainers' : 'subActivities';
   return filter(items, it => it[filterCond].length);
 };
 
@@ -42,7 +42,7 @@ function processActivities(syllabus) {
 }
 
 const getSubActivities = (activity, structure) => {
-  if (isSingleLevel()) return [];
+  if (isCoursewareFlat()) return [];
   const children = filter(structure, { parentId: activity.id });
   const targetNodes = filter(children, it => CARD_SUBACTIVITIES.includes(it.type));
   if (targetNodes.length) return targetNodes;

@@ -12,7 +12,7 @@
       <div v-if="user" class="navbar-end">
         <router-link
           v-if="selectedProgramId"
-          to="/courseware"
+          :to="{ name: 'courseware' }"
           class="navbar-item">
           Dashboard
         </router-link>
@@ -27,7 +27,7 @@
 import { mapActions, mapState } from 'vuex';
 
 export default {
-  name: 'lms-navbar',
+  name: 'main-navbar',
   computed: {
     ...mapState('auth', ['user']),
     ...mapState('learner', ['selectedProgramId'])

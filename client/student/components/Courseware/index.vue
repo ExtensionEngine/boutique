@@ -1,10 +1,12 @@
 <template>
   <div>
-    <circular-progress v-if="isLoading" class="loader"/>
+    <div v-if="isLoading" class="loader-container">
+      <circular-progress :height="50" :width="50"/>
+    </div>
     <div v-else>
       <div v-if="!courseware.length" class="columns is-centered">
         <div class="notification is-warning has-text-centered">
-          This Program doesn't have any courseware
+          This Program doesn't have any courseware!
         </div>
       </div>
       <div v-else class="columns is-multiline">
@@ -42,14 +44,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.loader {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: 50px;
-  height: 50px;
-  margin: auto;
+.loader-container {
+  display: flex;
+  justify-content: center;
 }
 </style>
