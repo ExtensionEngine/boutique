@@ -3,7 +3,7 @@ export const setPrograms = (state, programs) => {
 };
 
 export const selectProgram = (state, programId) => {
-  state.selectedProgram = programId;
+  state.selectedProgramId = programId;
 };
 
 export const fetchSyllabus = (state, syllabus) => {

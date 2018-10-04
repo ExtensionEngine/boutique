@@ -10,8 +10,11 @@
     </div>
     <div class="navbar-menu">
       <div v-if="user" class="navbar-end">
-        <router-link to="/courseware" class="navbar-item">
-          DASHBOARD
+        <router-link
+          v-if="selectedProgramId"
+          to="/courseware"
+          class="navbar-item">
+          Dashboard
         </router-link>
         <div class="navbar-item">{{ user.email }}</div>
         <a @click="logout" href="#" class="navbar-item">Logout</a>
@@ -25,7 +28,10 @@ import { mapActions, mapState } from 'vuex';
 
 export default {
   name: 'lms-navbar',
-  computed: mapState('auth', ['user']),
+  computed: {
+    ...mapState('auth', ['user']),
+    ...mapState('learner', ['selectedProgramId'])
+  },
   methods: mapActions('auth', ['logout']),
   mounted() {
     // NOTE: Add appropriate css class to <html> element according to:

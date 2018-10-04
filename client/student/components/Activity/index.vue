@@ -37,7 +37,7 @@ export default {
   },
   computed: {
     ...mapGetters('learner', ['isSingleLevel', 'courseware']),
-    ...mapState('learner', ['selectedProgram']),
+    ...mapState('learner', ['selectedProgramId']),
     navigationItems() {
       const findCond = { subActivities: [{ id: this.activityId }] };
       return this.isSingleLevel
@@ -46,7 +46,7 @@ export default {
     }
   },
   created() {
-    if (!this.selectedProgram) return this.$router.push({ name: 'home' });
+    if (!this.selectedProgramId) return this.$router.push({ name: 'home' });
   },
   components: { ContentContainer }
 };

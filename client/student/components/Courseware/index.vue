@@ -29,12 +29,13 @@ export default {
   },
   computed: {
     ...mapGetters('learner', ['courseware']),
-    ...mapState('learner', ['selectedProgram'])
+    ...mapState('learner', ['selectedProgramId'])
   },
   methods: mapActions('learner', ['fetchSyllabus']),
   created() {
-    if (!this.selectedProgram) return this.$router.push({ name: 'home' });
-    this.fetchSyllabus(this.selectedProgram).then(() => (this.isLoading = false));
+    if (!this.selectedProgramId) return this.$router.push({ name: 'home' });
+    this.fetchSyllabus(this.selectedProgramId)
+      .then(() => (this.isLoading = false));
   },
   components: { ActivityCard, CircularProgress }
 };
