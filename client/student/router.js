@@ -6,6 +6,7 @@ import get from 'lodash/get';
 import Home from '@/student/components/Home/index';
 import Login from '@/student/components/auth/Login';
 import NotFound from '@/admin/components/common/NotFound';
+import Program from '@/student/components/Program/index';
 import ResetPassword from '@/student/components/auth/ResetPassword';
 import role from '@/../common/config/role';
 import Root from '@/student/components/index';
@@ -53,14 +54,22 @@ const router = new Router({
       name: 'home',
       component: Home
     }, {
-      path: 'courseware',
-      name: 'courseware',
-      component: Courseware
-    }, {
-      path: 'repository/:repositoryId/activity/:activityId/:containerId',
-      name: 'activity',
-      component: Activity,
-      props: parseParams
+      path: 'programs/:programId',
+      name: 'program',
+      component: Program,
+      children: [
+        {
+          path: 'courseware',
+          name: 'courseware',
+          component: Courseware,
+          props: parseParams
+        }, {
+          path: 'repository/:repositoryId/activity/:activityId/:containerId',
+          name: 'activity',
+          component: Activity,
+          props: parseParams
+        }
+      ]
     }]
   }, fallbackRoute]
 });

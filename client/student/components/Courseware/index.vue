@@ -13,6 +13,7 @@
         <activity-card
           v-for="it in courseware"
           :key="it.id"
+          :programId="programId"
           :activity="it"/>
       </div>
     </div>
@@ -20,23 +21,22 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import ActivityCard from './ActivityCard';
 import CircularProgress from '../common/CircularProgress';
 
 export default {
   name: 'courseware',
+  props: {
+    programId: { type: Number, required: true }
+  },
   data() {
     return { isLoading: true };
   },
-  computed: {
-    ...mapGetters('learner', ['courseware']),
-    ...mapState('learner', ['selectedProgramId'])
-  },
+  computed: mapGetters('learner', ['courseware']),
   methods: mapActions('learner', ['fetchSyllabus']),
   created() {
-    if (!this.selectedProgramId) return this.$router.push({ name: 'home' });
-    this.fetchSyllabus(this.selectedProgramId)
+    this.fetchSyllabus(this.programId)
       .then(() => (this.isLoading = false));
   },
   components: { ActivityCard, CircularProgress }

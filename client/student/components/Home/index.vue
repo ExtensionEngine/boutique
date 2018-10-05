@@ -13,11 +13,11 @@
         <h1 class="subtitle has-text-centered">Select your Program:</h1>
         <ul class="program-selection">
           <li v-for="it in programs" :key="it.id">
-            <a
-              @click.prevent="navigateTo(it.id)"
+            <router-link
+              :to="{ name: 'courseware', params: { programId: it.id } }"
               class="button is-medium is-fullwidth">
               {{ it.name | truncate(25) }}
-            </a>
+            </router-link>
           </li>
         </ul>
       </div>
@@ -37,19 +37,14 @@ export default {
     return { isLoading: true };
   },
   computed: mapState('learner', ['programs']),
-  methods: {
-    ...mapMutations('learner', ['setPrograms', 'selectProgram']),
-    navigateTo(programId) {
-      this.selectProgram(programId);
-      this.$router.push({ name: 'courseware' });
-    }
-  },
+  methods: mapMutations('learner', ['setPrograms']),
   created() {
     api.fetchPrograms().then(programs => {
       this.setPrograms(programs);
       this.isLoading = false;
       if (programs.length !== 1) return;
-      this.navigateTo(head(programs).id);
+      const programId = head(programs).id;
+      this.$router.push({ name: 'courseware', params: { programId } });
     });
   },
   components: { CircularProgress }

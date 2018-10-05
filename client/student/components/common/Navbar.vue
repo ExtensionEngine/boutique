@@ -11,8 +11,8 @@
     <div class="navbar-menu">
       <div v-if="user" class="navbar-end">
         <router-link
-          v-if="selectedProgramId"
-          :to="{ name: 'courseware' }"
+          v-if="programId"
+          :to="{ name: 'courseware', params: { programId } }"
           class="navbar-item">
           Dashboard
         </router-link>
@@ -30,7 +30,9 @@ export default {
   name: 'main-navbar',
   computed: {
     ...mapState('auth', ['user']),
-    ...mapState('learner', ['selectedProgramId'])
+    programId() {
+      return this.$route.params.programId;
+    }
   },
   methods: mapActions('auth', ['logout']),
   mounted() {
