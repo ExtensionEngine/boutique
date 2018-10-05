@@ -15,8 +15,9 @@ export const courseware = state => {
     ? processRepositories(state.syllabus)
     : filter(activities, { type: CARD_ACTIVITY });
   items.forEach(it => {
-    const parentId = LIST_REPOSITORIES ? null : it.id;
-    it.subActivities = getSubActivities({ id: parentId }, activities);
+    const parent = pick(it, ['repositoryId']);
+    parent.id = LIST_REPOSITORIES ? null : it.id;
+    it.subActivities = getSubActivities(parent, activities);
     it.subActivities = filter(it.subActivities, it => it.contentContainers.length);
   });
   const filterCond = isCoursewareFlat() ? 'contentContainers' : 'subActivities';
@@ -41,9 +42,9 @@ function processActivities(syllabus) {
   }, []);
 }
 
-const getSubActivities = (activity, structure) => {
+const getSubActivities = ({ id, repositoryId }, structure) => {
   if (isCoursewareFlat()) return [];
-  const children = filter(structure, { parentId: activity.id });
+  const children = filter(structure, { parentId: id, repositoryId });
   const targetNodes = filter(children, it => CARD_SUBACTIVITIES.includes(it.type));
   if (targetNodes.length) return targetNodes;
   return reduce(children,
