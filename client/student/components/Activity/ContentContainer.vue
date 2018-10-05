@@ -1,5 +1,5 @@
 <template>
-  <div class="elements">
+  <div class="content-container">
     <circular-progress v-if="isLoading" :height="50" :width="50"/>
     <div v-else class="columns is-multiline">
       <tailor-teaching-elements
@@ -42,9 +42,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.elements {
+.content-container {
   display: flex;
   justify-content: center;
   margin: 35px 0;
+
+  .columns {
+    flex: 1;
+  }
 }
 </style>
