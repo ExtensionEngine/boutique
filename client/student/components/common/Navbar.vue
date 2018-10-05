@@ -5,19 +5,27 @@
     aria-label="main navigation">
     <div class="navbar-brand">
       <router-link to="/" class="navbar-item">
-        LMS STUDENT
+        Boutique
       </router-link>
     </div>
-    <div class="navbar-menu">
-      <div v-if="user" class="navbar-end">
+    <div v-if="user" class="navbar-menu">
+      <div class="navbar-end">
         <router-link
           v-if="selectedProgramId"
           :to="{ name: 'courseware' }"
           class="navbar-item">
           Dashboard
         </router-link>
-        <div class="navbar-item">{{ user.email }}</div>
-        <a @click="logout" href="#" class="navbar-item">Logout</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">
+            {{ user.email }}
+          </a>
+          <div class="navbar-dropdown is-right">
+            <a class="navbar-item">
+              <a @click="logout" href="#" class="navbar-item">Logout</a>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </nav>
