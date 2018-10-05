@@ -9,11 +9,19 @@
           This Program doesn't have any courseware!
         </div>
       </div>
-      <div v-else class="columns is-multiline">
-        <activity-card
-          v-for="it in courseware"
-          :key="it.id"
-          :activity="it"/>
+      <div v-else>
+        <search :query.sync="query"/>
+        <div v-show="!filteredCourseware.length" class="columns is-centered">
+          <div class="notification is-warning has-text-centered">
+            No courseware found!
+          </div>
+        </div>
+        <div class="columns is-multiline">
+          <activity-card
+            v-for="it in filteredCourseware"
+            :key="it.id"
+            :activity="it"/>
+        </div>
       </div>
     </div>
   </div>
@@ -23,15 +31,25 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import ActivityCard from './ActivityCard';
 import CircularProgress from '../common/CircularProgress';
+import filter from 'lodash/filter';
+import Search from './Search.vue';
 
 export default {
   name: 'courseware',
   data() {
-    return { isLoading: true };
+    return {
+      isLoading: true,
+      query: ''
+    };
   },
   computed: {
     ...mapGetters('learner', ['courseware']),
-    ...mapState('learner', ['selectedProgramId'])
+    ...mapState('learner', ['selectedProgramId']),
+    filteredCourseware() {
+      return filter(this.courseware, it => {
+        return it.name.toLowerCase().includes(this.query.trim().toLowerCase());
+      });
+    }
   },
   methods: mapActions('learner', ['fetchSyllabus']),
   created() {
@@ -39,7 +57,7 @@ export default {
     this.fetchSyllabus(this.selectedProgramId)
       .then(() => (this.isLoading = false));
   },
-  components: { ActivityCard, CircularProgress }
+  components: { ActivityCard, CircularProgress, Search }
 };
 </script>
 
@@ -47,5 +65,9 @@ export default {
 .loader-container {
   display: flex;
   justify-content: center;
+}
+
+.notification {
+  margin-top: 10px;
 }
 </style>
