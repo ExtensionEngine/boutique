@@ -22,7 +22,7 @@
           </a>
           <div class="navbar-dropdown is-right">
             <a class="navbar-item">
-              <a @click="logout" href="#" class="navbar-item">Logout</a>
+              <a @click="logout" href="#">Logout</a>
             </a>
           </div>
         </div>
