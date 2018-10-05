@@ -20,10 +20,12 @@
           <td>{{ item.name }}</td>
           <td>{{ item.repoVersion | formatDate }}</td>
           <td>{{ item.publishedAt | formatDate }}</td>
-          <td>
+          <td class="text-md-center actions">
             <v-btn
               v-if="item.repoVersion > item.publishedAt"
-              @click="save(item)">
+              @click="save(item)"
+              flat
+              small>
               Sync
             </v-btn>
             <span v-else-if="item.repoVersion">Synced</span>
@@ -51,7 +53,7 @@ export default {
       { text: 'Name', value: 'name', align: 'left' },
       { text: 'Published Version', value: 'repoVersion' },
       { text: 'Imported Version', value: 'publishedAt' },
-      { text: 'Sync', value: 'id', sortable: false }
+      { text: 'Sync', value: 'id', sortable: false, align: 'center' }
     ]),
     importedRepos() {
       const { programId } = this;
@@ -67,3 +69,9 @@ export default {
   components: { ContentDialog }
 };
 </script>
+
+<style lang="scss" scoped>
+.actions {
+  width: 250px;
+}
+</style>
