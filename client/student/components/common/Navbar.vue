@@ -84,7 +84,6 @@ export default {
 .navbar-brand .navbar-item {
   padding: 0 1.5rem;
   font-size: 1.5rem;
-  font-weight: 300;
   line-height: 2.5rem;
 
   .mdi {
