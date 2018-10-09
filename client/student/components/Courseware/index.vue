@@ -34,10 +34,7 @@ import CircularProgress from '../common/CircularProgress';
 export default {
   name: 'courseware',
   data() {
-    return {
-      isLoading: true,
-      query: ''
-    };
+    return { isLoading: true };
   },
   computed: {
     ...mapGetters('learner', ['courseware', 'filteredCourseware']),
