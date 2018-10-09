@@ -79,6 +79,8 @@ export default {
 }
 
 .search-container {
+  width: 51%;
+  margin-left: 6%;
   visibility: hidden;
   opacity: 0;
   transition: visibility 0.5s ease, opacity 0.5s ease;
@@ -90,9 +92,7 @@ export default {
 }
 
 .search-container .navbar-item {
-  width: 894px;
-  margin-left: 100px;
-  transition: width 0.5s ease;
+  width: 100%;
 }
 
 .user-dropdown {
