@@ -9,6 +9,13 @@
       </router-link>
     </div>
     <div v-if="user" class="navbar-menu">
+      <div
+        :class="[isSearchActive() ? 'search-active' : '']"
+        class="navbar-start search-container">
+        <div class="navbar-item">
+          <search/>
+        </div>
+      </div>
       <div class="navbar-end">
         <router-link
           v-if="selectedProgramId"
@@ -32,20 +39,28 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
+import Search from './Search.vue';
 
 export default {
   name: 'main-navbar',
   computed: {
     ...mapState('auth', ['user']),
-    ...mapState('learner', ['selectedProgramId'])
+    ...mapState('learner', ['selectedProgramId']),
+    ...mapGetters('learner', ['courseware'])
   },
-  methods: mapActions('auth', ['logout']),
+  methods: {
+    ...mapActions('auth', ['logout']),
+    isSearchActive() {
+      return this.$route.name === 'courseware' && this.courseware.length;
+    }
+  },
   mounted() {
     // NOTE: Add appropriate css class to <html> element according to:
     //       https://bulma.io/documentation/components/navbar/#fixed-navbar
     document.documentElement.classList.add('has-navbar-fixed-top');
-  }
+  },
+  components: { Search }
 };
 </script>
 
@@ -61,6 +76,23 @@ export default {
 .navbar-item {
   font-size: 1.25rem;
   font-weight: 300;
+}
+
+.search-container {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0.5s ease, opacity 0.5s ease;
+}
+
+.search-active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.search-container .navbar-item {
+  width: 894px;
+  margin-left: 100px;
+  transition: width 0.5s ease;
 }
 
 .user-dropdown {

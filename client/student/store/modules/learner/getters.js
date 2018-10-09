@@ -1,4 +1,5 @@
 import filter from 'lodash/filter';
+import get from 'lodash/get';
 import map from 'lodash/map';
 import pick from 'lodash/pick';
 import reduce from 'lodash/reduce';
@@ -8,6 +9,13 @@ const CARD_SUBACTIVITIES = ['DEFAULT_SCHEMA/TOPIC'];
 const LIST_REPOSITORIES = !CARD_ACTIVITY.includes('/');
 
 export const isCoursewareFlat = () => CARD_SUBACTIVITIES.includes(CARD_ACTIVITY);
+
+export const filteredCourseware = state => {
+  const query = get(state, 'coursewareQuery', '').trim().toLowerCase();
+  return filter(courseware(state), it => {
+    return it.name.toLowerCase().includes(query);
+  });
+};
 
 export const courseware = state => {
   const activities = processActivities(state.syllabus);

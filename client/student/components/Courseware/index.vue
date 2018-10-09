@@ -10,7 +10,6 @@
         </div>
       </div>
       <div v-else>
-        <search :query.sync="query"/>
         <div v-show="!filteredCourseware.length" class="columns is-centered">
           <div class="notification is-warning has-text-centered">
             No courseware found!
@@ -31,8 +30,6 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import ActivityCard from './ActivityCard';
 import CircularProgress from '../common/CircularProgress';
-import filter from 'lodash/filter';
-import Search from './Search.vue';
 
 export default {
   name: 'courseware',
@@ -43,13 +40,8 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('learner', ['courseware']),
-    ...mapState('learner', ['selectedProgramId']),
-    filteredCourseware() {
-      return filter(this.courseware, it => {
-        return it.name.toLowerCase().includes(this.query.trim().toLowerCase());
-      });
-    }
+    ...mapGetters('learner', ['courseware', 'filteredCourseware']),
+    ...mapState('learner', ['selectedProgramId'])
   },
   methods: mapActions('learner', ['fetchSyllabus']),
   created() {
@@ -57,7 +49,7 @@ export default {
     this.fetchSyllabus(this.selectedProgramId)
       .then(() => (this.isLoading = false));
   },
-  components: { ActivityCard, CircularProgress, Search }
+  components: { ActivityCard, CircularProgress }
 };
 </script>
 
