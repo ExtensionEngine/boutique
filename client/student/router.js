@@ -57,9 +57,10 @@ const router = new Router({
       path: 'programs/:programId',
       name: 'program',
       component: Program,
+      props: parseParams,
       children: [
         {
-          path: 'courseware',
+          path: '',
           name: 'courseware',
           component: Courseware,
           props: parseParams
