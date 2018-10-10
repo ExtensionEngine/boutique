@@ -5,6 +5,7 @@ import NotFound from '@/admin/components/common/NotFound';
 import Program from '@/admin/components/Program';
 import role from '@/../common/config/role';
 import Router from 'vue-router';
+import Settings from '@/admin/components/Program/Settings';
 import store from './store';
 import Users from '@/admin/components/users';
 import Vue from 'vue';
@@ -38,6 +39,11 @@ const router = new Router({
       path: 'content',
       name: 'importedContent',
       component: Content,
+      props: parseProgramId
+    }, {
+      path: 'settings',
+      name: 'settings',
+      component: Settings,
       props: parseProgramId
     }]
   }, fallbackRoute]
