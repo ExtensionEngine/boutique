@@ -25,7 +25,7 @@ export default {
   created() {
     find(this.programs, { id: this.programId })
       ? this.fetchSyllabus(this.programId).then(() => (this.isLoading = false))
-      : this.$router.push({ name: 'home' });
+      : this.$router.push({ name: 'program-selection' });
   },
   components: { CircularProgress }
 };

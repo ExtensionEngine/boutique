@@ -1,12 +1,12 @@
-import Activity from '@/student/components/Programs/Activity/index';
+import Activity from '@/student/components/program/Activity/index';
 import Auth from '@/student/components/auth';
-import Courseware from '@/student/components/Programs/Courseware/index';
+import Courseware from '@/student/components/program/Courseware/index';
 import ForgotPassword from '@/student/components/auth/ForgotPassword';
 import get from 'lodash/get';
 import Login from '@/student/components/auth/Login';
 import NotFound from '@/admin/components/common/NotFound';
-import Program from '@/student/components/Programs/Program';
-import Programs from '@/student/components/Programs/index';
+import Program from '@/student/components/program/index';
+import ProgramSelection from '@/student/components/ProgramSelection/index';
 import ResetPassword from '@/student/components/auth/ResetPassword';
 import role from '@/../common/config/role';
 import Root from '@/student/components/index';
@@ -49,26 +49,24 @@ const router = new Router({
     meta: { auth: true },
     children: [{
       path: '',
-      name: 'programs',
-      component: Programs
+      name: 'program-selection',
+      component: ProgramSelection
     }, {
       path: 'programs/:programId',
       name: 'program',
       component: Program,
       props: parseParams,
-      children: [
-        {
-          path: '',
-          name: 'courseware',
-          component: Courseware,
-          props: parseParams
-        }, {
-          path: 'repository/:repositoryId/activity/:activityId/:containerId',
-          name: 'activity',
-          component: Activity,
-          props: parseParams
-        }
-      ]
+      children: [{
+        path: '',
+        name: 'courseware',
+        component: Courseware,
+        props: parseParams
+      }, {
+        path: 'repository/:repositoryId/activity/:activityId/:containerId',
+        name: 'activity',
+        component: Activity,
+        props: parseParams
+      }]
     }]
   }, fallbackRoute]
 });
