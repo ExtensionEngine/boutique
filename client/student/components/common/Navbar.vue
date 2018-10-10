@@ -5,17 +5,19 @@
     aria-label="main navigation">
     <div class="navbar-brand">
       <router-link to="/" class="navbar-item">
-        <span class="mdi mdi-shopping"></span>Boutique
+        <span class="mdi mdi-shopping"/>Boutique
       </router-link>
     </div>
     <div v-if="user" class="navbar-menu">
-      <div
-        :class="[isSearchActive() ? 'search-active' : '']"
-        class="navbar-start search-container">
-        <div class="navbar-item">
-          <search/>
+      <transition name="search">
+        <div
+          v-show="$route.name === 'courseware' && courseware.length"
+          class="navbar-start search-container">
+          <div class="navbar-item">
+            <search/>
+          </div>
         </div>
-      </div>
+      </transition>
       <div class="navbar-end">
         <router-link
           v-if="selectedProgramId"
@@ -25,11 +27,11 @@
         </router-link>
         <div class="navbar-item has-dropdown is-hoverable user-dropdown">
           <a href="#" class="navbar-link">
-            <span class="mdi mdi-account-circle"></span>{{ user.email }}
+            <span class="mdi mdi-account-circle"/>{{ user.email }}
           </a>
           <div class="navbar-dropdown is-right">
             <a @click.prevent="logout" href="#" class="navbar-item">
-              <span class="mdi mdi-logout"></span>Logout
+              <span class="mdi mdi-logout"/>Logout
             </a>
           </div>
         </div>
@@ -49,12 +51,7 @@ export default {
     ...mapState('learner', ['selectedProgramId']),
     ...mapGetters('learner', ['courseware'])
   },
-  methods: {
-    ...mapActions('auth', ['logout']),
-    isSearchActive() {
-      return this.$route.name === 'courseware' && this.courseware.length;
-    }
-  },
+  methods: mapActions('auth', ['logout']),
   mounted() {
     // NOTE: Add appropriate css class to <html> element according to:
     //       https://bulma.io/documentation/components/navbar/#fixed-navbar
@@ -81,14 +78,14 @@ export default {
 .search-container {
   width: 51%;
   margin-left: 6%;
-  visibility: hidden;
-  opacity: 0;
-  transition: visibility 0.5s ease, opacity 0.5s ease;
 }
 
-.search-active {
-  visibility: visible;
-  opacity: 1;
+.search-enter-active, .search-leave-active {
+  transition: opacity 0.5s;
+}
+
+.search-enter, .search-leave-to {
+  opacity: 0;
 }
 
 .search-container .navbar-item {
@@ -99,17 +96,21 @@ export default {
   margin-left: 2rem;
 
   .navbar-dropdown {
-    padding: 0;
-  }
-
-  .navbar-item {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
+    padding: 0 0.4rem;
   }
 
   .mdi {
     padding-right: 0.5rem;
     font-size: 1.5rem;
+  }
+
+  .navbar-link .mdi {
+    font-size: 2rem;
+  }
+
+  .navbar-item {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
   }
 }
 

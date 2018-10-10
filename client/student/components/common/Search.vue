@@ -33,15 +33,15 @@ export default {
 
 <style lang="scss" scoped>
 .control {
-  width: 50%;
-  transition: width 0.5s ease;
+  width: 75%;
+  transition: width 0.5s;
 }
 
 .input, .icon {
   min-height: 48px;
   color: whitesmoke;
   background-color: #58b5f3;
-  transition: color 0.5s ease, background-color 0.5s ease;
+  transition: color 0.5s, background-color 0.5s;
 }
 
 .input {
@@ -56,7 +56,7 @@ export default {
 
 .mdi {
   color: whitesmoke;
-  transition: color 0.5s ease;
+  transition: color 0.5s;
 }
 
 .mdi-close {
@@ -65,22 +65,22 @@ export default {
 
 ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
   color: whitesmoke !important;
-  transition: color 0.5s ease;
+  transition: color 0.5s;
 }
 
 ::-moz-placeholder { /* Firefox 19+ */
   color: whitesmoke !important;
-  transition: color 0.5s ease;
+  transition: color 0.5s;
 }
 
 :-ms-input-placeholder { /* IE 10+ */
   color: whitesmoke !important;
-  transition: color 0.5s ease;
+  transition: color 0.5s;
 }
 
 :-moz-placeholder { /* Firefox 18- */
   color: whitesmoke !important;
-  transition: color 0.5s ease;
+  transition: color 0.5s;
 }
 
 .expanded {
