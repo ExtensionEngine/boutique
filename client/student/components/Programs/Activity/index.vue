@@ -40,15 +40,11 @@ export default {
   computed: {
     ...mapGetters('learner', ['courseware', 'isCoursewareFlat']),
     navigationItems() {
-      if (!this.courseware.length) return [];
       const { activityId: id, courseware, isCoursewareFlat } = this;
       return isCoursewareFlat
         ? courseware
         : find(courseware, { subActivities: [{ id }] }).subActivities;
     }
-  },
-  created() {
-    if (!this.courseware.length) return this.$router.push({ name: 'home' });
   },
   components: { ContentContainer }
 };

@@ -1,12 +1,12 @@
-import Activity from '@/student/components/Activity/index';
+import Activity from '@/student/components/Programs/Activity/index';
 import Auth from '@/student/components/auth';
-import Courseware from '@/student/components/Courseware/index';
+import Courseware from '@/student/components/Programs/Courseware/index';
 import ForgotPassword from '@/student/components/auth/ForgotPassword';
 import get from 'lodash/get';
-import Home from '@/student/components/Home/index';
 import Login from '@/student/components/auth/Login';
 import NotFound from '@/admin/components/common/NotFound';
-import Program from '@/student/components/Program/index';
+import Program from '@/student/components/Programs/Program';
+import Programs from '@/student/components/Programs/index';
 import ResetPassword from '@/student/components/auth/ResetPassword';
 import role from '@/../common/config/role';
 import Root from '@/student/components/index';
@@ -51,8 +51,8 @@ const router = new Router({
     meta: { auth: true },
     children: [{
       path: '',
-      name: 'home',
-      component: Home
+      name: 'programs',
+      component: Programs
     }, {
       path: 'programs/:programId',
       name: 'program',
