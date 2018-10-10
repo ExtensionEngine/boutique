@@ -10,6 +10,6 @@ export const setSyllabus = (state, syllabus) => {
   state.syllabus = syllabus;
 };
 
-export const setCoursewareQuery = (state, query) => {
-  state.coursewareQuery = query;
+export const setCoursewareFilter = (state, filter) => {
+  state.coursewareFilter = filter;
 };

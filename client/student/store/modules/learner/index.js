@@ -6,7 +6,7 @@ const state = {
   programs: [],
   selectedProgramId: null,
   syllabus: [],
-  coursewareQuery: null
+  coursewareFilter: null
 };
 
 export default {

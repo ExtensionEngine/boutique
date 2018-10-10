@@ -11,9 +11,9 @@ const LIST_REPOSITORIES = !CARD_ACTIVITY.includes('/');
 export const isCoursewareFlat = () => CARD_SUBACTIVITIES.includes(CARD_ACTIVITY);
 
 export const filteredCourseware = state => {
-  const query = get(state, 'coursewareQuery', '').trim().toLowerCase();
+  const filterBy = get(state, 'coursewareFilter', '').trim().toLowerCase();
   return filter(courseware(state), it => {
-    return it.name.toLowerCase().includes(query);
+    return it.name.toLowerCase().includes(filterBy);
   });
 };
 

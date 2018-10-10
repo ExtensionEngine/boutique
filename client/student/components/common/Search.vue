@@ -1,18 +1,18 @@
 <template>
   <div :class="['control', 'has-icons-left', expanded ? 'expanded' : '']">
     <input
-      :value="coursewareQuery"
-      @input="setCoursewareQuery($event.target.value)"
+      :value="coursewareFilter"
+      @input="setCoursewareFilter($event.target.value)"
       @focus="expanded = true"
       @blur="expanded = false"
       class="input"
       type="text"
       placeholder="Search...">
     <span class="icon is-left">
-      <i v-show="!coursewareQuery" class="mdi mdi-24px mdi-magnify"/>
+      <i v-show="!coursewareFilter" class="mdi mdi-24px mdi-magnify"/>
       <i
-        v-show="coursewareQuery"
-        @mousedown.prevent="setCoursewareQuery()"
+        v-show="coursewareFilter"
+        @mousedown.prevent="setCoursewareFilter()"
         class="mdi mdi-24px mdi-close"/>
     </span>
   </div>
@@ -26,8 +26,8 @@ export default {
   data() {
     return { expanded: false };
   },
-  computed: mapState('learner', ['coursewareQuery']),
-  methods: mapMutations('learner', ['setCoursewareQuery'])
+  computed: mapState('learner', ['coursewareFilter']),
+  methods: mapMutations('learner', ['setCoursewareFilter'])
 };
 </script>
 

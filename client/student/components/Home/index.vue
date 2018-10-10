@@ -39,7 +39,7 @@ export default {
   computed: mapState('learner', ['programs']),
   methods: {
     ...mapMutations('learner',
-      ['setPrograms', 'selectProgram', 'setSyllabus', 'setCoursewareQuery']),
+      ['setPrograms', 'selectProgram', 'setSyllabus', 'setCoursewareFilter']),
     navigateTo(programId) {
       this.selectProgram(programId);
       this.$router.push({ name: 'courseware' });
@@ -48,7 +48,7 @@ export default {
   created() {
     api.fetchPrograms().then(programs => {
       this.setPrograms(programs);
-      this.setCoursewareQuery();
+      this.setCoursewareFilter();
       this.setSyllabus();
       this.isLoading = false;
       if (programs.length !== 1) return;
