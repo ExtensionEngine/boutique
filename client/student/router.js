@@ -3,13 +3,13 @@ import Auth from '@/student/components/auth';
 import Courseware from '@/student/components/program/Courseware/index';
 import ForgotPassword from '@/student/components/auth/ForgotPassword';
 import get from 'lodash/get';
+import Home from '@/student/components/home/index';
 import Login from '@/student/components/auth/Login';
 import NotFound from '@/admin/components/common/NotFound';
 import Program from '@/student/components/program/index';
-import ProgramSelection from '@/student/components/ProgramSelection/index';
+import ProgramSelection from '@/student/components/home/ProgramSelection';
 import ResetPassword from '@/student/components/auth/ResetPassword';
 import role from '@/../common/config/role';
-import Root from '@/student/components/index';
 import Router from 'vue-router';
 import store from './store';
 import transform from 'lodash/transform';
@@ -44,8 +44,8 @@ const router = new Router({
     }]
   }, {
     path: '/',
-    name: 'root',
-    component: Root,
+    name: 'home',
+    component: Home,
     meta: { auth: true },
     children: [{
       path: '',

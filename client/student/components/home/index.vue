@@ -18,7 +18,7 @@ import { mapMutations } from 'vuex';
 import Navbar from '@/student/components/common/Navbar';
 
 export default {
-  name: 'root',
+  name: 'home',
   data() {
     return { isLoading: true };
   },
