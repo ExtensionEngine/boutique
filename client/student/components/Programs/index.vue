@@ -6,8 +6,8 @@
           You aren't enrolled in any Program!
         </div>
       </div>
-      <div v-else class="column is-3">
-        <h1 class="subtitle has-text-centered">Select your Program:</h1>
+      <div v-else class="column is-4">
+        <h1 class="title has-text-centered">Select your program</h1>
         <ul class="program-selection">
           <li v-for="it in programs" :key="it.id">
             <router-link
@@ -32,6 +32,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.title {
+  margin: 1rem 0 3rem;
+  font-size: 1.5rem;
+  font-weight: 300;
+}
+
 .program-selection li {
   margin-bottom: 20px;
 }

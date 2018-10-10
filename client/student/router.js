@@ -18,9 +18,7 @@ import Vue from 'vue';
 Vue.use(Router);
 
 const parseParams = ({ params }) => {
-  return transform(params, (acc, value, key) => {
-    return (acc[key] = parseInt(value, 10));
-  }, {});
+  return transform(params, (acc, val, key) => (acc[key] = parseInt(val, 10)), {});
 };
 
 // Handle 404
