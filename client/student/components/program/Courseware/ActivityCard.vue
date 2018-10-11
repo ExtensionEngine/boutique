@@ -20,6 +20,7 @@ import head from 'lodash/head';
 export default {
   name: 'activity-card',
   props: {
+    programId: { type: Number, required: true },
     activity: { type: Object, required: true }
   },
   methods: {
@@ -27,6 +28,7 @@ export default {
       const target = head(activity.subActivities) || activity;
       const { id, repositoryId, contentContainers } = target;
       const params = {
+        programId: this.programId,
         repositoryId,
         activityId: id,
         containerId: head(contentContainers).id
