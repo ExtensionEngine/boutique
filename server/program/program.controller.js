@@ -23,6 +23,11 @@ function patch({ body, program }, res) {
     .then(program => res.jsend.success(program));
 }
 
+function remove(req, res) {
+  Program.findOne({ where: { id: Number.parseInt(req.params.id) } })
+    .then(program => program.destroy().then(program => res.jsend.success(program)));
+}
+
 function getEnrolledPrograms({ user }, res) {
   const include = [{ model: Enrollment, where: { studentId: user.id } }];
   return Program.findAll({ include })
@@ -34,5 +39,6 @@ module.exports = {
   get,
   create,
   patch,
+  remove,
   getEnrolledPrograms
 };

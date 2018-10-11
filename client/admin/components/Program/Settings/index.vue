@@ -36,8 +36,8 @@ export default {
     remove(program) {
       this.confirmationDialog = true;
       this.confirmationAction = () => {
-        // todo: add 'delete route' and redirect
-        // this.removeProgram(program);
+        this.removeProgram(program);
+        this.$router.push({ name: 'users' });
       };
     }
   },
