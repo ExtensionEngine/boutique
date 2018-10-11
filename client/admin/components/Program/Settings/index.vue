@@ -9,12 +9,14 @@
         heading="Delete program"
         message="Are you sure you want to delete program?"/>
     </v-toolbar>
+    <date-picker :dateLabel="startingDateLabel"/>
+    <date-picker :dateLabel="endingDateLabel"/>
   </div>
-
 </template>
 
 <script>
 import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
+import DatePicker from './DatePicker';
 import { mapActions } from 'vuex';
 
 export default {
@@ -23,7 +25,9 @@ export default {
   data() {
     return {
       confirmationDialog: null,
-      confirmationAction: null
+      confirmationAction: null,
+      startingDateLabel: 'Starting date',
+      endingDateLabel: 'Ending date'
     };
   },
   computed: {
@@ -41,7 +45,6 @@ export default {
       };
     }
   },
-  components: { ConfirmationDialog }
-
+  components: { ConfirmationDialog, DatePicker }
 };
 </script>
