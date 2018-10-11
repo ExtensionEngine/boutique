@@ -43,7 +43,7 @@ export default {
 
 <style lang="scss" scoped>
 .notification {
-  margin-top: 10px;
+  margin-top: 0.6rem;
 }
 
 .courseware-enter-active {

@@ -22,7 +22,7 @@ export default {
   data() {
     return { isLoading: true };
   },
-  methods: mapMutations('learner', ['setPrograms', 'setSyllabus']),
+  methods: mapMutations('learner', ['setPrograms']),
   created() {
     const { setPrograms, $route, $router } = this;
     api.fetchPrograms().then(programs => {

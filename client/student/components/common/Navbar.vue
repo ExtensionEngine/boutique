@@ -42,7 +42,6 @@ export default {
   name: 'main-navbar',
   computed: {
     ...mapState('auth', ['user']),
-    ...mapState('learner', ['selectedProgramId']),
     ...mapGetters('learner', ['courseware']),
     programId() {
       return this.$route.params.programId;

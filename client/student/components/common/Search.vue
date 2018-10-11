@@ -38,19 +38,19 @@ export default {
 }
 
 .input, .icon {
-  min-height: 48px;
+  min-height: 3rem;
   color: whitesmoke;
   background-color: #58b5f3;
   transition: all 0.5s;
 }
 
 .input {
-  padding-left: 45px !important;
+  padding-left: 2.8rem !important;
   border: none;
 }
 
 .icon {
-  padding-left: 10px;
+  padding-left: 0.75rem;
   border-radius: 3px;
 }
 
