@@ -44,7 +44,6 @@ const router = new Router({
     }]
   }, {
     path: '/',
-    name: 'home',
     component: Home,
     meta: { auth: true },
     children: [{
@@ -53,7 +52,6 @@ const router = new Router({
       component: ProgramSelection
     }, {
       path: 'programs/:programId',
-      name: 'program',
       component: Program,
       props: parseParams,
       children: [{

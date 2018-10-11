@@ -24,12 +24,13 @@ export default {
   },
   methods: mapMutations('learner', ['setPrograms']),
   created() {
+    const { setPrograms, $route, $router } = this;
     api.fetchPrograms().then(programs => {
-      this.setPrograms(programs);
+      setPrograms(programs);
       this.isLoading = false;
-      if (programs.length !== 1) return;
+      if (programs.length !== 1 || $route.name === 'activity') return;
       const programId = head(programs).id;
-      this.$router.push({ name: 'courseware', params: { programId } });
+      $router.push({ name: 'courseware', params: { programId } });
     });
   },
   components: { Navbar, CircularProgress }

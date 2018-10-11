@@ -4,7 +4,7 @@
     role="navigation"
     aria-label="main navigation">
     <div class="navbar-brand">
-      <router-link to="/" class="navbar-item">
+      <router-link :to="rootRoute" class="navbar-item">
         <span class="mdi mdi-shopping"></span>Boutique
       </router-link>
     </div>
@@ -40,6 +40,12 @@ export default {
     ...mapState('auth', ['user']),
     programId() {
       return this.$route.params.programId;
+    },
+    rootRoute() {
+      const { programId } = this;
+      return programId
+        ? { name: 'courseware', params: { programId } }
+        : { name: 'program-selection' };
     }
   },
   methods: mapActions('auth', ['logout']),
