@@ -17,6 +17,7 @@
       </router-link>
     </nav>
     <content-container
+      :programId="programId"
       :repositoryId="repositoryId"
       :containerId="containerId"
       :key="containerId"/>
@@ -24,29 +25,26 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
 import ContentContainer from './ContentContainer';
 import find from 'lodash/find';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'activity',
   props: {
+    programId: { type: Number, required: true },
     repositoryId: { type: Number, required: true },
     activityId: { type: Number, required: true },
     containerId: { type: Number, required: true }
   },
   computed: {
     ...mapGetters('learner', ['courseware', 'isCoursewareFlat']),
-    ...mapState('learner', ['selectedProgramId']),
     navigationItems() {
       const { activityId: id, courseware, isCoursewareFlat } = this;
       return isCoursewareFlat
         ? courseware
         : find(courseware, { subActivities: [{ id }] }).subActivities;
     }
-  },
-  created() {
-    if (!this.selectedProgramId) return this.$router.push({ name: 'home' });
   },
   components: { ContentContainer }
 };
