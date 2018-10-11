@@ -19,12 +19,6 @@
         </div>
       </transition>
       <div class="navbar-end">
-        <router-link
-          v-if="programId"
-          :to="{ name: 'courseware', params: { programId } }"
-          class="navbar-item">
-          Dashboard
-        </router-link>
         <div class="navbar-item has-dropdown is-hoverable user-dropdown">
           <a href="#" class="navbar-link">
             <span class="mdi mdi-account-circle"/>{{ user.email }}
@@ -90,7 +84,7 @@ export default {
 }
 
 .search-enter-active, .search-leave-active {
-  transition: opacity 0.5s;
+  transition: all 0.5s;
 }
 
 .search-enter, .search-leave-to {
@@ -105,7 +99,7 @@ export default {
   margin-left: 2rem;
 
   .navbar-dropdown {
-    padding: 0 0.4rem;
+    padding: 0;
   }
 
   .mdi {
@@ -115,6 +109,10 @@ export default {
 
   .navbar-link .mdi {
     font-size: 2rem;
+  }
+
+  .mdi-logout {
+    padding-left: 0.4rem;
   }
 
   .navbar-item {

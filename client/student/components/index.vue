@@ -22,14 +22,11 @@ export default {
   data() {
     return { isLoading: true };
   },
-  methods: mapMutations('learner',
-    ['setPrograms', 'setSyllabus', 'setCoursewareFilter']),
+  methods: mapMutations('learner', ['setPrograms', 'setSyllabus']),
   created() {
-    const { setPrograms, setSyllabus, setCoursewareFilter, $route, $router } = this;
+    const { setPrograms, $route, $router } = this;
     api.fetchPrograms().then(programs => {
       setPrograms(programs);
-      setCoursewareFilter();
-      setSyllabus();
       this.isLoading = false;
       if (programs.length !== 1 || $route.name === 'activity') return;
       const programId = head(programs).id;
