@@ -10,6 +10,16 @@ class Program extends Model {
         allowNull: false,
         validate: { notEmpty: true, len: [2, 255] }
       },
+      startingDate: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        field: 'starting_date'
+      },
+      endingDate: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        field: 'ending_date'
+      },
       createdAt: {
         type: DataTypes.DATE,
         field: 'created_at'

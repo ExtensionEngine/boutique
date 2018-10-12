@@ -3,7 +3,7 @@
 const { Enrollment, Program } = require('../common/database');
 const pick = require('lodash/pick');
 
-const processInput = input => pick(input, ['name']);
+const processInput = input => pick(input, ['name', 'startingDate', 'endingDate']);
 
 function list(req, res) {
   return Program.findAll().then(programs => res.jsend.success(programs));
