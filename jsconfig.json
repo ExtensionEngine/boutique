@@ -3,7 +3,7 @@
     "//NOTE": "This DOES not work with `.vue` files!",
     "baseUrl": "./",
     "paths": {
-      "@/*": ["./client/*"],
+      "@/*": ["./client/*"]
     }
   },
   "exclude": [
