@@ -2,7 +2,12 @@
   <div v-if="program" class="mt-3">
     <v-toolbar color="#f5f5f5" flat>
       <v-spacer/>
-      <v-btn v-if="program" @click="remove(program)" color="error" outline>Delete Program</v-btn>
+      <v-btn
+        @click="remove(program)"
+        color="error"
+        outline>
+        Delete Program
+      </v-btn>
       <confirmation-dialog
         :visible.sync="confirmationDialog"
         :action="confirmationAction"
@@ -10,11 +15,17 @@
         message="Are you sure you want to delete program?"/>
     </v-toolbar>
     <rename-field :name.sync="program.name" :disabled.sync="disabled"/>
-    <date-picker :data="startingDate" :dateTemp.sync="program.startingDate" :disabled.sync="disabled"/>
-    <date-picker :data="endingDate" :dateTemp.sync="program.endingDate" :disabled.sync="disabled"/>
+    <date-picker
+      :label="startDateLabel"
+      :dateTemp.sync="program.startDate"
+      :disabled.sync="disabled"/>
+    <date-picker
+      :label="endDateLabel"
+      :dateTemp.sync="program.endDate"
+      :disabled.sync="disabled"/>
     <v-flex xs12 sm6 md4>
       <div class="text-xs-right">
-        <v-btn @click="edit" color="info">Edit</v-btn>
+        <v-btn @click="disable" color="info">Edit</v-btn>
         <v-btn @click="saveChanges" color="info">Save</v-btn>
       </div>
     </v-flex>
@@ -37,14 +48,8 @@ export default {
       confirmationDialog: null,
       confirmationAction: null,
       disabled: true,
-      startingDate: {
-        label: 'Starting date',
-        attr: 'startingDate'
-      },
-      endingDate: {
-        label: 'Ending date',
-        attr: 'endingDate'
-      }
+      startDateLabel: 'Start date',
+      endDateLabel: 'End date'
     };
   },
   computed: {
@@ -64,8 +69,9 @@ export default {
     },
     saveChanges() {
       this.saveProgram(this.program);
+      this.disable();
     },
-    edit() {
+    disable() {
       this.disabled = !this.disabled;
     }
   },

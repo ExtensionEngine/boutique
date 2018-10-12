@@ -15,8 +15,9 @@
         min-width="290px">
         <v-text-field
           slot="activator"
+          :disabled="disabled"
           v-model="modelDate"
-          :label="data.label"
+          :label="label"
           append-icon="event"
           readonly
         ></v-text-field>
@@ -31,7 +32,7 @@ import { mapActions } from 'vuex';
 
 export default {
   props: {
-    data: { type: Object, required: true },
+    label: { type: String, required: true },
     dateTemp: { type: String, default: '' },
     disabled: { type: Boolean, required: true }
   },
