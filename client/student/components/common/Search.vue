@@ -1,5 +1,5 @@
 <template>
-  <div :class="['control', 'has-icons-left', expanded ? 'expanded' : '']">
+  <div :class="{ expanded }" class="control has-icons-left">
     <input
       :value="coursewareFilter"
       @input="setCoursewareFilter($event.target.value)"
@@ -9,11 +9,12 @@
       type="text"
       placeholder="Search...">
     <span class="icon is-left">
-      <i v-show="!coursewareFilter" class="mdi mdi-24px mdi-magnify"/>
-      <i
+      <span v-show="!coursewareFilter" class="mdi mdi-magnify"></span>
+      <span
         v-show="coursewareFilter"
         @mousedown.prevent="setCoursewareFilter()"
-        class="mdi mdi-24px mdi-close"/>
+        class="mdi mdi-close">
+      </span>
     </span>
   </div>
 </template>
@@ -56,6 +57,7 @@ export default {
 
 .mdi {
   color: whitesmoke;
+  font-size: 1.5rem;
   transition: all 0.5s;
 }
 
@@ -63,22 +65,7 @@ export default {
   pointer-events: auto;
 }
 
-::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-  color: whitesmoke !important;
-  transition: all 0.5s;
-}
-
-::-moz-placeholder { /* Firefox 19+ */
-  color: whitesmoke !important;
-  transition: all 0.5s;
-}
-
-:-ms-input-placeholder { /* IE 10+ */
-  color: whitesmoke !important;
-  transition: all 0.5s;
-}
-
-:-moz-placeholder { /* Firefox 18- */
+::placeholder {
   color: whitesmoke !important;
   transition: all 0.5s;
 }
@@ -95,19 +82,7 @@ export default {
     color: darkgrey;
   }
 
-  ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-    color: darkgrey !important;
-  }
-
-  ::-moz-placeholder { /* Firefox 19+ */
-    color: darkgrey !important;
-  }
-
-  :-ms-input-placeholder { /* IE 10+ */
-    color: darkgrey !important;
-  }
-
-  :-moz-placeholder { /* Firefox 18- */
+  ::placeholder {
     color: darkgrey !important;
   }
 }

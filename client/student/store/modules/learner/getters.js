@@ -10,10 +10,9 @@ const LIST_REPOSITORIES = !CARD_ACTIVITY.includes('/');
 export const isCoursewareFlat = () => CARD_SUBACTIVITIES.includes(CARD_ACTIVITY);
 
 export const filteredCourseware = state => {
-  const filterBy = (state.coursewareFilter || '').trim().toLowerCase();
-  return filter(courseware(state), it => {
-    return it.name.toLowerCase().includes(filterBy);
-  });
+  if (!state.coursewareFilter) return courseware(state);
+  const filterBy = new RegExp(state.coursewareFilter.trim(), 'i');
+  return filter(courseware(state), it => filterBy.test(it.name));
 };
 
 export const courseware = state => {

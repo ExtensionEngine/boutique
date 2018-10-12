@@ -5,11 +5,11 @@
     aria-label="main navigation">
     <div class="navbar-brand">
       <router-link :to="rootRoute" class="navbar-item">
-        <span class="mdi mdi-shopping"/>Boutique
+        <span class="mdi mdi-shopping"></span>Boutique
       </router-link>
     </div>
     <div v-if="user" class="navbar-menu">
-      <transition name="search">
+      <transition name="fade">
         <div
           v-show="$route.name === 'courseware' && courseware.length"
           class="navbar-start search-container">
@@ -21,11 +21,11 @@
       <div class="navbar-end">
         <div class="navbar-item has-dropdown is-hoverable user-dropdown">
           <a href="#" class="navbar-link">
-            <span class="mdi mdi-account-circle"/>{{ user.email }}
+            <span class="mdi mdi-account-circle"></span>{{ user.email }}
           </a>
           <div class="navbar-dropdown is-right">
             <a @click.prevent="logout" href="#" class="navbar-item">
-              <span class="mdi mdi-logout"/>Logout
+              <span class="mdi mdi-logout"></span>Logout
             </a>
           </div>
         </div>
@@ -82,16 +82,16 @@ export default {
   margin-left: 6%;
 }
 
-.search-enter-active, .search-leave-active {
+.search-container .navbar-item {
+  width: 100%;
+}
+
+.fade-enter-active, .fade-leave-active {
   transition: all 0.5s;
 }
 
-.search-enter, .search-leave-to {
+.fade-enter, .fade-leave-to {
   opacity: 0;
-}
-
-.search-container .navbar-item {
-  width: 100%;
 }
 
 .user-dropdown {

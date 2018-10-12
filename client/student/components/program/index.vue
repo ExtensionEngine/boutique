@@ -26,12 +26,11 @@ export default {
     ...mapMutations('learner', ['setCoursewareFilter'])
   },
   created() {
-    if (find(this.programs, { id: this.programId })) {
-      this.setCoursewareFilter();
-      this.fetchSyllabus(this.programId).then(() => (this.isLoading = false));
-    } else {
-      this.$router.push({ name: 'program-selection' });
+    if (!find(this.programs, { id: this.programId })) {
+      return this.$router.push({ name: 'program-selection' });
     }
+    this.setCoursewareFilter();
+    this.fetchSyllabus(this.programId).then(() => (this.isLoading = false));
   },
   components: { CircularProgress }
 };

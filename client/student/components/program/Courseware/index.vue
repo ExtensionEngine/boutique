@@ -6,7 +6,7 @@
       </div>
     </div>
     <div v-else>
-      <transition name="empty-courseware">
+      <transition name="slide-fade">
         <div v-show="!filteredCourseware.length" class="columns is-centered">
           <div class="notification is-warning has-text-centered">
             No courseware found!
@@ -14,7 +14,7 @@
         </div>
       </transition>
       <transition-group
-        name="courseware"
+        name="slide-list"
         class="columns is-multiline"
         tag="div">
         <activity-card
@@ -46,30 +46,29 @@ export default {
   margin-top: 0.6rem;
 }
 
-.courseware-enter-active {
+.slide-fade-enter-active, .slide-fade-leave-active {
+  transition: all 0.1s;
+}
+
+.slide-fade-enter, .slide-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10rem);
+}
+
+.slide-list-enter-active {
   transition: all 0.5s;
 }
 
-.courseware-leave-active {
+.slide-list-leave-active {
   position: absolute;
   transition: all 0.5s;
 }
 
-.courseware-enter, .courseware-leave-to {
-  opacity: 0;
+.slide-list-enter, .slide-list-leave-to {
   transform: translateY(18rem);
 }
 
-.courseware-move {
+.slide-list-move {
   transition: all 0.5s;
-}
-
-.empty-courseware-enter-active, .empty-courseware-leave-active {
-  transition: all 0.1s;
-}
-
-.empty-courseware-enter, .empty-courseware-leave-to {
-  opacity: 0;
-  transform: translateY(-10rem);
 }
 </style>
