@@ -17,7 +17,7 @@ router
   .post('/', authorize(), ctrl.create)
   .get('/:id', authorize(), ctrl.get)
   .patch('/:id', authorize(), ctrl.patch)
-  .delete('/:id', authorize(), ctrl.remove)
+  .delete('/:id', authorize(), ctrl.destroy)
   .use('/:id/content', contentRouter.router);
 
 function getProgram(req, _, next) {

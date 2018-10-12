@@ -1,9 +1,13 @@
 'use strict';
 
+const { createError } = require('../common/errors');
 const { Enrollment, Program } = require('../common/database');
+const HttpStatus = require('http-status');
 const pick = require('lodash/pick');
 
-const processInput = input => pick(input, ['name', 'startingDate', 'endingDate']);
+const { NOT_FOUND } = HttpStatus;
+
+const processInput = input => pick(input, ['name', 'startDate', 'endDate']);
 
 function list(req, res) {
   return Program.findAll().then(programs => res.jsend.success(programs));
@@ -23,9 +27,11 @@ function patch({ body, program }, res) {
     .then(program => res.jsend.success(program));
 }
 
-function remove(req, res) {
-  Program.findOne({ where: { id: Number.parseInt(req.params.id) } })
-    .then(program => program.destroy().then(program => res.jsend.success(program)));
+function destroy({ params: { id } }, res) {
+  return Program.findById(id)
+    .then(program => program || createError(NOT_FOUND))
+    .then(program => program.destroy())
+    .then(program => res.jsend.success(program));
 }
 
 function getEnrolledPrograms({ user }, res) {
@@ -39,6 +45,6 @@ module.exports = {
   get,
   create,
   patch,
-  remove,
+  destroy,
   getEnrolledPrograms
 };
