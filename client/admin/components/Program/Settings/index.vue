@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-3">
+  <div v-if="program" class="mt-3">
     <v-toolbar color="#f5f5f5" flat>
       <v-spacer/>
       <v-btn v-if="program" @click="remove(program)" color="error" outline>Delete Program</v-btn>
@@ -9,15 +9,16 @@
         heading="Delete program"
         message="Are you sure you want to delete program?"/>
     </v-toolbar>
-    <date-picker :dateLabel="startingDateLabel"/>
-    <date-picker :dateLabel="endingDateLabel"/>
+    <date-picker :data="startingDate" :program="program"/>
+    <date-picker :data="endingDate" :program="program"/>
   </div>
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex';
 import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
 import DatePicker from './DatePicker';
-import { mapActions } from 'vuex';
+import find from 'lodash/find';
 
 export default {
   name: 'settings',
@@ -26,13 +27,20 @@ export default {
     return {
       confirmationDialog: null,
       confirmationAction: null,
-      startingDateLabel: 'Starting date',
-      endingDateLabel: 'Ending date'
+      startingDate: {
+        label: 'Starting date',
+        attr: 'startingDate'
+      },
+      endingDate: {
+        label: 'Ending date',
+        attr: 'endingDate'
+      }
     };
   },
   computed: {
+    ...mapState('programs', { programs: 'items' }),
     program() {
-      return this.$parent.program;
+      return find(this.programs, { id: this.programId });
     }
   },
   methods: {

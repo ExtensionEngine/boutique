@@ -14,15 +14,15 @@
         min-width="290px">
         <v-text-field
           slot="activator"
-          v-model="date"
-          :label="dateLabel"
+          v-model="modelDate"
+          :label="data.label"
           append-icon="event"
           readonly
         ></v-text-field>
         <v-date-picker v-model="date" no-title scrollable>
           <v-spacer></v-spacer>
           <v-btn @click="menu = false" flat color="primary">Cancel</v-btn>
-          <v-btn @click="$refs.menu.save(date)" flat color="primary">Save</v-btn>
+          <v-btn @click="save(date)" flat color="primary">Save</v-btn>
         </v-date-picker>
       </v-menu>
     </v-flex>
@@ -30,13 +30,29 @@
 </template>
 
 <script>
+import { mapActions } from 'Vuex';
+
 export default {
   props: {
-    dateLabel: { type: String, required: true }
+    data: { type: Object, required: true },
+    program: { type: Object, required: true }
   },
   data: () => ({
     date: null,
     menu: false
-  })
+  }),
+  computed: {
+    modelDate() {
+      return (this.program[this.data.attr] || this.date || ' ').substring(0, 10);
+    }
+  },
+  methods: {
+    ...mapActions('programs', { saveProgram: 'save' }),
+    save(date) {
+      this.$refs.menu.save(date);
+      this.program[this.data.attr] = date;
+      this.saveProgram(this.program);
+    }
+  }
 };
 </script>
