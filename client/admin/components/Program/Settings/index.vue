@@ -9,16 +9,25 @@
         heading="Delete program"
         message="Are you sure you want to delete program?"/>
     </v-toolbar>
-    <date-picker :data="startingDate" :program="program"/>
-    <date-picker :data="endingDate" :program="program"/>
+    <rename-field :name.sync="program.name" :disabled.sync="disabled"/>
+    <date-picker :data="startingDate" :dateTemp.sync="program.startingDate" :disabled.sync="disabled"/>
+    <date-picker :data="endingDate" :dateTemp.sync="program.endingDate" :disabled.sync="disabled"/>
+    <v-flex xs12 sm6 md4>
+      <div class="text-xs-right">
+        <v-btn @click="edit" color="info">Edit</v-btn>
+        <v-btn @click="saveChanges" color="info">Save</v-btn>
+      </div>
+    </v-flex>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex';
+import cloneDeep from 'lodash/cloneDeep';
 import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
 import DatePicker from './DatePicker';
 import find from 'lodash/find';
+import RenameField from './RenameField';
 
 export default {
   name: 'settings',
@@ -27,6 +36,7 @@ export default {
     return {
       confirmationDialog: null,
       confirmationAction: null,
+      disabled: true,
       startingDate: {
         label: 'Starting date',
         attr: 'startingDate'
@@ -40,19 +50,25 @@ export default {
   computed: {
     ...mapState('programs', { programs: 'items' }),
     program() {
-      return find(this.programs, { id: this.programId });
+      return cloneDeep(find(this.programs, { id: this.programId }));
     }
   },
   methods: {
-    ...mapActions('programs', { removeProgram: 'remove' }),
+    ...mapActions('programs', { saveProgram: 'save', removeProgram: 'remove' }),
     remove(program) {
       this.confirmationDialog = true;
       this.confirmationAction = () => {
         this.removeProgram(program);
         this.$router.push({ name: 'users' });
       };
+    },
+    saveChanges() {
+      this.saveProgram(this.program);
+    },
+    edit() {
+      this.disabled = !this.disabled;
     }
   },
-  components: { ConfirmationDialog, DatePicker }
+  components: { ConfirmationDialog, DatePicker, RenameField }
 };
 </script>

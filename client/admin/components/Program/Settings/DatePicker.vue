@@ -5,6 +5,7 @@
         ref="menu"
         :close-on-content-click="false"
         v-model="menu"
+        :disabled="disabled"
         :nudge-right="40"
         :return-value.sync="date"
         lazy
@@ -19,11 +20,7 @@
           append-icon="event"
           readonly
         ></v-text-field>
-        <v-date-picker v-model="date" no-title scrollable>
-          <v-spacer></v-spacer>
-          <v-btn @click="menu = false" flat color="primary">Cancel</v-btn>
-          <v-btn @click="save(date)" flat color="primary">Save</v-btn>
-        </v-date-picker>
+        <v-date-picker v-model="date" @input="save"></v-date-picker>
       </v-menu>
     </v-flex>
   </v-layout>
@@ -35,7 +32,8 @@ import { mapActions } from 'vuex';
 export default {
   props: {
     data: { type: Object, required: true },
-    program: { type: Object, required: true }
+    dateTemp: { type: String, default: '' },
+    disabled: { type: Boolean, required: true }
   },
   data: () => ({
     date: null,
@@ -43,15 +41,14 @@ export default {
   }),
   computed: {
     modelDate() {
-      return (this.program[this.data.attr] || this.date || ' ').substring(0, 10);
+      return (this.date || this.dateTemp || ' ').substring(0, 10);
     }
   },
   methods: {
     ...mapActions('programs', { saveProgram: 'save' }),
     save(date) {
       this.$refs.menu.save(date);
-      this.program[this.data.attr] = date;
-      this.saveProgram(this.program);
+      this.$emit('update:dateTemp', date);
     }
   }
 };
