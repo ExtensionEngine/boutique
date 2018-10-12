@@ -1,10 +1,12 @@
 'use strict';
 
 const { role } = require('../../../../common/config');
+const { timestamps } = require('../mixins');
 const values = require('lodash/values');
 
 module.exports = {
   up: (queryInterface, Sequelize) => queryInterface.createTable('user', {
+    ...timestamps(Sequelize),
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
@@ -33,20 +35,6 @@ module.exports = {
     lastName: {
       type: Sequelize.STRING,
       field: 'last_name'
-    },
-    createdAt: {
-      type: Sequelize.DATE,
-      field: 'created_at',
-      allowNull: false
-    },
-    updatedAt: {
-      type: Sequelize.DATE,
-      field: 'updated_at',
-      allowNull: false
-    },
-    deletedAt: {
-      type: Sequelize.DATE,
-      field: 'deleted_at'
     }
   }),
   down: (queryInterface, Sequelize) => queryInterface.dropTable('user')

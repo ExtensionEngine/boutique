@@ -1,9 +1,11 @@
 'use strict';
 
+const { timestamps } = require('../mixins');
 const TABLE_NAME = 'enrollment';
 
 module.exports = {
   up: (queryInterface, Sequelize) => queryInterface.createTable(TABLE_NAME, {
+    ...timestamps(Sequelize),
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
@@ -23,20 +25,6 @@ module.exports = {
       references: { model: 'program', key: 'id' },
       onDelete: 'NO ACTION',
       allowNull: false
-    },
-    createdAt: {
-      type: Sequelize.DATE,
-      field: 'created_at',
-      allowNull: false
-    },
-    updatedAt: {
-      type: Sequelize.DATE,
-      field: 'updated_at',
-      allowNull: false
-    },
-    deletedAt: {
-      type: Sequelize.DATE,
-      field: 'deleted_at'
     }
   }),
   down: (queryInterface, Sequelize) => queryInterface.dropTable(TABLE_NAME)

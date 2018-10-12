@@ -3,6 +3,7 @@
 const { auth: config = {} } = require('../config');
 const { Model } = require('sequelize');
 const { role } = require('../../common/config');
+const { timestamps } = require('../common/database/mixins');
 const bcrypt = require('bcrypt');
 const forEach = require('lodash/forEach');
 const jwt = require('jsonwebtoken');
@@ -16,6 +17,7 @@ const values = require('lodash/values');
 class User extends Model {
   static fields(DataTypes) {
     return {
+      ...timestamps(DataTypes),
       email: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -42,18 +44,6 @@ class User extends Model {
       lastName: {
         type: DataTypes.STRING,
         field: 'last_name'
-      },
-      createdAt: {
-        type: DataTypes.DATE,
-        field: 'created_at'
-      },
-      updatedAt: {
-        type: DataTypes.DATE,
-        field: 'updated_at'
-      },
-      deletedAt: {
-        type: DataTypes.DATE,
-        field: 'deleted_at'
       },
       profile: {
         type: DataTypes.VIRTUAL,

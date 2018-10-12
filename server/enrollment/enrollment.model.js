@@ -1,23 +1,11 @@
 'use strict';
 
 const { Model } = require('sequelize');
+const { timestamps } = require('../common/database/mixins');
 
 class Enrollment extends Model {
   static fields(DataTypes) {
-    return {
-      createdAt: {
-        type: DataTypes.DATE,
-        field: 'created_at'
-      },
-      updatedAt: {
-        type: DataTypes.DATE,
-        field: 'updated_at'
-      },
-      deletedAt: {
-        type: DataTypes.DATE,
-        field: 'deleted_at'
-      }
-    };
+    return timestamps(DataTypes);
   }
 
   static associate({ Program, User }) {

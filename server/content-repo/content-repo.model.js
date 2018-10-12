@@ -1,10 +1,12 @@
 'use strict';
 
 const { Model } = require('sequelize');
+const { timestamps } = require('../common/database/mixins');
 
 class ContentRepo extends Model {
   static fields(DataTypes) {
     return {
+      ...timestamps(DataTypes),
       sourceId: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -38,20 +40,6 @@ class ContentRepo extends Model {
         type: DataTypes.DATE,
         allowNull: false,
         field: 'published_at'
-      },
-      createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        field: 'created_at'
-      },
-      updatedAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        field: 'updated_at'
-      },
-      deletedAt: {
-        type: DataTypes.DATE,
-        field: 'deleted_at'
       }
     };
   }
