@@ -1,22 +1,24 @@
 <template>
   <v-dialog v-model="visible" width="600">
     <v-btn slot="activator" small flat>Create</v-btn>
-    <v-card class="pa-3">
-      <v-card-title class="headline">New Program</v-card-title>
-      <v-card-text>
-        <v-text-field
-          v-validate="'required|min:2|max:255'"
-          v-model="program.name"
-          :error-messages="vErrors.collect('name')"
-          label="Name"
-          data-vv-name="name"/>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer/>
-        <v-btn @click="close">Cancel</v-btn>
-        <v-btn @click="save" color="success" outline>Save</v-btn>
-      </v-card-actions>
-    </v-card>
+    <v-form @submit.prevent="save">
+      <v-card class="pa-3">
+        <v-card-title class="headline">New Program</v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-validate="'required|min:2|max:255'"
+            v-model="program.name"
+            :error-messages="vErrors.collect('name')"
+            label="Name"
+            data-vv-name="name"/>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer/>
+          <v-btn @click="close">Cancel</v-btn>
+          <v-btn color="success" outline type="submit">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-form>
   </v-dialog>
 </template>
 
