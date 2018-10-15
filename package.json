@@ -1,5 +1,5 @@
 {
-  "name": "lms-starter",
+  "name": "boutique",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -21,13 +21,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ExtensionEngine/lms-starter.git"
+    "url": "git+https://github.com/ExtensionEngine/boutique.git"
   },
   "keywords": [],
   "bugs": {
-    "url": "https://github.com/ExtensionEngine/lms-starter/issues"
+    "url": "https://github.com/ExtensionEngine/boutique/issues"
   },
-  "homepage": "https://github.com/ExtensionEngine/lms-starter#readme",
+  "homepage": "https://github.com/ExtensionEngine/boutique#readme",
+  "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "@poi/plugin-bundle-report": "^10.0.1",
