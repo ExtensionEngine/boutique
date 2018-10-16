@@ -14,9 +14,7 @@ const shorthands = [
 const input = process.argv[2] || '';
 const [cmd] = input.split(delimiter);
 
-if (cmd && shorthands.includes(cmd)) {
-  process.argv[2] = `db:${input}`;
-}
-process.argv.push(...dargs(config));
+if (cmd && shorthands.includes(cmd)) process.argv[2] = `db:${input}`;
+if (cmd) process.argv.push(...dargs(config));
 
 require('sequelize-cli/lib/sequelize');
