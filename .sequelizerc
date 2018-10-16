@@ -5,13 +5,16 @@ const { join, resolve } = require('path');
 // Disable query logging for Sequelize CLI
 const cli = resolve(__dirname, './server/script/sequelize.js');
 const program = resolve(require.main.filename);
-if (program === cli) {
-  const config = require('./server/common/database/config.js');
-  config.logging = false;
-}
+if (program === cli) disableLogging();
 
 module.exports = {
   config: join(__dirname, './server/common/database/config.js'),
   'seeders-path': join(__dirname, './server/common/database/seeds'),
   'migrations-path': join(__dirname, './server/common/database/migrations')
+}
+
+function disableLogging() {
+  const config = require('./server/common/database/config');
+  config.logging = false;
+  return config;
 }
