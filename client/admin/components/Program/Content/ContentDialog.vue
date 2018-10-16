@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="visible" width="700">
+  <v-dialog v-hotkey="{ esc: close }" v-model="visible" width="700">
     <v-btn slot="activator" color="success" outline>Import Content</v-btn>
     <v-form @submit.prevent="importRepo">
       <v-card class="pa-3">
@@ -32,9 +32,13 @@ import differenceBy from 'lodash/differenceBy';
 import map from 'lodash/map';
 import { mapActions } from 'vuex';
 import pick from 'lodash/pick';
+import { withFocusTrap } from '@/common/focustrap';
+
+const el = vm => vm.$children[0].$refs.dialog;
 
 export default {
   name: 'content-import-dialog',
+  mixins: [withFocusTrap({ el })],
   props: {
     programId: { type: Number, required: true },
     importedRepos: { type: Array, default: () => ([]) }
@@ -66,6 +70,7 @@ export default {
   },
   watch: {
     visible(val) {
+      this.$nextTick(() => this.focusTrap.toggle(val));
       if (!val) return;
       this.isLoading = true;
       return api.getCatalog().then(repos => {

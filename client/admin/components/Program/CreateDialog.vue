@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="visible" width="600">
+  <v-dialog v-hotkey="{ esc: close }" v-model="visible" width="600">
     <v-btn slot="activator" small flat>Create</v-btn>
     <v-form @submit.prevent="save">
       <v-card class="pa-3">
@@ -24,13 +24,15 @@
 
 <script>
 import { mapActions } from 'vuex';
+import { withFocusTrap } from '@/common/focustrap';
 import { withValidation } from '@/common/validation';
 
+const el = vm => vm.$children[0].$refs.dialog;
 const getDefaultData = () => ({ name: '' });
 
 export default {
   name: 'program-dialog',
-  mixins: [withValidation()],
+  mixins: [withValidation(), withFocusTrap({ el })],
   data() {
     return {
       visible: false,
@@ -52,6 +54,7 @@ export default {
   },
   watch: {
     visible(val) {
+      this.$nextTick(() => this.focusTrap.toggle(val));
       if (!val) return;
       this.program = getDefaultData();
       this.vErrors.clear();
