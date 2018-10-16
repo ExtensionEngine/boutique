@@ -96,6 +96,7 @@
     "s3-blob-store": "^3.2.0",
     "safe-require": "^1.0.3",
     "sass-web-fonts": "^2.0.2",
+    "semver": "^5.6.0",
     "sequelize": "^4.37.6",
     "tailor-teaching-elements": "^1.1.0",
     "truncate": "^2.0.1",
@@ -112,6 +113,7 @@
   },
   "engines": {
     "node": ">= 8.11.0",
-    "npm": ">= 5.8.0"
+    "npm": ">= 5.8.0",
+    "postgres": ">= 9.4"
   }
 }
