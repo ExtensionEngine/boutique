@@ -1,6 +1,7 @@
 'use strict';
 
-const includes = (arr, item) => arr.indexOf(item) !== -1;
+const config = require('../../sequelize.config.js');
+const dargs = require('dargs');
 
 const delimiter = ':';
 const shorthands = [
@@ -13,7 +14,9 @@ const shorthands = [
 const input = process.argv[2] || '';
 const [cmd] = input.split(delimiter);
 
-if (cmd && includes(shorthands, cmd)) {
+if (cmd && shorthands.includes(cmd)) {
   process.argv[2] = `db:${input}`;
 }
+process.argv.push(...dargs(config));
+
 require('sequelize-cli/lib/sequelize');
