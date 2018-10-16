@@ -1,6 +1,6 @@
 'use strict';
 
-const { 'migrations-path': migrationsPath } = require('../../../.sequelizerc');
+const { migrationsPath } = require('../../../sequelize.config');
 const config = require('./config');
 const forEach = require('lodash/forEach');
 const invoke = require('lodash/invoke');
