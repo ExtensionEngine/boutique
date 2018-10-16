@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="visible" width="500">
+  <v-dialog v-hotkey="{ esc: close }" v-model="visible" width="500">
     <v-btn slot="activator" color="success" outline>Enroll learner</v-btn>
     <v-form @submit.prevent="enroll">
       <v-card class="pa-3">
@@ -36,11 +36,14 @@ import enrollmentApi from '@/admin/api/enrollment';
 import map from 'lodash/map';
 import pick from 'lodash/pick';
 import userApi from '@/admin/api/user';
+import { withFocusTrap } from '@/common/focustrap';
 import { withValidation } from '@/common/validation';
+
+const el = vm => vm.$children[0].$refs.dialog;
 
 export default {
   name: 'enrollment-dialog',
-  mixins: [withValidation()],
+  mixins: [withValidation(), withFocusTrap({ el })],
   props: {
     programId: { type: Number, required: true }
   },
@@ -84,6 +87,7 @@ export default {
       if (val) this.fetch(val);
     },
     visible(val) {
+      this.$nextTick(() => this.focusTrap.toggle(val));
       if (!val) return;
       this.vErrors.clear();
       this.fetch();
