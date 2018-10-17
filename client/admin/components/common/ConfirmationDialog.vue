@@ -16,9 +16,13 @@
 
 <script>
 import Promise from 'bluebird';
+import { withFocusTrap } from '@/common/focustrap';
+
+const el = vm => vm.$children[0].$refs.dialog;
 
 export default {
   name: 'confirmation-dialog',
+  mixins: [withFocusTrap({ el })],
   props: {
     visible: { type: Boolean, default: false },
     heading: { type: String, default: '' },
@@ -44,6 +48,11 @@ export default {
         this.close();
         this.$emit('confirmed');
       });
+    }
+  },
+  watch: {
+    show(val) {
+      this.$nextTick(() => this.focusTrap.toggle(val));
     }
   }
 };
