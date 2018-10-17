@@ -12,7 +12,7 @@
           Settings
         </v-tab>
       </v-tabs>
-      <router-view :key="programId"/>
+      <router-view v-if="program" :key="programId" :program="program"/>
     </v-flex>
   </v-layout>
 </template>

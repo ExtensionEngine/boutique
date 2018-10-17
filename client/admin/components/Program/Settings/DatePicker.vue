@@ -1,55 +1,39 @@
 <template>
-  <v-layout row wrap>
-    <v-flex xs12 sm6 md4>
-      <v-menu
-        ref="menu"
-        :close-on-content-click="false"
-        v-model="menu"
-        :disabled="disabled"
-        :nudge-right="40"
-        :return-value.sync="date"
-        lazy
-        transition="scale-transition"
-        offset-y
-        full-width
-        min-width="290px">
-        <v-text-field
-          slot="activator"
-          :disabled="disabled"
-          v-model="modelDate"
-          :label="label"
-          append-icon="event"
-          readonly
-        ></v-text-field>
-        <v-date-picker v-model="date" @input="save"></v-date-picker>
-      </v-menu>
-    </v-flex>
-  </v-layout>
+  <v-menu
+    ref="menu"
+    :close-on-content-click="false"
+    :disabled="disabled"
+    :nudge-right="40"
+    :return-value.sync="value"
+    full-width
+    lazy
+    min-width="290px"
+    offset-y
+    transition="scale-transition">
+    <v-text-field
+      slot="activator"
+      :disabled="disabled"
+      :error-messages="errorMessages"
+      :label="label"
+      :value="value"
+      append-icon="event"
+      readonly/>
+    <v-date-picker :value="value" @input="save($event)" no-title=""/>
+  </v-menu>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-
 export default {
   props: {
+    disabled: { type: Boolean, required: true },
+    errorMessages: { type: Array, required: true },
     label: { type: String, required: true },
-    dateTemp: { type: String, default: '' },
-    disabled: { type: Boolean, required: true }
-  },
-  data: () => ({
-    date: null,
-    menu: false
-  }),
-  computed: {
-    modelDate() {
-      return (this.date || this.dateTemp || ' ').substring(0, 10);
-    }
+    value: { type: String, default: '' }
   },
   methods: {
-    ...mapActions('programs', { saveProgram: 'save' }),
-    save(date) {
-      this.$refs.menu.save(date);
-      this.$emit('update:dateTemp', date);
+    save(value) {
+      this.$emit('input', value);
+      this.$refs.menu.save(value);
     }
   }
 };

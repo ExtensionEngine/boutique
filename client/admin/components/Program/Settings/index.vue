@@ -1,80 +1,107 @@
 <template>
-  <div v-if="program" class="mt-3">
+  <div class="mt-3">
     <v-toolbar color="#f5f5f5" flat>
       <v-spacer/>
-      <v-btn
-        @click="remove(program)"
-        color="error"
-        outline>
-        Delete Program
-      </v-btn>
+      <v-btn @click="confirmationDialog = true" outline>Delete Program</v-btn>
       <confirmation-dialog
         :visible.sync="confirmationDialog"
-        :action="confirmationAction"
+        :action="() => $router.push({ name: 'users' })"
+        @confirmed="removeProgram(program)"
         heading="Delete program"
         message="Are you sure you want to delete program?"/>
     </v-toolbar>
-    <rename-field :name.sync="program.name" :disabled.sync="disabled"/>
-    <date-picker
-      :label="startDateLabel"
-      :dateTemp.sync="program.startDate"
-      :disabled.sync="disabled"/>
-    <date-picker
-      :label="endDateLabel"
-      :dateTemp.sync="program.endDate"
-      :disabled.sync="disabled"/>
-    <v-flex xs12 sm6 md4>
-      <div class="text-xs-right">
-        <v-btn @click="disable" color="info">Edit</v-btn>
-        <v-btn @click="saveChanges" color="info">Save</v-btn>
-      </div>
-    </v-flex>
+
+    <v-layout>
+      <v-flex xs12 sm6 md4>
+        <form @submit.prevent="save">
+          <v-text-field
+            v-validate="'required|min:2|max:255'"
+            :disabled="disabled"
+            v-model="cloned.name"
+            :error-messages="vErrors.collect('name')"
+            label="Program name"
+            append-icon="edit"
+            data-vv-name="name"/>
+
+          <date-picker
+            v-validate="'date_format:YYYY-MM-DD'"
+            ref="startDate"
+            :disabled="disabled"
+            :error-messages="vErrors.collect('startDate')"
+            v-model="cloned.startDate"
+            label="Start date"
+            data-vv-as="Start Date"
+            data-vv-name="startDate"/>
+
+          <date-picker
+            v-validate="'after:$startDate|date_format:YYYY-MM-DD'"
+            :error-messages="vErrors.collect('endDate')"
+            :disabled="disabled"
+            v-model="cloned.endDate"
+            label="End date"
+            data-vv-as="End Date"
+            data-vv-name="endDate"/>
+
+          <v-flex class="text-xs-right">
+            <v-btn @click="toggleForm" small>
+              {{ disabled ? 'Edit' : 'Cancel' }}
+            </v-btn>
+            <v-btn :disabled="disabled" type="submit" small>Save</v-btn>
+          </v-flex>
+        </form>
+      </v-flex>
+    </v-layout>
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
 import cloneDeep from 'lodash/cloneDeep';
 import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
 import DatePicker from './DatePicker';
-import find from 'lodash/find';
-import RenameField from './RenameField';
+import fecha from 'fecha';
+import { mapActions } from 'vuex';
+import { withValidation } from '@/common/validation';
+
+const formatDate = date => date && fecha.format(new Date(date), 'YYYY-MM-DD');
 
 export default {
   name: 'settings',
-  props: { programId: { type: Number, required: true } },
+  mixins: [withValidation()],
+  props: { program: { type: Object, required: true } },
   data() {
     return {
-      confirmationDialog: null,
-      confirmationAction: null,
-      disabled: true,
-      startDateLabel: 'Start date',
-      endDateLabel: 'End date'
+      confirmationDialog: false,
+      cloned: null,
+      disabled: true
     };
-  },
-  computed: {
-    ...mapState('programs', { programs: 'items' }),
-    program() {
-      return cloneDeep(find(this.programs, { id: this.programId }));
-    }
   },
   methods: {
     ...mapActions('programs', { saveProgram: 'save', removeProgram: 'remove' }),
-    remove(program) {
-      this.confirmationDialog = true;
-      this.confirmationAction = () => {
-        this.removeProgram(program);
-        this.$router.push({ name: 'users' });
-      };
+    cloneProgram() {
+      this.cloned = cloneDeep({
+        ...this.program,
+        startDate: formatDate(this.program.startDate),
+        endDate: formatDate(this.program.endDate)
+      });
     },
-    saveChanges() {
-      this.saveProgram(this.program);
-      this.disable();
+    save() {
+      this.$validator.validateAll().then(isValid => {
+        if (!isValid) return;
+        this.saveProgram(this.cloned);
+        this.disabled = true;
+      });
     },
-    disable() {
+    toggleForm() {
+      if (!this.disabled) {
+        this.cloneProgram();
+      }
+      this.vErrors.clear();
       this.disabled = !this.disabled;
     }
   },
-  components: { ConfirmationDialog, DatePicker, RenameField }
+  created() {
+    this.cloneProgram();
+  },
+  components: { ConfirmationDialog, DatePicker }
 };
 </script>
