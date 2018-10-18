@@ -58,11 +58,11 @@
 import cloneDeep from 'lodash/cloneDeep';
 import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
 import DatePicker from './DatePicker';
-import fecha from 'fecha';
+import format from 'date-fns/format';
 import { mapActions } from 'vuex';
 import { withValidation } from '@/common/validation';
 
-const formatDate = date => date && fecha.format(new Date(date), 'YYYY-MM-DD');
+const formatDate = date => date && format(new Date(date), 'YYYY-MM-DD');
 
 export default {
   name: 'settings',
