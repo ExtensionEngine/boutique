@@ -11,7 +11,8 @@ const loggers = {};
 
 function createLogger(name, options = {}) {
   name = pkg.name + (name ? `:${name}` : '');
-  if (!loggers[name]) loggers[name] = new Logger({ ...options, name });
+  const serializers = { ...Logger.stdSerializers, ...options.serializers };
+  if (!loggers[name]) loggers[name] = new Logger({ ...options, name, serializers });
   return loggers[name];
 }
 Object.assign(createLogger, Logger);
