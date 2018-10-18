@@ -1,6 +1,6 @@
 'use strict';
 
-const { Enrollment, Program } = require('../common/database');
+const { Enrollment, Program, sequelize } = require('../common/database');
 const pick = require('lodash/pick');
 
 const processInput = input => pick(input, ['name', 'startDate', 'endDate']);
@@ -24,7 +24,10 @@ function patch({ body, program }, res) {
 }
 
 function destroy({ program }, res) {
-  return program.destroy().then(program => res.jsend.success(program));
+  sequelize.transaction(async transaction => {
+    await Enrollment.destroy({ where: { programId: program.id }, transaction });
+    return res.jsend.success(await program.destroy({ transaction }));
+  });
 }
 
 function getEnrolledPrograms({ user }, res) {
