@@ -6,17 +6,17 @@
       <confirmation-dialog
         :visible.sync="confirmationDialog"
         :action="() => $router.push({ name: 'users' })"
-        @confirmed="removeProgram(programData)"
+        @confirmed="remove(program)"
         heading="Delete program"
         message="Are you sure you want to delete program?"/>
     </v-toolbar>
     <v-layout>
       <v-flex xs12 sm6 md4>
-        <form @submit.prevent="save">
+        <form @submit.prevent="saveIfValid">
           <v-text-field
             v-validate="'required|min:2|max:255'"
-            :disabled="disabled"
             v-model="program.name"
+            :disabled="disabled"
             :error-messages="vErrors.collect('name')"
             label="Program name"
             append-icon="edit"
@@ -24,17 +24,17 @@
           <date-picker
             v-validate="'date_format:YYYY-MM-DD'"
             ref="startDate"
+            v-model="program.startDate"
             :disabled="disabled"
             :error-messages="vErrors.collect('startDate')"
-            v-model="program.startDate"
             label="Start date"
             data-vv-as="Start Date"
             data-vv-name="startDate"/>
           <date-picker
-            v-validate="'after:$startDate|date_format:YYYY-MM-DD'"
+            v-validate="'date_format:YYYY-MM-DD|after:$startDate'"
+            v-model="program.endDate"
             :error-messages="vErrors.collect('endDate')"
             :disabled="disabled"
-            v-model="program.endDate"
             label="End date"
             data-vv-as="End Date"
             data-vv-name="endDate"/>
@@ -72,7 +72,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions('programs', { saveProgram: 'save', removeProgram: 'remove' }),
+    ...mapActions('programs', ['save', 'remove']),
     cloneProgram() {
       this.program = cloneDeep({
         ...this.programData,
@@ -80,10 +80,10 @@ export default {
         endDate: formatDate(this.programData.endDate)
       });
     },
-    save() {
+    saveIfValid() {
       this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
-        this.saveProgram(this.program);
+        this.save(this.program);
         this.disabled = true;
       });
     },
