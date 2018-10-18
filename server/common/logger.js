@@ -8,10 +8,11 @@ const isMacOS = process.platform === 'darwin';
 const isProduction = process.env.NODE_ENV === 'production';
 
 const loggers = {};
+const serializers = Logger.stdSerializers;
 
 function createLogger(name, options = {}) {
   name = pkg.name + (name ? `:${name}` : '');
-  if (!loggers[name]) loggers[name] = new Logger({ ...options, name });
+  if (!loggers[name]) loggers[name] = new Logger({ ...options, name, serializers });
   return loggers[name];
 }
 Object.assign(createLogger, Logger);

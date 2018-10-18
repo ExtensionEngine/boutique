@@ -5,6 +5,7 @@ const config = require('./config');
 const forEach = require('lodash/forEach');
 const invoke = require('lodash/invoke');
 const logger = require('../logger')();
+const omit = require('lodash/omit');
 const pkg = require('../../../package.json');
 const semver = require('semver');
 const Sequelize = require('sequelize');
@@ -19,6 +20,7 @@ const ContentRepo = require('../../content-repo/content-repo.model');
 const isProduction = process.env.NODE_ENV === 'production';
 const sequelize = new Sequelize(config.url, config);
 const { Sequelize: { DataTypes } } = sequelize;
+logger.info(omit(sequelize.config, ['password']), '🗄️  Connected to database');
 
 const defineModel = Model => {
   const fields = invoke(Model, 'fields', DataTypes, sequelize) || {};
@@ -30,7 +32,6 @@ const defineModel = Model => {
 
 function initialize() {
   const umzug = new Umzug({
-    logging: message => logger.info('[Migration]', message),
     storage: 'sequelize',
     storageOptions: {
       sequelize,
@@ -39,16 +40,29 @@ function initialize() {
     migrations: {
       params: [sequelize.getQueryInterface(), Sequelize],
       path: migrationsPath
+    },
+    logging(message) {
+      if (message.startsWith('==')) return;
+      if (message.startsWith('File:')) {
+        const file = message.split(/\s+/g)[1];
+        return logger.info({ file }, message);
+      }
+      return logger.info(message);
     }
   });
 
+  umzug.on('migrating', migration => logger.info({ migration }, '⬆️  Migrating:', migration));
+  umzug.on('migrated', migration => logger.info({ migration }, '⬆️  Migrated:', migration));
+  umzug.on('reverting', migration => logger.info({ migration }, '⬇️  Reverting:', migration));
+  umzug.on('reverted', migration => logger.info({ migration }, '⬇️  Reverted:', migration));
+
   return checkPostgreVersion(sequelize)
-    .then(!isProduction && umzug.up())
+    .then(() => !isProduction && umzug.up())
     .then(() => umzug.executed())
     .then(migrations => {
       const files = migrations.map(it => it.file);
       if (!files.length) return;
-      logger.info('⬆️  Executed migrations:', files);
+      logger.info({ migrations: files }, '🗄️  Executed migrations:\n', files.join('\n'));
     });
 }
 
@@ -80,12 +94,12 @@ function checkPostgreVersion(sequelize) {
   const type = sequelize.QueryTypes.VERSION;
   return sequelize.query('SHOW server_version', { type })
     .then(version => {
-      logger.info('PostgreSQL version:', version);
+      logger.info({ version }, 'PostgreSQL version:', version);
       const range = pkg.engines && pkg.engines.postgres;
       if (!range) return;
       if (semver.satisfies(semver.coerce(version), range)) return;
-      logger.error(`🚨  ${pkg.name} requires PostgreSQL ${range}\n`, { version });
-      logger.error('✋  Exiting due to engine requirement check failure...\n');
-      process.exit(1);
+      const err = new Error(`"${pkg.name}" requires PostgreSQL ${range}`);
+      logger.error({ version, required: range }, err.message);
+      return Promise.reject(err);
     });
 }
