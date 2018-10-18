@@ -40,56 +40,61 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.card {
-  min-height: 18rem;
-  margin: 1rem;
-  padding: 0.25rem;
-  background-color: #fff;
-  border-radius: 2px;
-  cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-  transition: all 0.3s cubic-bezier(0.25,0.8,0.25,1);
 
-  &:hover {
-    box-shadow: 0 6px 12px rgba(0,0,0,0.25), 0 6px 6px rgba(0,0,0,0.22);
+.column {
+  z-index: 1;
+
+  .card {
+    min-height: 18rem;
+    margin: 1rem;
+    padding: 0.25rem;
+    background-color: #fff;
+    border-radius: 2px;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    transition: all 0.3s cubic-bezier(0.25,0.8,0.25,1);
+
+    &:hover {
+      box-shadow: 0 6px 12px rgba(0,0,0,0.25), 0 6px 6px rgba(0,0,0,0.22);
+    }
+
+    .title {
+      color: #555;
+      font-size: 1.5rem;
+      font-weight: 300;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      min-height: 4rem;
+      padding-top: 0.5rem;
+      font-size: 1rem;
+      font-weight: 300;
+      letter-spacing: 1px;
+    }
   }
 
-  .title {
-    color: #555;
-    font-size: 1.5rem;
-    font-weight: 300;
-    letter-spacing: 1px;
+  .status {
+    $size: 1.8rem;
+    $background-color: #fdd835;
+
+    display: block;
+    width: $size;
+    height: $size;
+    background-color: $background-color;
+    border-radius: 50%;
+    transition: all 1s cubic-bezier(0.25,0.8,0.25,1);
+
+    &:hover {
+      background-color: darken($background-color, 15);
+    }
   }
 
-  .subtitle {
-    min-height: 4rem;
-    padding-top: 0.5rem;
-    font-size: 1rem;
-    font-weight: 300;
-    letter-spacing: 1px;
-  }
-}
-
-.status {
-  $size: 1.8rem;
-  $background-color: #fdd835;
-
-  display: block;
-  width: $size;
-  height: $size;
-  background-color: $background-color;
-  border-radius: 50%;
-  transition: all 1s cubic-bezier(0.25,0.8,0.25,1);
-
-  &:hover {
-    background-color: darken($background-color, 15);
-  }
-}
-
-.sub-activities {
-  li {
-    display: inline-block;
-    padding-right: 0.6rem;
+  .sub-activities {
+    li {
+      display: inline-block;
+      padding-right: 0.6rem;
+    }
   }
 }
 </style>

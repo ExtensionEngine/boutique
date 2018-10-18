@@ -5,10 +5,10 @@
       @input="setCoursewareFilter($event.target.value)"
       @focus="expanded = true"
       @blur="expanded = false"
-      class="input"
+      class="input control-bar"
       type="text"
       placeholder="Search...">
-    <span class="icon is-left">
+    <span class="icon is-left control-bar">
       <span v-show="!coursewareFilter" class="mdi mdi-magnify"></span>
       <span
         v-show="coursewareFilter"
@@ -23,7 +23,7 @@
 import { mapMutations, mapState } from 'vuex';
 
 export default {
-  name: 'search',
+  name: 'navbar-search',
   data() {
     return { expanded: false };
   },
@@ -36,54 +36,54 @@ export default {
 .control {
   width: 75%;
   transition: all 0.5s;
-}
 
-.input, .icon {
-  min-height: 3rem;
-  color: whitesmoke;
-  background-color: #58b5f3;
-  transition: all 0.5s;
-}
+  .control-bar {
+    min-height: 3rem;
+    color: #f5f5f5;
+    background-color: #58b5f3;
+    transition: all 0.5s;
+  }
 
-.input {
-  padding-left: 2.8rem !important;
-  border: none;
-}
+  .input {
+    padding-left: 2.8rem !important;
+    border: none;
+  }
 
-.icon {
-  padding-left: 0.75rem;
-  border-radius: 3px;
-}
+  ::placeholder {
+    color: #f5f5f5 !important;
+    transition: all 0.5s;
+  }
 
-.mdi {
-  color: whitesmoke;
-  font-size: 1.5rem;
-  transition: all 0.5s;
-}
+  .icon {
+    padding-left: 0.75rem;
+    border-radius: 3px;
 
-.mdi-close {
-  pointer-events: auto;
-}
+    .mdi {
+      color: #f5f5f5;
+      font-size: 1.5rem;
+      transition: all 0.5s;
+    }
 
-::placeholder {
-  color: whitesmoke !important;
-  transition: all 0.5s;
+    .mdi-close {
+      pointer-events: auto;
+    }
+  }
 }
 
 .expanded {
   width: 100%;
 
-  .input, .icon {
+  .control-bar {
     color: black;
-    background-color: whitesmoke;
-  }
+    background-color: #f5f5f5;
 
-  .mdi {
-    color: darkgrey;
+    .mdi {
+      color: #a9a9a9;
+    }
   }
 
   ::placeholder {
-    color: darkgrey !important;
+    color: #a9a9a9 !important;
   }
 }
 </style>

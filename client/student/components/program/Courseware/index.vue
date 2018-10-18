@@ -1,13 +1,13 @@
 <template>
   <div>
-    <div v-if="!courseware.length" class="columns is-centered">
+    <div v-if="!courseware.length" class="container">
       <div class="notification is-warning has-text-centered">
         This Program doesn't have any courseware!
       </div>
     </div>
     <div v-else>
       <transition name="slide-fade">
-        <div v-show="!filteredCourseware.length" class="columns is-centered">
+        <div v-show="!filteredCourseware.length" class="container">
           <div class="notification is-warning has-text-centered">
             No courseware found!
           </div>
@@ -51,8 +51,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.notification {
-  margin-top: 0.6rem;
+
+.container {
+  display: flex;
+  justify-content: center;
+
+  .notification {
+    margin-top: 0.6rem;
+  }
 }
 
 .slide-fade-enter-active, .slide-fade-leave-active {
@@ -70,6 +76,7 @@ export default {
 
 .slide-list-leave-active {
   position: absolute;
+  z-index: 0;
   transition: all 0.5s;
 }
 
