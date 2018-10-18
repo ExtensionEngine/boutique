@@ -28,15 +28,24 @@
 </template>
 
 <script>
+import { mapGetters, mapState } from 'vuex';
 import ActivityCard from './ActivityCard';
-import { mapGetters } from 'vuex';
+import filter from 'lodash/filter';
 
 export default {
   name: 'courseware',
   props: {
     programId: { type: Number, required: true }
   },
-  computed: mapGetters('learner', ['courseware', 'filteredCourseware']),
+  computed: {
+    ...mapGetters('learner', ['courseware']),
+    ...mapState('learner', ['coursewareFilter']),
+    filteredCourseware() {
+      if (!this.coursewareFilter) return this.courseware;
+      const filterBy = new RegExp(this.coursewareFilter.trim(), 'i');
+      return filter(this.courseware, it => filterBy.test(it.name));
+    }
+  },
   components: { ActivityCard }
 };
 </script>
