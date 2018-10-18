@@ -15,6 +15,8 @@
             :search-input.sync="email"
             :error-messages="vErrors.collect('learner')"
             :loading="isLoading"
+            @focus="focusTrap.pause()"
+            @blur="focusTrap.unpause()"
             label="Learner"
             placeholder="Start typing to Search"
             prepend-icon="search"

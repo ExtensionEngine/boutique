@@ -9,6 +9,8 @@
             v-model="sourceId"
             :items="availableRepos"
             :loading="isLoading"
+            @focus="focusTrap.pause()"
+            @blur="focusTrap.unpause()"
             item-value="sourceId"
             no-data-text="No available repositories for import"
             prepend-icon="search"

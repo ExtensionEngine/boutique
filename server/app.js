@@ -49,8 +49,8 @@ app.use((err, req, res, next) => {
     res.status(err.status).jsend.error(err.message);
     return;
   }
-  res.sendStatus(INTERNAL_SERVER_ERROR);
-  logger.error({ err });
+  res.status(INTERNAL_SERVER_ERROR).end();
+  logger.error({ req, err }, '🚨  Internal Error:', err.message);
 });
 
 // Handle non-existing routes.
