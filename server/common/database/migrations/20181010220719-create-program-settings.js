@@ -1,18 +1,19 @@
 'use strict';
 
+const Promise = require('bluebird');
+
 const TABLE_NAME = 'program';
+const COLUMNS = ['start_date', 'end_date'];
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.addColumn(TABLE_NAME, 'start_date', Sequelize.DATE)
-      .then(() => {
-        return queryInterface.addColumn(TABLE_NAME, 'end_date', Sequelize.DATE);
-      });
+    return Promise.each(COLUMNS, column => {
+      return queryInterface.addColumn(TABLE_NAME, column, Sequelize.DATE);
+    });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.removeColumn(TABLE_NAME, 'start_date')
-      .then(() => {
-        return queryInterface.removeColumn(TABLE_NAME, 'end_date');
-      });
+    return Promise.each(COLUMNS, column => {
+      return queryInterface.removeColumn(TABLE_NAME, column);
+    });
   }
 };

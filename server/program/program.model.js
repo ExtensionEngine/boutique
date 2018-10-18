@@ -12,21 +12,13 @@ class Program extends Model {
       },
       startDate: {
         type: DataTypes.DATE,
-        allowNull: true,
         field: 'start_date',
-        validate: {
-          isDate: true,
-          areSequential: this.areSequential
-        }
+        validate: { isDate: true }
       },
       endDate: {
         type: DataTypes.DATE,
-        allowNull: true,
         field: 'end_date',
-        validate: {
-          isDate: true,
-          areSequential: this.areSequential
-        }
+        validate: { isDate: true }
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -57,14 +49,16 @@ class Program extends Model {
       modelName: 'program',
       timestamps: true,
       paranoid: true,
-      freezeTableName: true
+      freezeTableName: true,
+      validate: {
+        endDateIsAfterStartDate() {
+          if (!this.endDate) return;
+          if (new Date(this.startDate) >= new Date(this.endDate)) {
+            throw new Error('The End Date must be after Start Date.');
+          }
+        }
+      }
     };
-  }
-
-  static areSequential() {
-    if (this.endDate && (new Date(this.startDate) > new Date(this.endDate))) {
-      throw new Error('The End Date must be after Start Date.');
-    }
   }
 }
 
