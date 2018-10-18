@@ -5,7 +5,7 @@ const config = require('./config');
 const forEach = require('lodash/forEach');
 const invoke = require('lodash/invoke');
 const logger = require('../logger')();
-const omit = require('lodash/omit');
+const pick = require('lodash/pick');
 const pkg = require('../../../package.json');
 const semver = require('semver');
 const Sequelize = require('sequelize');
@@ -20,7 +20,7 @@ const ContentRepo = require('../../content-repo/content-repo.model');
 const isProduction = process.env.NODE_ENV === 'production';
 const sequelize = new Sequelize(config.url, config);
 const { Sequelize: { DataTypes } } = sequelize;
-logger.info(omit(sequelize.config, ['password']), '🗄️  Connected to database');
+logger.info(getConfig(sequelize), '🗄️  Connected to database');
 
 const defineModel = Model => {
   const fields = invoke(Model, 'fields', DataTypes, sequelize) || {};
@@ -89,6 +89,20 @@ const db = {
 sequelize.model = name => sequelize.models[name] || db[name];
 
 module.exports = db;
+
+function getConfig(sequelize) {
+  // NOTE: Listing all available keys except password: https://git.io/fxVG2
+  return pick(sequelize.config, [
+    'database', 'username', 'host', 'port', 'protocol',
+    'pool',
+    'native',
+    'ssl',
+    'replication',
+    'dialectModulePath',
+    'keepDefaultTimezone',
+    'dialectOptions'
+  ]);
+}
 
 function checkPostgreVersion(sequelize) {
   const type = sequelize.QueryTypes.VERSION;
