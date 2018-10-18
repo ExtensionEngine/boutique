@@ -91,7 +91,7 @@ sequelize.model = name => sequelize.models[name] || db[name];
 module.exports = db;
 
 function getConfig(sequelize) {
-  // NOTE: Listing all available keys except password: https://git.io/fxVG2
+  // NOTE: List public fields: https://git.io/fxVG2
   return pick(sequelize.config, [
     'database', 'username', 'host', 'port', 'protocol',
     'pool',

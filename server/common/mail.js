@@ -6,8 +6,10 @@ const { promisify } = require('util');
 const { role } = require('../../common/config');
 const email = require('emailjs');
 const logger = require('./logger')();
+const pick = require('lodash/pick');
 
 const server = email.server.connect(config);
+logger.info(getConfig(server), '📧  SMTP client created');
 const send = promisify(server.send.bind(server));
 const isAdmin = user => user.role && user.role === role.ADMIN;
 
@@ -53,4 +55,13 @@ function resetPassword(user, { origin }) {
 function resetUrl(origin, user) {
   const baseUrl = origin + (isAdmin(user) ? '/admin' : '');
   return `${baseUrl}/#/auth/reset-password/${user.token}`;
+}
+
+function getConfig(server) {
+  // NOTE: List public keys: https://git.io/fxV4j
+  return pick(server.smtp, [
+    'host', 'port', 'domain',
+    'authentication', 'ssl', 'tls',
+    'timeout'
+  ]);
 }
