@@ -2,7 +2,9 @@
   <div class="mt-3">
     <v-toolbar color="#f5f5f5" flat>
       <v-spacer/>
-      <v-btn @click="confirmationDialog = true" outline>Delete Program</v-btn>
+      <v-btn @click="confirmationDialog = true" color="error" outline>
+        Delete Program
+      </v-btn>
       <confirmation-dialog
         :visible.sync="confirmationDialog"
         :action="() => $router.push({ name: 'users' })"
@@ -12,7 +14,7 @@
     </v-toolbar>
     <v-layout>
       <v-flex xs12 sm6 md4>
-        <form @submit.prevent="saveIfValid">
+        <form @submit.prevent="saveProgram(disabled)">
           <v-text-field
             v-validate="'required|min:2|max:255'"
             v-model="program.name"
@@ -39,10 +41,9 @@
             data-vv-as="End Date"
             data-vv-name="endDate"/>
           <v-flex class="text-xs-right">
-            <v-btn @click="toggleForm" small>
-              {{ disabled ? 'Edit' : 'Cancel' }}
+            <v-btn :color="disabled ? 'info' : 'success'" type="submit" small>
+              {{ disabled ? 'Edit' : 'Save' }}
             </v-btn>
-            <v-btn :disabled="disabled" type="submit" small>Save</v-btn>
           </v-flex>
         </form>
       </v-flex>
@@ -80,18 +81,19 @@ export default {
         endDate: formatDate(this.programData.endDate)
       });
     },
-    saveIfValid() {
-      this.$validator.validateAll().then(isValid => {
-        if (!isValid) return;
-        this.save(this.program);
-        this.disabled = true;
-      });
+    saveProgram(disabled) {
+      if (disabled) {
+        this.vErrors.clear();
+        this.toggleForm();
+      } else {
+        this.$validator.validateAll().then(isValid => {
+          if (!isValid) return;
+          this.save(this.program);
+          this.toggleForm();
+        });
+      }
     },
     toggleForm() {
-      if (!this.disabled) {
-        this.cloneProgram();
-      }
-      this.vErrors.clear();
       this.disabled = !this.disabled;
     }
   },
