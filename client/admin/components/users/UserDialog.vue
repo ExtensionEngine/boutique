@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="show" width="700">
+  <v-dialog v-hotkey="{ esc: close }" v-model="show" width="700">
     <v-form @submit.prevent="save">
       <v-card class="pa-3">
         <v-card-title class="headline">
@@ -18,6 +18,8 @@
             v-model="user.role"
             :items="roles"
             :error-messages="vErrors.collect('role')"
+            @focus="focusTrap.pause()"
+            @blur="focusTrap.unpause()"
             label="Role"
             data-vv-name="role"
             class="mb-3"/>
@@ -53,8 +55,10 @@ import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
 import { role } from '@/../common/config';
+import { withFocusTrap } from '@/common/focustrap';
 import { withValidation } from '@/common/validation';
 
+const el = vm => vm.$children[0].$refs.dialog;
 const resetUser = () => {
   return {
     firstName: '',
@@ -66,7 +70,7 @@ const resetUser = () => {
 
 export default {
   name: 'user-dialog',
-  mixins: [withValidation()],
+  mixins: [withValidation(), withFocusTrap({ el })],
   props: {
     visible: { type: Boolean, default: false },
     userData: { type: Object, default: () => ({}) }
@@ -103,6 +107,7 @@ export default {
   },
   watch: {
     show(val) {
+      this.$nextTick(() => this.focusTrap.toggle(val));
       if (!val) return;
       this.vErrors.clear();
       if (!isEmpty(this.userData)) this.user = cloneDeep(this.userData);
