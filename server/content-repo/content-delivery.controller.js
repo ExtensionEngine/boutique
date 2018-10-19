@@ -7,6 +7,7 @@ const HttpStatus = require('http-status');
 const map = require('lodash/map');
 const omit = require('lodash/omit');
 const pick = require('lodash/pick');
+const { resolveContainer } = require('../common/storage/helpers');
 
 const { NOT_FOUND } = HttpStatus;
 const Storage = createStorage(config.storage);
@@ -28,6 +29,7 @@ function get({ repo }, res) {
 function getContainer({ program, params, repo }, res) {
   return Storage.getContainer(repo.sourceId, params.containerId, program.id)
     .catch(() => createError(NOT_FOUND, 'Not found!'))
+    .then(container => resolveContainer(container))
     .then(container => res.jsend.success(container));
 }
 

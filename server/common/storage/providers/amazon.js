@@ -33,6 +33,20 @@ class S3Store extends S3BlobStore {
       return this.s3.copyObject(opts).promise();
     });
   }
+
+  getFileUrl(key) {
+    const params = { Bucket: this.bucket, Key: key, Expires: 3600 };
+    return this._getSignedUrl('getObject', params);
+  }
+
+  _getSignedUrl(operation, params) {
+    return new Promise((resolve, reject) => {
+      this.s3.getSignedUrl(operation, params, (err, url) => {
+        if (err) return reject(err);
+        resolve(url);
+      });
+    });
+  }
 }
 
 function createStore(config) {

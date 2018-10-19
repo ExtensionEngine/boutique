@@ -30,6 +30,10 @@ class Storage {
     return getStream(this.store.createReadStream({ key }));
   }
 
+  getFileUrl(key) {
+    return this.store.getFileUrl(key);
+  }
+
   getItem(key) {
     return this.getFile(key)
       .catch(err => {
