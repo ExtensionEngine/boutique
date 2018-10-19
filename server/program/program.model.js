@@ -56,6 +56,11 @@ class Program extends Model {
           if (new Date(this.startDate) >= new Date(this.endDate)) {
             throw new Error('The End Date must be after Start Date.');
           }
+        },
+        endDateRequiresStartDate() {
+          if (this.endDate && !this.startDate) {
+            throw new Error('The End Date requires Start Date.');
+          }
         }
       }
     };
