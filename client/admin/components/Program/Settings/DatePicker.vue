@@ -1,12 +1,9 @@
 <template>
   <v-menu
     ref="menu"
-    :close-on-content-click="false"
     :disabled="disabled"
-    :nudge-right="40"
     :return-value.sync="value"
     full-width
-    lazy
     min-width="290px"
     offset-y
     transition="scale-transition">
@@ -15,10 +12,10 @@
       :value="value"
       :label="label"
       :disabled="disabled"
-      :error-messages="errorMessages"
+      :error-messages="errors"
       append-icon="event"
       readonly/>
-    <v-date-picker :value="value" @input="save($event)" no-title=""/>
+    <v-date-picker :value="value" @input="save($event)" no-title/>
   </v-menu>
 </template>
 
@@ -28,7 +25,7 @@ export default {
     value: { type: String, default: '' },
     label: { type: String, required: true },
     disabled: { type: Boolean, required: true },
-    errorMessages: { type: Array, required: true }
+    errors: { type: Array, required: true }
   },
   methods: {
     save(value) {

@@ -32,10 +32,10 @@ function destroy({ program }, res) {
 
 function getEnrolledPrograms({ user }, res) {
   const currentDate = new Date();
-  const { eq, gt, lt, or } = Sequelize.Op;
+  const Op = Sequelize.Op;
   const include = [{ model: Enrollment, where: { studentId: user.id } }];
-  const startDate = { [or]: { [lt]: currentDate, [eq]: null } };
-  const endDate = { [or]: { [gt]: currentDate, [eq]: null } };
+  const startDate = { [Op.or]: { [Op.lt]: currentDate, [Op.eq]: null } };
+  const endDate = { [Op.or]: { [Op.gt]: currentDate, [Op.eq]: null } };
 
   return Program.findAll({ include, where: { startDate, endDate } })
     .then(programs => res.jsend.success(programs));

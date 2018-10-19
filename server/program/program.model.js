@@ -51,15 +51,15 @@ class Program extends Model {
       paranoid: true,
       freezeTableName: true,
       validate: {
+        endDateRequiresStartDate() {
+          if (this.endDate && !this.startDate) {
+            throw new Error('The End Date requires Start Date.');
+          }
+        },
         endDateIsAfterStartDate() {
           if (!this.endDate) return;
           if (new Date(this.startDate) >= new Date(this.endDate)) {
             throw new Error('The End Date must be after Start Date.');
-          }
-        },
-        endDateRequiresStartDate() {
-          if (this.endDate && !this.startDate) {
-            throw new Error('The End Date requires Start Date.');
           }
         }
       }
