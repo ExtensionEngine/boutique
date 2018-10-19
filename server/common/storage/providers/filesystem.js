@@ -16,6 +16,15 @@ const errors = {
 };
 
 class FsStore extends FsBlobStore {
+  constructor(path) {
+    super(path);
+    this.path = path;
+  }
+
+  static createStore(config) {
+    return new FsStore(config.path);
+  }
+
   copyDir(src, dest) {
     return fse.copy(path.join(this.path, src), path.join(this.path, dest));
   }
@@ -29,8 +38,8 @@ class FsStore extends FsBlobStore {
   }
 }
 
-function createStore(config) {
-  return new FsStore(config.path);
-}
-
-module.exports = { schema, errors, createStore };
+module.exports = {
+  schema,
+  errors,
+  createStore: FsStore.createStore
+};

@@ -1,8 +1,7 @@
 'use strict';
 
-const config = require('../config');
 const { createError } = require('../common/errors');
-const createStorage = require('../common/storage');
+const Storage = require('../common/storage');
 const HttpStatus = require('http-status');
 const map = require('lodash/map');
 const omit = require('lodash/omit');
@@ -10,7 +9,6 @@ const pick = require('lodash/pick');
 const { resolveContainer } = require('../common/storage/helpers');
 
 const { NOT_FOUND } = HttpStatus;
-const Storage = createStorage(config.storage);
 const excludeCorrect = data => map(data, it => omit(it, 'data.correct'));
 
 function list({ program, query: { includeStructure } }, res) {

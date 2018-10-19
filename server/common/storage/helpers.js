@@ -1,11 +1,8 @@
 'use strict';
 
-const config = require('../../config');
-const createStorage = require('../storage');
+const Storage = require('./index');
 const Promise = require('bluebird');
 const values = require('lodash/values');
-
-const Storage = createStorage(config.storage);
 
 function resolveAsset(asset) {
   function getUrl(key) {
