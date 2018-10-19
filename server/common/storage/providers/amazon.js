@@ -5,6 +5,7 @@ const S3 = require('aws-sdk/clients/s3');
 const S3BlobStore = require('s3-blob-store');
 
 const API_VERSION = '2006-03-01';
+const DEFAULT_EXPIRATION_TIME = 3600;
 
 const schema = Joi.object().keys({
   region: Joi.string().required(),
@@ -52,7 +53,11 @@ class S3Store extends S3BlobStore {
   }
 
   getFileUrl(key) {
-    const params = { Bucket: this.bucket, Key: key, Expires: 3600 };
+    const params = {
+      Bucket: this.bucket,
+      Key: key,
+      Expires: DEFAULT_EXPIRATION_TIME
+    };
     return this._getSignedUrl('getObject', params);
   }
 
