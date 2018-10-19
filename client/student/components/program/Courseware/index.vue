@@ -32,6 +32,8 @@ import { mapGetters, mapState } from 'vuex';
 import ActivityCard from './ActivityCard';
 import filter from 'lodash/filter';
 
+const escapeSpecialChars = it => it.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+
 export default {
   name: 'courseware',
   props: {
@@ -41,9 +43,10 @@ export default {
     ...mapGetters('learner', ['courseware']),
     ...mapState('learner', ['coursewareFilter']),
     filteredCourseware() {
-      if (!this.coursewareFilter) return this.courseware;
-      const filterBy = new RegExp(this.coursewareFilter.trim(), 'i');
-      return filter(this.courseware, it => filterBy.test(it.name));
+      const { courseware, coursewareFilter: filterBy } = this;
+      if (!filterBy) return courseware;
+      const testBy = new RegExp(escapeSpecialChars(filterBy.trim()), 'i');
+      return filter(courseware, it => testBy.test(it.name));
     }
   },
   components: { ActivityCard }
