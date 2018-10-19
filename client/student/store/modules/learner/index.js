@@ -4,7 +4,6 @@ import * as mutations from './mutations';
 
 const state = {
   programs: [],
-  selectedProgramId: null,
   syllabus: []
 };
 

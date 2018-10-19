@@ -1,14 +1,15 @@
-import Activity from '@/student/components/Activity/index';
+import Activity from '@/student/components/Program/Activity/index';
 import Auth from '@/student/components/auth';
-import Courseware from '@/student/components/Courseware/index';
+import Courseware from '@/student/components/Program/Courseware/index';
 import ForgotPassword from '@/student/components/auth/ForgotPassword';
 import get from 'lodash/get';
-import Home from '@/student/components/Home/index';
+import Home from '@/student/components/index';
 import Login from '@/student/components/auth/Login';
 import NotFound from '@/admin/components/common/NotFound';
+import Program from '@/student/components/Program/index';
+import ProgramSelection from '@/student/components/ProgramSelection';
 import ResetPassword from '@/student/components/auth/ResetPassword';
 import role from '@/../common/config/role';
-import Root from '@/student/components/index';
 import Router from 'vue-router';
 import store from './store';
 import transform from 'lodash/transform';
@@ -43,22 +44,27 @@ const router = new Router({
     }]
   }, {
     path: '/',
-    name: 'root',
-    component: Root,
+    component: Home,
     meta: { auth: true },
     children: [{
       path: '',
-      name: 'home',
-      component: Home
+      name: 'program-selection',
+      component: ProgramSelection
     }, {
-      path: 'courseware',
-      name: 'courseware',
-      component: Courseware
-    }, {
-      path: 'repository/:repositoryId/activity/:activityId/:containerId',
-      name: 'activity',
-      component: Activity,
-      props: parseParams
+      path: 'programs/:programId',
+      component: Program,
+      props: parseParams,
+      children: [{
+        path: '',
+        name: 'courseware',
+        component: Courseware,
+        props: parseParams
+      }, {
+        path: 'repository/:repositoryId/activity/:activityId/:containerId',
+        name: 'activity',
+        component: Activity,
+        props: parseParams
+      }]
     }]
   }, fallbackRoute]
 });

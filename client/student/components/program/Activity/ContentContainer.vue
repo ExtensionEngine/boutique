@@ -13,13 +13,13 @@
 
 <script>
 import api from '@/student/api/content';
-import CircularProgress from '../common/CircularProgress';
-import { mapState } from 'vuex';
+import CircularProgress from '@/student/components/common/CircularProgress';
 import TailorTeachingElements from 'tailor-teaching-elements';
 
 export default {
   name: 'content-container',
   props: {
+    programId: { type: Number, required: true },
     repositoryId: { type: Number, required: true },
     containerId: { type: Number, required: true }
   },
@@ -29,9 +29,8 @@ export default {
       isLoading: true
     };
   },
-  computed: mapState('learner', ['selectedProgramId']),
   created() {
-    api.getContainer(this.selectedProgramId, this.repositoryId, this.containerId)
+    api.getContainer(this.programId, this.repositoryId, this.containerId)
       .then(container => {
         this.container = container;
         this.isLoading = false;

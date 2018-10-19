@@ -1,14 +1,14 @@
 {
-  "name": "lms-starter",
+  "name": "boutique",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev:client": "poi",
-    "dev:server": "nodemon --exec \"node -r dotenv/config\" ./server | bunyan",
-    "db": "node -r dotenv/config ./server/script/sequelize",
+    "dev:server": "nodemon -r dotenv/config ./server | bunyan",
+    "db": "node ./server/script/sequelize",
     "db:reset": "npm run db drop && npm run db create && npm run db migrate",
     "db:seed": "npm run db seed:all",
-    "user:add": "node  -r dotenv/config ./server/script/add-user.js",
+    "user:add": "node ./server/script/add-user.js",
     "lint:js": "eslint --ext .js,.vue server client",
     "lint:scss": "stylelint client/**/*.vue client/**/*.scss",
     "lint": "npm run lint:js; npm run lint:scss",
@@ -21,17 +21,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ExtensionEngine/lms-starter.git"
+    "url": "git+https://github.com/ExtensionEngine/boutique.git"
   },
   "keywords": [],
   "bugs": {
-    "url": "https://github.com/ExtensionEngine/lms-starter/issues"
+    "url": "https://github.com/ExtensionEngine/boutique/issues"
   },
-  "homepage": "https://github.com/ExtensionEngine/lms-starter#readme",
+  "homepage": "https://github.com/ExtensionEngine/boutique#readme",
+  "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "@poi/plugin-bundle-report": "^10.0.1",
     "@poi/plugin-eslint": "^10.0.2",
+    "dargs": "^6.0.0",
     "del-cli": "^1.1.0",
     "emoji-strip": "^1.0.1",
     "eslint": "^4.19.1",
@@ -48,13 +50,13 @@
     "nodemon": "^1.18.4",
     "poi": "^10.2.10",
     "sass-loader": "^7.1.0",
-    "sequelize-cli": "^4.0.0",
+    "sequelize-cli": "^5.1.0",
     "split2": "^3.0.0",
     "stylelint": "^9.5.0",
     "stylelint-config-standard": "^18.2.0",
     "stylelint-order": "^1.0.0",
     "stylelint-scss": "^3.3.0",
-    "vue-template-compiler": "^2.5.16"
+    "vue-template-compiler": "^2.5.17"
   },
   "dependencies": {
     "aws-sdk": "^2.226.1",
@@ -71,6 +73,7 @@
     "emailjs": "^2.0.0",
     "express": "^4.16.3",
     "express-async-errors": "^2.1.2",
+    "focus-trap": "^3.0.0",
     "fs-blob-store": "^5.2.1",
     "fs-extra": "^7.0.0",
     "get-stream": "^3.0.0",
@@ -95,14 +98,15 @@
     "s3-blob-store": "^3.2.0",
     "safe-require": "^1.0.3",
     "sass-web-fonts": "^2.0.2",
+    "semver": "^5.6.0",
     "sequelize": "^4.37.6",
     "tailor-teaching-elements": "^1.1.0",
     "truncate": "^2.0.1",
     "umzug": "^2.1.0",
     "url-join": "^4.0.0",
-    "v-hotkey": "^0.2.0",
+    "v-hotkey": "^0.2.3",
     "vee-validate": "^2.0.6",
-    "vue": "^2.5.16",
+    "vue": "^2.5.17",
     "vue-multiselect": "^2.1.0",
     "vue-router": "^3.0.1",
     "vue-visible": "^1.0.2",
@@ -111,6 +115,7 @@
   },
   "engines": {
     "node": ">= 8.11.0",
-    "npm": ">= 5.8.0"
+    "npm": ">= 5.8.0",
+    "postgres": ">= 9.4"
   }
 }

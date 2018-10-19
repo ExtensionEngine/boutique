@@ -4,7 +4,8 @@ const { auth: config = {} } = require('../../../config');
 const bcrypt = require('bcrypt');
 const Promise = require('bluebird');
 const { role } = require('../../../../common/config');
-const times = require('lodash/times');
+
+const times = (length, cb) => Array.from({ length }, (_, i) => cb(i));
 
 const now = new Date();
 const users = [{

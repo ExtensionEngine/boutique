@@ -4,15 +4,15 @@
     role="navigation"
     aria-label="main navigation">
     <div class="navbar-brand">
-      <router-link to="/" class="navbar-item">
+      <router-link :to="rootRoute" class="navbar-item">
         <span class="mdi mdi-shopping"></span>Boutique
       </router-link>
     </div>
     <div v-if="user" class="navbar-menu">
       <div class="navbar-end">
         <router-link
-          v-if="selectedProgramId"
-          :to="{ name: 'courseware' }"
+          v-if="programId"
+          :to="{ name: 'courseware', params: { programId } }"
           class="navbar-item">
           Dashboard
         </router-link>
@@ -38,7 +38,15 @@ export default {
   name: 'main-navbar',
   computed: {
     ...mapState('auth', ['user']),
-    ...mapState('learner', ['selectedProgramId'])
+    programId() {
+      return this.$route.params.programId;
+    },
+    rootRoute() {
+      const { programId } = this;
+      return programId
+        ? { name: 'courseware', params: { programId } }
+        : { name: 'program-selection' };
+    }
   },
   methods: mapActions('auth', ['logout']),
   mounted() {
