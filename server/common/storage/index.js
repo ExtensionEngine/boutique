@@ -77,7 +77,7 @@ class Storage {
   }
 
   getCatalog() {
-    return this.getItem(`${storage.publishedContentLocation}/index.json`);
+    return this.getItem(`${this.options.publishedContentLocation}/index.json`);
   }
 
   getRepository(repoId) {
