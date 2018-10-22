@@ -36,7 +36,7 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import Search from './Search.vue';
+import Search from './Search';
 
 export default {
   name: 'main-navbar',

@@ -40,7 +40,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .column {
   z-index: 1;
 
