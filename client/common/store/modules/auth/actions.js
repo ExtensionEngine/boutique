@@ -6,11 +6,7 @@ export const login = ({ commit }, credentials) => {
 };
 
 export const logout = () => {
-  return auth.logout()
-    .then(() => setTimeout(() => {
-      window.localStorage.removeItem('LMS_USER');
-      window.location.replace(window.location.origin);
-    }, 0));
+  return auth.logout();
 };
 
 export const forgotPassword = (context, { email }) => {

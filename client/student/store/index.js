@@ -6,7 +6,6 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-const MUTATION_TYPE = 'auth/login';
 const isProduction = process.env.NODE_ENV === 'production';
 
 export default new Vuex.Store({
@@ -14,6 +13,6 @@ export default new Vuex.Store({
     auth,
     learner
   },
-  plugins: [authPlugin(MUTATION_TYPE)],
+  plugins: [authPlugin({ key: 'LMS_USER' })],
   strict: !isProduction
 });

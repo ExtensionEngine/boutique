@@ -1,4 +1,5 @@
 import auth from '@/common/store/modules/auth';
+import { auth as authPlugin } from '@/common/store/plugins';
 import contentRepo from '@/admin/store/modules/content-repo';
 import programs from '@/admin/store/modules/programs';
 import Vue from 'vue';
@@ -14,5 +15,6 @@ export default new Vuex.Store({
     contentRepo,
     programs
   },
+  plugins: [authPlugin({ key: 'LMS_USER' })],
   strict: !isProduction
 });
