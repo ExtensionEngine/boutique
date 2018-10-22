@@ -21,23 +21,6 @@ const errors = {
 };
 
 class S3Store extends S3BlobStore {
-  constructor({ client, bucket }) {
-    super({ client, bucket });
-    this.client = client;
-    this.bucket = bucket;
-  }
-
-  static createStore(config) {
-    const client = new S3({
-      accessKeyId: config.key,
-      secretAccessKey: config.secret,
-      region: config.region,
-      apiVersion: API_VERSION,
-      ...config
-    });
-    return new S3Store({ client, bucket: config.bucket });
-  }
-
   async copyDir(src, dest) {
     const Bucket = this.bucket;
     const opts = { Bucket, Delimiter: '/', Prefix: src };
@@ -71,8 +54,16 @@ class S3Store extends S3BlobStore {
   }
 }
 
-module.exports = {
-  schema,
-  errors,
-  createStore: S3Store.createStore
-};
+function createStore(config) {
+  const client = new S3({
+    accessKeyId: config.key,
+    secretAccessKey: config.secret,
+    region: config.region,
+    apiVersion: API_VERSION,
+    ...config
+  });
+
+  return new S3Store({ client, bucket: config.bucket });
+}
+
+module.exports = { schema, errors, createStore };

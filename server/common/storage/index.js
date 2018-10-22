@@ -14,30 +14,10 @@ class NotFoundError extends Error {
 }
 
 class Storage {
-  constructor(options = {}) {
-    const { store, errors = {} } = Storage.createStorage(options);
+  constructor(store, { errors = {} } = {}) {
+    if (!isStore(store)) throw new TypeError('Invalid store provided');
     this.store = store;
     this.errors = errors;
-  }
-
-  static createStorage(options = {}) {
-    const providerName = options.provider;
-    if (!options[providerName]) {
-      throw new Error('Provider should be defined in config');
-    }
-
-    // Validate provider config.
-    const config = options[providerName];
-    const provider = loadProvider(providerName);
-    provider.schema.validate(config, { stripUnknown: true }, err => {
-      if (err) throw new Error('Unsupported config structure');
-    });
-
-    // Create store.
-    const store = provider.createStore(config);
-    const { errors } = provider;
-    if (!isStore(store)) throw new TypeError('Invalid store provided');
-    return { store, errors };
   }
 
   getRepoLocation(repoId, programId) {
@@ -108,7 +88,27 @@ class Storage {
   }
 }
 
-module.exports = new Storage(storage);
+function createStorage(options = {}) {
+  // Validate provider name.
+  const providerName = options.provider;
+  if (!options[providerName]) {
+    throw new Error('Provider should be defined in config');
+  }
+
+  // Validate provider config.
+  const config = options[providerName];
+  const provider = loadProvider(providerName);
+  provider.schema.validate(config, { stripUnknown: true }, err => {
+    if (err) throw new Error('Unsupported config structure');
+  });
+
+  // Create store & client instance.
+  const store = provider.createStore(config);
+  const { errors } = provider;
+  return new Storage(store, { errors });
+}
+
+module.exports = createStorage;
 module.exports.NotFoundError = NotFoundError;
 
 function loadProvider(name) {

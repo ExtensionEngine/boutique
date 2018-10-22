@@ -1,11 +1,13 @@
 'use strict';
 
 const { ContentRepo } = require('../common/database');
-const Storage = require('../common/storage');
+const config = require('../config');
+const createStorage = require('../common/storage');
 const forEach = require('lodash/forEach');
 const keyBy = require('lodash/keyBy');
 const pick = require('lodash/pick');
 
+const Storage = createStorage(config.storage);
 const outputAttributes = ['id', 'sourceId', 'programId', 'name', 'publishedAt'];
 
 async function list({ query: { programId, srcVersion = false } }, res) {
