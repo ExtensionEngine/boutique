@@ -1,5 +1,5 @@
+'use strict';
 
-const { storage } = require('../../config');
 const getStream = require('get-stream');
 const path = require('path');
 
@@ -14,16 +14,38 @@ class NotFoundError extends Error {
 }
 
 class Storage {
-  constructor(store, { errors = {} } = {}) {
+  constructor(options = {}) {
+    const { store, errors = {} } = Storage.createStorage(options);
     if (!isStore(store)) throw new TypeError('Invalid store provided');
     this.store = store;
     this.errors = errors;
+    this.options = options;
+  }
+
+  static createStorage(options = {}) {
+    // Validate provider name.
+    const providerName = options.provider;
+    if (!options[providerName]) {
+      throw new Error('Provider should be defined in config');
+    }
+
+    // Validate provider config.
+    const config = options[providerName];
+    const provider = loadProvider(providerName);
+    provider.schema.validate(config, { stripUnknown: true }, err => {
+      if (err) throw new Error('Unsupported config structure');
+    });
+
+    // Create store & client instance.
+    const store = provider.createStore(config);
+    const { errors } = provider;
+    return { store, errors };
   }
 
   getRepoLocation(repoId, programId) {
     return programId
-      ? `${storage.importedContentLocation}/${programId}/${repoId}`
-      : `${storage.publishedContentLocation}/${repoId}`;
+      ? `${this.options.importedContentLocation}/${programId}/${repoId}`
+      : `${this.options.publishedContentLocation}/${repoId}`;
   }
 
   getFile(key) {
@@ -88,27 +110,7 @@ class Storage {
   }
 }
 
-function createStorage(options = {}) {
-  // Validate provider name.
-  const providerName = options.provider;
-  if (!options[providerName]) {
-    throw new Error('Provider should be defined in config');
-  }
-
-  // Validate provider config.
-  const config = options[providerName];
-  const provider = loadProvider(providerName);
-  provider.schema.validate(config, { stripUnknown: true }, err => {
-    if (err) throw new Error('Unsupported config structure');
-  });
-
-  // Create store & client instance.
-  const store = provider.createStore(config);
-  const { errors } = provider;
-  return new Storage(store, { errors });
-}
-
-module.exports = createStorage;
+module.exports = Storage;
 module.exports.NotFoundError = NotFoundError;
 
 function loadProvider(name) {

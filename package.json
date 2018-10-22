@@ -59,6 +59,7 @@
     "vue-template-compiler": "^2.5.17"
   },
   "dependencies": {
+    "auto-bind": "^1.2.1",
     "aws-sdk": "^2.226.1",
     "axios": "^0.18.0",
     "bcrypt": "^2.0.1",
