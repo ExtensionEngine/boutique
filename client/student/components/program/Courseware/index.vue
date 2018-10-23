@@ -72,7 +72,7 @@ export default {
   transform: translateY(-10rem);
 }
 
-.slide-list-enter-active {
+.slide-list-enter-active, .slide-list-move {
   transition: all 0.5s;
 }
 
@@ -84,9 +84,5 @@ export default {
 
 .slide-list-enter, .slide-list-leave-to {
   transform: translateY(18rem);
-}
-
-.slide-list-move {
-  transition: all 0.5s;
 }
 </style>
