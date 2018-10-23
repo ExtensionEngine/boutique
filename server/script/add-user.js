@@ -1,19 +1,14 @@
 'use strict';
 
+const { getValidator, setLogging } = require('../common/database/helpers');
 const { prompt } = require('inquirer');
 const { role } = require('../../common/config');
 const { User } = require('../common/database');
 const humanize = require('humanize-string');
-const inRange = require('lodash/inRange');
 const isEmail = require('is-email-like');
 const map = require('lodash/map');
-const set = require('lodash/set');
 
-const noop = Function.prototype;
-const notEmpty = input => input.length > 0;
-
-// Disable Sequelize SQL logging.
-set(User, 'sequelize.options.logging', noop);
+setLogging(User, false);
 
 const questions = [{
   type: 'input',
@@ -48,15 +43,3 @@ prompt(questions)
   .then(user => console.log(`User created: ${user.email}`))
   .catch(err => console.error(err.message) || 1)
   .then((code = 0) => process.exit(code));
-
-function getValidator(Model, attribute) {
-  return function validate(input) {
-    const validator = Model.prototype.validators[attribute];
-    if (!validator || !validator.len) {
-      return notEmpty(input) || `"${attribute}" can not be empty`;
-    }
-    const [min, max] = validator.len;
-    return inRange(input.length, min, max) ||
-      `"${attribute}" must be between ${min} and ${max} characters long`;
-  };
-}

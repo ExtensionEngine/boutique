@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapMutations, mapState } from 'vuex';
 import CircularProgress from '@/student/components/common/CircularProgress';
 import find from 'lodash/find';
 
@@ -21,11 +21,16 @@ export default {
     return { isLoading: true };
   },
   computed: mapState('learner', ['programs']),
-  methods: mapActions('learner', ['fetchSyllabus']),
+  methods: {
+    ...mapActions('learner', ['fetchSyllabus']),
+    ...mapMutations('learner', ['setCoursewareFilter'])
+  },
   created() {
-    find(this.programs, { id: this.programId })
-      ? this.fetchSyllabus(this.programId).then(() => (this.isLoading = false))
-      : this.$router.push({ name: 'program-selection' });
+    if (!find(this.programs, { id: this.programId })) {
+      return this.$router.push({ name: 'program-selection' });
+    }
+    this.setCoursewareFilter();
+    this.fetchSyllabus(this.programId).then(() => (this.isLoading = false));
   },
   components: { CircularProgress }
 };

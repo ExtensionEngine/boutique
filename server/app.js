@@ -1,9 +1,11 @@
 'use strict';
 
+const { INTERNAL_SERVER_ERROR, NOT_FOUND } = require('http-status');
 const AuthError = require('passport/lib/errors/authenticationerror');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const express = require('express');
+const fallback = require('express-history-api-fallback');
 const helmet = require('helmet');
 const HttpError = require('http-errors').HttpError;
 const jsend = require('jsend').middleware;
@@ -47,11 +49,14 @@ app.use((err, req, res, next) => {
     res.status(err.status).jsend.error(err.message);
     return;
   }
-  res.status(500).end();
-  logger.error({ err });
+  res.status(INTERNAL_SERVER_ERROR).end();
+  logger.error({ req, err }, '🚨  Internal Error:', err.message);
 });
 
 // Handle non-existing routes.
-app.use((req, res, next) => res.status(404).end());
+const notFound = config.useHistoryApiFallback
+  ? fallback('index.html', { root: config.staticFolder })
+  : (_, res) => res.sendStatus(NOT_FOUND);
+app.use(notFound);
 
 module.exports = app;

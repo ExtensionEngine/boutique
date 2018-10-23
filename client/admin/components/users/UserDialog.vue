@@ -18,6 +18,8 @@
             v-model="user.role"
             :items="roles"
             :error-messages="vErrors.collect('role')"
+            @focus="focusTrap.pause()"
+            @blur="focusTrap.unpause()"
             label="Role"
             data-vv-name="role"
             class="mb-3"/>
