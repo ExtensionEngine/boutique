@@ -9,12 +9,14 @@
     <v-layout>
       <v-flex xs12 sm6 md4>
         <form @submit.prevent="saveProgram()">
-          <name-field
+          <v-text-field
             v-validate="{ required: true, min: 2, max: 255 }"
             v-model="program.name"
+            :error-messages="vErrors.collect('name')"
             :disabled="disabled"
             name="name"
-            label="Program name"/>
+            label="Program name"
+            append-icon="edit"/>
           <date-picker
             v-validate="{ date_format: dateFormat }"
             ref="startDate"
@@ -53,7 +55,6 @@ import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
 import DatePicker from '@/admin/components/common/DatePicker';
 import format from 'date-fns/format';
 import { mapActions } from 'vuex';
-import NameField from './NameField';
 import { withValidation } from '@/common/validation';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -98,6 +99,6 @@ export default {
   created() {
     this.cloneProgram();
   },
-  components: { ConfirmationDialog, DatePicker, NameField }
+  components: { ConfirmationDialog, DatePicker }
 };
 </script>
