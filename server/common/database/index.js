@@ -4,7 +4,7 @@ const { migrationsPath } = require('../../../sequelize.config');
 const config = require('./config');
 const forEach = require('lodash/forEach');
 const invoke = require('lodash/invoke');
-const logger = require('../logger')();
+const logger = require('../logger')('db');
 const pick = require('lodash/pick');
 const pkg = require('../../../package.json');
 const semver = require('semver');
@@ -18,7 +18,7 @@ const Enrollment = require('../../enrollment/enrollment.model');
 const ContentRepo = require('../../content-repo/content-repo.model');
 
 const isProduction = process.env.NODE_ENV === 'production';
-const sequelize = new Sequelize(config.url, config);
+const sequelize = createConnection(config);
 const { Sequelize: { DataTypes } } = sequelize;
 logger.info(getConfig(sequelize), '🗄️  Connected to database');
 
@@ -89,6 +89,11 @@ const db = {
 sequelize.model = name => sequelize.models[name] || db[name];
 
 module.exports = db;
+
+function createConnection(config) {
+  if (!config.url) return new Sequelize(config);
+  return new Sequelize(config.url, config);
+}
 
 function getConfig(sequelize) {
   // NOTE: List public fields: https://git.io/fxVG2
