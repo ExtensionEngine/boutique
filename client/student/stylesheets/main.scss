@@ -1,7 +1,7 @@
 @import '~bulma/bulma';
 
 // Google Web Fonts
-@import '~sass-web-fonts';
+@import '~sass-web-fonts/web-fonts';
 /* stylelint-disable-next-line function-comma-newline-after */
 $web-font-path: web-fonts-url(('Roboto': (300, 400, 500, 700)));
 $mdi-font-path: '~mdi/fonts';
