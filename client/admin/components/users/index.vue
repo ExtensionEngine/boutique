@@ -6,6 +6,9 @@
         <v-btn @click.stop="showUserDialog()" color="success" outline>
           Add user
         </v-btn>
+        <v-btn @click.stop="importDialog = true" color="success" outline>
+          Import Users
+        </v-btn>
       </v-toolbar>
       <div class="elevation-1 ml-2 mr-4">
         <v-layout class="px-4 py-3 table-toolbar">
@@ -48,6 +51,9 @@
         @confirmed="fetch()"
         heading="Remove user"
         message="Are you sure you want to remove user?"/>
+      <import-dialog
+        :visible.sync="importDialog"
+        @imported="fetch(defaultPage)"/>
     </v-flex>
   </v-layout>
 </template>
@@ -55,6 +61,7 @@
 <script>
 import api from '@/admin/api/user';
 import ConfirmationDialog from '../common/ConfirmationDialog';
+import ImportDialog from './ImportDialog';
 import throttle from 'lodash/throttle';
 import UserDialog from './UserDialog';
 
@@ -67,6 +74,7 @@ export default {
       users: [],
       filter: null,
       userDialog: false,
+      importDialog: false,
       editedUser: null,
       confirmationDialog: null,
       confirmationAction: null,
@@ -113,7 +121,7 @@ export default {
       this.fetch();
     }
   },
-  components: { ConfirmationDialog, UserDialog }
+  components: { ConfirmationDialog, ImportDialog, UserDialog }
 };
 </script>
 

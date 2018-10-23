@@ -3,7 +3,8 @@ import request from '@/common/api/request';
 
 const url = {
   root: '/users',
-  resource: it => `/users/${it.id}`
+  resource: it => `/users/${it.id}`,
+  import: '/users/import'
 };
 
 function fetch(params = {}) {
@@ -23,9 +24,14 @@ function remove(item) {
   return request.delete(url.resource(item));
 }
 
+function bulkCreate(items) {
+  return request.post(url.import, items).then(extractData);
+}
+
 export default {
   fetch,
   create,
   update,
-  remove
+  remove,
+  bulkCreate
 };

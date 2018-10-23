@@ -90,6 +90,7 @@
     "material-design-icons-iconfont": "^3.0.3",
     "mdi": "^2.2.43",
     "morgan": "^1.9.0",
+    "multer": "^1.4.1",
     "nocache": "^2.0.0",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
@@ -111,7 +112,8 @@
     "vue-router": "^3.0.1",
     "vue-visible": "^1.0.2",
     "vuetify": "^1.2.3",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "xlsx": "^0.14.0"
   },
   "engines": {
     "node": ">= 8.11.0",

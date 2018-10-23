@@ -2,7 +2,15 @@
 
 const auth = require('../common/auth').authenticate('jwt');
 const ctrl = require('./user.controller');
+const multer = require('multer');
 const router = require('express').Router();
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads');
+  }
+});
+const upload = multer({ storage });
 
 router
   .post('/login', ctrl.login)
@@ -12,7 +20,8 @@ router
   .patch('/:id', ctrl.patch)
   .delete('/:id', ctrl.destroy)
   .post('/forgotPassword', ctrl.forgotPassword)
-  .post('/resetPassword', ctrl.resetPassword);
+  .post('/resetPassword', ctrl.resetPassword)
+  .post('/import', upload.single('file'), ctrl.importUsers);
 
 module.exports = {
   path: '/users',

@@ -2,9 +2,12 @@
 
 const { createError } = require('../common/errors');
 const { Enrollment, Sequelize, sequelize, User } = require('../common/database');
+const fs = require('fs');
+const head = require('lodash/head');
 const HttpStatus = require('http-status');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
+const XLSX = require('xlsx');
 
 const { BAD_REQUEST, CONFLICT, NOT_FOUND } = HttpStatus;
 const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
@@ -87,6 +90,14 @@ function resetPassword({ body, params }, res) {
     .then(() => res.end());
 }
 
+function importUsers({ file }, res) {
+  const workbook = XLSX.readFile(file.path);
+  const sheetNameList = workbook.SheetNames;
+  const users = XLSX.utils.sheet_to_json(workbook.Sheets[head(sheetNameList)]);
+  return User.bulkCreate(users)
+    .then(() => fs.unlink(file.path, () => res.end()));
+}
+
 module.exports = {
   list,
   create,
@@ -94,5 +105,6 @@ module.exports = {
   destroy,
   login,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  importUsers
 };
