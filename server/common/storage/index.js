@@ -14,50 +14,18 @@ class NotFoundError extends Error {
 }
 
 class Storage {
-  constructor(options = {}) {
-    const { store, errors = {} } = Storage.createStorage(options);
+  constructor(store, { errors = {} } = {}) {
     if (!isStore(store)) throw new TypeError('Invalid store provided');
     this.store = store;
     this.errors = errors;
-    this.options = options;
   }
 
-  static createStorage(options = {}) {
-    // Validate provider name.
-    const providerName = options.provider;
-    if (!options[providerName]) {
-      throw new Error('Provider should be defined in config');
-    }
-
-    // Validate provider config.
-    const config = options[providerName];
-    const provider = loadProvider(providerName);
-    provider.schema.validate(config, { stripUnknown: true }, err => {
-      if (err) throw new Error('Unsupported config structure');
-    });
-
-    // Create store & client instance.
-    const store = provider.createStore(config);
-    const { errors } = provider;
-    return { store, errors };
-  }
-
-  getRepoLocation(repoId, programId) {
-    return programId
-      ? `${this.options.importedContentLocation}/${programId}/${repoId}`
-      : `${this.options.publishedContentLocation}/${repoId}`;
-  }
-
-  getFile(key) {
+  _getFile(key) {
     return getStream(this.store.createReadStream({ key }));
   }
 
-  getFileUrl(key) {
-    return this.store.getFileUrl(key);
-  }
-
   getItem(key) {
-    return this.getFile(key)
+    return this._getFile(key)
       .catch(err => {
         const { notFound } = this.errors;
         // Wrap not found errors using NotFoundError class.
@@ -76,41 +44,36 @@ class Storage {
     });
   }
 
-  getCatalog() {
-    return this.getItem(`${this.options.publishedContentLocation}/index.json`);
+  getFileUrl(key) {
+    return this.store.getFileUrl(key);
   }
 
-  getRepository(repoId) {
-    const key = `${this.getRepoLocation(repoId)}/index.json`;
-    return this.getItem(key);
-  }
-
-  getContainer(repoId, id, programId) {
-    const key =
-      `${this.getRepoLocation(repoId, programId)}/${id}.container.json`;
-    return this.getItem(key);
-  }
-
-  getExam(repoId, id, programId) {
-    const key = `${this.getRepoLocation(repoId, programId)}/${id}.exam.json`;
-    return this.getItem(key);
-  }
-
-  getAssessments(repoId, id, programId) {
-    const key =
-      `${this.getRepoLocation(repoId, programId)}/${id}.assessments.json`;
-    return this.getItem(key);
-  }
-
-  importRepo(programId, repoId) {
-    const src = `${this.getRepoLocation(repoId)}/`;
-    const dest = `${this.getRepoLocation(repoId, programId)}/`;
-    return this.store.copyDir(src, dest)
-      .then(() => this.getRepository(repoId));
+  copyDir(src, dest) {
+    return this.store.copyDir(src, dest);
   }
 }
 
-module.exports = Storage;
+function createStorage(options = {}) {
+  // Validate provider name.
+  const providerName = options.provider;
+  if (!options[providerName]) {
+    throw new Error('Provider should be defined in config');
+  }
+
+  // Validate provider config.
+  const config = options[providerName];
+  const provider = loadProvider(providerName);
+  provider.schema.validate(config, { stripUnknown: true }, err => {
+    if (err) throw new Error('Unsupported config structure');
+  });
+
+  // Create store & client instance.
+  const store = provider.createStore(config);
+  const { errors } = provider;
+  return new Storage(store, { errors });
+}
+
+module.exports = createStorage;
 module.exports.NotFoundError = NotFoundError;
 
 function loadProvider(name) {
