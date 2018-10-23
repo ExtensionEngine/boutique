@@ -95,7 +95,8 @@ function importUsers({ file }, res) {
   const sheetNameList = workbook.SheetNames;
   const users = XLSX.utils.sheet_to_json(workbook.Sheets[head(sheetNameList)]);
   return User.bulkCreate(users)
-    .then(() => fs.unlink(file.path, () => res.end()));
+    .catch(() => null)
+    .finally(() => fs.unlink(file.path, () => res.end()));
 }
 
 module.exports = {

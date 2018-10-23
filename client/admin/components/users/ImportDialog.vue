@@ -9,7 +9,7 @@
           <v-text-field
             v-model="filename"
             :error-messages="vErrors.collect('file')"
-            @click.native="$refs.fileInput.click()"
+            @click.native="pickFile"
             prepend-icon="attach_file"
             label="Upload .xlsx file"
             readonly
@@ -68,12 +68,17 @@ export default {
     }
   },
   methods: {
+    pickFile() {
+      this.form = new FormData();
+      this.$refs.fileInput.click();
+    },
     onFileChange($event) {
       const file = head([...$event.target.files]);
       this.form.append('file', file, file.name);
       this.filename = file.name;
     },
     close() {
+      this.form = new FormData();
       this.filename = null;
       this.$refs.fileInput.value = null;
       this.$emit('update:visible', false);
