@@ -9,39 +9,31 @@
     <v-layout>
       <v-flex xs12 sm6 md4>
         <form @submit.prevent="saveProgram()">
-          <v-text-field
-            v-validate="'required|min:2|max:255'"
+          <name-field
+            v-validate="{ required: true, min: 2, max: 255 }"
             v-model="program.name"
             :disabled="disabled"
-            :error-messages="vErrors.collect('name')"
-            label="Program name"
-            append-icon="edit"
-            data-vv-name="name"/>
+            name="name"
+            label="Program name"/>
           <date-picker
-            v-validate="'date_format:YYYY-MM-DD'"
+            v-validate="{ date_format: dateFormat }"
             ref="startDate"
             v-model="program.startDate"
             :disabled="disabled"
-            :errors="vErrors.collect('startDate')"
-            label="Start date"
-            data-vv-as="Start Date"
-            data-vv-name="startDate"/>
+            name="startDate"
+            label="Start Date"
+            data-vv-as="Start Date"/>
           <date-picker
-            v-validate="'date_format:YYYY-MM-DD|after:$startDate'"
+            v-validate="{ date_format: dateFormat, after: '$startDate' }"
             v-model="program.endDate"
-            :errors="vErrors.collect('endDate')"
             :disabled="disabled"
-            label="End date"
-            data-vv-as="End Date"
-            data-vv-name="endDate"/>
+            name="endDate"
+            label="End Date"
+            data-vv-as="End Date"/>
           <v-flex class="text-xs-right">
-            <v-btn
-              v-show="disabled"
-              @click="disabled = false"
-              color="info">
-              Edit
-            </v-btn>
-            <v-btn v-show="!disabled" color="success" type="submit">Save</v-btn>
+            <v-btn v-show="disabled" @click="disabled = false" outline>Edit</v-btn>
+            <v-btn v-show="!disabled" @click="reset" outline>Cancel</v-btn>
+            <v-btn v-show="!disabled" type="submit" color="success">Save</v-btn>
           </v-flex>
         </form>
       </v-flex>
@@ -58,12 +50,14 @@
 <script>
 import cloneDeep from 'lodash/cloneDeep';
 import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
-import DatePicker from './DatePicker';
+import DatePicker from '@/admin/components/common/DatePicker';
 import format from 'date-fns/format';
 import { mapActions } from 'vuex';
+import NameField from './NameField';
 import { withValidation } from '@/common/validation';
 
-const formatDate = date => date && format(new Date(date), 'YYYY-MM-DD');
+const DATE_FORMAT = 'YYYY-MM-DD';
+const formatDate = date => date && format(new Date(date), DATE_FORMAT);
 
 export default {
   name: 'settings',
@@ -76,6 +70,9 @@ export default {
       confirmationDialog: false
     };
   },
+  computed: {
+    dateFormat: () => DATE_FORMAT
+  },
   methods: {
     ...mapActions('programs', ['save', 'remove']),
     saveProgram() {
@@ -84,15 +81,23 @@ export default {
         this.save(this.program);
         this.disabled = true;
       });
+    },
+    cloneProgram() {
+      this.program = cloneDeep({
+        ...this.programData,
+        startDate: formatDate(this.programData.startDate),
+        endDate: formatDate(this.programData.endDate)
+      });
+    },
+    reset() {
+      this.vErrors.clear();
+      this.cloneProgram();
+      this.disabled = true;
     }
   },
   created() {
-    this.program = cloneDeep({
-      ...this.programData,
-      startDate: formatDate(this.programData.startDate),
-      endDate: formatDate(this.programData.endDate)
-    });
+    this.cloneProgram();
   },
-  components: { ConfirmationDialog, DatePicker }
+  components: { ConfirmationDialog, DatePicker, NameField }
 };
 </script>

@@ -12,7 +12,7 @@
       :value="value"
       :label="label"
       :disabled="disabled"
-      :error-messages="errors"
+      :error-messages="vErrors.collect(name)"
       append-icon="event"
       readonly/>
     <v-date-picker :value="value" @input="save($event)" no-title/>
@@ -21,11 +21,12 @@
 
 <script>
 export default {
+  inject: ['$validator'],
   props: {
     value: { type: String, default: '' },
-    label: { type: String, required: true },
+    name: { type: String, required: true },
     disabled: { type: Boolean, required: true },
-    errors: { type: Array, required: true }
+    label: { type: String, required: true }
   },
   methods: {
     save(value) {
