@@ -21,10 +21,6 @@ class Storage {
     this.errors = errors;
   }
 
-  _getFile(key) {
-    return getStream(this.store.createReadStream({ key }));
-  }
-
   getItem(key) {
     return this._getFile(key)
       .catch(err => {
@@ -51,6 +47,10 @@ class Storage {
 
   copyDir(src, dest) {
     return this.store.copyDir(src, dest);
+  }
+
+  _getFile(key) {
+    return getStream(this.store.createReadStream({ key }));
   }
 }
 
