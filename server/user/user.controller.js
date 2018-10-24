@@ -7,6 +7,7 @@ const head = require('lodash/head');
 const HttpStatus = require('http-status');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
+const Promise = require('bluebird');
 const XLSX = require('xlsx');
 
 const { BAD_REQUEST, CONFLICT, NOT_FOUND } = HttpStatus;
@@ -94,9 +95,15 @@ function importUsers({ file }, res) {
   const workbook = XLSX.readFile(file.path);
   const sheetNameList = workbook.SheetNames;
   const users = XLSX.utils.sheet_to_json(workbook.Sheets[head(sheetNameList)]);
-  return User.bulkCreate(users)
-    .catch(() => null)
-    .finally(() => fs.unlink(file.path, () => res.end()));
+  let errors = [];
+  return Promise.each(users, user => {
+    return User.create(user).catch(err => {
+      return errors.push({
+        user: user.email,
+        message: err.message
+      });
+    });
+  }).then(() => fs.unlink(file.path, () => res.jsend.success({ errors })));
 }
 
 module.exports = {

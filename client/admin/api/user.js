@@ -24,7 +24,7 @@ function remove(item) {
   return request.delete(url.resource(item));
 }
 
-function bulkCreate(items) {
+function bulkImport(items) {
   return request.post(url.import, items).then(extractData);
 }
 
@@ -33,5 +33,5 @@ export default {
   create,
   update,
   remove,
-  bulkCreate
+  bulkImport
 };

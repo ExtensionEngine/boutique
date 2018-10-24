@@ -3,11 +3,9 @@
     <v-flex class="mt-5">
       <v-toolbar color="#f5f5f5" flat>
         <v-spacer/>
+        <import-dialog @imported="fetch(defaultPage)"/>
         <v-btn @click.stop="showUserDialog()" color="success" outline>
           Add user
-        </v-btn>
-        <v-btn @click.stop="importDialog = true" color="success" outline>
-          Import Users
         </v-btn>
       </v-toolbar>
       <div class="elevation-1 ml-2 mr-4">
@@ -51,9 +49,6 @@
         @confirmed="fetch()"
         heading="Remove user"
         message="Are you sure you want to remove user?"/>
-      <import-dialog
-        :visible.sync="importDialog"
-        @imported="fetch(defaultPage)"/>
     </v-flex>
   </v-layout>
 </template>
@@ -74,7 +69,6 @@ export default {
       users: [],
       filter: null,
       userDialog: false,
-      importDialog: false,
       editedUser: null,
       confirmationDialog: null,
       confirmationAction: null,
