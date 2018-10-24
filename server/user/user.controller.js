@@ -2,13 +2,10 @@
 
 const { createError } = require('../common/errors');
 const { Enrollment, Sequelize, sequelize, User } = require('../common/database');
-const fs = require('fs');
-const head = require('lodash/head');
 const HttpStatus = require('http-status');
+const { importUsersFromFile } = require('./import-users');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
-const Promise = require('bluebird');
-const XLSX = require('xlsx');
 
 const { BAD_REQUEST, CONFLICT, NOT_FOUND } = HttpStatus;
 const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
@@ -91,19 +88,10 @@ function resetPassword({ body, params }, res) {
     .then(() => res.end());
 }
 
-function importUsers({ file }, res) {
-  const workbook = XLSX.readFile(file.path);
-  const sheetNameList = workbook.SheetNames;
-  const users = XLSX.utils.sheet_to_json(workbook.Sheets[head(sheetNameList)]);
-  let errors = [];
-  return Promise.each(users, user => {
-    return User.create(user).catch(err => {
-      return errors.push({
-        user: user.email,
-        message: err.message
-      });
-    });
-  }).then(() => fs.unlink(file.path, () => res.jsend.success({ errors })));
+function importUsers(req, res) {
+  const { file } = req;
+  return importUsersFromFile(file, req.origin())
+    .then(errors => res.jsend.success({ errors }));
 }
 
 module.exports = {

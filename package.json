@@ -70,6 +70,7 @@
     "date-fns": "^1.29.0",
     "dotenv": "^6.1.0",
     "emailjs": "^2.2.0",
+    "exceljs": "^1.6.2",
     "express": "^4.16.3",
     "express-async-errors": "^3.1.1",
     "express-history-api-fallback": "^2.2.1",
@@ -82,6 +83,7 @@
     "http-status": "^1.2.0",
     "humanize-string": "^1.0.2",
     "inquirer": "^6.2.0",
+    "into-stream": "^4.0.0",
     "is-email-like": "^1.0.0",
     "joi": "^13.6.0",
     "jsend": "^1.0.2",
@@ -112,8 +114,7 @@
     "vue-router": "^3.0.1",
     "vue-visible": "^1.0.2",
     "vuetify": "^1.2.3",
-    "vuex": "^3.0.1",
-    "xlsx": "^0.14.0"
+    "vuex": "^3.0.1"
   },
   "engines": {
     "node": ">= 8.11.0",
