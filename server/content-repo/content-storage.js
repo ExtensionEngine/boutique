@@ -1,8 +1,8 @@
 'use strict';
 
-const { storage } = require('../config');
-const Promise = require('bluebird');
 const createStorage = require('../common/storage');
+const Promise = require('bluebird');
+const { storage } = require('../config');
 const values = require('lodash/values');
 
 class ContentStorage {
@@ -17,13 +17,13 @@ class ContentStorage {
   }
 
   getCatalog() {
-    const key = `${this.options.publishedContentLocation}/index.json`;
+    const key = `${this.options.sourcePath}/index.json`;
     return this.storage.getItem(key);
   }
 
   getContainer(repoId, id, programId) {
-    const key =
-      `${this._getRepoLocation(repoId, programId)}/${id}.container.json`;
+    const repoLocation = this._getRepoLocation(repoId, programId);
+    const key = `${repoLocation}/${id}.container.json`;
     return this.storage.getItem(key);
   }
 
@@ -33,15 +33,15 @@ class ContentStorage {
   }
 
   getAssessments(repoId, id, programId) {
-    const key =
-      `${this._getRepoLocation(repoId, programId)}/${id}.assessments.json`;
+    const repoLocation = this._getRepoLocation(repoId, programId);
+    const key = `${repoLocation}/${id}.assessments.json`;
     return this.storage.getItem(key);
   }
 
-  resolveContainer(container) {
-    return Promise.each(container.elements, element => {
+  resolveElements(elements) {
+    return Promise.each(elements, element => {
       return this._resolveElement(element);
-    }).then(() => container);
+    }).then(() => elements);
   }
 
   importRepo(programId, repoId) {
@@ -53,8 +53,8 @@ class ContentStorage {
 
   _getRepoLocation(repoId, programId) {
     return programId
-      ? `${this.options.importedContentLocation}/${programId}/${repoId}`
-      : `${this.options.publishedContentLocation}/${repoId}`;
+      ? `${this.options.importPath}/${programId}/${repoId}`
+      : `${this.options.sourcePath}/${repoId}`;
   }
 
   _resolveElement(element) {
@@ -75,13 +75,14 @@ class ContentStorage {
   }
 
   _resolveAsset(asset) {
-    const _getUrl = key => {
-      return this.storage.getFileUrl(key)
-        .then(url => (asset.data.url = url))
-        .then(() => asset);
+    const processUrl = key => {
+      return this.storage.getFileUrl(key).then(url => {
+        asset.data.url = url;
+        return asset;
+      });
     };
     return this.storage.fileExists(asset.data.url)
-      .then(exists => exists ? _getUrl(asset.data.url) : asset);
+      .then(exists => exists ? processUrl(asset.data.url) : asset);
   }
 }
 

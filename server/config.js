@@ -43,7 +43,7 @@ module.exports = {
       path: process.env.STORAGE_PATH
     },
     provider: process.env.STORAGE_PROVIDER,
-    publishedContentLocation: process.env.PUBLISHED_CONTENT,
-    importedContentLocation: process.env.IMPORTED_CONTENT
+    sourcePath: process.env.PUBLISHED_CONTENT,
+    importPath: process.env.IMPORTED_CONTENT
   }
 };

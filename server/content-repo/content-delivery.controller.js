@@ -26,7 +26,7 @@ function get({ repo }, res) {
 function getContainer({ program, params, repo }, res) {
   return Storage.getContainer(repo.sourceId, params.containerId, program.id)
     .catch(() => createError(NOT_FOUND, 'Not found!'))
-    .then(container => Storage.resolveContainer(container))
+    .then(processContainer)
     .then(container => res.jsend.success(container));
 }
 
@@ -52,6 +52,13 @@ function getAssessments({ program, params, repo }, res) {
     .then(assessments => {
       return res.jsend.success(excludeCorrect(assessments));
     });
+}
+
+function processContainer(container) {
+  return Storage.resolveElements(container.elements).then(elements => {
+    container.elements = elements;
+    return container;
+  });
 }
 
 module.exports = {
