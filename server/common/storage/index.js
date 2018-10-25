@@ -1,5 +1,5 @@
+'use strict';
 
-const { storage } = require('../../config');
 const getStream = require('get-stream');
 const path = require('path');
 const safeRequire = require('safe-require');
@@ -21,18 +21,8 @@ class Storage {
     this.errors = errors;
   }
 
-  getRepoLocation(repoId, programId) {
-    return programId
-      ? `${storage.importedContentLocation}/${programId}/${repoId}`
-      : `${storage.publishedContentLocation}/${repoId}`;
-  }
-
-  getFile(key) {
-    return getStream(this.store.createReadStream({ key }));
-  }
-
   getItem(key) {
-    return this.getFile(key)
+    return this._getFile(key)
       .catch(err => {
         const { notFound } = this.errors;
         // Wrap not found errors using NotFoundError class.
@@ -51,37 +41,16 @@ class Storage {
     });
   }
 
-  getCatalog() {
-    return this.getItem(`${storage.publishedContentLocation}/index.json`);
+  getFileUrl(key) {
+    return this.store.getFileUrl(key);
   }
 
-  getRepository(repoId) {
-    const key = `${this.getRepoLocation(repoId)}/index.json`;
-    return this.getItem(key);
+  copyDir(src, dest) {
+    return this.store.copyDir(src, dest);
   }
 
-  getContainer(repoId, id, programId) {
-    const key =
-      `${this.getRepoLocation(repoId, programId)}/${id}.container.json`;
-    return this.getItem(key);
-  }
-
-  getExam(repoId, id, programId) {
-    const key = `${this.getRepoLocation(repoId, programId)}/${id}.exam.json`;
-    return this.getItem(key);
-  }
-
-  getAssessments(repoId, id, programId) {
-    const key =
-      `${this.getRepoLocation(repoId, programId)}/${id}.assessments.json`;
-    return this.getItem(key);
-  }
-
-  importRepo(programId, repoId) {
-    const src = `${this.getRepoLocation(repoId)}/`;
-    const dest = `${this.getRepoLocation(repoId, programId)}/`;
-    return this.store.copyDir(src, dest)
-      .then(() => this.getRepository(repoId));
+  _getFile(key) {
+    return getStream(this.store.createReadStream({ key }));
   }
 }
 
