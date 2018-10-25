@@ -12,7 +12,7 @@
 
 <script>
 import api from '@/student/api/learner';
-import CircularProgress from '@/student/components/common/CircularProgress';
+import CircularProgress from '@/common/components/CircularProgress';
 import head from 'lodash/head';
 import { mapMutations } from 'vuex';
 import Navbar from '@/student/components/common/Navbar';

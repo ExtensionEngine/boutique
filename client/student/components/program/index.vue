@@ -9,7 +9,7 @@
 
 <script>
 import { mapActions, mapMutations, mapState } from 'vuex';
-import CircularProgress from '@/student/components/common/CircularProgress';
+import CircularProgress from '@/common/components/CircularProgress';
 import find from 'lodash/find';
 
 export default {

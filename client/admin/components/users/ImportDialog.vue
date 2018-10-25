@@ -13,7 +13,8 @@
             ref="textFile"
             v-model="filename"
             :error-messages="showErrors"
-            @click="selectFile"
+            :disabled="importing"
+            @click="$refs.fileInput.click()"
             prepend-icon="attach_file"
             label="Upload .xls, .xlsx or .csv file"
             readonly
@@ -26,12 +27,15 @@
             data-vv-name="file"
             type="file"/>
         </v-card-text>
-        <v-card-actions>
+        <v-card-text v-show="importing" class="loader-container">
+          <circular-progress :width="40" :height="40"/>
+        </v-card-text>
+        <v-card-actions v-show="!importing">
           <v-spacer/>
           <v-fade-transition>
             <v-btn
               v-show="visible && errors"
-              @click="downloadErrors"
+              @click="downloadErrorsFile"
               color="error">
               <v-icon>cloud_download</v-icon>Errors
             </v-btn>
@@ -51,6 +55,7 @@
 
 <script>
 import api from '@/admin/api/user';
+import CircularProgress from '@/common/components/CircularProgress';
 import head from 'lodash/head';
 import JSZip from 'jszip';
 import saveAs from 'save-as';
@@ -65,9 +70,11 @@ export default {
   data() {
     return {
       visible: false,
+      importing: false,
+      disabled: true,
       filename: null,
       form: null,
-      disabled: true,
+      errors: null,
       rules: {
         required: true,
         mimes:
@@ -76,8 +83,7 @@ export default {
           'application/vnd.ms-excel',
           'text/csv'
         ]
-      },
-      errors: null
+      }
     };
   },
   computed: {
@@ -88,9 +94,6 @@ export default {
     }
   },
   methods: {
-    selectFile() {
-      this.$refs.fileInput.click();
-    },
     onFileSelected($event) {
       this.form = new FormData();
       this.errors = null;
@@ -120,9 +123,11 @@ export default {
       this.disabled = true;
       this.$validator.validateAll().then(isValid => {
         if (!isValid || this.errors) return;
+        this.importing = true;
         api.bulkImport(this.form).then(response => {
+          this.importing = false;
           if (response.data.byteLength) {
-            this.$refs.textFile.focus();
+            this.$nextTick(() => this.$refs.textFile.focus());
             this.errors = response.data;
             return;
           }
@@ -131,10 +136,11 @@ export default {
         });
       });
     },
-    downloadErrors() {
+    downloadErrorsFile() {
       JSZip.loadAsync(this.errors)
         .then(zip => zip.generateAsync({ type: 'blob' }))
-        .then(file => saveAs(file, 'Errors.xlsx'));
+        .then(file => saveAs(file, 'Errors.xlsx'))
+        .then(() => this.$refs.textFile.focus());
     }
   },
   watch: {
@@ -144,12 +150,22 @@ export default {
       this.vErrors.clear();
       this.errors = null;
     }
-  }
+  },
+  components: { CircularProgress }
 };
 </script>
 
 <style lang="scss" scoped>
 .v-btn .v-icon {
   padding-right: 6px;
+}
+
+.v-card__actions {
+  margin-top: 20px;
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
 }
 </style>
