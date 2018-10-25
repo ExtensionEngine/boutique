@@ -11,27 +11,27 @@ function getUsers(file) {
   return wb.xlsx.load(file.buffer).then(() => sheetToJson(wb.getWorksheet(1)));
 }
 
-function createWorkbook(errors) {
-  let workbook = new Excel.Workbook();
-  workbook.creator = 'Boutique';
-  workbook.created = new Date();
-  let errorsSheet = workbook.addWorksheet('Errors');
-  errors.forEach(error => errorsSheet.addRow([error]));
-  return workbook;
+function createWorkbook(data) {
+  const wb = new Excel.Workbook();
+  wb.creator = 'Boutique';
+  wb.created = new Date();
+  const ws = wb.addWorksheet('Sheet 1');
+  data.forEach(it => ws.addRow([it]));
+  return wb;
 }
 
 function sheetToJson(sheet) {
-  let headers = [];
-  let users = [];
+  const headers = [];
+  const data = [];
   sheet.eachRow((row, rowIndex) => {
     if (rowIndex === 1) return row.eachCell(cell => headers.push(cell.value));
-    let properties = [];
-    let user = {};
+    const properties = [];
+    const it = {};
     row.eachCell((cell, cellIndex) => properties.push(cell.value));
-    properties.forEach((it, index) => (user[headers[index]] = it));
-    users.push(user);
+    properties.forEach((prop, index) => (it[headers[index]] = prop));
+    data.push(it);
   });
-  return users;
+  return data;
 }
 
 module.exports = { createWorkbook, getUsers };

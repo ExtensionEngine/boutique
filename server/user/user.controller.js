@@ -91,7 +91,7 @@ function resetPassword({ body, params }, res) {
 }
 
 async function importUsers(req, res) {
-  let errors = [];
+  const errors = [];
   const origin = req.origin();
   const users = await getUsers(req.file);
   const opts = {
