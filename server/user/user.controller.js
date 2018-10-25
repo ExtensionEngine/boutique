@@ -3,7 +3,7 @@
 const { createError } = require('../common/errors');
 const { Enrollment, Sequelize, sequelize, User } = require('../common/database');
 const HttpStatus = require('http-status');
-const { importUsersFromFile } = require('./import-users');
+const importController = require('./import-users');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
 
@@ -90,8 +90,13 @@ function resetPassword({ body, params }, res) {
 
 function importUsers(req, res) {
   const { file } = req;
-  return importUsersFromFile(file, req.origin())
-    .then(errors => res.jsend.success({ errors }));
+  return importController.importUsers(file, req.origin())
+    .then(errors => {
+      if (!errors) return res.end();
+      res.setHeader('Content-Type', 'application/vnd.ms-excel');
+      res.setHeader('Content-disposition', 'attachment;filename=errors.xls');
+      return errors.xlsx.write(res).then(() => res.end());
+    });
 }
 
 module.exports = {

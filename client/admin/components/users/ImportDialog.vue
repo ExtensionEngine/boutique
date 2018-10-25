@@ -12,7 +12,7 @@
           <v-text-field
             ref="textFile"
             v-model="filename"
-            :error-messages="vErrors.collect('file')"
+            :error-messages="showErrors"
             @click="selectFile"
             prepend-icon="attach_file"
             label="Upload .xls, .xlsx or .csv file"
@@ -26,23 +26,16 @@
             data-vv-name="file"
             type="file"/>
         </v-card-text>
-        <v-card-text v-if="errors">
-          <v-toolbar color="red" dark flat dense>
-            <v-toolbar-title>Errors</v-toolbar-title>
-          </v-toolbar>
-          <v-list>
-            <v-list-tile v-for="(error, index) in errors" :key="index">
-              <v-list-tile-content>
-                <v-list-tile-title>{{ error.user }}</v-list-tile-title>
-                <v-list-tile-sub-title>
-                  {{ error.message }}
-                </v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list>
-        </v-card-text>
         <v-card-actions>
           <v-spacer/>
+          <v-fade-transition>
+            <v-btn
+              v-show="visible && errors"
+              @click="downloadErrors"
+              color="error">
+              <v-icon>cloud_download</v-icon>Errors
+            </v-btn>
+          </v-fade-transition>
           <v-btn @click="close">Cancel</v-btn>
           <v-btn
             :disabled="disabled"
@@ -59,6 +52,8 @@
 <script>
 import api from '@/admin/api/user';
 import head from 'lodash/head';
+import JSZip from 'jszip';
+import saveAs from 'save-as';
 import { withFocusTrap } from '@/common/focustrap';
 import { withValidation } from '@/common/validation';
 
@@ -85,6 +80,13 @@ export default {
       errors: null
     };
   },
+  computed: {
+    showErrors() {
+      return this.errors
+        ? ['There were some erros.']
+        : this.vErrors.collect('file');
+    }
+  },
   methods: {
     selectFile() {
       this.$refs.fileInput.click();
@@ -98,9 +100,15 @@ export default {
         this.filename = null;
         return;
       }
-      this.form.append('file', file, file.name);
-      this.filename = file.name;
-      this.disabled = false;
+      this.$validator.validateAll().then(isValid => {
+        if (!isValid) {
+          this.disabled = true;
+          return;
+        }
+        this.form.append('file', file, file.name);
+        this.filename = file.name;
+        this.disabled = false;
+      });
     },
     close() {
       this.disabled = true;
@@ -112,15 +120,21 @@ export default {
       this.disabled = true;
       this.$validator.validateAll().then(isValid => {
         if (!isValid || this.errors) return;
-        api.bulkImport(this.form).then(data => {
-          if (data.errors.length) {
+        api.bulkImport(this.form).then(response => {
+          if (response.data.byteLength) {
             this.$refs.textFile.focus();
-            return (this.errors = data.errors);
+            this.errors = response.data;
+            return;
           }
           this.$emit('imported');
           this.close();
         });
       });
+    },
+    downloadErrors() {
+      JSZip.loadAsync(this.errors)
+        .then(zip => zip.generateAsync({ type: 'blob' }))
+        .then(file => saveAs(file, 'Errors.xlsx'));
     }
   },
   watch: {

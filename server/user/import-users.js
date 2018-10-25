@@ -1,33 +1,30 @@
+'use strict';
+
 const { createError } = require('../common/errors');
 const Excel = require('exceljs');
 const intoStream = require('into-stream');
 const HttpStatus = require('http-status');
+const pick = require('lodash/pick');
 const Promise = require('bluebird');
 const { User } = require('../common/database');
 
+const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
 const { CONFLICT } = HttpStatus;
 
-function importUsersFromFile(file, origin) {
+function importUsers(file, origin) {
   return getUsers(file).then(users => {
     let errors = [];
     return Promise.each(users, user => {
-      return createUser(user, origin).catch(err => {
+      return createUser(pick(user, inputAttrs), { origin }).catch(err => {
         return errors.push({
           user: user.email,
           message: err.message
         });
       });
-    }).then(() => errors);
-  });
-}
-
-function getUsers(file) {
-  const wb = new Excel.Workbook();
-  if (file.mimetype === 'text/csv') {
-    return wb.csv.read(intoStream(file.buffer)).then(sheetToJson);
-  }
-  return wb.xlsx.load(file.buffer).then(() => {
-    return wb.getWorksheet(1).then(sheetToJson);
+    }).then(() => {
+      if (errors.length) return createSpreadsheet(errors);
+      return null;
+    });
   });
 }
 
@@ -40,6 +37,16 @@ function createUser(user, origin) {
       const opts = { existingUser, origin };
       return User.invite(user, opts);
     });
+}
+
+function getUsers(file) {
+  const wb = new Excel.Workbook();
+  if (file.mimetype === 'text/csv') {
+    return wb.csv.read(intoStream(file.buffer)).then(sheetToJson);
+  }
+  return wb.xlsx.load(file.buffer).then(() => {
+    return sheetToJson(wb.getWorksheet(1));
+  });
 }
 
 function sheetToJson(sheet) {
@@ -56,4 +63,16 @@ function sheetToJson(sheet) {
   return users;
 }
 
-module.exports = { importUsersFromFile };
+function createSpreadsheet(errors) {
+  let workbook = new Excel.Workbook();
+  workbook.creator = 'Boutique';
+  workbook.created = new Date();
+  let errorsSheet = workbook.addWorksheet('Errors');
+  errorsSheet.addRow(['USER', 'MESSAGE']);
+  errors.forEach(error => {
+    errorsSheet.addRow([error.user, error.message]);
+  });
+  return workbook;
+}
+
+module.exports = { importUsers };
