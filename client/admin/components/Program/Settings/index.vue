@@ -53,12 +53,12 @@
 import cloneDeep from 'lodash/cloneDeep';
 import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
 import DatePicker from '@/admin/components/common/DatePicker';
-import format from 'date-fns/format';
+import fecha from 'fecha';
 import { mapActions } from 'vuex';
 import { withValidation } from '@/common/validation';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
-const formatDate = date => date && format(new Date(date), DATE_FORMAT);
+const formatDate = date => date && fecha.format(fecha.parse(date, 'YYYY-MM-DDTHH:MM:SSZ'), DATE_FORMAT);
 
 export default {
   name: 'settings',
@@ -89,6 +89,8 @@ export default {
         startDate: formatDate(this.programData.startDate),
         endDate: formatDate(this.programData.endDate)
       });
+      console.log(fecha.format(fecha.parse(this.programData.startDate, 'YYYY-MM-DDTHH:MM:SSZ')));
+      console.log(new Date(this.programData.startDate));
     },
     reset() {
       this.vErrors.clear();
