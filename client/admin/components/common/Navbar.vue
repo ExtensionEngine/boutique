@@ -2,7 +2,7 @@
   <v-toolbar color="amber" app fixed clipped-left>
     <v-toolbar-side-icon @click.native="$emit('update:drawer', !drawer)"/>
     <span class="title ml-3 mr-5">
-      <v-icon class="mr-2">local_mall</v-icon>
+      <v-icon class="mr-2">mdi-shopping</v-icon>
       Boutique
       <span class="font-weight-light">LMS</span>
     </span>

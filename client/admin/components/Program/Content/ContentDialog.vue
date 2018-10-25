@@ -13,7 +13,7 @@
             @blur="focusTrap.unpause()"
             item-value="sourceId"
             no-data-text="No available repositories for import"
-            prepend-icon="search"
+            prepend-icon="mdi-magnify"
             label="Repository"
             placeholder="Start typing to Search"
             hide-selected/>
