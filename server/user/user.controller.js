@@ -1,11 +1,13 @@
 'use strict';
 
 const { createError } = require('../common/errors');
+const { createWorkbook, getUsers } = require('./import');
 const { Enrollment, Sequelize, sequelize, User } = require('../common/database');
+const find = require('lodash/find');
 const HttpStatus = require('http-status');
-const importController = require('./import-users');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
+const Promise = require('bluebird');
 
 const { BAD_REQUEST, CONFLICT, NOT_FOUND } = HttpStatus;
 const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
@@ -88,15 +90,30 @@ function resetPassword({ body, params }, res) {
     .then(() => res.end());
 }
 
-function importUsers(req, res) {
-  const { file } = req;
-  return importController.importUsers(file, req.origin())
-    .then(errors => {
-      if (!errors) return res.end();
-      res.setHeader('Content-Type', 'application/vnd.ms-excel');
-      res.setHeader('Content-disposition', 'attachment;filename=errors.xls');
-      return errors.xlsx.write(res).then(() => res.end());
-    });
+async function importUsers(req, res) {
+  let errors = [];
+  const origin = req.origin();
+  const users = await getUsers(req.file);
+  const opts = {
+    where: { email: map(users, user => user.email) },
+    paranoid: false
+  };
+  const existingUsers = await User.findAll(opts);
+  await Promise.map(users, user => {
+    const existingUser = find(existingUsers, user);
+    if (existingUser && !existingUser.deletedAt) {
+      return errors.push(`User ${user.email}: Already exists!`);
+    }
+    return User.invite(pick(user, inputAttrs), { existingUser, origin })
+      .catch(err => errors.push(`User ${user.email}: ${err.message}!`));
+  });
+  if (errors.length) {
+    const wb = createWorkbook(errors);
+    res.setHeader('Content-Type', 'application/vnd.ms-excel');
+    res.setHeader('Content-disposition', 'attachment;filename=errors.xls');
+    return wb.xlsx.write(res).then(() => res.end());
+  }
+  return res.end();
 }
 
 module.exports = {
