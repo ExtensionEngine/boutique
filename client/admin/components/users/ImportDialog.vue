@@ -10,7 +10,7 @@
         </v-card-title>
         <v-card-text>
           <v-text-field
-            ref="textFile"
+            ref="fileText"
             v-model="filename"
             :error-messages="showErrors"
             :disabled="importing"
@@ -53,7 +53,6 @@
 <script>
 import api from '@/admin/api/user';
 import CircularProgress from '@/common/components/CircularProgress';
-import JSZip from 'jszip';
 import saveAs from 'save-as';
 import { withFocusTrap } from '@/common/focustrap';
 import { withValidation } from '@/common/validation';
@@ -61,8 +60,7 @@ import { withValidation } from '@/common/validation';
 const el = vm => vm.$children[0].$refs.dialog;
 const rules = {
   required: true,
-  mimes:
-  [
+  mimes: [
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     'application/vnd.ms-excel',
     'text/csv'
@@ -101,10 +99,7 @@ export default {
       }
       this.filename = file.name;
       this.form.append('file', file, file.name);
-      this.$validator.validateAll().then(isValid => {
-        if (!isValid) return (this.disabled = true);
-        this.disabled = false;
-      });
+      this.$validator.validateAll().then(isValid => (this.disabled = !isValid));
     },
     close() {
       this.disabled = true;
@@ -114,30 +109,25 @@ export default {
     },
     save() {
       this.disabled = true;
-      this.$validator.validateAll().then(isValid => {
-        if (!isValid || this.errors) return;
-        this.importing = true;
-        return api.bulkImport(this.form).then(response => {
-          this.importing = false;
-          if (response.data.size) {
-            this.$nextTick(() => this.$refs.textFile.focus());
-            return (this.errors = response.data);
-          }
-          this.$emit('imported');
-          this.close();
-        }).catch(err => {
-          this.importing = false;
-          this.errors = true;
-          this.$nextTick(() => this.$refs.textFile.focus());
-          return Promise.reject(err);
-        });
+      this.importing = true;
+      return api.bulkImport(this.form).then(response => {
+        this.importing = false;
+        if (response.data.size) {
+          this.$nextTick(() => this.$refs.fileText.focus());
+          return (this.errors = response.data);
+        }
+        this.$emit('imported');
+        this.close();
+      }).catch(err => {
+        this.importing = false;
+        this.errors = true;
+        this.$nextTick(() => this.$refs.fileText.focus());
+        return Promise.reject(err);
       });
     },
     downloadErrorsFile() {
-      JSZip.loadAsync(this.errors)
-        .then(zip => zip.generateAsync({ type: 'blob' }))
-        .then(file => saveAs(file, 'Errors.xlsx'))
-        .then(() => this.$refs.textFile.focus());
+      saveAs(this.errors, 'Errors.xlsx');
+      this.$refs.fileText.focus();
     }
   },
   watch: {
