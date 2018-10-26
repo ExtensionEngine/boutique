@@ -19,7 +19,7 @@
             @blur="focusTrap.unpause()"
             label="Learner"
             placeholder="Start typing to Search"
-            prepend-icon="search"
+            prepend-icon="mdi-magnify"
             clearable
             name="learner"/>
         </v-card-text>
