@@ -9,23 +9,25 @@
           Import Users
         </v-card-title>
         <v-card-text>
-          <v-text-field
-            ref="fileText"
-            v-model="filename"
-            :error-messages="showErrors"
-            :disabled="importing"
-            @click="$refs.fileInput.click()"
-            prepend-icon="attach_file"
-            label="Upload .xls, .xlsx or .csv file"
-            readonly
-            single-line/>
-          <input
-            v-validate="rules"
-            v-show="false"
-            ref="fileInput"
-            @change="onFileSelected"
-            data-vv-name="file"
-            type="file">
+          <label for="fileInput">
+            <v-text-field
+              ref="fileText"
+              v-model="filename"
+              :error-messages="showErrors"
+              :disabled="importing"
+              prepend-icon="attach_file"
+              label="Upload .xls, .xlsx or .csv file"
+              readonly
+              single-line/>
+            <input
+              v-validate="rules"
+              v-show="false"
+              ref="fileInput"
+              @change="onFileSelected"
+              id="fileInput"
+              data-vv-name="file"
+              type="file">
+          </label>
         </v-card-text>
         <v-card-text v-show="importing" class="loader-container">
           <circular-progress :width="40" :height="40"/>
@@ -92,7 +94,7 @@ export default {
     onFileSelected(e) {
       this.form = new FormData();
       this.errors = null;
-      const [file] = Array.from(e.target.files);
+      const [file] = e.target.files;
       if (!file) {
         this.filename = null;
         return (this.disabled = true);
@@ -145,6 +147,14 @@ export default {
 <style lang="scss" scoped>
 .v-btn .v-icon {
   padding-right: 6px;
+}
+
+.v-text-field /deep/ .v-text-field__slot {
+  cursor: pointer;
+
+  input {
+    pointer-events: none;
+  }
 }
 
 .v-card__actions {
