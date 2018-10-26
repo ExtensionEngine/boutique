@@ -1,9 +1,11 @@
 'use strict';
 
-const { Workbook } = require('exceljs');
-const TableSheet = require('./TableSheet');
-const intoStream = require('into-stream');
 const pick = require('lodash/pick');
+const TableSheet = require('./TableSheet');
+const { Workbook } = require('exceljs');
+
+const getUsers = async file => (await TableSheet.load(file)).toJSON();
+
 class ImportErrors {
   constructor() {
     this.errors = [];
@@ -19,16 +21,6 @@ class ImportErrors {
       return { ...pick(it.user, userAttrs), message: it.message };
     });
   }
-}
-
-function getUsers(file) {
-  const wb = new Workbook();
-  if (file.mimetype === 'text/csv') {
-    return wb.csv.read(intoStream(file.buffer))
-      .then(ws => new TableSheet(ws)).then(ts => ts.toJSON());
-  }
-  return wb.xlsx.load(file.buffer)
-    .then(() => new TableSheet(wb.getWorksheet(1))).then(ts => ts.toJSON());
 }
 
 function createWorkbook(data) {
