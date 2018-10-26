@@ -25,12 +25,7 @@ function remove(item) {
 }
 
 function bulkImport(items) {
-  return request({
-    method: 'post',
-    responseType: 'arraybuffer',
-    url: url.import,
-    data: items
-  });
+  return request.post(url.import, items, { responseType: 'blob' });
 }
 
 export default {

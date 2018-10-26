@@ -25,7 +25,7 @@
             ref="fileInput"
             @change="onFileSelected"
             data-vv-name="file"
-            type="file"/>
+            type="file">
         </v-card-text>
         <v-card-text v-show="importing" class="loader-container">
           <circular-progress :width="40" :height="40"/>
@@ -41,10 +41,7 @@
             </v-btn>
           </v-fade-transition>
           <v-btn @click="close">Cancel</v-btn>
-          <v-btn
-            :disabled="disabled"
-            color="success"
-            type="submit">
+          <v-btn :disabled="disabled" color="success" type="submit">
             Import
           </v-btn>
         </v-card-actions>
@@ -56,13 +53,21 @@
 <script>
 import api from '@/admin/api/user';
 import CircularProgress from '@/common/components/CircularProgress';
-import head from 'lodash/head';
 import JSZip from 'jszip';
 import saveAs from 'save-as';
 import { withFocusTrap } from '@/common/focustrap';
 import { withValidation } from '@/common/validation';
 
 const el = vm => vm.$children[0].$refs.dialog;
+const rules = {
+  required: true,
+  mimes:
+  [
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.ms-excel',
+    'text/csv'
+  ]
+};
 
 export default {
   name: 'import-dialog',
@@ -75,15 +80,7 @@ export default {
       filename: null,
       form: null,
       errors: null,
-      rules: {
-        required: true,
-        mimes:
-        [
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-          'application/vnd.ms-excel',
-          'text/csv'
-        ]
-      }
+      rules: rules
     };
   },
   computed: {
@@ -94,22 +91,18 @@ export default {
     }
   },
   methods: {
-    onFileSelected($event) {
+    onFileSelected(e) {
       this.form = new FormData();
       this.errors = null;
-      const file = head([...$event.target.files]);
+      const [file] = Array.from(e.target.files);
       if (!file) {
-        this.disabled = true;
         this.filename = null;
-        return;
+        return (this.disabled = true);
       }
+      this.filename = file.name;
+      this.form.append('file', file, file.name);
       this.$validator.validateAll().then(isValid => {
-        if (!isValid) {
-          this.disabled = true;
-          return;
-        }
-        this.form.append('file', file, file.name);
-        this.filename = file.name;
+        if (!isValid) return (this.disabled = true);
         this.disabled = false;
       });
     },
@@ -124,15 +117,19 @@ export default {
       this.$validator.validateAll().then(isValid => {
         if (!isValid || this.errors) return;
         this.importing = true;
-        api.bulkImport(this.form).then(response => {
+        return api.bulkImport(this.form).then(response => {
           this.importing = false;
-          if (response.data.byteLength) {
+          if (response.data.size) {
             this.$nextTick(() => this.$refs.textFile.focus());
-            this.errors = response.data;
-            return;
+            return (this.errors = response.data);
           }
           this.$emit('imported');
           this.close();
+        }).catch(err => {
+          this.importing = false;
+          this.errors = true;
+          this.$nextTick(() => this.$refs.textFile.focus());
+          return Promise.reject(err);
         });
       });
     },
