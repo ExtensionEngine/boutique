@@ -1,7 +1,7 @@
 'use strict';
 
 const { createError } = require('../common/errors');
-const { createWorkbook, getUsers } = require('./import');
+const { createWorkbook, getUsers, ImportErrors } = require('./import');
 const { Enrollment, Sequelize, sequelize, User } = require('../common/database');
 const find = require('lodash/find');
 const HttpStatus = require('http-status');
@@ -91,29 +91,26 @@ function resetPassword({ body, params }, res) {
 }
 
 async function importUsers(req, res) {
-  const errors = [];
-  const origin = req.origin();
   const users = await getUsers(req.file);
-  const opts = {
+  const existingUsers = await User.findAll({
     where: { email: map(users, user => user.email) },
     paranoid: false
-  };
-  const existingUsers = await User.findAll(opts);
+  });
+  const origin = req.origin();
+  const errors = new ImportErrors();
   await Promise.map(users, user => {
     const existingUser = find(existingUsers, user);
     if (existingUser && !existingUser.deletedAt) {
-      return errors.push(`User ${user.email}: Already exists!`);
+      return errors.add(user, 'User already exists!');
     }
     return User.invite(pick(user, inputAttrs), { existingUser, origin })
-      .catch(err => errors.push(`User ${user.email}: ${err.message}!`));
+      .catch(err => errors.add(user, err.message));
   });
-  if (errors.length) {
-    const wb = createWorkbook(errors);
-    res.setHeader('Content-Type', 'application/vnd.ms-excel');
-    res.setHeader('Content-disposition', 'attachment;filename=errors.xls');
-    return wb.xlsx.write(res).then(() => res.end());
-  }
-  return res.end();
+  if (!errors.get().length) return res.end();
+  const wb = createWorkbook(errors.get());
+  res.setHeader('Content-Type', 'application/vnd.ms-excel');
+  res.setHeader('Content-disposition', 'attachment;filename=errors.xls');
+  return wb.xlsx.write(res).then(() => res.end());
 }
 
 module.exports = {
