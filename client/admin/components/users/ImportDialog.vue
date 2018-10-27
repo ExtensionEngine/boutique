@@ -5,9 +5,7 @@
     </v-btn>
     <v-form @submit.prevent="save">
       <v-card class="pa-3">
-        <v-card-title class="headline">
-          Import Users
-        </v-card-title>
+        <v-card-title class="headline">Import Users</v-card-title>
         <v-card-text>
           <label for="fileInput">
             <v-text-field

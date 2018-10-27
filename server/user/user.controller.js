@@ -93,7 +93,7 @@ function resetPassword({ body, params }, res) {
 async function importUsers(req, res) {
   const users = await getUsers(req.file);
   const existingUsers = await User.findAll({
-    where: { email: map(users, user => user.email) },
+    where: { email: map(users, 'email') },
     paranoid: false
   });
   const origin = req.origin();
