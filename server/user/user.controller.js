@@ -6,11 +6,20 @@ const Datasheet = require('./datasheet');
 const HttpStatus = require('http-status');
 const mime = require('mime');
 const map = require('lodash/map');
+const Promise = require('bluebird');
 const pick = require('lodash/pick');
 
 const { BAD_REQUEST, CONFLICT, NOT_FOUND } = HttpStatus;
+const { Op, UniqueConstraintError } = Sequelize;
+
+const columns = {
+  email: { header: 'Email', width: 30 },
+  firstName: { header: 'First Name', width: 30 },
+  lastName: { header: 'Last Name', width: 30 },
+  role: { header: 'Role', width: 30 },
+  message: { header: 'Error', width: 30 }
+};
 const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
-const Op = Sequelize.Op;
 
 const createFilter = q => map(['email', 'firstName', 'lastName'],
   it => ({ [it]: { [Op.iLike]: `%${q}%` } }));
@@ -26,13 +35,9 @@ function list({ query: { email, role, filter }, options }, res) {
 }
 
 function create(req, res) {
-  const { body } = req;
-  return User.findOne({ where: { email: body.email }, paranoid: false })
-    .then(existingUser => {
-      if (existingUser && !existingUser.deletedAt) createError(CONFLICT);
-      const opts = { existingUser, origin: req.origin() };
-      return User.invite(pick(body, inputAttrs), opts);
-    })
+  const { body, origin } = req;
+  return Promise.resolve(User.invite(pick(body, inputAttrs), { origin }))
+    .catch(UniqueConstraintError, () => createError(CONFLICT))
     .then(user => res.jsend.success(user.profile));
 }
 
@@ -91,15 +96,10 @@ function resetPassword({ body, params }, res) {
 
 async function bulkImport(req, res) {
   const origin = req.origin();
-  const users = (await Datasheet.load(req.file)).toJSON();
+  let users = (await Datasheet.load(req.file)).toJSON();
+  users = users.map(it => pick(it, inputAttrs));
   const errors = await User.import(users, { origin });
   if (!errors) return res.end();
-  const columns = {
-    email: { header: 'Email', width: 30 },
-    firstName: { header: 'First Name', width: 30 },
-    lastName: { header: 'Last Name', width: 30 },
-    message: { header: 'Error', width: 30 }
-  };
   const creator = 'Boutique';
   const extension = mime.getExtension(req.file.mimetype);
   const filename = `errors.${extension}`;

@@ -1,11 +1,9 @@
 'use strict';
 
 const { auth: config = {} } = require('../config');
-const { Model } = require('sequelize');
+const { Model, UniqueConstraintError } = require('sequelize');
 const { role } = require('../../common/config');
 const bcrypt = require('bcrypt');
-const forEach = require('lodash/forEach');
-const importUsers = require('./import-users');
 const jwt = require('jsonwebtoken');
 const logger = require('../common/logger')();
 const mail = require('../common/mail');
@@ -97,16 +95,31 @@ class User extends Model {
     };
   }
 
-  static async invite(userData, options) {
-    const user = options.existingUser || this.build(userData);
-    if (options.existingUser) {
-      forEach(userData, (val, key) => user.setDataValue(key, val));
-      user.setDataValue('deletedAt', null);
+  static async invite(userData, { mode, ...options } = {}) {
+    const where = userData;
+    const [user, created] = await this.findOrCreate({ where, paranoid: false });
+    if (!created && !user.deletedAt) {
+      throw new UniqueConstraintError({ message: 'User already exists!' });
     }
+    if (user.deletedAt) user.setDataValue('deletedAt', null);
     user.token = user.createToken({ expiresIn: '3 days' });
     mail.invite(user, options).catch(err =>
       logger.error('Error: Sending invite email failed:', err.message));
     return user.save({ paranoid: false });
+  }
+
+  static async import(users, options) {
+    const results = await Promise.map(users, userData => Promise.all([
+      Promise.resolve(User.invite(userData, options)).reflect(),
+      userData
+    ]));
+    const errors = results.reduce((acc, [result, userData]) => {
+      if (!result.isRejected()) return acc;
+      const { message = 'Failed to import user.' } = result.reason();
+      acc.push({ ...userData, message });
+      return acc;
+    }, []);
+    return errors.length && errors;
   }
 
   async encryptPassword() {
@@ -137,5 +150,4 @@ class User extends Model {
   }
 }
 
-User.import = importUsers(User);
 module.exports = User;
