@@ -64,7 +64,10 @@ class Datasheet extends Worksheet {
 
   mapRows(mapper) {
     const records = [];
-    this.eachRow((row, i) => records.push(mapper(row, i)));
+    this.eachRow((row, i) => {
+      if (i === 1) return;
+      records.push(mapper(row, i));
+    });
     return records;
   }
 
