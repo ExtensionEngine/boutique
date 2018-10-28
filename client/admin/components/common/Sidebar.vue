@@ -1,7 +1,8 @@
 <template>
   <div class="main-drawer">
     <v-navigation-drawer
-      v-model="drawer"
+      :value="drawer"
+      @input="val => $emit('update:drawer', val)"
       fixed
       clipped
       app
