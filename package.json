@@ -66,6 +66,7 @@
     "body-parser": "^1.18.3",
     "bulma": "^0.7.1",
     "bunyan": "^1.8.12",
+    "change-case": "^3.0.2",
     "cors": "^2.8.4",
     "cuid": "^2.1.4",
     "date-fns": "^1.29.0",

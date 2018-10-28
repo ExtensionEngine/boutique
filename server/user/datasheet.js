@@ -1,5 +1,6 @@
 'use strict';
 
+const { camelCase } = require('change-case');
 const { extname } = require('path');
 const { Workbook } = require('exceljs');
 const intoStream = require('into-stream');
@@ -30,9 +31,8 @@ Object.assign(Workbook.prototype, {
 });
 
 class Datasheet extends Worksheet {
-  constructor(options = {}) {
+  constructor({ name, columns, data, ...options } = {}) {
     super(options);
-    const { name, columns, data } = options;
     this.name = name;
     if (columns) this._setupHeader(columns);
     if (data) data.forEach(record => this.addRow(record));
@@ -46,21 +46,35 @@ class Datasheet extends Worksheet {
     });
   }
 
-  get headers() {
-    return this.getRow(1).values.slice(1);
-  }
-
-  get rows() {
-    return this.getSheetValues().slice(2);
-  }
-
-  toJSON() {
-    const keys = this.headers;
-    return this.rows.map(cells => {
-      return cells.slice(1).reduce((acc, val, i) => {
-        return Object.assign(acc, { [keys[i]]: val });
-      }, {});
+  getHeaders({ include, exclude } = {}) {
+    let filter;
+    if (Array.isArray(include) && include.length) {
+      filter = key => include.includes(key);
+    } else if (Array.isArray(exclude) && exclude.length) {
+      filter = key => !(exclude.includes(key));
+    } else {
+      filter = key => true;
+    }
+    const headers = [];
+    this.getRow(1).eachCell((cell, i) => {
+      const header = cell.value;
+      const key = camelCase(header);
+      if (filter(key)) headers.push({ key, header, index: cell.col });
     });
+    return headers;
+  }
+
+  mapRows(mapper) {
+    const records = [];
+    this.eachRow((row, i) => records.push(mapper(row, i)));
+    return records;
+  }
+
+  toJSON(options) {
+    const headers = this.getHeaders(options);
+    return this.mapRows(row => headers.reduce((acc, { key, index }) => {
+      return Object.assign(acc, { [key]: row.getCell(index).value });
+    }, {}));
   }
 
   static fromWorksheet(sheet) {

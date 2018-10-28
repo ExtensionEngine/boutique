@@ -96,8 +96,7 @@ function resetPassword({ body, params }, res) {
 
 async function bulkImport(req, res) {
   const origin = req.origin();
-  let users = (await Datasheet.load(req.file)).toJSON();
-  users = users.map(it => pick(it, inputAttrs));
+  let users = (await Datasheet.load(req.file)).toJSON({ include: inputAttrs });
   const errors = await User.import(users, { origin });
   if (!errors) return res.end();
   const creator = 'Boutique';
