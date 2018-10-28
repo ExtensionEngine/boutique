@@ -1,13 +1,12 @@
 'use strict';
 
 const { createError } = require('../common/errors');
-const { createWorkbook, getUsers, ImportErrors } = require('./import');
 const { Enrollment, Sequelize, sequelize, User } = require('../common/database');
-const find = require('lodash/find');
+const Datasheet = require('./datasheet');
 const HttpStatus = require('http-status');
+const mime = require('mime');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
-const Promise = require('bluebird');
 
 const { BAD_REQUEST, CONFLICT, NOT_FOUND } = HttpStatus;
 const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
@@ -90,36 +89,31 @@ function resetPassword({ body, params }, res) {
     .then(() => res.end());
 }
 
-async function importUsers(req, res) {
-  const users = await getUsers(req.file);
-  const existingUsers = await User.findAll({
-    where: { email: map(users, 'email') },
-    paranoid: false
-  });
+async function bulkImport(req, res) {
   const origin = req.origin();
-  const errors = new ImportErrors();
-  await Promise.map(users, user => {
-    const existingUser = find(existingUsers, user);
-    if (existingUser && !existingUser.deletedAt) {
-      return errors.add(user, 'User already exists!');
-    }
-    return User.invite(pick(user, inputAttrs), { existingUser, origin })
-      .catch(err => errors.add(user, err.message));
-  });
-  if (!errors.get().length) return res.end();
-  const wb = createWorkbook(errors.get());
-  res.setHeader('Content-Type', 'application/vnd.ms-excel');
-  res.setHeader('Content-disposition', 'attachment;filename=errors.xls');
-  return wb.xlsx.write(res).then(() => res.end());
+  const users = (await Datasheet.load(req.file)).toJSON();
+  const errors = await User.import(users, { origin });
+  if (!errors) return res.end();
+  const columns = {
+    email: { header: 'Email', width: 30 },
+    firstName: { header: 'First Name', width: 30 },
+    lastName: { header: 'Last Name', width: 30 },
+    message: { header: 'Error', width: 30 }
+  };
+  const creator = 'Boutique';
+  const extension = mime.getExtension(req.file.mimetype);
+  const filename = `errors.${extension}`;
+  const report = (new Datasheet({ columns, data: errors })).toWorkbook({ creator });
+  return report.download(res, { filename });
 }
 
 module.exports = {
   list,
+  bulkImport,
   create,
   patch,
   destroy,
   login,
   forgotPassword,
-  resetPassword,
-  importUsers
+  resetPassword
 };

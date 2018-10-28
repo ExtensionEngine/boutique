@@ -5,6 +5,7 @@ const { Model } = require('sequelize');
 const { role } = require('../../common/config');
 const bcrypt = require('bcrypt');
 const forEach = require('lodash/forEach');
+const importUsers = require('./import-users');
 const jwt = require('jsonwebtoken');
 const logger = require('../common/logger')();
 const mail = require('../common/mail');
@@ -136,4 +137,5 @@ class User extends Model {
   }
 }
 
+User.import = importUsers(User);
 module.exports = User;

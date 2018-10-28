@@ -16,7 +16,7 @@ router
   .delete('/:id', ctrl.destroy)
   .post('/forgotPassword', ctrl.forgotPassword)
   .post('/resetPassword', ctrl.resetPassword)
-  .post('/import', upload.single('file'), ctrl.importUsers);
+  .post('/import', upload.single('file'), ctrl.bulkImport);
 
 module.exports = {
   path: '/users',
