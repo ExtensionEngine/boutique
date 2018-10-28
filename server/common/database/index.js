@@ -1,6 +1,7 @@
 'use strict';
 
 const { migrationsPath } = require('../../../sequelize.config');
+const { wrapAsyncMethods } = require('./helpers');
 const config = require('./config');
 const forEach = require('lodash/forEach');
 const invoke = require('lodash/invoke');
@@ -27,6 +28,7 @@ const defineModel = Model => {
   const hooks = invoke(Model, 'hooks') || {};
   const scopes = invoke(Model, 'scopes', sequelize) || {};
   const options = invoke(Model, 'options') || {};
+  wrapAsyncMethods(Model);
   return Model.init(fields, { sequelize, hooks, scopes, ...options });
 };
 
