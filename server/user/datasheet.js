@@ -34,11 +34,11 @@ class Datasheet extends Worksheet {
     super(options);
     const { name, columns, data } = options;
     this.name = name;
-    if (columns) this._initStructure(columns);
+    if (columns) this._setupHeader(columns);
     if (data) data.forEach(record => this.addRow(record));
   }
 
-  _initStructure(columns) {
+  _setupHeader(columns) {
     this.columns = Object.keys(columns).map(key => {
       let config = columns[key];
       config = isString(config) ? { header: config } : config;
@@ -67,14 +67,15 @@ class Datasheet extends Worksheet {
     return Object.assign(new this(), sheet);
   }
 
-  static load(file) {
+  static async load(file) {
     const wb = new Workbook();
     if (isCsv(file)) {
-      return wb.csv.read(intoStream(file.buffer))
-        .then(ws => this.fromWorksheet(ws));
+      const ws = await wb.csv.read(intoStream(file.buffer));
+      return this.fromWorksheet(ws);
     }
-    return wb.xlsx.load(file.buffer)
-      .then(() => this.fromWorksheet(wb.getWorksheet(1)));
+    await wb.xlsx.load(file.buffer);
+    const ws = wb.getWorksheet(1);
+    return this.fromWorksheet(ws);
   }
 
   toWorkbook(options = {}) {
