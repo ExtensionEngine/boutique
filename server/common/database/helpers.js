@@ -1,7 +1,7 @@
 'use strict';
 
 // eslint-disable-next-line no-extra-parens
-const AsyncFunction = (async function () { }).constructor;
+const AsyncFunction = (async function () {}).constructor;
 
 const isAsyncFunction = arg => arg instanceof AsyncFunction;
 const inRange = require('lodash/inRange');
