@@ -100,10 +100,9 @@ async function bulkImport(req, res) {
   const errors = await User.import(users, { origin });
   if (!errors) return res.end();
   const creator = 'Boutique';
-  const extension = mime.getExtension(req.file.mimetype);
-  const filename = `errors.${extension}`;
+  const format = req.body.format || mime.getExtension(req.file.mimetype);
   const report = (new Datasheet({ columns, data: errors })).toWorkbook({ creator });
-  return report.download(res, { filename });
+  return report.send(res, { format });
 }
 
 module.exports = {

@@ -1,7 +1,6 @@
 'use strict';
 
 const { camelCase } = require('change-case');
-const { extname } = require('path');
 const { Workbook } = require('exceljs');
 const intoStream = require('into-stream');
 const Worksheet = require('exceljs/dist/es5/doc/worksheet');
@@ -22,10 +21,9 @@ Object.assign(Workbook.prototype, {
     this._worksheets[id] = sheet;
     return this;
   },
-  download(res, { filename }) {
-    res.attachment(filename);
-    const type = extname(filename).substring(1);
-    const writer = this[type] || this.xlsx;
+  send(res, { format }) {
+    res.type(format);
+    const writer = this[format] || this.xlsx;
     return writer.write(res);
   }
 });

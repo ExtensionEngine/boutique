@@ -14,7 +14,7 @@
               :error-messages="showErrors"
               :disabled="importing"
               prepend-icon="attach_file"
-              label="Upload .xls, .xlsx or .csv file"
+              label="Upload .xlsx or .csv file"
               readonly
               single-line/>
             <input
@@ -58,14 +58,15 @@ import saveAs from 'save-as';
 import { withFocusTrap } from '@/common/focustrap';
 import { withValidation } from '@/common/validation';
 
+const formats = {
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+  'text/csv': 'csv'
+};
+
 const el = vm => vm.$children[0].$refs.dialog;
 const rules = {
   required: true,
-  mimes: [
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    'application/vnd.ms-excel',
-    'text/csv'
-  ]
+  mimes: Object.keys(formats)
 };
 
 export default {
@@ -79,7 +80,7 @@ export default {
       filename: null,
       form: null,
       errors: null,
-      rules: rules
+      rules
     };
   },
   computed: {
@@ -130,7 +131,8 @@ export default {
       });
     },
     downloadErrorsFile() {
-      saveAs(this.errors, `Errors.${this.extname}`);
+      const extension = formats[this.errors.type];
+      saveAs(this.errors, `Errors.${extension}`);
       this.$refs.fileText.focus();
     }
   },

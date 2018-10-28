@@ -99,7 +99,8 @@ class User extends Model {
     const where = userData;
     const [user, created] = await this.findOrCreate({ where, paranoid: false });
     if (!created && !user.deletedAt) {
-      throw new UniqueConstraintError({ message: 'User already exists!' });
+      const message = this.attributes.email.unique.msg;
+      throw new UniqueConstraintError({ message });
     }
     if (user.deletedAt) user.setDataValue('deletedAt', null);
     user.token = user.createToken({ expiresIn: '3 days' });
