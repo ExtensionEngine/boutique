@@ -8,7 +8,7 @@
     </v-toolbar>
     <v-layout>
       <v-flex xs12 sm6 md4>
-        <form @submit.prevent="saveProgram()">
+        <form @submit.prevent="saveProgram">
           <v-text-field
             v-validate="{ required: true, min: 2, max: 255 }"
             v-model="program.name"
@@ -33,9 +33,11 @@
             label="End Date"
             data-vv-as="End Date"/>
           <v-flex class="text-xs-right">
-            <v-btn v-show="disabled" @click="disabled = false" outline>Edit</v-btn>
-            <v-btn v-show="!disabled" @click="reset" outline>Cancel</v-btn>
-            <v-btn v-show="!disabled" type="submit" color="success">Save</v-btn>
+            <v-btn v-if="disabled" @click="disabled = false" outline>Edit</v-btn>
+            <template v-else>
+              <v-btn @click="reset" outline>Cancel</v-btn>
+              <v-btn type="submit" color="success">Save</v-btn>
+            </template>
           </v-flex>
         </form>
       </v-flex>
@@ -57,11 +59,12 @@ import fecha from 'fecha';
 import { mapActions } from 'vuex';
 import { withValidation } from '@/common/validation';
 
-const DATE_FORMAT = 'YYYY-MM-DD';
-const formatDate = date => date && fecha.format(fecha.parse(date, 'YYYY-MM-DDTHH:MM:SSZ'), DATE_FORMAT);
+const SRC_FORMAT = 'YYYY-MM-DD';
+const DST_FORMAT = 'YYYY-MM-DD';
+const formatDate = d => d && fecha.format(fecha.parse(d, SRC_FORMAT), DST_FORMAT);
 
 export default {
-  name: 'settings',
+  name: 'program-settings',
   mixins: [withValidation()],
   props: { programData: { type: Object, required: true } },
   data() {
@@ -72,7 +75,7 @@ export default {
     };
   },
   computed: {
-    dateFormat: () => DATE_FORMAT
+    dateFormat: () => DST_FORMAT
   },
   methods: {
     ...mapActions('programs', ['save', 'remove']),
@@ -89,8 +92,6 @@ export default {
         startDate: formatDate(this.programData.startDate),
         endDate: formatDate(this.programData.endDate)
       });
-      console.log(fecha.format(fecha.parse(this.programData.startDate, 'YYYY-MM-DDTHH:MM:SSZ')));
-      console.log(new Date(this.programData.startDate));
     },
     reset() {
       this.vErrors.clear();
