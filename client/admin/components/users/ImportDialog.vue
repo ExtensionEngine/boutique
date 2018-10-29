@@ -53,7 +53,6 @@
 <script>
 import api from '@/admin/api/user';
 import CircularProgress from '@/common/components/CircularProgress';
-import { extname } from 'path';
 import saveAs from 'save-as';
 import { withFocusTrap } from '@/common/focustrap';
 import { withValidation } from '@/common/validation';
@@ -84,9 +83,6 @@ export default {
     };
   },
   computed: {
-    extname() {
-      return this.filename && extname(this.filename).substring(1);
-    },
     showErrors() {
       return this.errors
         ? ['There were some erros.']
