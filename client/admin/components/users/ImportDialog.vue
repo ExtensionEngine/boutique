@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-hotkey="{ esc: close }" v-model="visible" width="700">
     <v-btn slot="activator" color="blue-grey" outline>
-      <v-icon>cloud_upload</v-icon>Import
+      <v-icon>mdi-cloud-upload</v-icon>Import
     </v-btn>
     <v-form @submit.prevent="save">
       <v-card class="pa-3">
@@ -13,7 +13,7 @@
               v-model="filename"
               :error-messages="showErrors"
               :disabled="importing"
-              prepend-icon="attach_file"
+              prepend-icon="mdi-attachment"
               label="Upload .xlsx or .csv file"
               readonly
               single-line/>
@@ -37,7 +37,7 @@
               v-show="visible && errors"
               @click="downloadErrorsFile"
               color="error">
-              <v-icon>cloud_download</v-icon>Errors
+              <v-icon>mdi-cloud-download</v-icon>Errors
             </v-btn>
           </v-fade-transition>
           <v-btn @click="close">Cancel</v-btn>
@@ -153,11 +153,17 @@ export default {
   padding-right: 6px;
 }
 
-.v-text-field /deep/ .v-text-field__slot {
-  cursor: pointer;
+.v-text-field {
+  /deep/ .v-text-field__slot {
+    cursor: pointer;
 
-  input {
-    pointer-events: none;
+    input {
+      pointer-events: none;
+    }
+  }
+
+  /deep/ .mdi {
+    transform: rotate(-90deg);
   }
 }
 
