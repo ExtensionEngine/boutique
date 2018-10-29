@@ -14,7 +14,7 @@ module.exports = {
 };
 
 function wrapAsyncMethods(Model, wrapper = require('bluebird').method) {
-  const transformer = (val, name) => isAsyncFunction(val) && wrapper(val);
+  const transformer = ({ value }) => isAsyncFunction(value) && wrapper(value);
   transformProperties(Model, transformer);
   transformProperties(Model.prototype, transformer);
   return Model;
@@ -39,8 +39,9 @@ function setLogging(Model, state) {
 }
 
 function transformProperties(obj, cb) {
-  Object.getOwnPropertyNames(obj).forEach(name => {
-    const val = cb(obj[name], name);
+  const descriptors = Object.getOwnPropertyDescriptors(obj);
+  Object.keys(descriptors).forEach(name => {
+    const val = cb(descriptors[name], name);
     if (val) obj[name] = val;
   });
 }
