@@ -1,14 +1,15 @@
 <template>
   <div class="main-drawer">
     <v-navigation-drawer
-      v-model="drawer"
+      :value="drawer"
+      @input="val => $emit('update:drawer', val)"
       fixed
       clipped
       app
       class="grey lighten-4">
       <v-list dense class="grey lighten-4 pt-4">
         <v-list-tile :to="{ name: 'users' }">
-          <v-list-tile-action><v-icon>contacts</v-icon></v-list-tile-action>
+          <v-list-tile-action><v-icon>mdi-contacts</v-icon></v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title class="grey--text">Users</v-list-tile-title>
           </v-list-tile-content>

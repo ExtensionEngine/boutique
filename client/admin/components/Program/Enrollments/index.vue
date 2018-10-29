@@ -23,7 +23,7 @@
           <td>{{ get(item.student, 'lastName') }}</td>
           <td>{{ item.createdAt | formatDate }}</td>
           <td class="text-md-center">
-            <v-icon @click="unenroll(item)" small>delete</v-icon>
+            <v-icon @click="unenroll(item)" small>mdi-delete</v-icon>
           </td>
         </template>
       </v-data-table>

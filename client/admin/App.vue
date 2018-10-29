@@ -1,6 +1,6 @@
 <template>
   <v-app id="app">
-    <sidebar :drawer="drawer"/>
+    <sidebar :drawer.sync="drawer"/>
     <navbar :drawer.sync="drawer"/>
     <v-content>
       <v-container fluid fill-height class="grey lighten-4">

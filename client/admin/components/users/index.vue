@@ -13,7 +13,7 @@
           <v-flex lg3 offset-lg9>
             <v-text-field
               v-model="filter"
-              append-icon="search"
+              append-icon="mdi-magnify"
               label="Search"
               single-line
               clearable/>
@@ -32,8 +32,8 @@
             <td>{{ item.lastName }}</td>
             <td>{{ item.createdAt | formatDate }}</td>
             <td>
-              <v-icon @click="showUserDialog(item)" small>edit</v-icon>
-              <v-icon @click="removeUser(item)" small class="ml-3">delete</v-icon>
+              <v-icon @click="showUserDialog(item)" small>mdi-pencil</v-icon>
+              <v-icon @click="removeUser(item)" small class="ml-3">mdi-delete</v-icon>
             </td>
           </template>
         </v-data-table>
