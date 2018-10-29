@@ -27,9 +27,19 @@ VeeValidate.Validator.extend('unique-program-name', uniqueProgramName);
 
 export default VeeValidate;
 
-const mixin = ({ inherit = false } = {}) => {
+const getOptions = ({ inherit = false } = {}) => {
   if (inherit) return { inject: ['$validator'] };
   return { $_veeValidate: { validator: 'new' } };
 };
+
+const mixin = ({ rules = {}, ...config } = {}) => ({
+  ...getOptions(config),
+  created() {
+    Object.keys(rules).forEach(name => {
+      if (this.$validator.rules[name]) return;
+      this.$validator.extend(name, rules[name]);
+    });
+  }
+});
 
 export const withValidation = mixin;

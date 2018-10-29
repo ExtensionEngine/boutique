@@ -42,10 +42,18 @@ import { withFocusTrap } from '@/common/focustrap';
 import { withValidation } from '@/common/validation';
 
 const el = vm => vm.$children[0].$refs.dialog;
+const rules = {
+  'unique-enrollment': {
+    getMessage: field => `Learner is already enrolled!`,
+    validate: (option, [params]) => {
+      return enrollmentApi.fetch({ params }).then(res => !res.total);
+    }
+  }
+};
 
 export default {
   name: 'enrollment-dialog',
-  mixins: [withValidation(), withFocusTrap({ el })],
+  mixins: [withValidation({ rules }), withFocusTrap({ el })],
   props: {
     programId: { type: Number, required: true }
   },
@@ -96,15 +104,6 @@ export default {
       this.vErrors.clear();
       this.fetch();
     }
-  },
-  mounted() {
-    if (this.$validator.rules['unique-enrollment']) return;
-    this.$validator.extend('unique-enrollment', {
-      getMessage: field => `Learner is already enrolled!`,
-      validate: (option, [params]) => {
-        return enrollmentApi.fetch({ params }).then(res => !res.total);
-      }
-    });
   }
 };
 </script>
