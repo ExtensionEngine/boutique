@@ -1,5 +1,10 @@
 <template>
-  <v-dialog v-hotkey="{ esc: close }" v-model="visible" width="700">
+  <v-dialog
+    v-hotkey="{ esc: close }"
+    v-model="showDialog"
+    persistent
+    no-click-animation
+    width="700">
     <v-btn slot="activator" color="blue-grey" outline>
       <v-icon>mdi-cloud-upload</v-icon>Import
     </v-btn>
@@ -7,42 +12,42 @@
       <v-card class="pa-3">
         <v-card-title class="headline">Import Users</v-card-title>
         <v-card-text>
-          <label for="fileInput">
+          <label for="userImportInput">
             <v-text-field
               ref="fileText"
               v-model="filename"
-              :error-messages="showErrors"
+              :error-messages="vErrors.collect('file')"
               :disabled="importing"
               prepend-icon="mdi-attachment"
               label="Upload .xlsx or .csv file"
               readonly
               single-line/>
             <input
-              v-validate="rules"
-              v-show="false"
+              v-validate="inputValidation"
               ref="fileInput"
               @change="onFileSelected"
-              id="fileInput"
+              id="userImportInput"
               data-vv-name="file"
               type="file">
           </label>
         </v-card-text>
-        <v-card-text v-show="importing" class="loader-container">
-          <circular-progress :width="40" :height="40"/>
-        </v-card-text>
-        <v-card-actions v-show="!importing">
+        <v-card-actions>
           <v-spacer/>
           <v-fade-transition>
             <v-btn
-              v-show="visible && errors"
+              v-show="serverErrors"
               @click="downloadErrorsFile"
               color="error">
               <v-icon>mdi-cloud-download</v-icon>Errors
             </v-btn>
           </v-fade-transition>
           <v-btn @click="close">Cancel</v-btn>
-          <v-btn :disabled="disabled" color="success" type="submit">
-            Import
+          <v-btn
+            :disabled="!filename || vErrors.any() || importing"
+            color="success"
+            type="submit">
+            <span v-if="!importing">Import</span>
+            <v-icon v-else>mdi-loading mdi-spin</v-icon>
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -52,20 +57,14 @@
 
 <script>
 import api from '@/admin/api/user';
-import CircularProgress from '@/common/components/CircularProgress';
 import saveAs from 'save-as';
 import { withFocusTrap } from '@/common/focustrap';
 import { withValidation } from '@/common/validation';
 
-const formats = {
+const el = vm => vm.$children[0].$refs.dialog;
+const inputFormats = {
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
   'text/csv': 'csv'
-};
-
-const el = vm => vm.$children[0].$refs.dialog;
-const rules = {
-  required: true,
-  mimes: Object.keys(formats)
 };
 
 export default {
@@ -73,78 +72,77 @@ export default {
   mixins: [withValidation(), withFocusTrap({ el })],
   data() {
     return {
-      visible: false,
+      showDialog: false,
       importing: false,
-      disabled: true,
       filename: null,
       form: null,
-      errors: null,
-      rules
+      serverErrors: null
     };
   },
   computed: {
-    showErrors() {
-      return this.errors
-        ? ['There were some erros.']
-        : this.vErrors.collect('file');
-    }
+    inputValidation: () => ({ required: true, mimes: Object.keys(inputFormats) })
   },
   methods: {
     onFileSelected(e) {
       this.form = new FormData();
-      this.errors = null;
+      this.resetErrors();
       const [file] = e.target.files;
-      if (!file) {
-        this.filename = null;
-        return (this.disabled = true);
-      }
+      if (!file) return (this.filename = null);
       this.filename = file.name;
-      this.form.append('file', file, file.name);
-      this.$validator.validateAll().then(isValid => (this.disabled = !isValid));
+      return this.$validator.validateAll().then(isValid => {
+        if (!isValid) return;
+        this.form.append('file', file, file.name);
+      });
     },
     close() {
-      this.disabled = true;
+      if (this.importing) return;
       this.filename = null;
       this.$refs.fileInput.value = null;
-      this.visible = false;
+      this.resetErrors();
+      this.showDialog = false;
     },
     save() {
-      this.disabled = true;
       this.importing = true;
       return api.bulkImport(this.form).then(response => {
         this.importing = false;
         if (response.data.size) {
           this.$nextTick(() => this.$refs.fileText.focus());
-          return (this.errors = response.data);
+          this.vErrors.add({ field: 'file', msg: 'All users aren\'t imported' });
+          return (this.serverErrors = response.data);
         }
         this.$emit('imported');
         this.close();
       }).catch(err => {
         this.importing = false;
-        this.errors = true;
+        this.vErrors.add({ field: 'file', msg: 'Internal server error.' });
         this.$nextTick(() => this.$refs.fileText.focus());
         return Promise.reject(err);
       });
     },
     downloadErrorsFile() {
-      const extension = formats[this.errors.type];
-      saveAs(this.errors, `Errors.${extension}`);
+      const extension = inputFormats[this.serverErrors.type];
+      saveAs(this.serverErrors, `Errors.${extension}`);
       this.$refs.fileText.focus();
+    },
+    resetErrors() {
+      this.serverErrors = null;
+      this.vErrors.clear();
     }
   },
   watch: {
-    visible(val) {
-      this.$nextTick(() => this.focusTrap.toggle(val));
+    showDialog(val) {
       if (!val) return;
-      this.vErrors.clear();
-      this.errors = null;
+      this.$nextTick(() => this.focusTrap.toggle(val));
     }
-  },
-  components: { CircularProgress }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
+#userImportInput {
+  display: none;
+}
+
 .v-btn .v-icon {
   padding-right: 6px;
 }
