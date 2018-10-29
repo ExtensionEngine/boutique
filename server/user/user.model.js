@@ -4,13 +4,21 @@ const { auth: config = {} } = require('../config');
 const { Model, UniqueConstraintError } = require('sequelize');
 const { role } = require('../../common/config');
 const bcrypt = require('bcrypt');
+const castArray = require('lodash/castArray');
+const find = require('lodash/find');
 const jwt = require('jsonwebtoken');
 const logger = require('../common/logger')();
 const mail = require('../common/mail');
+const map = require('lodash/map');
 const pick = require('lodash/pick');
 const Promise = require('bluebird');
 const Role = require('../../common/config/role');
 const values = require('lodash/values');
+
+const pSettle = input => Promise.resolve(input).reflect();
+const pSettleMap = (iterable, mapper, options) => {
+  return Promise.map(iterable, (...args) => pSettle(mapper(...args)), options);
+};
 
 class User extends Model {
   static fields(DataTypes) {
@@ -95,32 +103,39 @@ class User extends Model {
     };
   }
 
-  static async invite(userData, { mode, ...options } = {}) {
-    const where = userData;
-    const [user, created] = await this.findOrCreate({ where, paranoid: false });
-    if (!created && !user.deletedAt) {
-      const message = this.attributes.email.unique.msg;
-      throw new UniqueConstraintError({ message });
-    }
-    if (user.deletedAt) user.setDataValue('deletedAt', null);
+  static async invite(user, options) {
     user.token = user.createToken({ expiresIn: '3 days' });
     mail.invite(user, options).catch(err =>
       logger.error('Error: Sending invite email failed:', err.message));
     return user.save({ paranoid: false });
   }
 
-  static async import(users, options) {
-    const results = await Promise.map(users, userData => Promise.all([
-      Promise.resolve(User.invite(userData, options)).reflect(),
-      userData
-    ]));
-    const errors = results.reduce((acc, [result, userData]) => {
-      if (!result.isRejected()) return acc;
+  static async import(users, { concurrency = 16, ...options } = {}) {
+    const errors = [];
+    await this.restoreOrBuild(users, { concurrency }).map((result, i) => {
+      if (result.isFulfilled()) return this.invite(result.value(), options);
       const { message = 'Failed to import user.' } = result.reason();
-      acc.push({ ...userData, message });
-      return acc;
-    }, []);
+      errors.push({ ...users[i], message });
+    }, { concurrency });
     return errors.length && errors;
+  }
+
+  static async restoreOrBuild(users, { concurrency = 16 } = {}) {
+    users = castArray(users);
+    const where = { email: map(users, 'email') };
+    const found = await User.findAll({ where, paranoid: false });
+    return pSettleMap(users, userData => {
+      const user = find(found, { email: userData.email });
+      if (user && !user.deletedAt) {
+        const message = this.attributes.email.unique.msg;
+        return Promise.reject(new UniqueConstraintError({ message }));
+      }
+      if (user) {
+        user.setDataValue('deleteAt', null);
+        return user;
+      }
+      return this.build(userData);
+    }, { concurrency });
   }
 
   async encryptPassword() {

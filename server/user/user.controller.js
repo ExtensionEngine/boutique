@@ -6,11 +6,10 @@ const Datasheet = require('./datasheet');
 const HttpStatus = require('http-status');
 const mime = require('mime');
 const map = require('lodash/map');
-const Promise = require('bluebird');
 const pick = require('lodash/pick');
 
 const { BAD_REQUEST, CONFLICT, NOT_FOUND } = HttpStatus;
-const { Op, UniqueConstraintError } = Sequelize;
+const { Op } = Sequelize;
 
 const columns = {
   email: { header: 'Email', width: 30 },
@@ -36,8 +35,11 @@ function list({ query: { email, role, filter }, options }, res) {
 
 function create(req, res) {
   const { body, origin } = req;
-  return Promise.resolve(User.invite(pick(body, inputAttrs), { origin }))
-    .catch(UniqueConstraintError, () => createError(CONFLICT))
+  return User.restoreOrBuild(pick(body, inputAttrs))
+    .then(([result]) => {
+      if (result.isRejected()) return createError(CONFLICT);
+      return User.invite(result.value(), { origin });
+    })
     .then(user => res.jsend.success(user.profile));
 }
 
