@@ -3,6 +3,9 @@
     <v-flex class="mt-5">
       <v-toolbar color="#f5f5f5" flat>
         <v-spacer/>
+        <v-btn @click.stop="enrollUsersDialog()" color="success" outline>
+          Enroll To Program
+        </v-btn>
         <v-btn @click.stop="showUserDialog()" color="success" outline>
           Add user
         </v-btn>
@@ -25,6 +28,12 @@
           :total-items="totalItems"
           :must-sort="true">
           <template slot="items" slot-scope="{ item }">
+            <td class="select">
+              <input
+                :value="item.id"
+                v-model="checkedItems"
+                type="checkbox">
+            </td>
             <td>{{ item.email }}</td>
             <td>{{ item.role }}</td>
             <td>{{ item.firstName }}</td>
@@ -37,6 +46,9 @@
           </template>
         </v-data-table>
       </div>
+      <enrollment-dialog
+        :visible.sync="enrollmentDialog"
+        :userIds="checkedUsers"/>
       <user-dialog
         :visible.sync="userDialog"
         :userData="editedUser"
@@ -55,6 +67,7 @@
 <script>
 import api from '@/admin/api/user';
 import ConfirmationDialog from '../common/ConfirmationDialog';
+import EnrollmentDialog from './Enrollments/EnrollmentDialog';
 import throttle from 'lodash/throttle';
 import UserDialog from './UserDialog';
 
@@ -67,16 +80,20 @@ export default {
       users: [],
       filter: null,
       userDialog: false,
+      enrollmentDialog: false,
       editedUser: null,
+      checkedUsers: [],
       confirmationDialog: null,
       confirmationAction: null,
       dataTable: defaultPage(),
       totalItems: 0,
-      isLoading: false
+      isLoading: false,
+      checkedItems: []
     };
   },
   computed: {
     headers: () => ([
+      { text: 'Select', value: '', align: 'center' },
       { text: 'Email', value: 'email', align: 'left' },
       { text: 'Role', value: 'role' },
       { text: 'First Name', value: 'firstName' },
@@ -87,6 +104,10 @@ export default {
     defaultPage
   },
   methods: {
+    enrollUsersDialog() {
+      this.checkedUsers = this.checkedItems;
+      this.enrollmentDialog = true;
+    },
     showUserDialog(user = null) {
       this.editedUser = user;
       this.userDialog = true;
@@ -113,12 +134,28 @@ export default {
       this.fetch();
     }
   },
-  components: { ConfirmationDialog, UserDialog }
+  components: { ConfirmationDialog, EnrollmentDialog, UserDialog }
 };
 </script>
 
 <style lang="scss" scoped>
 .table-toolbar {
   background-color: #fff;
+}
+
+table.v-table {
+  thead {
+    th.select {
+      padding: 0;
+      text-align: center;
+    }
+  }
+
+  tbody {
+    td.select {
+      padding: 0;
+      text-align: center;
+    }
+  }
 }
 </style>
