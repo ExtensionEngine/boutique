@@ -18,16 +18,15 @@
             label="Program name"
             append-icon="mdi-pencil"/>
           <date-picker
-            v-validate="{ date_format: dateFormat }"
-            ref="startDate"
             v-model="programData.startDate"
             :disabled="!isEditing"
+            :validate="{ date_format: dateFormat }"
             name="startDate"
             label="Start Date"
             data-vv-as="Start Date"/>
           <date-picker
-            v-validate="{ date_format: dateFormat, after: '$startDate' }"
             v-model="programData.endDate"
+            :validate="{ date_format: dateFormat, after: programData.startDate }"
             :disabled="!isEditing"
             name="endDate"
             label="End Date"

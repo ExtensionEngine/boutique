@@ -7,11 +7,14 @@
     offset-y
     transition="scale-transition">
     <v-text-field
+      v-validate="processedValidation"
       slot="activator"
+      :name="name"
       :value="normalizedValue"
       :label="label"
       :disabled="disabled"
       :error-messages="vErrors.collect(name)"
+      :data-vv-as="label"
       append-icon="mdi-calendar"
       readonly/>
     <v-date-picker
@@ -23,27 +26,37 @@
 
 <script>
 import fecha from 'fecha';
+import get from 'lodash/get';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 export default {
   inject: ['$validator'],
   props: {
-    value: { type: String, default: null },
     name: { type: String, required: true },
-    label: { type: String, required: true },
+    value: { type: String, default: null },
+    format: { type: String, default: DATE_FORMAT },
+    validate: { type: Object, default: () => ({}) },
     disabled: { type: Boolean, required: true },
-    format: { type: String, default: DATE_FORMAT }
+    label: { type: String, required: true }
   },
   computed: {
     normalizedValue() {
       return this.normalize(this.value, this.format, DATE_FORMAT);
+    },
+    processedValidation() {
+      const { validate, format: inputFormat } = this;
+      if (!get(validate, 'before') && !get(validate, 'after')) return validate;
+      const tmp = { ...validate, date_format: DATE_FORMAT };
+      ['before', 'after'].forEach(k => {
+        tmp[k] && (tmp[k] = this.normalize(tmp[k], inputFormat, DATE_FORMAT));
+      });
+      return tmp;
     }
   },
   methods: {
     save(value) {
       this.$emit('input', this.normalize(value, DATE_FORMAT, this.format));
-      this.$refs.menu.save(value);
     },
     normalize(value, inputFormat, outputFormat) {
       if (!value) return;
