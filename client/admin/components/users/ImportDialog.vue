@@ -27,6 +27,7 @@
               ref="fileInput"
               @change="onFileSelected"
               id="userImportInput"
+              class="user-import-input"
               data-vv-name="file"
               type="file">
           </label>
@@ -35,7 +36,7 @@
           <v-spacer/>
           <v-fade-transition>
             <v-btn
-              v-show="serverErrors"
+              v-show="serverErrorsReport"
               @click="downloadErrorsFile"
               color="error">
               <v-icon>mdi-cloud-download</v-icon>Errors
@@ -43,7 +44,7 @@
           </v-fade-transition>
           <v-btn @click="close">Cancel</v-btn>
           <v-btn
-            :disabled="!filename || vErrors.any() || importing"
+            :disabled="disabledImport"
             color="success"
             type="submit">
             <span v-if="!importing">Import</span>
@@ -76,10 +77,13 @@ export default {
       importing: false,
       filename: null,
       form: null,
-      serverErrors: null
+      serverErrorsReport: null
     };
   },
   computed: {
+    disabledImport() {
+      return !this.filename || this.vErrors.any() || this.importing;
+    },
     inputValidation: () => ({ required: true, mimes: Object.keys(inputFormats) })
   },
   methods: {
@@ -108,24 +112,24 @@ export default {
         if (response.data.size) {
           this.$nextTick(() => this.$refs.fileText.focus());
           this.vErrors.add({ field: 'file', msg: 'All users aren\'t imported' });
-          return (this.serverErrors = response.data);
+          return (this.serverErrorsReport = response.data);
         }
         this.$emit('imported');
         this.close();
       }).catch(err => {
         this.importing = false;
-        this.vErrors.add({ field: 'file', msg: 'Internal server error.' });
+        this.vErrors.add({ field: 'file', msg: 'Importing users failed.' });
         this.$nextTick(() => this.$refs.fileText.focus());
         return Promise.reject(err);
       });
     },
     downloadErrorsFile() {
-      const extension = inputFormats[this.serverErrors.type];
-      saveAs(this.serverErrors, `Errors.${extension}`);
+      const extension = inputFormats[this.serverErrorsReport.type];
+      saveAs(this.serverErrorsReport, `Errors.${extension}`);
       this.$refs.fileText.focus();
     },
     resetErrors() {
-      this.serverErrors = null;
+      this.serverErrorsReport = null;
       this.vErrors.clear();
     }
   },
@@ -139,7 +143,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-#userImportInput {
+.user-import-input {
   display: none;
 }
 
