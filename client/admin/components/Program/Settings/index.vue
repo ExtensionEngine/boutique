@@ -20,17 +20,14 @@
           <date-picker
             v-model="programData.startDate"
             :disabled="!isEditing"
-            :validate="{ date_format: dateFormat }"
             name="startDate"
-            label="Start Date"
-            data-vv-as="Start Date"/>
+            label="Start Date"/>
           <date-picker
             v-model="programData.endDate"
-            :validate="{ date_format: dateFormat, after: programData.startDate }"
+            :validate="{ after: programData.startDate }"
             :disabled="!isEditing"
             name="endDate"
-            label="End Date"
-            data-vv-as="End Date"/>
+            label="End Date"/>
           <v-layout>
             <v-spacer/>
             <template v-if="isEditing">
