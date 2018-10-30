@@ -3,9 +3,9 @@
     <v-flex class="mt-5">
       <v-toolbar color="#f5f5f5" flat>
         <v-spacer/>
-        <v-btn @click.stop="showBulkEnrollDialog()" color="success" outline>
-          Enroll
-        </v-btn>
+        <bulk-enrollment-dialog
+          :visible.sync="bulkEnrollmentDialog"
+          :userIds="checkedItems"/>
         <v-btn @click.stop="showUserDialog()" color="success" outline>
           Add user
         </v-btn>
@@ -28,11 +28,13 @@
           :total-items="totalItems"
           :must-sort="true">
           <template slot="items" slot-scope="{ item }">
-            <td class="select">
-              <input
-                :value="item.id"
-                v-model="checkedItems"
-                type="checkbox">
+            <td class="text-xs-center">
+              <div class="checkbox-container">
+                <v-checkbox
+                  :value="item.id"
+                  v-model="checkedItems">
+                </v-checkbox>
+              </div>
             </td>
             <td>{{ item.email }}</td>
             <td>{{ item.role }}</td>
@@ -46,9 +48,6 @@
           </template>
         </v-data-table>
       </div>
-      <bulk-enrollment-dialog
-        :visible.sync="bulkEnrollmentDialog"
-        :userIds="checkedUsers"/>
       <user-dialog
         :visible.sync="userDialog"
         :userData="editedUser"
@@ -82,7 +81,6 @@ export default {
       userDialog: false,
       bulkEnrollmentDialog: false,
       editedUser: null,
-      checkedUsers: [],
       confirmationDialog: null,
       confirmationAction: null,
       dataTable: defaultPage(),
@@ -93,7 +91,7 @@ export default {
   },
   computed: {
     headers: () => ([
-      { text: 'Select', value: '', align: 'center' },
+      { text: 'Select', value: 'checkbox', align: 'center', sortable: false },
       { text: 'Email', value: 'email', align: 'left' },
       { text: 'Role', value: 'role' },
       { text: 'First Name', value: 'firstName' },
@@ -104,10 +102,6 @@ export default {
     defaultPage
   },
   methods: {
-    showBulkEnrollDialog() {
-      this.checkedUsers = this.checkedItems;
-      this.bulkEnrollmentDialog = true;
-    },
     showUserDialog(user = null) {
       this.editedUser = user;
       this.userDialog = true;
@@ -138,24 +132,28 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .table-toolbar {
   background-color: #fff;
 }
 
-table.v-table {
-  thead {
-    th.select {
-      padding: 0;
-      text-align: center;
-    }
+.checkbox-container {
+  display: inline-block;
+
+  .v-input {
+    margin-bottom: 0;
+    padding-top: 10px;
   }
 
-  tbody {
-    td.select {
-      padding: 0;
-      text-align: center;
+  .v-input--selection-controls {
+    .v-input__slot {
+      margin-bottom: 0;
+    }
+
+    .v-input--selection-controls__input {
+      margin-right: 0;
     }
   }
 }
+
 </style>

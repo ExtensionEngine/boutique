@@ -1,13 +1,13 @@
 <template>
-  <v-dialog v-hotkey="{ esc: close }" v-model="show" width="700">
+  <v-dialog v-hotkey="{ esc: close }" v-model="visible" width="700">
+    <v-btn slot="activator" color="success" outline>Enroll</v-btn>
     <v-form @submit.prevent="bulkEnroll">
       <v-card class="pa-3">
         <v-card-title class="headline">Enroll users to Program</v-card-title>
         <v-card-text>
           <v-autocomplete
             v-model="programId"
-            :items="listPrograms"
-            :loading="isLoading"
+            :items="programList"
             @focus="focusTrap.pause()"
             @blur="focusTrap.unpause()"
             label="Program"
@@ -41,14 +41,12 @@ export default {
   name: 'bulk-enrollment-dialog',
   mixins: [withValidation(), withFocusTrap({ el })],
   props: {
-    visible: { type: Boolean, default: false },
     userIds: { type: Array, default: () => ([]) }
   },
   data() {
     return {
-      programId: null,
-      userId: null,
-      isLoading: false
+      visible: false,
+      programId: null
     };
   },
   computed: {
@@ -61,7 +59,7 @@ export default {
       }
     },
     ...mapState('programs', { programs: 'items' }),
-    listPrograms() {
+    programList() {
       return map(this.programs, it => ({ text: `${it.name}`, value: it.id }));
     }
   },
@@ -74,10 +72,9 @@ export default {
         });
       });
       this.close();
-      this.$emit('enrolled');
     },
     close() {
-      this.$emit('update:visible', false);
+      this.visible = false;
     }
   }
 };
