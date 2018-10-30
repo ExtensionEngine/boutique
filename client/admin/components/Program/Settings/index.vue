@@ -11,41 +11,42 @@
         <form @submit.prevent="saveProgram">
           <v-text-field
             v-validate="{ required: true, min: 2, max: 255 }"
-            v-model="program.name"
+            v-model="programData.name"
             :error-messages="vErrors.collect('name')"
-            :disabled="disabled"
+            :disabled="!isEditing"
             name="name"
             label="Program name"
             append-icon="edit"/>
           <date-picker
             v-validate="{ date_format: dateFormat }"
             ref="startDate"
-            v-model="program.startDate"
-            :disabled="disabled"
+            v-model="programData.startDate"
+            :disabled="!isEditing"
             name="startDate"
             label="Start Date"
             data-vv-as="Start Date"/>
           <date-picker
             v-validate="{ date_format: dateFormat, after: '$startDate' }"
-            v-model="program.endDate"
-            :disabled="disabled"
+            v-model="programData.endDate"
+            :disabled="!isEditing"
             name="endDate"
             label="End Date"
             data-vv-as="End Date"/>
-          <v-flex class="text-xs-right">
-            <v-btn v-if="disabled" @click="disabled = false" outline>Edit</v-btn>
-            <template v-else>
-              <v-btn @click="reset" outline>Cancel</v-btn>
+          <v-layout>
+            <v-spacer/>
+            <template v-if="isEditing">
+              <v-btn @click="cancel" outline>Cancel</v-btn>
               <v-btn type="submit" color="success">Save</v-btn>
             </template>
-          </v-flex>
+            <v-btn v-else @click="isEditing = true" outline>Edit</v-btn>
+          </v-layout>
         </form>
       </v-flex>
     </v-layout>
     <confirmation-dialog
       :visible.sync="confirmationDialog"
-      :action="() => $router.push({ name: 'users' })"
-      @confirmed="remove(program)"
+      :action="removeProgram"
+      @confirmed="() => $router.push({ name: 'users' })"
       heading="Delete program"
       message="Are you sure you want to delete program?"/>
   </div>
@@ -66,11 +67,11 @@ const formatDate = d => d && fecha.format(fecha.parse(d, SRC_FORMAT), DST_FORMAT
 export default {
   name: 'program-settings',
   mixins: [withValidation()],
-  props: { programData: { type: Object, required: true } },
+  props: { program: { type: Object, required: true } },
   data() {
     return {
-      program: null,
-      disabled: true,
+      programData: null,
+      isEditing: false,
       confirmationDialog: false
     };
   },
@@ -82,21 +83,25 @@ export default {
     saveProgram() {
       this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
-        this.save(this.program);
-        this.disabled = true;
+        this.save(this.programData);
+        this.isEditing = false;
       });
+    },
+    removeProgram() {
+      setTimeout(() => this.remove(this.program), 10);
     },
     cloneProgram() {
-      this.program = cloneDeep({
-        ...this.programData,
-        startDate: formatDate(this.programData.startDate),
-        endDate: formatDate(this.programData.endDate)
+      const { program } = this;
+      this.programData = cloneDeep({
+        ...program,
+        startDate: formatDate(program.startDate),
+        endDate: formatDate(program.endDate)
       });
     },
-    reset() {
+    cancel() {
       this.vErrors.clear();
       this.cloneProgram();
-      this.disabled = true;
+      this.isEditing = false;
     }
   },
   created() {

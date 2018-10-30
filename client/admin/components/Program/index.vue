@@ -8,11 +8,11 @@
         <v-tab :to="{ name: 'importedContent', params: { programId } }" ripple>
           Content
         </v-tab>
-        <v-tab :to="{ name: 'settings', params: { programId } }" ripple>
+        <v-tab :to="{ name: 'programSettings', params: { programId } }" ripple>
           Settings
         </v-tab>
       </v-tabs>
-      <router-view v-if="program" :key="programId" :programData="program"/>
+      <router-view v-if="program" :key="programId" :program="program"/>
     </v-flex>
   </v-layout>
 </template>
