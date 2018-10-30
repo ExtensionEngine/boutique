@@ -3,6 +3,7 @@
     <v-flex class="mt-5">
       <v-toolbar color="#f5f5f5" flat>
         <v-spacer/>
+        <import-dialog @imported="fetch(defaultPage)"/>
         <v-btn @click.stop="showUserDialog()" color="success" outline>
           Add user
         </v-btn>
@@ -55,6 +56,7 @@
 <script>
 import api from '@/admin/api/user';
 import ConfirmationDialog from '../common/ConfirmationDialog';
+import ImportDialog from './ImportDialog';
 import throttle from 'lodash/throttle';
 import UserDialog from './UserDialog';
 
@@ -113,7 +115,7 @@ export default {
       this.fetch();
     }
   },
-  components: { ConfirmationDialog, UserDialog }
+  components: { ConfirmationDialog, ImportDialog, UserDialog }
 };
 </script>
 
