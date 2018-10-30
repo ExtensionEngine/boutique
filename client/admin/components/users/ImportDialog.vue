@@ -43,10 +43,7 @@
             </v-btn>
           </v-fade-transition>
           <v-btn @click="close">Cancel</v-btn>
-          <v-btn
-            :disabled="disabledImport"
-            color="success"
-            type="submit">
+          <v-btn :disabled="disabledImport" color="success" type="submit">
             <span v-if="!importing">Import</span>
             <v-icon v-else>mdi-loading mdi-spin</v-icon>
           </v-btn>
