@@ -16,7 +16,7 @@
             :disabled="!isEditing"
             name="name"
             label="Program name"
-            append-icon="edit"/>
+            append-icon="mdi-pencil"/>
           <date-picker
             v-validate="{ date_format: dateFormat }"
             ref="startDate"

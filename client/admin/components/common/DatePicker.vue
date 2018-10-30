@@ -12,7 +12,7 @@
       :label="label"
       :disabled="disabled"
       :error-messages="vErrors.collect(name)"
-      append-icon="event"
+      append-icon="mdi-calendar"
       readonly/>
     <v-date-picker
       :value="normalizedValue"
