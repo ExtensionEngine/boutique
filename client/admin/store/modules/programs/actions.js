@@ -1,4 +1,4 @@
 import generateActions from '@/common/store/helpers/actions';
-const { get, fetch, save } = generateActions('/programs');
+const { get, fetch, save, remove } = generateActions('/programs');
 
-export { get, fetch, save };
+export { get, fetch, save, remove };
