@@ -10,6 +10,16 @@ class Program extends Model {
         allowNull: false,
         validate: { notEmpty: true, len: [2, 255] }
       },
+      startDate: {
+        type: DataTypes.DATE,
+        field: 'start_date',
+        validate: { isDate: true }
+      },
+      endDate: {
+        type: DataTypes.DATE,
+        field: 'end_date',
+        validate: { isDate: true }
+      },
       createdAt: {
         type: DataTypes.DATE,
         field: 'created_at'
@@ -39,7 +49,20 @@ class Program extends Model {
       modelName: 'program',
       timestamps: true,
       paranoid: true,
-      freezeTableName: true
+      freezeTableName: true,
+      validate: {
+        endDateRequiresStartDate() {
+          if (this.endDate && !this.startDate) {
+            throw new Error('The End Date requires Start Date.');
+          }
+        },
+        endDateIsAfterStartDate() {
+          if (!this.endDate) return;
+          if (new Date(this.startDate) >= new Date(this.endDate)) {
+            throw new Error('The End Date must be after Start Date.');
+          }
+        }
+      }
     };
   }
 }
