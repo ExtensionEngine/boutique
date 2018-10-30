@@ -14,7 +14,7 @@
         <v-card-text>
           <label for="userImportInput">
             <v-text-field
-              ref="fileText"
+              ref="fileName"
               v-model="filename"
               :error-messages="vErrors.collect('file')"
               :disabled="importing"
@@ -27,8 +27,7 @@
               ref="fileInput"
               @change="onFileSelected"
               id="userImportInput"
-              class="user-import-input"
-              data-vv-name="file"
+              name="file"
               type="file">
           </label>
         </v-card-text>
@@ -43,7 +42,7 @@
             </v-btn>
           </v-fade-transition>
           <v-btn @click="close">Cancel</v-btn>
-          <v-btn :disabled="disabledImport" color="success" type="submit">
+          <v-btn :disabled="importDisabled" color="success" type="submit">
             <span v-if="!importing">Import</span>
             <v-icon v-else>mdi-loading mdi-spin</v-icon>
           </v-btn>
@@ -78,7 +77,7 @@ export default {
     };
   },
   computed: {
-    disabledImport() {
+    importDisabled() {
       return !this.filename || this.vErrors.any() || this.importing;
     },
     inputValidation: () => ({ required: true, mimes: Object.keys(inputFormats) })
@@ -88,7 +87,10 @@ export default {
       this.form = new FormData();
       this.resetErrors();
       const [file] = e.target.files;
-      if (!file) return (this.filename = null);
+      if (!file) {
+        this.filename = null;
+        return;
+      }
       this.filename = file.name;
       return this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
@@ -107,23 +109,24 @@ export default {
       return api.bulkImport(this.form).then(response => {
         this.importing = false;
         if (response.data.size) {
-          this.$nextTick(() => this.$refs.fileText.focus());
+          this.$nextTick(() => this.$refs.fileName.focus());
           this.vErrors.add({ field: 'file', msg: 'All users aren\'t imported' });
-          return (this.serverErrorsReport = response.data);
+          this.serverErrorsReport = response.data;
+          return;
         }
         this.$emit('imported');
         this.close();
       }).catch(err => {
         this.importing = false;
         this.vErrors.add({ field: 'file', msg: 'Importing users failed.' });
-        this.$nextTick(() => this.$refs.fileText.focus());
+        this.$nextTick(() => this.$refs.fileName.focus());
         return Promise.reject(err);
       });
     },
     downloadErrorsFile() {
       const extension = inputFormats[this.serverErrorsReport.type];
       saveAs(this.serverErrorsReport, `Errors.${extension}`);
-      this.$refs.fileText.focus();
+      this.$refs.fileName.focus();
     },
     resetErrors() {
       this.serverErrorsReport = null;
@@ -140,7 +143,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.user-import-input {
+.v-form input {
   display: none;
 }
 
