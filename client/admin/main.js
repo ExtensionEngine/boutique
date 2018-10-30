@@ -16,7 +16,7 @@ Vue.use(VeeValidate, {
 });
 Vue.use(VueHotkey);
 Vue.use(VueVisible);
-Vue.use(Vuetify);
+Vue.use(Vuetify, { iconfont: 'mdi' });
 
 Vue.filter('formatDate', (value, dateFormat = 'MM/DD/YY HH:mm') => {
   return value && format(value, dateFormat);

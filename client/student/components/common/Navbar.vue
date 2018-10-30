@@ -9,13 +9,16 @@
       </router-link>
     </div>
     <div v-if="user" class="navbar-menu">
+      <transition name="fade">
+        <div
+          v-show="$route.name === 'courseware' && courseware.length"
+          class="navbar-start search-container">
+          <div class="navbar-item">
+            <search/>
+          </div>
+        </div>
+      </transition>
       <div class="navbar-end">
-        <router-link
-          v-if="programId"
-          :to="{ name: 'courseware', params: { programId } }"
-          class="navbar-item">
-          Dashboard
-        </router-link>
         <div class="navbar-item has-dropdown is-hoverable user-dropdown">
           <a href="#" class="navbar-link">
             <span class="mdi mdi-account-circle"></span>{{ user.email }}
@@ -32,12 +35,14 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
+import Search from './Search';
 
 export default {
   name: 'main-navbar',
   computed: {
     ...mapState('auth', ['user']),
+    ...mapGetters('learner', ['courseware']),
     programId() {
       return this.$route.params.programId;
     },
@@ -53,7 +58,8 @@ export default {
     // NOTE: Add appropriate css class to <html> element according to:
     //       https://bulma.io/documentation/components/navbar/#fixed-navbar
     document.documentElement.classList.add('has-navbar-fixed-top');
-  }
+  },
+  components: { Search }
 };
 </script>
 
@@ -71,6 +77,23 @@ export default {
   font-weight: 300;
 }
 
+.search-container {
+  width: 51%;
+  margin-left: 6%;
+}
+
+.search-container .navbar-item {
+  width: 100%;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: all 0.5s;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
 .user-dropdown {
   margin-left: 2rem;
 
@@ -78,14 +101,22 @@ export default {
     padding: 0;
   }
 
-  .navbar-item {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-  }
-
   .mdi {
     padding-right: 0.5rem;
     font-size: 1.5rem;
+  }
+
+  .navbar-link .mdi {
+    font-size: 2rem;
+  }
+
+  .mdi-logout {
+    padding-left: 0.4rem;
+  }
+
+  .navbar-item {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
   }
 }
 

@@ -5,6 +5,7 @@ const S3 = require('aws-sdk/clients/s3');
 const S3BlobStore = require('s3-blob-store');
 
 const API_VERSION = '2006-03-01';
+const DEFAULT_EXPIRATION_TIME = 3600;
 
 const schema = Joi.object().keys({
   region: Joi.string().required(),
@@ -31,6 +32,24 @@ class S3Store extends S3BlobStore {
         Key: path.join(dest, path.basename(it.Key))
       };
       return this.s3.copyObject(opts).promise();
+    });
+  }
+
+  getFileUrl(key) {
+    const params = {
+      Bucket: this.bucket,
+      Key: key,
+      Expires: DEFAULT_EXPIRATION_TIME
+    };
+    return this._getSignedUrl('getObject', params);
+  }
+
+  _getSignedUrl(operation, params) {
+    return new Promise((resolve, reject) => {
+      this.s3.getSignedUrl(operation, params, (err, url) => {
+        if (err) return reject(err);
+        resolve(url);
+      });
     });
   }
 }
