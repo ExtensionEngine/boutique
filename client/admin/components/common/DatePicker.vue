@@ -23,6 +23,7 @@
 <script>
 import fecha from 'fecha';
 import get from 'lodash/get';
+import omit from 'lodash/omit';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 
@@ -42,7 +43,9 @@ export default {
     },
     processedValidation() {
       const { validate, format: inputFormat } = this;
-      if (!get(validate, 'before') && !get(validate, 'after')) return validate;
+      if (!get(validate, 'before') && !get(validate, 'after')) {
+        return omit(validate, ['before', 'after']);
+      }
       const tmp = { ...validate, date_format: DATE_FORMAT };
       ['before', 'after'].forEach(k => {
         tmp[k] && (tmp[k] = this.normalize(tmp[k], inputFormat, DATE_FORMAT));
