@@ -12,7 +12,7 @@
             @blur="focusTrap.unpause()"
             label="Program"
             placeholder="Start typing to Search"
-            prepend-icon="search"
+            prepend-icon="mdi-magnify"
             clearable
             name="program"/>
         </v-card-text>
@@ -38,7 +38,7 @@ import { withValidation } from '@/common/validation';
 const el = vm => vm.$children[0].$refs.dialog;
 
 export default {
-  name: 'enrollment-dialog',
+  name: 'bulk-enrollment-dialog',
   mixins: [withValidation(), withFocusTrap({ el })],
   props: {
     visible: { type: Boolean, default: false },

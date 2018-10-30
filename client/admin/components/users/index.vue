@@ -3,8 +3,8 @@
     <v-flex class="mt-5">
       <v-toolbar color="#f5f5f5" flat>
         <v-spacer/>
-        <v-btn @click.stop="enrollUsersDialog()" color="success" outline>
-          Enroll To Program
+        <v-btn @click.stop="showBulkEnrollDialog()" color="success" outline>
+          Enroll
         </v-btn>
         <v-btn @click.stop="showUserDialog()" color="success" outline>
           Add user
@@ -46,8 +46,8 @@
           </template>
         </v-data-table>
       </div>
-      <enrollment-dialog
-        :visible.sync="enrollmentDialog"
+      <bulk-enrollment-dialog
+        :visible.sync="bulkEnrollmentDialog"
         :userIds="checkedUsers"/>
       <user-dialog
         :visible.sync="userDialog"
@@ -66,8 +66,8 @@
 
 <script>
 import api from '@/admin/api/user';
+import BulkEnrollmentDialog from './BulkEnrollmentDialog';
 import ConfirmationDialog from '../common/ConfirmationDialog';
-import EnrollmentDialog from './Enrollments/EnrollmentDialog';
 import throttle from 'lodash/throttle';
 import UserDialog from './UserDialog';
 
@@ -80,7 +80,7 @@ export default {
       users: [],
       filter: null,
       userDialog: false,
-      enrollmentDialog: false,
+      bulkEnrollmentDialog: false,
       editedUser: null,
       checkedUsers: [],
       confirmationDialog: null,
@@ -104,9 +104,9 @@ export default {
     defaultPage
   },
   methods: {
-    enrollUsersDialog() {
+    showBulkEnrollDialog() {
       this.checkedUsers = this.checkedItems;
-      this.enrollmentDialog = true;
+      this.bulkEnrollmentDialog = true;
     },
     showUserDialog(user = null) {
       this.editedUser = user;
@@ -134,7 +134,7 @@ export default {
       this.fetch();
     }
   },
-  components: { ConfirmationDialog, EnrollmentDialog, UserDialog }
+  components: { BulkEnrollmentDialog, ConfirmationDialog, UserDialog }
 };
 </script>
 
