@@ -1,6 +1,5 @@
 <template>
   <v-menu
-    ref="menu"
     :disabled="disabled"
     full-width
     min-width="290px"
@@ -17,10 +16,7 @@
       :data-vv-as="label"
       append-icon="mdi-calendar"
       readonly/>
-    <v-date-picker
-      :value="normalizedValue"
-      @input="save($event)"
-      no-title/>
+    <v-date-picker :value="normalizedValue" @input="save($event)" no-title/>
   </v-menu>
 </template>
 
@@ -37,8 +33,8 @@ export default {
     value: { type: String, default: null },
     format: { type: String, default: DATE_FORMAT },
     validate: { type: Object, default: () => ({}) },
-    disabled: { type: Boolean, required: true },
-    label: { type: String, required: true }
+    disabled: { type: Boolean, default: false },
+    label: { type: String, default: null }
   },
   computed: {
     normalizedValue() {
