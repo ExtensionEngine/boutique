@@ -1,5 +1,5 @@
 <template>
-  <v-layout>
+  <v-layout :key="programId">
     <v-flex>
       <v-tabs color="#f5f5f5" class="mt-2">
         <v-tab :to="{ name: 'enrollments', params: { programId } }" ripple>
@@ -12,7 +12,7 @@
           Settings
         </v-tab>
       </v-tabs>
-      <router-view v-if="program" :key="programId" :program="program"/>
+      <router-view v-if="program" :program="program"/>
     </v-flex>
   </v-layout>
 </template>
