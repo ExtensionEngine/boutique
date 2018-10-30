@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-3">
+  <div v-if="program" class="mt-3">
     <v-toolbar color="#f5f5f5" flat>
       <v-spacer/>
       <v-btn @click="confirmationDialog = true" color="error" outline>
@@ -42,7 +42,6 @@
     <confirmation-dialog
       :visible.sync="confirmationDialog"
       :action="removeProgram"
-      @confirmed="() => $router.push({ name: 'users' })"
       heading="Delete program"
       message="Are you sure you want to delete program?"/>
   </div>
@@ -63,7 +62,7 @@ const formatDate = d => d && fecha.format(fecha.parse(d, SRC_FORMAT), DST_FORMAT
 export default {
   name: 'program-settings',
   mixins: [withValidation()],
-  props: { program: { type: Object, required: true } },
+  props: { program: { type: Object, default: null } },
   data() {
     return {
       programData: null,
@@ -84,7 +83,8 @@ export default {
       });
     },
     removeProgram() {
-      setTimeout(() => this.remove(this.program), 10);
+      this.remove(this.program)
+        .then(() => this.$router.push({ name: 'users' }));
     },
     cloneProgram() {
       const { program } = this;
