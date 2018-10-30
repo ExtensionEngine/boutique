@@ -15,11 +15,6 @@ const Promise = require('bluebird');
 const Role = require('../../common/config/role');
 const values = require('lodash/values');
 
-const pSettle = input => Promise.resolve(input).reflect();
-const pSettleMap = (iterable, mapper, options) => {
-  return Promise.map(iterable, (...args) => pSettle(mapper(...args)), options);
-};
-
 class User extends Model {
   static fields(DataTypes) {
     return {
@@ -124,18 +119,18 @@ class User extends Model {
     users = castArray(users);
     const where = { email: map(users, 'email') };
     const found = await User.findAll({ where, paranoid: false });
-    return pSettleMap(users, userData => {
+    return Promise.map(users, userData => Promise.try(() => {
       const user = find(found, { email: userData.email });
       if (user && !user.deletedAt) {
         const message = this.attributes.email.unique.msg;
-        return Promise.reject(new UniqueConstraintError({ message }));
+        throw new UniqueConstraintError({ message });
       }
       if (user) {
         user.setDataValue('deleteAt', null);
         return user;
       }
       return this.build(userData);
-    }, { concurrency });
+    }).reflect(), { concurrency });
   }
 
   async encryptPassword() {
