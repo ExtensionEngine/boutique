@@ -24,8 +24,8 @@
           </v-flex>
         </v-layout>
         <v-list-tile
-          v-for="program in programs"
-          :key="program._cid"
+          v-for="program in persistedPrograms"
+          :key="program.id"
           :to="{ name: 'enrollments', params: { programId: program.id } }">
           <v-list-tile-content>
             <v-list-tile-title class="grey--text">
@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import filter from 'lodash/filter';
 import { mapState } from 'vuex';
 import ProgramModal from '../Program/CreateDialog';
 
@@ -46,7 +47,12 @@ export default {
   props: {
     drawer: { type: Boolean, default: true }
   },
-  computed: mapState('programs', { programs: 'items' }),
+  computed: {
+    ...mapState('programs', { programs: 'items' }),
+    persistedPrograms() {
+      return filter(this.programs, 'id');
+    }
+  },
   components: { ProgramModal }
 };
 </script>
