@@ -28,10 +28,8 @@
 
 <script>
 import enrollmentApi from '@/admin/api/enrollment';
-import forEach from 'lodash/forEach';
 import map from 'lodash/map';
 import { mapState } from 'vuex';
-import pick from 'lodash/pick';
 import { withFocusTrap } from '@/common/focustrap';
 import { withValidation } from '@/common/validation';
 
@@ -58,10 +56,8 @@ export default {
   },
   methods: {
     bulkEnroll() {
-      let thisState = this;
-      forEach(this.userIds, function (userId) {
-        thisState.studentId = userId;
-        enrollmentApi.create(pick(thisState, ['studentId', 'programId'])).then(() => {
+      this.userIds.forEach(userId => {
+        enrollmentApi.create({ 'studentId': userId, 'programId': this.programId }).then(() => {
         });
       });
       this.close();
