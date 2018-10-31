@@ -102,9 +102,8 @@ export default {
     defaultPage
   },
   methods: {
-    disableEnrollButtonState(value) {
+    setEnrollButtonState(value) {
       this.enrollDisabled = value;
-      console.log(this.enrollDisabled);
     },
     showUserDialog(user = null) {
       this.editedUser = user;
@@ -132,7 +131,7 @@ export default {
       this.fetch();
     },
     checkedItems() {
-      (this.checkedItems.length > 0) ? this.disableEnrollButtonState(false) : this.disableEnrollButtonState(true);
+      (this.checkedItems.length > 0) ? this.setEnrollButtonState(false) : this.setEnrollButtonState(true);
     }
   },
   components: { BulkEnrollmentDialog, ConfirmationDialog, UserDialog }
