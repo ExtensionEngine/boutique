@@ -4,7 +4,7 @@
       <v-toolbar color="#f5f5f5" flat>
         <v-spacer/>
         <bulk-enrollment-dialog
-          :visible.sync="bulkEnrollmentDialog"
+          :enrollDisabled="enrollDisabled"
           :userIds="checkedItems"/>
         <v-btn @click.stop="showUserDialog()" color="success" outline>
           Add user
@@ -79,7 +79,7 @@ export default {
       users: [],
       filter: null,
       userDialog: false,
-      bulkEnrollmentDialog: false,
+      enrollDisabled: true,
       editedUser: null,
       confirmationDialog: null,
       confirmationAction: null,
@@ -102,6 +102,10 @@ export default {
     defaultPage
   },
   methods: {
+    disableEnrollButtonState(value) {
+      this.enrollDisabled = value;
+      console.log(this.enrollDisabled);
+    },
     showUserDialog(user = null) {
       this.editedUser = user;
       this.userDialog = true;
@@ -126,6 +130,9 @@ export default {
     },
     filter() {
       this.fetch();
+    },
+    checkedItems() {
+      (this.checkedItems.length > 0) ? this.disableEnrollButtonState(false) : this.disableEnrollButtonState(true);
     }
   },
   components: { BulkEnrollmentDialog, ConfirmationDialog, UserDialog }

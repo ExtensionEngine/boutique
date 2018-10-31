@@ -1,6 +1,6 @@
 <template>
-  <v-dialog v-hotkey="{ esc: close }" v-model="visible" width="700">
-    <v-btn slot="activator" color="success" outline>Enroll</v-btn>
+  <v-dialog v-hotkey="{ esc: close }" :disabled="enrollDisabled" v-model="visible" width="700">
+    <v-btn slot="activator" :disabled="enrollDisabled" color="success" outline>Enroll</v-btn>
     <v-form @submit.prevent="bulkEnroll">
       <v-card class="pa-3">
         <v-card-title class="headline">Enroll users to Program</v-card-title>
@@ -41,6 +41,7 @@ export default {
   name: 'bulk-enrollment-dialog',
   mixins: [withValidation(), withFocusTrap({ el })],
   props: {
+    enrollDisabled: { type: Boolean, default: true },
     userIds: { type: Array, default: () => ([]) }
   },
   data() {
@@ -50,14 +51,6 @@ export default {
     };
   },
   computed: {
-    show: {
-      get() {
-        return this.visible;
-      },
-      set(value) {
-        if (!value) this.close();
-      }
-    },
     ...mapState('programs', { programs: 'items' }),
     programList() {
       return map(this.programs, it => ({ text: `${it.name}`, value: it.id }));
