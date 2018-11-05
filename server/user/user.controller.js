@@ -76,6 +76,10 @@ function login({ body }, res) {
     });
 }
 
+function resendInvitation(req, res) {
+  res.status(200).send('OK');
+}
+
 function forgotPassword(req, res) {
   const { email } = req.body;
   const origin = req.origin();
@@ -114,6 +118,7 @@ module.exports = {
   patch,
   destroy,
   login,
+  resendInvitation,
   forgotPassword,
   resetPassword
 };
