@@ -45,11 +45,11 @@
         @updated="fetch(defaultPage)"
         @created="fetch(defaultPage)"/>
       <confirmation-dialog
-        :visible.sync="confirmationDialog"
-        :action="confirmationAction"
-        :heading="heading"
-        :message="message"
-        @confirmed="confirmedAction"/>
+        :visible.sync="confirmation.show"
+        :action="confirmation.action"
+        :heading="confirmation.heading"
+        :message="confirmation.message"
+        @confirmed="confirmation.event"/>
     </v-flex>
   </v-layout>
 </template>
@@ -71,14 +71,16 @@ export default {
       filter: null,
       userDialog: false,
       editedUser: null,
-      confirmationDialog: null,
-      confirmationAction: null,
-      confirmedAction: Function.prototype,
-      heading: null,
-      message: null,
       dataTable: defaultPage(),
       totalItems: 0,
-      isLoading: false
+      isLoading: false,
+      confirmation: {
+        show: false,
+        action: null,
+        event: () => ({}),
+        heading: '',
+        message: ''
+      }
     };
   },
   computed: {
@@ -107,18 +109,22 @@ export default {
       this.isLoading = false;
     }, 400),
     removeUser(user) {
-      this.heading = 'Remove user';
-      this.message = 'Are you sure you want to remove user';
-      this.confirmationAction = () => api.remove(user);
-      this.confirmationDialog = true;
-      this.confirmedAction = this.fetch;
+      this.confirmation = {
+        show: true,
+        action: () => api.remove(user),
+        event: this.fetch,
+        heading: 'Remove user',
+        message: 'Are you sure you want to remove user'
+      };
     },
     reinviteUser(user) {
-      this.heading = 'Resend invitation';
-      this.message = 'Are you sure you want to resend invitation?';
-      this.confirmationAction = () => api.reinvite(user);
-      this.confirmationDialog = true;
-      this.confirmedAction = Function.prototype;
+      this.confirmation = {
+        show: true,
+        action: () => api.reinvite(user),
+        event: () => ({}),
+        heading: 'Resend invitation',
+        message: 'Are you sure you want to resend invitation?'
+      };
     }
   },
   watch: {
