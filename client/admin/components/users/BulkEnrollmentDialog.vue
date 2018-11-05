@@ -56,8 +56,9 @@ export default {
   },
   methods: {
     bulkEnroll() {
-      enrollmentApi.create({ 'userIds': this.userIds, 'programId': this.programId })
-        .then((response) => {
+      enrollmentApi.create({ userIds: this.userIds, programId: this.programId })
+        .then(res => {
+          console.log('boujakaa... ' + res);
           this.close();
         });
     },

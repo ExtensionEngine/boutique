@@ -38,23 +38,19 @@ function createOLD({ body }, res) {
 
 function create({ body }, res) {
   const { userIds, programId } = body;
-  return Promise.all(userIds).then(() => {
-    let enrollments = [];
-    userIds.forEach(userId => {
-      let data = { 'studentId': userId, 'programId': programId };
-      Enrollment.findOne({ where: data, paranoid: false })
-        .then(existing => {
-          if (!existing) return Enrollment.create(data);
-          if (!existing.deletedAt) createError(BAD_REQUEST, 'Enrollment exists!');
-          existing.setDataValue('deletedAt', null);
-          return existing.save();
-        })
-        .then(({ id }) => {
-          Enrollment.findById(id, { include: ['student'] });
-        })
-        .then(enrollment => enrollments.push(enrollment));
-    });
-    return res.jsend.success(enrollments);
+
+  Promise.each(userIds, function (userId) {
+    let data = { studentId: userId, programId: programId };
+    return Enrollment.findOne({ where: data, paranoid: false })
+      .then(existing => {
+        if (!existing) return Enrollment.create(data);
+        if (!existing.deletedAt) createError(BAD_REQUEST, 'Enrollment exists!');
+        existing.setDataValue('deletedAt', null);
+        return existing.save();
+      })
+      .then(({ id }) => Enrollment.findById(id, { include: ['student'] }));
+  }).then(function () {
+    console.log('Seems to be working: still have to beautify response');
   });
 }
 
