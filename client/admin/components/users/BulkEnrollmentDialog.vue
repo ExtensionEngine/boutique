@@ -56,11 +56,10 @@ export default {
   },
   methods: {
     bulkEnroll() {
-      this.userIds.forEach(userId => {
-        enrollmentApi.create({ 'studentId': userId, 'programId': this.programId }).then(() => {
+      enrollmentApi.create({ 'userIds': this.userIds, 'programId': this.programId })
+        .then((response) => {
+          this.close();
         });
-      });
-      this.close();
     },
     close() {
       this.visible = false;
