@@ -49,7 +49,7 @@
         :action="confirmationAction"
         :heading="heading"
         :message="message"
-        @confirmed="fetch()"/>
+        @confirmed="confirmedAction"/>
     </v-flex>
   </v-layout>
 </template>
@@ -73,6 +73,7 @@ export default {
       editedUser: null,
       confirmationDialog: null,
       confirmationAction: null,
+      confirmedAction: Function.prototype,
       heading: null,
       message: null,
       dataTable: defaultPage(),
@@ -110,12 +111,14 @@ export default {
       this.message = 'Are you sure you want to remove user';
       this.confirmationAction = () => api.remove(user);
       this.confirmationDialog = true;
+      this.confirmedAction = this.fetch;
     },
     reinviteUser(user) {
       this.heading = 'Resend invitation';
       this.message = 'Are you sure you want to resend invitation?';
       this.confirmationAction = () => api.reinvite(user);
       this.confirmationDialog = true;
+      this.confirmedAction = Function.prototype;
     }
   },
   watch: {
