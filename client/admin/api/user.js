@@ -4,7 +4,7 @@ import request from '@/common/api/request';
 const url = {
   root: '/users',
   resource: it => `/users/${it.id}`,
-  reinvite: it => `/users/reinvite/${it.id}`,
+  reinvite: it => `/users/${it.id}/reinvite`,
   import: '/users/import'
 };
 
