@@ -24,6 +24,10 @@ function remove(item) {
   return request.delete(url.resource(item));
 }
 
+function resendInvitation(item) {
+  return request.post(url.resource(item), item);
+}
+
 function bulkImport(items) {
   return request.post(url.import, items, { responseType: 'blob' });
 }
@@ -33,5 +37,6 @@ export default {
   create,
   update,
   remove,
+  resendInvitation,
   bulkImport
 };

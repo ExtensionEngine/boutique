@@ -114,7 +114,7 @@ export default {
     resendInvitation(user) {
       this.heading = 'Resend invitation';
       this.message = 'Are you sure you want to resend invitation?';
-      this.confirmationAction = () => {};
+      this.confirmationAction = () => api.resendInvitation(user);
       this.confirmationDialog = true;
     }
   },
