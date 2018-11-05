@@ -76,8 +76,11 @@ function login({ body }, res) {
     });
 }
 
-function resendInvitation(req, res) {
-  res.status(200).send('OK');
+function reinvite({ params, origin }, res) {
+  return User.findById(params.id, { paranoid: false })
+    .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
+    .then(user => User.invite(user, { origin }))
+    .then(user => res.jsend.success(user.profile));
 }
 
 function forgotPassword(req, res) {
@@ -118,7 +121,7 @@ module.exports = {
   patch,
   destroy,
   login,
-  resendInvitation,
+  reinvite,
   forgotPassword,
   resetPassword
 };

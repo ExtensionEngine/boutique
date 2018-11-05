@@ -34,7 +34,7 @@
             <td>
               <v-icon @click="showUserDialog(item)" small>mdi-pencil</v-icon>
               <v-icon @click="removeUser(item)" small class="ml-3">mdi-delete</v-icon>
-              <v-icon @click="resendInvitation(item)" small class="ml-3">mdi-email</v-icon>
+              <v-icon @click="reinviteUser(item)" small class="ml-3">mdi-email</v-icon>
             </td>
           </template>
         </v-data-table>
@@ -111,10 +111,10 @@ export default {
       this.confirmationAction = () => api.remove(user);
       this.confirmationDialog = true;
     },
-    resendInvitation(user) {
+    reinviteUser(user) {
       this.heading = 'Resend invitation';
       this.message = 'Are you sure you want to resend invitation?';
-      this.confirmationAction = () => api.resendInvitation(user);
+      this.confirmationAction = () => api.reinvite(user);
       this.confirmationDialog = true;
     }
   },

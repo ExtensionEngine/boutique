@@ -4,6 +4,7 @@ import request from '@/common/api/request';
 const url = {
   root: '/users',
   resource: it => `/users/${it.id}`,
+  reinvite: it => `/users/reinvite/${it.id}`,
   import: '/users/import'
 };
 
@@ -24,8 +25,8 @@ function remove(item) {
   return request.delete(url.resource(item));
 }
 
-function resendInvitation(item) {
-  return request.post(url.resource(item), item);
+function reinvite(item) {
+  return request.post(url.reinvite(item), item);
 }
 
 function bulkImport(items) {
@@ -37,6 +38,6 @@ export default {
   create,
   update,
   remove,
-  resendInvitation,
+  reinvite,
   bulkImport
 };
