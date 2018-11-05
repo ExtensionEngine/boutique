@@ -34,6 +34,7 @@
             <td>
               <v-icon @click="showUserDialog(item)" small>mdi-pencil</v-icon>
               <v-icon @click="removeUser(item)" small class="ml-3">mdi-delete</v-icon>
+              <v-icon @click="resendInvitation(item)" small class="ml-3">mdi-email</v-icon>
             </td>
           </template>
         </v-data-table>
@@ -46,9 +47,9 @@
       <confirmation-dialog
         :visible.sync="confirmationDialog"
         :action="confirmationAction"
-        @confirmed="fetch()"
-        heading="Remove user"
-        message="Are you sure you want to remove user?"/>
+        :heading="heading"
+        :message="message"
+        @confirmed="fetch()"/>
     </v-flex>
   </v-layout>
 </template>
@@ -72,6 +73,8 @@ export default {
       editedUser: null,
       confirmationDialog: null,
       confirmationAction: null,
+      heading: null,
+      message: null,
       dataTable: defaultPage(),
       totalItems: 0,
       isLoading: false
@@ -103,7 +106,15 @@ export default {
       this.isLoading = false;
     }, 400),
     removeUser(user) {
+      this.heading = 'Remove user';
+      this.message = 'Are you sure you want to remove user';
       this.confirmationAction = () => api.remove(user);
+      this.confirmationDialog = true;
+    },
+    resendInvitation(user) {
+      this.heading = 'Resend invitation';
+      this.message = 'Are you sure you want to resend invitation?';
+      this.confirmationAction = () => {};
       this.confirmationDialog = true;
     }
   },
