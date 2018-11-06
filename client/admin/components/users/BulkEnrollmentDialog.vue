@@ -58,7 +58,9 @@ export default {
     bulkEnroll() {
       enrollmentApi.create({ userIds: this.userIds, programId: this.programId })
         .then(res => {
-          console.log('boujakaa... ' + res);
+          res.messages.forEach(message => {
+            console.log(message.enrollment + ' for User Id ' + message.userId);
+          });
           this.close();
         });
     },
