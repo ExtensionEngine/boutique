@@ -5,7 +5,7 @@ const { Enrollment, User, Sequelize } = require('../common/database');
 const HttpStatus = require('http-status');
 const map = require('lodash/map');
 
-const { CONFLICT } = HttpStatus;
+const { CONFLICT, NO_CONTENT } = HttpStatus;
 const Op = Sequelize.Op;
 
 const processOutput = model => ({ ...model.toJSON(), student: model.student.profile });
@@ -41,7 +41,7 @@ async function create({ body }, res) {
 
 function destroy({ params }, res) {
   return Enrollment.destroy({ where: { id: params.id } })
-    .then(() => res.end());
+    .then(() => res.sendStatus(NO_CONTENT));
 }
 
 module.exports = {
