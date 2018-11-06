@@ -4,10 +4,6 @@ export const withFocusTrap = (options = {}) => ({
   mounted() {
     this.focusTrap = initFocusTrap(this, options);
   },
-  updated() {
-    if (this.focusTrap) this.focusTrap.deactivate();
-    this.focusTrap = initFocusTrap(this, options);
-  },
   beforeDestroy() {
     this.focusTrap = null;
   }
