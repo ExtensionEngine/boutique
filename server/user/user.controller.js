@@ -8,7 +8,7 @@ const mime = require('mime');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
 
-const { ACCEPTED, BAD_REQUEST, CONFLICT, NOT_FOUND } = HttpStatus;
+const { ACCEPTED, BAD_REQUEST, CONFLICT, NO_CONTENT, NOT_FOUND } = HttpStatus;
 const { EmptyResultError, Op } = Sequelize;
 
 const columns = {
@@ -54,10 +54,10 @@ function destroy({ params }, res) {
   return sequelize.transaction(async transaction => {
     const user = await User.findByPk(params.id, { transaction, rejectOnEmpty: true });
     await Enrollment.destroy({ where: { studentId: user.id }, transaction });
-    await user.destroy({ transaction });
-    res.end();
+    return user.destroy({ transaction });
   })
-  .catch(EmptyResultError, () => createError(NOT_FOUND));
+  .catch(EmptyResultError, () => createError(NOT_FOUND))
+  .then(() => res.sendStatus(NO_CONTENT));
 }
 
 function login({ body }, res) {
