@@ -143,7 +143,7 @@ class User extends Model {
   static async restoreOrBuild(users, { concurrency = 16 } = {}) {
     users = castArray(users);
     const where = { email: map(users, 'email') };
-    const found = await User.findAll({ where, paranoid: false });
+    const found = await this.findAll({ where, paranoid: false });
     return Promise.map(users, userData => Promise.try(() => {
       const user = find(found, { email: userData.email });
       if (user && !user.deletedAt) {

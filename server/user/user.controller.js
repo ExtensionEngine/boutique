@@ -9,7 +9,7 @@ const map = require('lodash/map');
 const pick = require('lodash/pick');
 
 const { ACCEPTED, BAD_REQUEST, CONFLICT, NOT_FOUND } = HttpStatus;
-const { Op } = Sequelize;
+const { EmptyResultError, Op } = Sequelize;
 
 const columns = {
   email: { header: 'Email', width: 30 },
@@ -37,27 +37,27 @@ function create(req, res) {
   const { body, origin } = req;
   return User.restoreOrBuild(pick(body, inputAttrs))
     .then(([result]) => {
-      if (result.isRejected()) return createError(CONFLICT);
+      if (result.isRejected()) return createError(CONFLICT, 'User exists!');
       return User.invite(result.value(), { origin });
     })
     .then(user => res.jsend.success(user.profile));
 }
 
 function patch({ params, body }, res) {
-  return User.findById(params.id, { paranoid: false })
-    .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
+  return User.findByPk(params.id, { paranoid: false, rejectOnEmpty: true })
+    .catch(EmptyResultError, () => createError(NOT_FOUND, 'User does not exist!'))
     .then(user => user.update(pick(body, inputAttrs)))
     .then(user => res.jsend.success(user.profile));
 }
 
 function destroy({ params }, res) {
-  sequelize.transaction(async transaction => {
-    const user = await User.findById(params.id, { transaction });
-    if (!user) createError(NOT_FOUND);
+  return sequelize.transaction(async transaction => {
+    const user = await User.findByPk(params.id, { transaction, rejectOnEmpty: true });
     await Enrollment.destroy({ where: { studentId: user.id }, transaction });
     await user.destroy({ transaction });
     res.end();
-  });
+  })
+  .catch(EmptyResultError, () => createError(NOT_FOUND));
 }
 
 function login({ body }, res) {
@@ -66,8 +66,8 @@ function login({ body }, res) {
     return createError(BAD_REQUEST, 'Please enter email and password!');
   }
 
-  return User.find({ where: { email } })
-    .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
+  return User.findOne({ where: { email }, rejectOnEmpty: true })
+    .catch(EmptyResultError, () => createError(NOT_FOUND, 'User does not exist!'))
     .then(user => user.authenticate(password))
     .then(user => user || createError(NOT_FOUND, 'Wrong password!'))
     .then(user => {
@@ -86,16 +86,16 @@ function invite({ params, origin }, res) {
 function forgotPassword(req, res) {
   const { email } = req.body;
   const origin = req.origin();
-  return User.find({ where: { email } })
-    .then(user => user || createError(NOT_FOUND, 'User not found!'))
+  return User.findOne({ where: { email }, rejectOnEmpty: true })
+    .catch(EmptyResultError, () => createError(NOT_FOUND, 'User not found!'))
     .then(user => user.sendResetToken({ origin }))
     .then(() => res.end());
 }
 
 function resetPassword({ body, params }, res) {
   const { password, token } = body;
-  return User.find({ where: { token } })
-    .then(user => user || createError(NOT_FOUND, 'Invalid token!'))
+  return User.findOne({ where: { token }, rejectOnEmpty: true })
+    .catch(EmptyResultError, () => createError(NOT_FOUND, 'Invalid token!'))
     .then(user => {
       user.password = password;
       return user.save();
