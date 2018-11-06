@@ -30,10 +30,11 @@ function patch({ body, program }, res) {
 }
 
 function destroy({ program }, res) {
-  sequelize.transaction(async transaction => {
+  return sequelize.transaction(async transaction => {
     await Enrollment.destroy({ where: { programId: program.id }, transaction });
-    return res.jsend.success(await program.destroy({ transaction }));
-  });
+    return program.destroy({ transaction });
+  })
+  .then(program => res.jsend.success(program));
 }
 
 function getEnrolledPrograms({ user }, res) {
