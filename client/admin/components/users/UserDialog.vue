@@ -2,10 +2,10 @@
   <v-dialog v-hotkey="{ esc: close }" v-model="show" width="700">
     <v-form @submit.prevent="save">
       <v-card class="pa-3">
-        <v-card-title class="headline">
+        <v-card-title class="headline pr-0">
           <span>{{ userData ? 'Edit' : 'Create' }} User</span>
           <v-spacer/>
-          <v-btn @click="inviteUser">Reinvite user</v-btn>
+          <v-btn v-if="userData" @click="invite">Reinvite user</v-btn>
           <confirmation-dialog
             :visible.sync="confirmationDialog"
             :action="confirmationAction"
@@ -116,7 +116,7 @@ export default {
         this.close();
       });
     },
-    inviteUser() {
+    invite() {
       this.confirmationAction = () => api.invite(this.user);
       this.confirmationDialog = true;
     }
