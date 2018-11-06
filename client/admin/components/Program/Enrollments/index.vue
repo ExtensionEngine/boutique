@@ -11,6 +11,15 @@
       Click on the button above to enroll learner.
     </v-alert>
     <div v-show="totalItems" class="elevation-1 ml-2 mr-4">
+      <v-layout class="px-4 py-3 table-toolbar">
+        <v-flex lg3 offset-lg9>
+          <v-text-field
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            clearable/>
+        </v-flex>
+      </v-layout>
       <v-data-table
         :headers="headers"
         :items="enrollments"
@@ -93,3 +102,9 @@ export default {
   components: { ConfirmationDialog, EnrollmentDialog }
 };
 </script>
+
+<style lang="scss" scoped>
+.table-toolbar {
+  background-color: #fff;
+}
+</style>
