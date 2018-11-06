@@ -23,7 +23,15 @@ function list({ query: { programId, studentId }, options }, res) {
   });
 }
 
-function createOLD({ body }, res) {
+function create({ body }, res) {
+  if (body.userIds) {
+    bulkCreate({ body }, res);
+  } else {
+    singleCreate({ body }, res);
+  }
+}
+
+function singleCreate({ body }, res) {
   const data = processInput(body);
   return Enrollment.findOne({ where: data, paranoid: false })
     .then(existing => {
@@ -36,7 +44,7 @@ function createOLD({ body }, res) {
     .then(enrollment => res.jsend.success(processOutput(enrollment)));
 }
 
-function create({ body }, res) {
+function bulkCreate({ body }, res) {
   const { userIds, programId } = body;
   const enrollMessages = [];
   return Promise.each(userIds, userId => {
@@ -53,9 +61,8 @@ function create({ body }, res) {
           return existing.save();
         }
       });
-  }).then(function () {
-    res.jsend.success({ 'messages': enrollMessages });
-  });
+  })
+  .then(() => res.jsend.success({ 'messages': enrollMessages }));
 }
 
 function destroy({ params }, res) {

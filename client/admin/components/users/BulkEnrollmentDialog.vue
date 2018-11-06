@@ -62,6 +62,8 @@ export default {
             console.log(message.enrollment + ' for User Id ' + message.userId);
           });
           this.close();
+          const programId = this.programId;
+          this.$router.push({ name: 'enrollments', params: { programId } });
         });
     },
     close() {
