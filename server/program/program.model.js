@@ -77,6 +77,18 @@ class Program extends Model {
       }
     };
   }
+
+  static scopes() {
+    return {
+      active() {
+        const currentDate = new Date();
+        const startDate = { [Op.or]: { [Op.lt]: currentDate, [Op.eq]: null } };
+        const endDate = { [Op.or]: { [Op.gt]: currentDate, [Op.eq]: null } };
+        const where = { startDate, endDate };
+        return { where };
+      }
+    };
+  }
 }
 
 module.exports = Program;

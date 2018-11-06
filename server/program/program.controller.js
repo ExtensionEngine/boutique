@@ -1,6 +1,6 @@
 'use strict';
 
-const { Enrollment, Program, sequelize, Sequelize } = require('../common/database');
+const { Enrollment, Program, sequelize } = require('../common/database');
 const pick = require('lodash/pick');
 
 const { Op } = Sequelize;
@@ -37,13 +37,8 @@ function destroy({ program }, res) {
 }
 
 function getEnrolledPrograms({ user }, res) {
-  const currentDate = new Date();
-  const Op = Sequelize.Op;
   const include = [{ model: Enrollment, where: { studentId: user.id } }];
-  const startDate = { [Op.or]: { [Op.lt]: currentDate, [Op.eq]: null } };
-  const endDate = { [Op.or]: { [Op.gt]: currentDate, [Op.eq]: null } };
-
-  return Program.findAll({ include, where: { startDate, endDate } })
+  return Program.scope('active').findAll({ include })
     .then(programs => res.jsend.success(programs));
 }
 
