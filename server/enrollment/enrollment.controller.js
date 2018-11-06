@@ -25,7 +25,7 @@ async function create({ body }, res) {
   const { studentId, programId } = body;
   if (!Array.isArray(studentId)) {
     const [result] = await Enrollment.restoreOrCreate(studentId, programId);
-    if (result.isRejected()) return createError(CONFLICT);
+    if (result.isRejected()) return createError(CONFLICT, 'Enrollment exists!');
     const enrollment = await result.value().reload({ include: ['student'] });
     return res.jsend.success(enrollment);
   }
