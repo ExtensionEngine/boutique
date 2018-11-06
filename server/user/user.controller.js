@@ -76,7 +76,7 @@ function login({ body }, res) {
     });
 }
 
-function reinvite({ params, origin }, res) {
+function invite({ params, origin }, res) {
   return User.findById(params.id, { paranoid: false })
     .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
     .then(user => User.invite(user, { origin }))
@@ -121,7 +121,7 @@ module.exports = {
   patch,
   destroy,
   login,
-  reinvite,
+  invite,
   forgotPassword,
   resetPassword
 };

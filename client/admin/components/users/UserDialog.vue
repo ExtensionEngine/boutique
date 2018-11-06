@@ -3,7 +3,14 @@
     <v-form @submit.prevent="save">
       <v-card class="pa-3">
         <v-card-title class="headline">
-          {{ userData ? 'Edit' : 'Create' }} User
+          <span>{{ userData ? 'Edit' : 'Create' }} User</span>
+          <v-spacer/>
+          <v-btn @click="inviteUser">Reinvite user</v-btn>
+          <confirmation-dialog
+            :visible.sync="confirmationDialog"
+            :action="confirmationAction"
+            heading="Reinvite user"
+            message="Are you sure you want to reinvite user?"/>
         </v-card-title>
         <v-card-text>
           <v-text-field
@@ -51,6 +58,7 @@
 <script>
 import api from '@/admin/api/user';
 import cloneDeep from 'lodash/cloneDeep';
+import ConfirmationDialog from '../common/ConfirmationDialog';
 import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
@@ -76,7 +84,11 @@ export default {
     userData: { type: Object, default: () => ({}) }
   },
   data() {
-    return { user: resetUser() };
+    return {
+      user: resetUser(),
+      confirmationDialog: null,
+      confirmationAction: null
+    };
   },
   computed: {
     show: {
@@ -103,6 +115,10 @@ export default {
         api[action](this.user).then(() => this.$emit(`${action}d`));
         this.close();
       });
+    },
+    inviteUser() {
+      this.confirmationAction = () => api.invite(this.user);
+      this.confirmationDialog = true;
     }
   },
   watch: {
@@ -123,6 +139,7 @@ export default {
           .then(({ total }) => ({ valid: !total }));
       }
     });
-  }
+  },
+  components: { ConfirmationDialog }
 };
 </script>

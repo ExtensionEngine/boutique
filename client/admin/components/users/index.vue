@@ -34,7 +34,6 @@
             <td>
               <v-icon @click="showUserDialog(item)" small>mdi-pencil</v-icon>
               <v-icon @click="removeUser(item)" small class="ml-3">mdi-delete</v-icon>
-              <v-icon @click="reinviteUser(item)" small class="ml-3">mdi-email</v-icon>
             </td>
           </template>
         </v-data-table>
@@ -45,11 +44,11 @@
         @updated="fetch(defaultPage)"
         @created="fetch(defaultPage)"/>
       <confirmation-dialog
-        :visible.sync="confirmation.show"
-        :action="confirmation.action"
-        :heading="confirmation.heading"
-        :message="confirmation.message"
-        @confirmed="confirmation.event"/>
+        :visible.sync="confirmationDialog"
+        :action="confirmationAction"
+        @confirmed="fetch()"
+        heading="Remove user"
+        message="Are you sure you want to remove user?"/>
     </v-flex>
   </v-layout>
 </template>
@@ -71,16 +70,11 @@ export default {
       filter: null,
       userDialog: false,
       editedUser: null,
+      confirmationDialog: null,
+      confirmationAction: null,
       dataTable: defaultPage(),
       totalItems: 0,
-      isLoading: false,
-      confirmation: {
-        show: false,
-        action: null,
-        event: () => ({}),
-        heading: '',
-        message: ''
-      }
+      isLoading: false
     };
   },
   computed: {
@@ -109,22 +103,8 @@ export default {
       this.isLoading = false;
     }, 400),
     removeUser(user) {
-      this.confirmation = {
-        show: true,
-        action: () => api.remove(user),
-        event: this.fetch,
-        heading: 'Remove user',
-        message: 'Are you sure you want to remove user'
-      };
-    },
-    reinviteUser(user) {
-      this.confirmation = {
-        show: true,
-        action: () => api.reinvite(user),
-        event: () => ({}),
-        heading: 'Resend invitation',
-        message: 'Are you sure you want to resend invitation?'
-      };
+      this.confirmationAction = () => api.remove(user);
+      this.confirmationDialog = true;
     }
   },
   watch: {
