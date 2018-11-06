@@ -87,3 +87,4 @@ class ContentStorage {
 }
 
 module.exports = new ContentStorage(storage);
+module.exports.NotFoundError = createStorage.NotFoundError;
