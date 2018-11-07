@@ -8,6 +8,7 @@ class Program extends Model {
       name: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
         validate: { notEmpty: true, len: [2, 255] }
       },
       startDate: {
