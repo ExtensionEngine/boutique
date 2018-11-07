@@ -5,15 +5,16 @@
       <enrollment-dialog :programId="programId" @enrolled="fetch(defaultPage)"/>
     </v-toolbar>
     <v-alert
-      :value="!isLoading && !totalItems"
+      :value="!isLoading && !totalItems && !filter"
       color="#aaa"
       class="mr-4">
       Click on the button above to enroll learner.
     </v-alert>
-    <div v-show="totalItems" class="elevation-1 ml-2 mr-4">
+    <div v-show="totalItems || filter" class="elevation-1 ml-2 mr-4">
       <v-layout class="px-4 py-3 table-toolbar">
         <v-flex lg3 offset-lg9>
           <v-text-field
+            v-model="filter"
             append-icon="mdi-magnify"
             label="Search"
             single-line
@@ -61,6 +62,7 @@ export default {
   data() {
     return {
       enrollments: [],
+      filter: null,
       dataTable: { rowsPerPage: 10, ...defaultPage() },
       totalItems: 0,
       confirmationDialog: null,
@@ -83,7 +85,7 @@ export default {
     fetch: throttle(async function (opts) {
       this.isLoading = true;
       Object.assign(this.dataTable, opts);
-      const params = { programId: this.programId };
+      const params = { programId: this.programId, filter: this.filter };
       const { items, total } = await api.fetch({ ...this.dataTable, params });
       this.enrollments = items;
       this.totalItems = total;
@@ -96,6 +98,9 @@ export default {
   },
   watch: {
     dataTable() {
+      this.fetch();
+    },
+    filter() {
       this.fetch();
     }
   },

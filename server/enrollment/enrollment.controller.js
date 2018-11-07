@@ -1,6 +1,6 @@
 'use strict';
 
-const { Enrollment, Sequelize } = require('../common/database');
+const { Enrollment, User, Sequelize } = require('../common/database');
 const { createError } = require('../common/errors');
 const HttpStatus = require('http-status');
 const map = require('lodash/map');
@@ -12,11 +12,16 @@ const Op = Sequelize.Op;
 const processInput = input => pick(input, ['studentId', 'programId']);
 const processOutput = it => ({ ...it.dataValues, student: it.student.profile });
 
-function list({ query: { programId, studentId }, options }, res) {
+const createFilter = q => map(['email', 'firstName', 'lastName'],
+  it => ({ [it]: { [Op.iLike]: `%${q}%` } }));
+
+function list({ query: { programId, studentId, filter }, options }, res) {
   const cond = [];
+  let include = { model: User, as: 'student', where: {} };
+  if (filter) include.where[Op.or] = createFilter(filter);
   if (programId) cond.push({ programId });
   if (studentId) cond.push({ studentId });
-  const opts = { where: { [Op.and]: cond }, include: ['student'], ...options };
+  const opts = { where: { [Op.and]: cond }, include: [include], ...options };
   return Enrollment.findAndCountAll(opts).then(({ rows, count }) => {
     res.jsend.success({ items: map(rows, processOutput), total: count });
   });
