@@ -5,9 +5,8 @@
         <v-card-title class="headline pr-0">
           <span>{{ userData ? 'Edit' : 'Create' }} User</span>
           <v-spacer/>
-          <v-icon v-if="isLoading">mdi-loading mdi-spin</v-icon>
-          <v-btn :disabled="isLoading" @click="invite">
-            <span>Reinvite user</span>
+          <v-btn :disabled="isLoading" :loading="isLoading" @click="invite">
+            Reinvite
           </v-btn>
         </v-card-title>
         <v-card-text>
@@ -114,7 +113,7 @@ export default {
     },
     invite() {
       this.isLoading = true;
-      api.invite(this.user).then(() => { this.isLoading = false; });
+      api.invite(this.user).then(() => (this.isLoading = false));
     }
   },
   watch: {
