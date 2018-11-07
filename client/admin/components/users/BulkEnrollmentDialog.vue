@@ -18,8 +18,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer/>
-          <v-btn @click="close">Cancel</v-btn>
-          <v-btn color="success" type="submit">Enroll</v-btn>
+          <v-btn :disabled="enrollmentPending" @click="close">Cancel</v-btn>
+          <v-btn :disabled="enrollmentPending" :loading="enrollmentPending" color="success" type="submit">Enroll</v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
@@ -40,12 +40,13 @@ export default {
   mixins: [withValidation(), withFocusTrap({ el })],
   props: {
     enrollDisabled: { type: Boolean, default: true },
-    userIds: { type: Array, default: () => ([]) }
+    users: { type: Array, default: () => ([]) }
   },
   data() {
     return {
       visible: false,
-      programId: null
+      programId: null,
+      enrollmentPending: false
     };
   },
   computed: {
@@ -56,11 +57,10 @@ export default {
   },
   methods: {
     bulkEnroll() {
-      enrollmentApi.create({ userIds: this.userIds, programId: this.programId })
+      const userIds = map(this.users, 'id');
+      this.enrollmentPending = true;
+      enrollmentApi.create({ userIds: userIds, programId: this.programId })
         .then(res => {
-          res.messages.forEach(message => {
-            console.log(message.enrollment + ' for User Id ' + message.userId);
-          });
           this.close();
           const programId = this.programId;
           this.$router.push({ name: 'enrollments', params: { programId } });
@@ -68,6 +68,7 @@ export default {
     },
     close() {
       this.visible = false;
+      this.enrollmentPending = false;
     }
   }
 };

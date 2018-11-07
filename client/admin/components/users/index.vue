@@ -5,7 +5,7 @@
         <v-spacer/>
         <bulk-enrollment-dialog
           :enrollDisabled="disableEnroll"
-          :userIds="checkedItems"/>
+          :users="checkedItems"/>
         <v-btn @click.stop="showUserDialog()" color="success" outline>
           Add user
         </v-btn>
@@ -22,29 +22,33 @@
           </v-flex>
         </v-layout>
         <v-data-table
+          v-model="checkedItems"
           :headers="headers"
           :items="users"
-          :pagination.sync="dataTable"
           :total-items="totalItems"
-          :must-sort="true">
-          <template slot="items" slot-scope="{ item }">
-            <td class="text-xs-center">
-              <div class="checkbox-container">
+          :pagination.sync="dataTable"
+          select-all
+          item-key="id"
+          class="elevation-1">
+          <template slot="items" slot-scope="props">
+            <tr>
+              <td class="text-xs-center">
                 <v-checkbox
-                  :value="item.id"
-                  v-model="checkedItems">
-                </v-checkbox>
-              </div>
-            </td>
-            <td>{{ item.email }}</td>
-            <td>{{ item.role }}</td>
-            <td>{{ item.firstName }}</td>
-            <td>{{ item.lastName }}</td>
-            <td>{{ item.createdAt | formatDate }}</td>
-            <td>
-              <v-icon @click="showUserDialog(item)" small>mdi-pencil</v-icon>
-              <v-icon @click="removeUser(item)" small class="ml-3">mdi-delete</v-icon>
-            </td>
+                  v-model="props.selected"
+                  primary
+                  hide-details
+                ></v-checkbox>
+              </td>
+              <td class="text-xs-left">{{ props.item.email }}</td>
+              <td class="text-xs-left">{{ props.item.role }}</td>
+              <td class="text-xs-left">{{ props.item.firstName }}</td>
+              <td class="text-xs-left">{{ props.item.lastName }}</td>
+              <td class="text-xs-left">{{ props.item.createdAt | formatDate }}</td>
+              <td class="text-xs-center">
+                <v-icon @click="showUserDialog(props.item)" small>mdi-pencil</v-icon>
+                <v-icon @click="removeUser(props.item)" small class="ml-3">mdi-delete</v-icon>
+              </td>
+            </tr>
           </template>
         </v-data-table>
       </div>
@@ -76,6 +80,14 @@ export default {
   name: 'user-list',
   data() {
     return {
+      headers: [
+        { text: 'Email', value: 'email', align: 'left' },
+        { text: 'Role', value: 'role', align: 'left' },
+        { text: 'First Name', value: 'firstName', align: 'left' },
+        { text: 'Last Name', value: 'lastName', align: 'left' },
+        { text: 'Date Created', value: 'createdAt', align: 'left' },
+        { text: 'Actions', value: 'email', align: 'center', sortable: false }
+      ],
       users: [],
       filter: null,
       userDialog: false,
@@ -92,15 +104,6 @@ export default {
     disableEnroll() {
       return !this.checkedItems.length;
     },
-    headers: () => ([
-      { text: 'Select', value: 'checkbox', align: 'center', sortable: false },
-      { text: 'Email', value: 'email', align: 'left' },
-      { text: 'Role', value: 'role' },
-      { text: 'First Name', value: 'firstName' },
-      { text: 'Last Name', value: 'lastName' },
-      { text: 'Date Created', value: 'createdAt' },
-      { text: 'Actions', value: 'email', sortable: false }
-    ]),
     defaultPage
   },
   methods: {
