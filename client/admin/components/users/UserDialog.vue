@@ -5,12 +5,10 @@
         <v-card-title class="headline pr-0">
           <span>{{ userData ? 'Edit' : 'Create' }} User</span>
           <v-spacer/>
-          <v-btn v-if="userData" @click="invite">Reinvite user</v-btn>
-          <confirmation-dialog
-            :visible.sync="confirmationDialog"
-            :action="confirmationAction"
-            heading="Reinvite user"
-            message="Are you sure you want to reinvite user?"/>
+          <v-icon v-if="isLoading">mdi-loading mdi-spin</v-icon>
+          <v-btn :disabled="isLoading" @click="invite">
+            <span>Reinvite user</span>
+          </v-btn>
         </v-card-title>
         <v-card-text>
           <v-text-field
@@ -58,7 +56,6 @@
 <script>
 import api from '@/admin/api/user';
 import cloneDeep from 'lodash/cloneDeep';
-import ConfirmationDialog from '../common/ConfirmationDialog';
 import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
@@ -86,8 +83,7 @@ export default {
   data() {
     return {
       user: resetUser(),
-      confirmationDialog: null,
-      confirmationAction: null
+      isLoading: false
     };
   },
   computed: {
@@ -117,8 +113,8 @@ export default {
       });
     },
     invite() {
-      this.confirmationAction = () => api.invite(this.user);
-      this.confirmationDialog = true;
+      this.isLoading = true;
+      api.invite(this.user).then(() => { this.isLoading = false; });
     }
   },
   watch: {
@@ -139,7 +135,6 @@ export default {
           .then(({ total }) => ({ valid: !total }));
       }
     });
-  },
-  components: { ConfirmationDialog }
+  }
 };
 </script>
