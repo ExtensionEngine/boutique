@@ -142,21 +142,33 @@ export default {
   background-color: #fff;
 }
 
-.checkbox-container {
-  display: inline-block;
+table.v-table {
+  thead {
+    th:first-child {
+      padding: 0 0 0 20px;
 
-  .v-input {
-    margin-bottom: 0;
-    padding-top: 10px;
-  }
-
-  .v-input--selection-controls {
-    .v-input__slot {
-      margin-bottom: 0;
+      .v-input {
+        display: inline-block;
+        width: auto;
+      }
     }
 
-    .v-input--selection-controls__input {
-      margin-right: 0;
+    th:nth-child(2) {
+      padding-left: 20px;
+    }
+  }
+
+  tbody {
+    td:first-child {
+      padding: 0 0 0 20px;
+
+      .v-input {
+        display: inline-block;
+      }
+    }
+
+    td:nth-child(2) {
+      padding-left: 20px;
     }
   }
 }
