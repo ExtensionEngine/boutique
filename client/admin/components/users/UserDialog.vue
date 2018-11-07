@@ -5,7 +5,13 @@
         <v-card-title class="headline pr-0">
           <span>{{ userData ? 'Edit' : 'Create' }} User</span>
           <v-spacer/>
-          <v-btn :disabled="isLoading" :loading="isLoading" @click="invite">
+          <v-btn
+            v-if="!isNewUser"
+            :disabled="isLoading"
+            :loading="isLoading"
+            :outline="true"
+            @click="invite"
+            color="blue-grey">
             Reinvite
           </v-btn>
         </v-card-title>
@@ -96,6 +102,9 @@ export default {
     },
     roles() {
       return map(role, it => ({ text: humanize(it), value: it }));
+    },
+    isNewUser() {
+      return !this.user.id;
     }
   },
   methods: {
@@ -106,7 +115,7 @@ export default {
     save() {
       this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
-        const action = this.user.id ? 'update' : 'create';
+        const action = this.isNewUser ? 'update' : 'create';
         api[action](this.user).then(() => this.$emit(`${action}d`));
         this.close();
       });
