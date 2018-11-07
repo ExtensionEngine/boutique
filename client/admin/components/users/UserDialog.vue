@@ -113,7 +113,7 @@ export default {
     },
     invite() {
       this.isLoading = true;
-      api.invite(this.user).then(() => (this.isLoading = false));
+      api.invite(this.user).finally(() => (this.isLoading = false));
     }
   },
   watch: {
