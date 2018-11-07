@@ -4,13 +4,7 @@
       <v-spacer/>
       <enrollment-dialog :programId="programId" @enrolled="fetch(defaultPage)"/>
     </v-toolbar>
-    <v-alert
-      :value="!isLoading && !totalItems && !filter"
-      color="#aaa"
-      class="mr-4">
-      Click on the button above to enroll learner.
-    </v-alert>
-    <div v-show="totalItems || filter" class="elevation-1 ml-2 mr-4">
+    <div class="elevation-1 ml-2 mr-4">
       <v-layout class="px-4 py-3 table-toolbar">
         <v-flex lg3 offset-lg9>
           <v-text-field
@@ -26,7 +20,8 @@
         :items="enrollments"
         :pagination.sync="dataTable"
         :total-items="totalItems"
-        :must-sort="true">
+        :must-sort="true"
+        :no-data-text="message">
         <template slot="items" slot-scope="{ item }">
           <td>{{ get(item.student, 'email') }}</td>
           <td>{{ get(item.student, 'firstName') }}</td>
@@ -78,7 +73,12 @@ export default {
       { text: 'Created At', value: 'createdAt' },
       { text: 'Actions', value: 'id', sortable: false, align: 'center' }
     ]),
-    defaultPage
+    defaultPage,
+    message() {
+      return this.filter
+        ? 'No results.'
+        : 'Click on the button above to enroll learner.';
+    }
   },
   methods: {
     get,

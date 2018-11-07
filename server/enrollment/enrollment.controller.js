@@ -1,6 +1,6 @@
 'use strict';
 
-const { Enrollment, User, Sequelize } = require('../common/database');
+const { Enrollment, Sequelize, User } = require('../common/database');
 const { createError } = require('../common/errors');
 const HttpStatus = require('http-status');
 const map = require('lodash/map');
@@ -17,7 +17,7 @@ const createFilter = q => map(['email', 'firstName', 'lastName'],
 
 function list({ query: { programId, studentId, filter }, options }, res) {
   const cond = [];
-  let include = { model: User, as: 'student', where: {} };
+  const include = { model: User, as: 'student', where: {} };
   if (filter) include.where[Op.or] = createFilter(filter);
   if (programId) cond.push({ programId });
   if (studentId) cond.push({ studentId });
