@@ -3,7 +3,8 @@ import request from '@/common/api/request';
 
 const url = {
   root: '/enrollments',
-  resource: it => `/enrollments/${it.id}`
+  resource: it => `/enrollments/${it.id}`,
+  bulkEnroll: '/enrollments/bulkEnroll'
 };
 
 function fetch(opts) {
@@ -15,6 +16,10 @@ function create(item) {
   return request.post(url.root, item).then(extractData);
 }
 
+function bulkEnroll(items) {
+  return request.post(url.bulkEnroll, items).then(extractData);
+}
+
 function remove(item) {
   return request.delete(url.resource(item));
 }
@@ -22,5 +27,6 @@ function remove(item) {
 export default {
   fetch,
   create,
+  bulkEnroll,
   remove
 };

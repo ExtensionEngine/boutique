@@ -24,14 +24,6 @@ function list({ query: { programId, studentId }, options }, res) {
 }
 
 function create({ body }, res) {
-  if (body.userIds) {
-    bulkCreate({ body }, res);
-  } else {
-    singleCreate({ body }, res);
-  }
-}
-
-function singleCreate({ body }, res) {
   const data = processInput(body);
   return Enrollment.findOne({ where: data, paranoid: false })
     .then(existing => {
@@ -44,7 +36,7 @@ function singleCreate({ body }, res) {
     .then(enrollment => res.jsend.success(processOutput(enrollment)));
 }
 
-function bulkCreate({ body }, res) {
+function bulkEnroll({ body }, res) {
   const { userIds, programId } = body;
   const enrollMessages = [];
   return Promise.each(userIds, userId => {
@@ -55,10 +47,12 @@ function bulkCreate({ body }, res) {
           enrollMessages.push({ 'userId': userId, 'enrollment': 'Enrollment created' });
           return Enrollment.create(data);
         }
-        if (!existing.deletedAt) {
-          enrollMessages.push({ 'userId': userId, 'enrollment': 'Enrollment exists' });
+        if (existing.deletedAt) {
+          enrollMessages.push({ 'userId': userId, 'enrollment': 'Enrollment recreated' });
           existing.setDataValue('deletedAt', null);
           return existing.save();
+        } else {
+          enrollMessages.push({ 'userId': userId, 'enrollment': 'Error! Enrollment exists' });
         }
       });
   })
@@ -73,5 +67,6 @@ function destroy({ params }, res) {
 module.exports = {
   list,
   create,
+  bulkEnroll,
   destroy
 };

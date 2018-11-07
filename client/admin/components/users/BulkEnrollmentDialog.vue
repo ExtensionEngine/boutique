@@ -59,7 +59,7 @@ export default {
     bulkEnroll() {
       const userIds = map(this.users, 'id');
       this.enrollmentPending = true;
-      enrollmentApi.create({ userIds: userIds, programId: this.programId })
+      enrollmentApi.bulkEnroll({ userIds: userIds, programId: this.programId })
         .then(res => {
           this.close();
           const programId = this.programId;

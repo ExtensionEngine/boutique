@@ -142,35 +142,8 @@ export default {
   background-color: #fff;
 }
 
-table.v-table {
-  thead {
-    th:first-child {
-      padding: 0 0 0 20px;
-
-      .v-input {
-        display: inline-block;
-        width: auto;
-      }
-    }
-
-    th:nth-child(2) {
-      padding-left: 20px;
-    }
-  }
-
-  tbody {
-    td:first-child {
-      padding: 0 0 0 20px;
-
-      .v-input {
-        display: inline-block;
-      }
-    }
-
-    td:nth-child(2) {
-      padding-left: 20px;
-    }
-  }
+.v-input--checkbox {
+  justify-content: center;
 }
 
 </style>
