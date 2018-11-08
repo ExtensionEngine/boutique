@@ -26,7 +26,7 @@ function remove(item) {
 }
 
 function invite(item) {
-  return request.post(url.invite(item), item);
+  return request.post(url.invite(item));
 }
 
 function bulkImport(items) {

@@ -8,7 +8,7 @@ const mime = require('mime');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
 
-const { BAD_REQUEST, CONFLICT, NOT_FOUND } = HttpStatus;
+const { ACCEPTED, BAD_REQUEST, CONFLICT, NOT_FOUND } = HttpStatus;
 const { Op } = Sequelize;
 
 const columns = {
@@ -80,7 +80,7 @@ function invite({ params, origin }, res) {
   return User.findById(params.id, { paranoid: false })
     .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
     .then(user => User.invite(user, { origin }))
-    .then(user => res.jsend.success(user.profile));
+    .then(() => res.status(ACCEPTED).end());
 }
 
 function forgotPassword(req, res) {
