@@ -5,8 +5,10 @@ const pick = require('lodash/pick');
 
 const processInput = input => pick(input, ['name', 'startDate', 'endDate']);
 
-function list(req, res) {
-  return Program.findAll().then(programs => res.jsend.success(programs));
+function list({ query: { name } }, res) {
+  const where = {};
+  if (name) where.name = name;
+  return Program.findAll({ where }).then(programs => res.jsend.success(programs));
 }
 
 function get({ program }, res) {

@@ -66,7 +66,8 @@ export default {
     this.$validator.extend('unique-name', {
       getMessage: field => `The ${field} is not unique.`,
       validate: (name) => {
-        return api.fetch({ params: { name } });
+        return api.fetch({ params: { name } })
+          .then(programs => ({ valid: !programs.length }));
       }
     });
   }
