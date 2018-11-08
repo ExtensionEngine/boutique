@@ -64,9 +64,9 @@ export default {
   mounted() {
     if (this.$validator.rules['unique-name']) return;
     this.$validator.extend('unique-name', {
-      getMessage: field => `The ${field} is not unique.`,
+      getMessage: () => `Program with this name already exists.`,
       validate: (name) => {
-        return api.fetch({ params: { name } })
+        return api.fetch({ params: { name, deleted: true } })
           .then(programs => ({ valid: !programs.length }));
       }
     });
