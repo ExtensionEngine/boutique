@@ -1,5 +1,4 @@
 import api from '@/admin/api/program';
-import isObject from 'lodash/isObject';
 import VeeValidate from 'vee-validate';
 
 const alphanumerical = {
@@ -14,7 +13,7 @@ const alphanumerical = {
 const uniqueProgramName = {
   getMessage: () => 'Program with this name already exists.',
   validate: (name, [program]) => {
-    if (isObject(program) && name === program.name) return true;
+    if (program && name === program.name) return true;
     return api.fetch({ params: { name, deleted: true } })
       .then(programs => ({ valid: !programs.length }));
   }

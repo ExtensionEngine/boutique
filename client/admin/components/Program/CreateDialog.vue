@@ -6,7 +6,7 @@
         <v-card-title class="headline">New Program</v-card-title>
         <v-card-text>
           <v-text-field
-            v-validate="{ required: true, min: 2, max: 255, 'unique-program-name': true }"
+            v-validate="{ required: true, min: 2, max: 255, 'unique-program-name': null }"
             v-model="program.name"
             :error-messages="vErrors.collect('name')"
             label="Name"
