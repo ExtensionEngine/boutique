@@ -18,9 +18,17 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer/>
-          <v-btn :disabled="enrollmentPending" @click="close">Cancel</v-btn>
-          <v-btn :disabled="enrollmentPending" :loading="enrollmentPending" color="success" type="submit">Enroll</v-btn>
+          <v-btn :disabled="closeBtnDisabled" @click="close">Cancel</v-btn>
+          <v-btn :disabled="enrollBtnDisabled" :loading="enrollBtnLoading" color="success" type="submit">Enroll</v-btn>
         </v-card-actions>
+        <v-alert
+          v-for="(message, index) in enrollmentMessages"
+          :key="index"
+          :value="showAlerts"
+          :type="message.type"
+          outline>
+          {{ message.text }}
+        </v-alert>
       </v-card>
     </v-form>
   </v-dialog>
@@ -46,7 +54,11 @@ export default {
     return {
       visible: false,
       programId: null,
-      enrollmentPending: false
+      enrollBtnDisabled: false,
+      closeBtnDisabled: false,
+      enrollBtnLoading: false,
+      enrollmentMessages: {},
+      showAlerts: false
     };
   },
   computed: {
@@ -57,19 +69,48 @@ export default {
   },
   methods: {
     bulkEnroll() {
-      const userIds = map(this.users, 'id');
-      this.enrollmentPending = true;
-      enrollmentApi.bulkEnroll({ userIds: userIds, programId: this.programId })
+      this.enrollPending();
+      enrollmentApi.bulkEnroll({ users: this.users, programId: this.programId })
         .then(res => {
-          this.close();
-          const programId = this.programId;
-          this.$router.push({ name: 'enrollments', params: { programId } });
+          this.enrollmentMessages = res.messages;
+          res.messages.length ? this.showAlerts = true : this.showAlerts = true;
+          this.enrollFinished();
         });
     },
     close() {
       this.visible = false;
-      this.enrollmentPending = false;
+      this.enrollDialogDefault();
+    },
+    enrollDialogDefault() {
+      this.enrollBtnDisabled = false;
+      this.enrollBtnLoading = false;
+      this.closeBtnDisabled = false;
+      this.showAlerts = false;
+    },
+    enrollPending() {
+      this.enrollBtnDisabled = true;
+      this.enrollBtnLoading = true;
+      this.closeBtnDisabled = true;
+    },
+    enrollFinished() {
+      this.enrollBtnDisabled = true;
+      this.enrollBtnLoading = false;
+      this.closeBtnDisabled = false;
     }
   }
 };
 </script>
+
+<style lang="scss">
+
+.v-alert {
+  padding: 4px 10px 0;
+  line-height: 30px;
+
+  .v-alert__icon {
+    margin-top: -5px;
+    margin-right: 10px;
+  }
+}
+
+</style>

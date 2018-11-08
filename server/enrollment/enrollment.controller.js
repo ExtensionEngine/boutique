@@ -2,6 +2,7 @@
 
 const { Enrollment, Sequelize } = require('../common/database');
 const { createError } = require('../common/errors');
+const { bulkEnrollmentMessage } = require('../common/messages');
 const HttpStatus = require('http-status');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
@@ -37,22 +38,26 @@ function create({ body }, res) {
 }
 
 function bulkEnroll({ body }, res) {
-  const { userIds, programId } = body;
+  const { users, programId } = body;
   const enrollMessages = [];
-  return Promise.each(userIds, userId => {
-    let data = { studentId: userId, programId: programId };
+  return Promise.each(users, user => {
+    console.log('bbb... ' + user);
+    let data = { studentId: user.id, programId: programId };
     return Enrollment.findOne({ where: data, paranoid: false })
       .then(existing => {
         if (!existing) {
-          enrollMessages.push({ 'userId': userId, 'enrollment': 'Enrollment created' });
+          const message = bulkEnrollmentMessage(user.email, 'success', 'Enrollment created');
+          enrollMessages.push(message);
           return Enrollment.create(data);
         }
         if (existing.deletedAt) {
-          enrollMessages.push({ 'userId': userId, 'enrollment': 'Enrollment recreated' });
+          const message = bulkEnrollmentMessage(user.email, 'info', 'Enrollment recreated');
+          enrollMessages.push(message);
           existing.setDataValue('deletedAt', null);
           return existing.save();
         } else {
-          enrollMessages.push({ 'userId': userId, 'enrollment': 'Error! Enrollment exists' });
+          const message = bulkEnrollmentMessage(user.email, 'error', 'Enrollment exists');
+          enrollMessages.push(message);
         }
       });
   })
