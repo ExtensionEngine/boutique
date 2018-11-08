@@ -14,7 +14,7 @@ router
   .post('/', ctrl.create)
   .patch('/:id', ctrl.patch)
   .delete('/:id', ctrl.destroy)
-  .post('/:id/:invite', ctrl.invite)
+  .post('/:id/invite', ctrl.invite)
   .post('/forgotPassword', ctrl.forgotPassword)
   .post('/resetPassword', ctrl.resetPassword)
   .post('/import', upload.single('file'), ctrl.bulkImport);
