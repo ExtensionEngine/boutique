@@ -1,3 +1,4 @@
+import api from '@/admin/api/program';
 import VeeValidate from 'vee-validate';
 
 const alphanumerical = {
@@ -9,7 +10,16 @@ const alphanumerical = {
   }
 };
 
+const uniqueProgramName = {
+  getMessage: () => 'Program with this name already exists.',
+  validate: name => {
+    return api.fetch({ params: { name, deleted: true } })
+      .then(programs => ({ valid: !programs.length }));
+  }
+};
+
 VeeValidate.Validator.extend('alphanumerical', alphanumerical);
+VeeValidate.Validator.extend('unique-program-name', uniqueProgramName);
 
 export default VeeValidate;
 

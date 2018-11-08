@@ -6,7 +6,7 @@
         <v-card-title class="headline">New Program</v-card-title>
         <v-card-text>
           <v-text-field
-            v-validate="{ required: true, min: 2, max: 255, 'unique-name': true }"
+            v-validate="{ required: true, min: 2, max: 255, 'unique-program-name': true }"
             v-model="program.name"
             :error-messages="vErrors.collect('name')"
             label="Name"
@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import api from '@/admin/api/program';
 import { mapActions } from 'vuex';
 import { withFocusTrap } from '@/common/focustrap';
 import { withValidation } from '@/common/validation';
@@ -60,16 +59,6 @@ export default {
       this.program = getDefaultData();
       this.vErrors.clear();
     }
-  },
-  mounted() {
-    if (this.$validator.rules['unique-name']) return;
-    this.$validator.extend('unique-name', {
-      getMessage: () => `Program with this name already exists.`,
-      validate: (name) => {
-        return api.fetch({ params: { name, deleted: true } })
-          .then(programs => ({ valid: !programs.length }));
-      }
-    });
   }
 };
 </script>
