@@ -4,7 +4,7 @@
       <v-toolbar color="#f5f5f5" flat>
         <v-spacer/>
         <bulk-enrollment-dialog
-          :enrollDisabled="disableEnroll"
+          :disabled="disableEnroll"
           :users="checkedItems"/>
         <v-btn @click.stop="showUserDialog()" color="success" outline>
           Add user
@@ -27,9 +27,8 @@
           :items="users"
           :total-items="totalItems"
           :pagination.sync="dataTable"
-          select-all
-          item-key="id"
-          class="elevation-1">
+          class="elevation-1"
+          select-all>
           <template slot="items" slot-scope="props">
             <tr>
               <td class="text-xs-center">

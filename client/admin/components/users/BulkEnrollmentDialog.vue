@@ -1,6 +1,16 @@
 <template>
-  <v-dialog v-hotkey="{ esc: close }" :disabled="enrollDisabled" v-model="visible" width="700">
-    <v-btn slot="activator" :disabled="enrollDisabled" color="success" outline>Enroll</v-btn>
+  <v-dialog
+    v-hotkey="{ esc: close }"
+    v-model="visible"
+    :disabled="disabled"
+    width="700">
+    <v-btn
+      slot="activator"
+      :disabled="disabled"
+      color="success"
+      outline>
+      Enroll
+    </v-btn>
     <v-form @submit.prevent="bulkEnroll">
       <v-card class="pa-3">
         <v-card-title class="headline">Enroll users to Program</v-card-title>
@@ -10,55 +20,56 @@
             :items="programList"
             @focus="focusTrap.pause()"
             @blur="focusTrap.unpause()"
+            name="program"
             label="Program"
             placeholder="Start typing to Search"
             prepend-icon="mdi-magnify"
-            clearable
-            name="program"/>
+            clearable/>
         </v-card-text>
         <v-card-actions>
           <v-spacer/>
-          <v-btn :disabled="closeBtnDisabled" @click="close">Cancel</v-btn>
-          <v-btn :disabled="enrollBtnDisabled" :loading="enrollBtnLoading" color="success" type="submit">Enroll</v-btn>
+          <v-btn
+            :disabled="enrollDisabled"
+            @click="close">
+            Cancel
+          </v-btn>
+          <v-btn
+            :disabled="enrollDisabled"
+            :loading="enrollInProgress"
+            color="success"
+            type="submit">
+            Enroll
+          </v-btn>
         </v-card-actions>
-        <v-alert
-          v-for="(message, index) in enrollmentMessages"
-          :key="index"
-          :value="showAlerts"
-          :type="message.type"
-          outline>
-          {{ message.text }}
-        </v-alert>
+        <v-card-text>{{ enrollmentMessage }}</v-card-text>
       </v-card>
     </v-form>
   </v-dialog>
 </template>
 
 <script>
-import enrollmentApi from '@/admin/api/enrollment';
+import api from '@/admin/api/enrollment';
 import map from 'lodash/map';
 import { mapState } from 'vuex';
 import { withFocusTrap } from '@/common/focustrap';
-import { withValidation } from '@/common/validation';
 
 const el = vm => vm.$children[0].$refs.dialog;
 
 export default {
   name: 'bulk-enrollment-dialog',
-  mixins: [withValidation(), withFocusTrap({ el })],
+  mixins: [withFocusTrap({ el })],
   props: {
-    enrollDisabled: { type: Boolean, default: true },
+    disabled: { type: Boolean, default: true },
     users: { type: Array, default: () => ([]) }
   },
   data() {
     return {
       visible: false,
       programId: null,
-      enrollBtnDisabled: false,
-      closeBtnDisabled: false,
-      enrollBtnLoading: false,
-      enrollmentMessages: {},
-      showAlerts: false
+      enrollDisabled: false,
+      enrollInProgress: false,
+      enrollmentMessage: '',
+      showAlert: false
     };
   },
   computed: {
@@ -70,11 +81,16 @@ export default {
   methods: {
     bulkEnroll() {
       this.enrollPending();
-      enrollmentApi.bulkEnroll({ users: this.users, programId: this.programId })
+      return api.bulkEnroll({ users: this.users, programId: this.programId })
+        .catch(() => (this.enrollmentMessage = 'Error! Unable to enroll Users!'))
         .then(res => {
-          this.enrollmentMessages = res.messages;
-          res.messages.length ? this.showAlerts = true : this.showAlerts = true;
-          this.enrollFinished();
+          if (res.message.type === 'success') {
+            this.close();
+          } else {
+            this.enrollmentMessage = res.message.text;
+            this.showAlert = true;
+            this.enrollFinished();
+          }
         });
     },
     close() {
@@ -82,20 +98,17 @@ export default {
       this.enrollDialogDefault();
     },
     enrollDialogDefault() {
-      this.enrollBtnDisabled = false;
-      this.enrollBtnLoading = false;
-      this.closeBtnDisabled = false;
-      this.showAlerts = false;
+      this.enrollDisabled = false;
+      this.enrollInProgress = false;
+      this.showAlert = false;
     },
     enrollPending() {
-      this.enrollBtnDisabled = true;
-      this.enrollBtnLoading = true;
-      this.closeBtnDisabled = true;
+      this.enrollDisabled = true;
+      this.enrollInProgress = true;
     },
     enrollFinished() {
-      this.enrollBtnDisabled = true;
-      this.enrollBtnLoading = false;
-      this.closeBtnDisabled = false;
+      this.enrollDisabled = false;
+      this.enrollInProgress = false;
     }
   }
 };

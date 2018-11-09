@@ -2,8 +2,8 @@
 
 const { Enrollment, Sequelize } = require('../common/database');
 const { createError } = require('../common/errors');
-const { bulkEnrollmentMessage } = require('../common/messages');
 const HttpStatus = require('http-status');
+const includes = require('lodash/includes');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
 const Promise = require('bluebird');
@@ -39,29 +39,43 @@ function create({ body }, res) {
 
 function bulkEnroll({ body }, res) {
   const { users, programId } = body;
-  const enrollMessages = [];
-  return Promise.each(users, user => {
-    console.log('bbb... ' + user);
-    let data = { studentId: user.id, programId: programId };
-    return Enrollment.findOne({ where: data, paranoid: false })
-      .then(existing => {
-        if (!existing) {
-          const message = bulkEnrollmentMessage(user.email, 'success', 'Enrollment created');
-          enrollMessages.push(message);
-          return Enrollment.create(data);
-        }
+  const userIds = map(users, 'id');
+  return Enrollment.findAll({
+    where: {
+      studentId: userIds,
+      programId
+    },
+    paranoid: false,
+    raw: true
+  })
+  .then(existing => {
+    const existingUserIds = map(existing, 'studentId');
+    let enrollMessage = { type: 'success', text: '' };
+    let count = 0;
+
+    return Promise.each(userIds, studentId => {
+      if (includes(existingUserIds, studentId)) {
         if (existing.deletedAt) {
-          const message = bulkEnrollmentMessage(user.email, 'info', 'Enrollment recreated');
-          enrollMessages.push(message);
           existing.setDataValue('deletedAt', null);
           return existing.save();
         } else {
-          const message = bulkEnrollmentMessage(user.email, 'error', 'Enrollment exists');
-          enrollMessages.push(message);
+          count = count + 1;
+          return count;
         }
-      });
-  })
-  .then(() => res.jsend.success({ 'messages': enrollMessages }));
+      } else {
+        return Enrollment.create({ studentId, programId });
+      }
+    })
+    .then(() => {
+      if (count > 0) {
+        enrollMessage = {
+          type: 'info',
+          text: `Enrolled failed for ${count} users`
+        };
+      }
+      res.jsend.success({ 'message': enrollMessage });
+    });
+  });
 }
 
 function destroy({ params }, res) {
