@@ -27,7 +27,7 @@
           :items="users"
           :total-items="totalItems"
           :pagination.sync="dataTable"
-          class="elevation-1"
+          class="user-table elevation-1"
           select-all>
           <template slot="items" slot-scope="props">
             <tr>
@@ -136,12 +136,12 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .table-toolbar {
   background-color: #fff;
 }
 
-.v-input--checkbox {
+.user-table /deep/ .v-input--checkbox {
   justify-content: center;
 }
 

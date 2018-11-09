@@ -66,7 +66,6 @@ export default {
     return {
       visible: false,
       programId: null,
-      enrollDisabled: false,
       enrollInProgress: false,
       enrollmentMessage: '',
       showAlert: false
@@ -76,11 +75,14 @@ export default {
     ...mapState('programs', { programs: 'items' }),
     programList() {
       return map(this.programs, it => ({ text: `${it.name}`, value: it.id }));
+    },
+    enrollDisabled() {
+      return !this.programId || this.enrollInProgress;
     }
   },
   methods: {
     bulkEnroll() {
-      this.enrollPending();
+      this.enrollInProgress = true;
       return api.bulkEnroll({ users: this.users, programId: this.programId })
         .catch(() => (this.enrollmentMessage = 'Error! Unable to enroll Users!'))
         .then(res => {
@@ -89,26 +91,13 @@ export default {
           } else {
             this.enrollmentMessage = res.message.text;
             this.showAlert = true;
-            this.enrollFinished();
+            this.enrollInProgress = false;
           }
         });
     },
     close() {
       this.visible = false;
-      this.enrollDialogDefault();
-    },
-    enrollDialogDefault() {
-      this.enrollDisabled = false;
-      this.enrollInProgress = false;
-      this.showAlert = false;
-    },
-    enrollPending() {
-      this.enrollDisabled = true;
-      this.enrollInProgress = true;
-    },
-    enrollFinished() {
-      this.enrollDisabled = false;
-      this.enrollInProgress = false;
+      this.programId = null;
     }
   }
 };

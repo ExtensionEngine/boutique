@@ -4,6 +4,7 @@ const { Enrollment, Sequelize } = require('../common/database');
 const { createError } = require('../common/errors');
 const HttpStatus = require('http-status');
 const includes = require('lodash/includes');
+const find = require('lodash/find');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
 const Promise = require('bluebird');
@@ -37,33 +38,28 @@ function create({ body }, res) {
     .then(enrollment => res.jsend.success(processOutput(enrollment)));
 }
 
-function bulkEnroll({ body }, res) {
-  const { users, programId } = body;
+function bulkEnroll({ body: { users, programId } }, res) {
   const userIds = map(users, 'id');
   return Enrollment.findAll({
     where: {
       studentId: userIds,
       programId
     },
-    paranoid: false,
-    raw: true
+    paranoid: false
   })
-  .then(existing => {
-    const existingUserIds = map(existing, 'studentId');
+  .then(existingUsers => {
     let enrollMessage = { type: 'success', text: '' };
     let count = 0;
 
     return Promise.each(userIds, studentId => {
-      if (includes(existingUserIds, studentId)) {
-        if (existing.deletedAt) {
-          existing.setDataValue('deletedAt', null);
-          return existing.save();
-        } else {
-          count = count + 1;
-          return count;
-        }
+      const existingUser = find(existingUsers, { studentId });
+      if (!existingUser) return Enrollment.create({ studentId, programId });
+      if (existingUser.deletedAt) {
+        existingUser.setDataValue('deletedAt', null);
+        return existingUser.save();
       } else {
-        return Enrollment.create({ studentId, programId });
+        count = count + 1;
+        return count;
       }
     })
     .then(() => {
