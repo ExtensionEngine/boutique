@@ -8,7 +8,7 @@
       <v-layout class="px-4 py-3 table-toolbar">
         <v-flex lg3 offset-lg9>
           <v-text-field
-            v-model="filter"
+            v-model.trim="filter"
             append-icon="mdi-magnify"
             label="Search"
             single-line
@@ -21,7 +21,7 @@
         :pagination.sync="dataTable"
         :total-items="totalItems"
         :must-sort="true"
-        :no-data-text="message">
+        :no-data-text="tableMessages">
         <template slot="items" slot-scope="{ item }">
           <td>{{ get(item.student, 'email') }}</td>
           <td>{{ get(item.student, 'firstName') }}</td>
@@ -74,9 +74,9 @@ export default {
       { text: 'Actions', value: 'id', sortable: false, align: 'center' }
     ]),
     defaultPage,
-    message() {
+    tableMessages() {
       return this.filter
-        ? 'No results.'
+        ? `Your search for "${this.filter}" found no results.`
         : 'Click on the button above to enroll learner.';
     }
   },
