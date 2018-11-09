@@ -11,11 +11,14 @@ const alphanumerical = {
 };
 
 const uniqueProgramName = {
-  getMessage: () => 'Program with this name already exists.',
+  getMessage: (field, args, data) => `Program named "${data}" already exists.`,
   validate: (name, [program]) => {
     if (program && name === program.name) return true;
     return api.fetch({ params: { name, deleted: true } })
-      .then(programs => ({ valid: !programs.length }));
+      .then(programs => ({
+        valid: !programs.length,
+        data: programs[0] && programs[0].name
+      }));
   }
 };
 
