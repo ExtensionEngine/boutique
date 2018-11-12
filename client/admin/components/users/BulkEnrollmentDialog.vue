@@ -12,15 +12,15 @@
       outline>
       Enroll
     </v-btn>
-    <v-form @submit.prevent="bulkEnroll">
+    <v-form @submit.prevent="submit">
       <v-card class="pa-3">
         <v-card-title class="headline">Enroll users to Program</v-card-title>
         <v-card-text>
           <v-autocomplete
             v-model="programId"
             :items="programList"
-            :disabled="enrollInProgress"
-            :error-messages="errorMessage"
+            :disabled="enrolling"
+            :error-messages="vErrors.collect('program')"
             @focus="focusTrap.pause()"
             @blur="focusTrap.unpause()"
             name="program"
@@ -31,10 +31,10 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer/>
-          <v-btn :disabled="enrollInProgress" @click="close">Cancel</v-btn>
+          <v-btn :disabled="enrolling" @click="close">Cancel</v-btn>
           <v-btn
             :disabled="enrollDisabled"
-            :loading="enrollInProgress"
+            :loading="enrolling"
             color="success"
             type="submit">
             Enroll
@@ -46,61 +46,58 @@
 </template>
 
 <script>
-import api from '@/admin/api/enrollment';
 import map from 'lodash/map';
-import { mapState } from 'vuex';
 import { withFocusTrap } from '@/common/focustrap';
+import { withValidation } from '@/common/validation';
 
 const el = vm => vm.$children[0].$refs.dialog;
 
 export default {
   name: 'bulk-enrollment-dialog',
-  mixins: [withFocusTrap({ el })],
+  mixins: [withValidation(), withFocusTrap({ el })],
   props: {
     disabled: { type: Boolean, default: true },
-    users: { type: Array, default: () => ([]) }
+    enroll: { type: Function, required: true },
+    users: { type: Array, default: () => ([]) },
+    programs: { type: Object, default: () => ({}) }
   },
   data() {
     return {
       visible: false,
       programId: null,
-      enrollInProgress: false,
+      enrolling: false,
       errorMessage: null
     };
   },
   computed: {
-    ...mapState('programs', { programs: 'items' }),
     programList() {
       return map(this.programs, it => ({ text: `${it.name}`, value: it.id }));
     },
     enrollDisabled() {
-      return !this.programId || this.enrollInProgress;
+      return !this.programId || this.enrolling;
     }
   },
   methods: {
-    bulkEnroll() {
-      this.enrollInProgress = true;
-      const { users, programId } = this;
-      const userIds = map(users, 'id');
-      return api.bulkEnroll({ userIds, programId })
-        .then(res => {
-          this.enrollInProgress = false;
-          if (res.errorCount) {
-            this.errorMessage = `Enrolled failed for ${res.errorCount} users`;
-            return;
-          }
-          this.close();
+    submit() {
+      this.enrolling = true;
+      const studentIds = map(this.users, 'id');
+      return this.enroll({ studentIds, programId: this.programId })
+        .then(({ failed = [] }) => {
+          if (failed.length <= 0) return this.close();
+          const msg = `Enrolling failed for ${failed.length} users`;
+          this.vErrors.add({ field: 'program', msg });
         })
         .catch(error => {
-          this.errorMessage = 'Error! Unable to enroll Users!';
-          this.enrollInProgress = false;
+          const msg = 'Error! Unable to enroll Users!';
+          this.vErrors.add({ field: 'program', msg });
           return Promise.reject(error);
-        });
+        })
+        .finally(() => (this.enrolling = false));
     },
     close() {
       this.visible = false;
       this.programId = null;
-      this.errorMessage = null;
+      this.vErrors.clear();
     }
   }
 };
