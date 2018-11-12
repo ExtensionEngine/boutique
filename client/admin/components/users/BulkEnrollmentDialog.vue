@@ -19,6 +19,7 @@
           <v-autocomplete
             v-model="programId"
             :items="programList"
+            :disabled="enrollInProgress"
             :error-messages="enrollmentMessage"
             @focus="focusTrap.pause()"
             @blur="focusTrap.unpause()"
@@ -30,7 +31,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer/>
-          <v-btn :disabled="enrollDisabled" @click="close">Cancel</v-btn>
+          <v-btn :disabled="enrollInProgress" @click="close">Cancel</v-btn>
           <v-btn
             :disabled="enrollDisabled"
             :loading="enrollInProgress"
@@ -64,7 +65,7 @@ export default {
       visible: false,
       programId: null,
       enrollInProgress: false,
-      enrollmentMessage: ''
+      enrollmentMessage: null
     };
   },
   computed: {
@@ -82,23 +83,24 @@ export default {
       const { users, programId } = this;
       const userIds = map(users, 'id');
       return api.bulkEnroll({ userIds, programId })
-        .catch(() => {
-          this.enrollmentMessage = 'Error! Unable to enroll Users!';
-          this.enrollInProgress = false;
-        })
         .then(res => {
           this.enrollInProgress = false;
           if (res.errorCount) {
             this.enrollmentMessage = `Enrolled failed for ${res.errorCount} users`;
-            return this.enrollmentMessage;
+            return;
           }
           this.close();
+        })
+        .catch(error => {
+          this.enrollmentMessage = 'Error! Unable to enroll Users!';
+          this.enrollInProgress = false;
+          return Promise.reject(error);
         });
     },
     close() {
       this.visible = false;
       this.programId = null;
-      this.enrollmentMessage = '';
+      this.enrollmentMessage = null;
     }
   }
 };

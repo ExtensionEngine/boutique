@@ -29,9 +29,7 @@
           select-all>
           <template slot="items" slot-scope="props">
             <tr>
-              <td>
-                <v-checkbox v-model="props.selected" primary hide-details />
-              </td>
+              <td><v-checkbox v-model="props.selected" primary hide-details /></td>
               <td class="text-xs-left">{{ props.item.email }}</td>
               <td class="text-xs-left">{{ props.item.role }}</td>
               <td class="text-xs-left">{{ props.item.firstName }}</td>

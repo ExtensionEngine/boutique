@@ -37,28 +37,23 @@ function create({ body }, res) {
     .then(enrollment => res.jsend.success(processOutput(enrollment)));
 }
 
-function bulkEnroll({ body: { userIds, programId } }, res) {
-  return Enrollment.findAll({
+async function bulkEnroll({ body: { userIds, programId } }, res) {
+  let errorCount = 0;
+  const existingUsers = await Enrollment.findAll({
     where: { studentId: userIds, programId },
     paranoid: false
-  })
-  .then(existingUsers => {
-    let errorCount = 0;
-
-    return Promise.each(userIds, studentId => {
-      const existingUser = find(existingUsers, { studentId });
-      if (!existingUser) return Enrollment.create({ studentId, programId });
-      if (existingUser.deletedAt) {
-        existingUser.setDataValue('deletedAt', null);
-        return existingUser.save();
-      }
-      errorCount = errorCount + 1;
-      return errorCount;
-    })
-    .then(() => {
-      return res.jsend.success({ errorCount });
-    });
   });
+  await Promise.each(userIds, studentId => {
+    const existingUser = find(existingUsers, { studentId });
+    if (!existingUser) return Enrollment.create({ studentId, programId });
+    if (existingUser.deletedAt) {
+      existingUser.setDataValue('deletedAt', null);
+      return existingUser.save();
+    }
+    errorCount = errorCount + 1;
+    return errorCount;
+  });
+  return res.jsend.success({ errorCount });
 }
 
 function destroy({ params }, res) {
