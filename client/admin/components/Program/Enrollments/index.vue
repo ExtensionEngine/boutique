@@ -47,6 +47,7 @@ import api from '@/admin/api/enrollment';
 import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
 import EnrollmentDialog from './EnrollmentDialog';
 import get from 'lodash/get';
+import pick from 'lodash/pick';
 import throttle from 'lodash/throttle';
 
 const defaultPage = () => ({ sortBy: 'updatedAt', descending: true, page: 1 });
@@ -85,8 +86,9 @@ export default {
     fetch: throttle(async function (opts) {
       this.isLoading = true;
       Object.assign(this.dataTable, opts);
-      const params = { programId: this.programId, filter: this.filter };
+      const params = pick(this, ['programId', 'filter']);
       const { items, total } = await api.fetch({ ...this.dataTable, params });
+      console.log(items);
       this.enrollments = items;
       this.totalItems = total;
       this.isLoading = false;
