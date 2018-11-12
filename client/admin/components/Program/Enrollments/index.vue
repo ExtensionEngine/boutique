@@ -62,8 +62,7 @@ export default {
       dataTable: { rowsPerPage: 10, ...defaultPage() },
       totalItems: 0,
       confirmationDialog: null,
-      confirmationAction: null,
-      isLoading: true
+      confirmationAction: null
     };
   },
   computed: {
@@ -77,20 +76,18 @@ export default {
     defaultPage,
     noEnrollmentsMessage() {
       return this.filter
-        ? `Your search for "${this.filter}" found no results.`
+        ? `Your search for '${this.filter}' found no results.`
         : 'Click on the button above to enroll learner.';
     }
   },
   methods: {
     get,
     fetch: throttle(async function (opts) {
-      this.isLoading = true;
       Object.assign(this.dataTable, opts);
       const params = pick(this, ['programId', 'filter']);
       const { items, total } = await api.fetch({ ...this.dataTable, params });
       this.enrollments = items;
       this.totalItems = total;
-      this.isLoading = false;
     }, 400),
     unenroll(enrollment) {
       this.confirmationDialog = true;
