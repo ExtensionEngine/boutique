@@ -1,9 +1,9 @@
 'use strict';
 
-const { Enrollment, Sequelize } = require('../common/database');
 const { createError } = require('../common/errors');
-const HttpStatus = require('http-status');
+const { Enrollment, Sequelize } = require('../common/database');
 const find = require('lodash/find');
+const HttpStatus = require('http-status');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
 const Promise = require('bluebird');
@@ -39,19 +39,16 @@ function create({ body }, res) {
 
 async function bulkEnroll({ body: { userIds, programId } }, res) {
   let errorCount = 0;
-  const existingUsers = await Enrollment.findAll({
+  const existingEnrollments = await Enrollment.findAll({
     where: { studentId: userIds, programId },
     paranoid: false
   });
   await Promise.each(userIds, studentId => {
-    const existingUser = find(existingUsers, { studentId });
-    if (!existingUser) return Enrollment.create({ studentId, programId });
-    if (existingUser.deletedAt) {
-      existingUser.setDataValue('deletedAt', null);
-      return existingUser.save();
-    }
-    errorCount = errorCount + 1;
-    return errorCount;
+    const existing = find(existingEnrollments, { studentId });
+    if (!existing) return Enrollment.create({ studentId, programId });
+    if (!existing.deletedAt) return (errorCount = errorCount + 1);
+    existing.setDataValue('deletedAt', null);
+    return existing.save();
   });
   return res.jsend.success({ errorCount });
 }

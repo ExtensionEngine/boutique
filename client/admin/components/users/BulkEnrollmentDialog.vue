@@ -20,7 +20,7 @@
             v-model="programId"
             :items="programList"
             :disabled="enrollInProgress"
-            :error-messages="enrollmentMessage"
+            :error-messages="errorMessage"
             @focus="focusTrap.pause()"
             @blur="focusTrap.unpause()"
             name="program"
@@ -65,7 +65,7 @@ export default {
       visible: false,
       programId: null,
       enrollInProgress: false,
-      enrollmentMessage: null
+      errorMessage: null
     };
   },
   computed: {
@@ -86,13 +86,13 @@ export default {
         .then(res => {
           this.enrollInProgress = false;
           if (res.errorCount) {
-            this.enrollmentMessage = `Enrolled failed for ${res.errorCount} users`;
+            this.errorMessage = `Enrolled failed for ${res.errorCount} users`;
             return;
           }
           this.close();
         })
         .catch(error => {
-          this.enrollmentMessage = 'Error! Unable to enroll Users!';
+          this.errorMessage = 'Error! Unable to enroll Users!';
           this.enrollInProgress = false;
           return Promise.reject(error);
         });
@@ -100,7 +100,7 @@ export default {
     close() {
       this.visible = false;
       this.programId = null;
-      this.enrollmentMessage = null;
+      this.errorMessage = null;
     }
   }
 };
