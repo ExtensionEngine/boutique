@@ -3,9 +3,7 @@
     <v-flex class="mt-5">
       <v-toolbar color="#f5f5f5" flat>
         <v-spacer/>
-        <bulk-enrollment-dialog
-          :disabled="disableEnroll"
-          :users="checkedItems"/>
+        <bulk-enrollment-dialog :disabled="disableEnroll" :users="checkedItems"/>
         <v-btn @click.stop="showUserDialog()" color="success" outline>
           Add user
         </v-btn>
@@ -31,12 +29,8 @@
           select-all>
           <template slot="items" slot-scope="props">
             <tr>
-              <td class="text-xs-center">
-                <v-checkbox
-                  v-model="props.selected"
-                  primary
-                  hide-details
-                ></v-checkbox>
+              <td>
+                <v-checkbox v-model="props.selected" primary hide-details />
               </td>
               <td class="text-xs-left">{{ props.item.email }}</td>
               <td class="text-xs-left">{{ props.item.role }}</td>
@@ -79,14 +73,6 @@ export default {
   name: 'user-list',
   data() {
     return {
-      headers: [
-        { text: 'Email', value: 'email', align: 'left' },
-        { text: 'Role', value: 'role', align: 'left' },
-        { text: 'First Name', value: 'firstName', align: 'left' },
-        { text: 'Last Name', value: 'lastName', align: 'left' },
-        { text: 'Date Created', value: 'createdAt', align: 'left' },
-        { text: 'Actions', value: 'email', align: 'center', sortable: false }
-      ],
       users: [],
       filter: null,
       userDialog: false,
@@ -100,6 +86,14 @@ export default {
     };
   },
   computed: {
+    headers: () => ([
+      { text: 'Email', value: 'email', align: 'left' },
+      { text: 'Role', value: 'role', align: 'left' },
+      { text: 'First Name', value: 'firstName', align: 'left' },
+      { text: 'Last Name', value: 'lastName', align: 'left' },
+      { text: 'Date Created', value: 'createdAt', align: 'left' },
+      { text: 'Actions', value: 'email', align: 'center', sortable: false }
+    ]),
     disableEnroll() {
       return !this.checkedItems.length;
     },

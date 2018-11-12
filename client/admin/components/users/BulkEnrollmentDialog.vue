@@ -3,7 +3,8 @@
     v-hotkey="{ esc: close }"
     v-model="visible"
     :disabled="disabled"
-    width="700">
+    width="700"
+    class="bulk-enrollment">
     <v-btn
       slot="activator"
       :disabled="disabled"
@@ -18,6 +19,7 @@
           <v-autocomplete
             v-model="programId"
             :items="programList"
+            :error-messages="enrollmentMessage"
             @focus="focusTrap.pause()"
             @blur="focusTrap.unpause()"
             name="program"
@@ -28,11 +30,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer/>
-          <v-btn
-            :disabled="enrollDisabled"
-            @click="close">
-            Cancel
-          </v-btn>
+          <v-btn :disabled="enrollDisabled" @click="close">Cancel</v-btn>
           <v-btn
             :disabled="enrollDisabled"
             :loading="enrollInProgress"
@@ -41,7 +39,6 @@
             Enroll
           </v-btn>
         </v-card-actions>
-        <v-card-text>{{ enrollmentMessage }}</v-card-text>
       </v-card>
     </v-form>
   </v-dialog>
@@ -67,8 +64,7 @@ export default {
       visible: false,
       programId: null,
       enrollInProgress: false,
-      enrollmentMessage: '',
-      showAlert: false
+      enrollmentMessage: ''
     };
   },
   computed: {
@@ -83,36 +79,27 @@ export default {
   methods: {
     bulkEnroll() {
       this.enrollInProgress = true;
-      return api.bulkEnroll({ users: this.users, programId: this.programId })
-        .catch(() => (this.enrollmentMessage = 'Error! Unable to enroll Users!'))
+      const { users, programId } = this;
+      const userIds = map(users, 'id');
+      return api.bulkEnroll({ userIds, programId })
+        .catch(() => {
+          this.enrollmentMessage = 'Error! Unable to enroll Users!';
+          this.enrollInProgress = false;
+        })
         .then(res => {
-          if (res.message.type === 'success') {
-            this.close();
-          } else {
-            this.enrollmentMessage = res.message.text;
-            this.showAlert = true;
-            this.enrollInProgress = false;
+          this.enrollInProgress = false;
+          if (res.errorCount) {
+            this.enrollmentMessage = `Enrolled failed for ${res.errorCount} users`;
+            return this.enrollmentMessage;
           }
+          this.close();
         });
     },
     close() {
       this.visible = false;
       this.programId = null;
+      this.enrollmentMessage = '';
     }
   }
 };
 </script>
-
-<style lang="scss">
-
-.v-alert {
-  padding: 4px 10px 0;
-  line-height: 30px;
-
-  .v-alert__icon {
-    margin-top: -5px;
-    margin-right: 10px;
-  }
-}
-
-</style>

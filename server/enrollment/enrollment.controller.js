@@ -3,7 +3,6 @@
 const { Enrollment, Sequelize } = require('../common/database');
 const { createError } = require('../common/errors');
 const HttpStatus = require('http-status');
-const includes = require('lodash/includes');
 const find = require('lodash/find');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
@@ -38,18 +37,13 @@ function create({ body }, res) {
     .then(enrollment => res.jsend.success(processOutput(enrollment)));
 }
 
-function bulkEnroll({ body: { users, programId } }, res) {
-  const userIds = map(users, 'id');
+function bulkEnroll({ body: { userIds, programId } }, res) {
   return Enrollment.findAll({
-    where: {
-      studentId: userIds,
-      programId
-    },
+    where: { studentId: userIds, programId },
     paranoid: false
   })
   .then(existingUsers => {
-    let enrollMessage = { type: 'success', text: '' };
-    let count = 0;
+    let errorCount = 0;
 
     return Promise.each(userIds, studentId => {
       const existingUser = find(existingUsers, { studentId });
@@ -57,19 +51,12 @@ function bulkEnroll({ body: { users, programId } }, res) {
       if (existingUser.deletedAt) {
         existingUser.setDataValue('deletedAt', null);
         return existingUser.save();
-      } else {
-        count = count + 1;
-        return count;
       }
+      errorCount = errorCount + 1;
+      return errorCount;
     })
     .then(() => {
-      if (count > 0) {
-        enrollMessage = {
-          type: 'info',
-          text: `Enrolled failed for ${count} users`
-        };
-      }
-      res.jsend.success({ 'message': enrollMessage });
+      return res.jsend.success({ errorCount });
     });
   });
 }
