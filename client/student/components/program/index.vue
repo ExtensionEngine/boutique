@@ -30,7 +30,7 @@ export default {
       return this.$router.push({ name: 'program-selection' });
     }
     this.setCoursewareFilter();
-    this.fetchSyllabus(this.programId).then(() => (this.isLoading = false));
+    this.fetchSyllabus(this.programId).finally(() => (this.isLoading = false));
   },
   components: { CircularProgress }
 };

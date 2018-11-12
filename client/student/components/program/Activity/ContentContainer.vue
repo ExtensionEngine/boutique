@@ -31,10 +31,8 @@ export default {
   },
   created() {
     api.getContainer(this.programId, this.repositoryId, this.containerId)
-      .then(container => {
-        this.container = container;
-        this.isLoading = false;
-      });
+      .then(container => (this.container = container))
+      .finally(() => (this.isLoading = false));
   },
   components: { CircularProgress, TailorTeachingElements }
 };

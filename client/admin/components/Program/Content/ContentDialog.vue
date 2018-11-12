@@ -75,10 +75,11 @@ export default {
       this.$nextTick(() => this.focusTrap.toggle(val));
       if (!val) return;
       this.isLoading = true;
-      return api.getCatalog().then(repos => {
-        this.isLoading = false;
-        this.catalog = map(repos, it => ({ text: it.name, sourceId: it.id }));
-      });
+      return api.getCatalog()
+        .then(repos => {
+          this.catalog = map(repos, it => ({ text: it.name, sourceId: it.id }));
+        })
+        .finally(() => (this.isLoading = false));
     }
   }
 };
