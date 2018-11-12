@@ -2,8 +2,18 @@
   <v-dialog v-hotkey="{ esc: close }" v-model="show" width="700">
     <v-form @submit.prevent="save">
       <v-card class="pa-3">
-        <v-card-title class="headline">
-          {{ userData ? 'Edit' : 'Create' }} User
+        <v-card-title class="headline pr-0">
+          <span>{{ userData ? 'Edit' : 'Create' }} User</span>
+          <v-spacer/>
+          <v-btn
+            v-if="!isNewUser"
+            :disabled="isLoading"
+            :loading="isLoading"
+            :outline="true"
+            @click="invite"
+            color="blue-grey">
+            Reinvite
+          </v-btn>
         </v-card-title>
         <v-card-text>
           <v-text-field
@@ -76,7 +86,10 @@ export default {
     userData: { type: Object, default: () => ({}) }
   },
   data() {
-    return { user: resetUser() };
+    return {
+      user: resetUser(),
+      isLoading: false
+    };
   },
   computed: {
     show: {
@@ -89,6 +102,9 @@ export default {
     },
     roles() {
       return map(role, it => ({ text: humanize(it), value: it }));
+    },
+    isNewUser() {
+      return !this.user.id;
     }
   },
   methods: {
@@ -99,10 +115,14 @@ export default {
     save() {
       this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
-        const action = this.user.id ? 'update' : 'create';
+        const action = this.isNewUser ? 'update' : 'create';
         api[action](this.user).then(() => this.$emit(`${action}d`));
         this.close();
       });
+    },
+    invite() {
+      this.isLoading = true;
+      api.invite(this.user).finally(() => (this.isLoading = false));
     }
   },
   watch: {

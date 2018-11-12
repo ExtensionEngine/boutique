@@ -1,13 +1,15 @@
 'use strict';
 
 const { auth: config = {} } = require('../config');
-const { Model } = require('sequelize');
+const { Model, UniqueConstraintError } = require('sequelize');
 const { role } = require('../../common/config');
 const bcrypt = require('bcrypt');
-const forEach = require('lodash/forEach');
+const castArray = require('lodash/castArray');
+const find = require('lodash/find');
 const jwt = require('jsonwebtoken');
 const logger = require('../common/logger')();
 const mail = require('../common/mail');
+const map = require('lodash/map');
 const pick = require('lodash/pick');
 const Promise = require('bluebird');
 const Role = require('../../common/config/role');
@@ -96,16 +98,39 @@ class User extends Model {
     };
   }
 
-  static async invite(userData, options) {
-    const user = options.existingUser || this.build(userData);
-    if (options.existingUser) {
-      forEach(userData, (val, key) => user.setDataValue(key, val));
-      user.setDataValue('deletedAt', null);
-    }
+  static async invite(user, options) {
     user.token = user.createToken({ expiresIn: '3 days' });
     mail.invite(user, options).catch(err =>
       logger.error('Error: Sending invite email failed:', err.message));
     return user.save({ paranoid: false });
+  }
+
+  static async import(users, { concurrency = 16, ...options } = {}) {
+    const errors = [];
+    await this.restoreOrBuild(users, { concurrency }).map((result, i) => {
+      if (result.isFulfilled()) return this.invite(result.value(), options);
+      const { message = 'Failed to import user.' } = result.reason();
+      errors.push({ ...users[i], message });
+    }, { concurrency });
+    return errors.length && errors;
+  }
+
+  static async restoreOrBuild(users, { concurrency = 16 } = {}) {
+    users = castArray(users);
+    const where = { email: map(users, 'email') };
+    const found = await User.findAll({ where, paranoid: false });
+    return Promise.map(users, userData => Promise.try(() => {
+      const user = find(found, { email: userData.email });
+      if (user && !user.deletedAt) {
+        const message = this.attributes.email.unique.msg;
+        throw new UniqueConstraintError({ message });
+      }
+      if (user) {
+        user.setDataValue('deleteAt', null);
+        return user;
+      }
+      return this.build(userData);
+    }).reflect(), { concurrency });
   }
 
   async encryptPassword() {

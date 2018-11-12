@@ -2,13 +2,23 @@
 
 const { createError } = require('../common/errors');
 const { Enrollment, Sequelize, sequelize, User } = require('../common/database');
+const Datasheet = require('./datasheet');
 const HttpStatus = require('http-status');
+const mime = require('mime');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
 
-const { BAD_REQUEST, CONFLICT, NOT_FOUND } = HttpStatus;
+const { ACCEPTED, BAD_REQUEST, CONFLICT, NOT_FOUND } = HttpStatus;
+const { Op } = Sequelize;
+
+const columns = {
+  email: { header: 'Email', width: 30 },
+  firstName: { header: 'First Name', width: 30 },
+  lastName: { header: 'Last Name', width: 30 },
+  role: { header: 'Role', width: 30 },
+  message: { header: 'Error', width: 30 }
+};
 const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
-const Op = Sequelize.Op;
 
 const createFilter = q => map(['email', 'firstName', 'lastName'],
   it => ({ [it]: { [Op.iLike]: `%${q}%` } }));
@@ -24,12 +34,11 @@ function list({ query: { email, role, filter }, options }, res) {
 }
 
 function create(req, res) {
-  const { body } = req;
-  return User.findOne({ where: { email: body.email }, paranoid: false })
-    .then(existingUser => {
-      if (existingUser && !existingUser.deletedAt) createError(CONFLICT);
-      const opts = { existingUser, origin: req.origin() };
-      return User.invite(pick(body, inputAttrs), opts);
+  const { body, origin } = req;
+  return User.restoreOrBuild(pick(body, inputAttrs))
+    .then(([result]) => {
+      if (result.isRejected()) return createError(CONFLICT);
+      return User.invite(result.value(), { origin });
     })
     .then(user => res.jsend.success(user.profile));
 }
@@ -67,6 +76,13 @@ function login({ body }, res) {
     });
 }
 
+function invite({ params, origin }, res) {
+  return User.findById(params.id, { paranoid: false })
+    .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
+    .then(user => User.invite(user, { origin }))
+    .then(() => res.status(ACCEPTED).end());
+}
+
 function forgotPassword(req, res) {
   const { email } = req.body;
   const origin = req.origin();
@@ -87,12 +103,25 @@ function resetPassword({ body, params }, res) {
     .then(() => res.end());
 }
 
+async function bulkImport(req, res) {
+  const origin = req.origin();
+  let users = (await Datasheet.load(req.file)).toJSON({ include: inputAttrs });
+  const errors = await User.import(users, { origin });
+  if (!errors) return res.end();
+  const creator = 'Boutique';
+  const format = req.body.format || mime.getExtension(req.file.mimetype);
+  const report = (new Datasheet({ columns, data: errors })).toWorkbook({ creator });
+  return report.send(res, { format });
+}
+
 module.exports = {
   list,
+  bulkImport,
   create,
   patch,
   destroy,
   login,
+  invite,
   forgotPassword,
   resetPassword
 };

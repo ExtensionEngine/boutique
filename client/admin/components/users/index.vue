@@ -3,6 +3,7 @@
     <v-flex class="mt-5">
       <v-toolbar color="#f5f5f5" flat>
         <v-spacer/>
+        <import-dialog @imported="fetch(defaultPage)"/>
         <bulk-enrollment-dialog :disabled="disableEnroll" :users="checkedItems"/>
         <v-btn @click.stop="showUserDialog()" color="success" outline>
           Add user
@@ -62,6 +63,7 @@
 import api from '@/admin/api/user';
 import BulkEnrollmentDialog from './BulkEnrollmentDialog';
 import ConfirmationDialog from '../common/ConfirmationDialog';
+import ImportDialog from './ImportDialog';
 import throttle from 'lodash/throttle';
 import UserDialog from './UserDialog';
 
@@ -124,7 +126,7 @@ export default {
       this.fetch();
     }
   },
-  components: { BulkEnrollmentDialog, ConfirmationDialog, UserDialog }
+  components: { BulkEnrollmentDialog, ConfirmationDialog, ImportDialog, UserDialog }
 };
 </script>
 

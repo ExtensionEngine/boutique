@@ -3,7 +3,9 @@ import request from '@/common/api/request';
 
 const url = {
   root: '/users',
-  resource: it => `/users/${it.id}`
+  resource: it => `/users/${it.id}`,
+  invite: it => `/users/${it.id}/invite`,
+  import: '/users/import'
 };
 
 function fetch(params = {}) {
@@ -23,9 +25,19 @@ function remove(item) {
   return request.delete(url.resource(item));
 }
 
+function invite(item) {
+  return request.post(url.invite(item));
+}
+
+function bulkImport(items) {
+  return request.post(url.import, items, { responseType: 'blob' });
+}
+
 export default {
   fetch,
   create,
   update,
-  remove
+  remove,
+  invite,
+  bulkImport
 };

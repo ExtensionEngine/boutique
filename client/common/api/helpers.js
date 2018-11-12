@@ -11,7 +11,7 @@ export function processParams(opts) {
     sortBy: opts.sortBy || 'id',
     sortOrder: opts.descending ? 'DESC' : 'ASC',
     offset: (page - 1) * limit,
-    limit
+    limit: limit === -1 ? null : limit
   };
   if (opts.filter) params.filter = opts.filter;
   return Object.assign(params, opts.params);
