@@ -115,7 +115,7 @@ export default {
     save() {
       this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
-        const action = this.isNewUser ? 'update' : 'create';
+        const action = this.isNewUser ? 'create' : 'update';
         api[action](this.user).then(() => this.$emit(`${action}d`));
         this.close();
       });
