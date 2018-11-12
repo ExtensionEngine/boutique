@@ -21,7 +21,7 @@
         :pagination.sync="dataTable"
         :total-items="totalItems"
         :must-sort="true"
-        :no-data-text="tableMessages">
+        :no-data-text="noEnrollmentsMessage">
         <template slot="items" slot-scope="{ item }">
           <td>{{ get(item.student, 'email') }}</td>
           <td>{{ get(item.student, 'firstName') }}</td>
@@ -74,7 +74,7 @@ export default {
       { text: 'Actions', value: 'id', sortable: false, align: 'center' }
     ]),
     defaultPage,
-    tableMessages() {
+    noEnrollmentsMessage() {
       return this.filter
         ? `Your search for "${this.filter}" found no results.`
         : 'Click on the button above to enroll learner.';
