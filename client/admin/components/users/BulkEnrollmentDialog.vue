@@ -80,8 +80,8 @@ export default {
   methods: {
     submit() {
       this.enrolling = true;
-      const studentIds = map(this.users, 'id');
-      return this.enroll({ studentIds, programId: this.programId })
+      const userIds = map(this.users, 'id');
+      return this.enroll({ studentId: userIds, programId: this.programId })
         .then(({ failed = [] }) => {
           if (failed.length <= 0) return this.close();
           const msg = `Enrolling failed for ${failed.length} users`;

@@ -21,15 +21,14 @@ function list({ query: { programId, studentId }, options }, res) {
 }
 
 async function create({ body }, res) {
-  const { studentId, studentIds, programId } = body;
-  if (!Array.isArray(studentIds)) {
-    const studentIds = [studentId];
-    const [result] = await Enrollment.restoreOrCreate({ studentIds, programId });
+  const { studentId, programId } = body;
+  if (!Array.isArray(studentId)) {
+    const [result] = await Enrollment.restoreOrCreate(studentId, programId);
     if (result.isRejected()) return createError(CONFLICT);
     const enrollment = await result.value().reload({ include: ['student'] });
     return res.jsend.success(enrollment);
   }
-  const [students, enrollments] = await bulkCreate({ studentIds, programId });
+  const [students, enrollments] = await bulkCreate(studentId, programId);
   const failed = students.map(it => ({
     programId,
     studentId: it.id,
@@ -50,10 +49,10 @@ module.exports = {
   destroy
 };
 
-async function bulkCreate({ studentIds, programId }) {
+async function bulkCreate(studentIds, programId, options = {}) {
   const enrollmentIds = [];
   const failedStudentIds = [];
-  const results = await Enrollment.restoreOrCreate({ studentIds, programId });
+  const results = await Enrollment.restoreOrCreate(studentIds, programId, options);
   results.forEach((it, index) => {
     if (it.isRejected()) return failedStudentIds.push(studentIds[index]);
     enrollmentIds.push(it.value().id);

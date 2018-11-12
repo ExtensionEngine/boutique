@@ -1,6 +1,7 @@
 'use strict';
 
 const { Model, UniqueConstraintError } = require('sequelize');
+const castArray = require('lodash/castArray');
 const find = require('lodash/find');
 const Promise = require('bluebird');
 
@@ -42,7 +43,8 @@ class Enrollment extends Model {
     };
   }
 
-  static async restoreOrCreate({ studentIds, programId }, { concurrency = 16 } = {}) {
+  static async restoreOrCreate(studentIds, programId, { concurrency = 16 } = {}) {
+    studentIds = castArray(studentIds);
     const where = { studentId: studentIds, programId };
     const found = await this.findAll({ where, paranoid: false });
     return Promise.map(studentIds, studentId => Promise.try(() => {
