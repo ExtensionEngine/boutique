@@ -88,7 +88,6 @@ export default {
       Object.assign(this.dataTable, opts);
       const params = pick(this, ['programId', 'filter']);
       const { items, total } = await api.fetch({ ...this.dataTable, params });
-      console.log(items);
       this.enrollments = items;
       this.totalItems = total;
       this.isLoading = false;
