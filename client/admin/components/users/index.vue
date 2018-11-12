@@ -73,8 +73,7 @@ export default {
       confirmationDialog: null,
       confirmationAction: null,
       dataTable: defaultPage(),
-      totalItems: 0,
-      isLoading: false
+      totalItems: 0
     };
   },
   computed: {
@@ -94,13 +93,11 @@ export default {
       this.userDialog = true;
     },
     fetch: throttle(async function (opts) {
-      this.isLoading = true;
       Object.assign(this.dataTable, opts);
       const params = { ...this.dataTable, filter: this.filter };
       const { items, total } = await api.fetch(params);
       this.users = items;
       this.totalItems = total;
-      this.isLoading = false;
     }, 400),
     removeUser(user) {
       this.confirmationAction = () => api.remove(user);
