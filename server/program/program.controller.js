@@ -39,7 +39,7 @@ function destroy({ program }, res) {
 
 function getEnrolledPrograms({ user }, res) {
   const include = [{ model: Enrollment, where: { studentId: user.id } }];
-  return Program.scope('active').findAll({ include })
+  return Program.active().findAll({ include })
     .then(programs => res.jsend.success(programs));
 }
 

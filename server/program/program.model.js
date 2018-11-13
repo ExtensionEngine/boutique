@@ -89,6 +89,10 @@ class Program extends Model {
       }
     };
   }
+
+  static active() {
+    return this.scope('active');
+  }
 }
 
 module.exports = Program;
