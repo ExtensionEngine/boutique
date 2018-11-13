@@ -14,7 +14,7 @@
         <v-card-text>
           <v-autocomplete
             v-model="programId"
-            :items="programList"
+            :items="programOptions"
             :disabled="enrolling"
             :error-messages="vErrors.collect('program')"
             @focus="focusTrap.pause()"
@@ -65,7 +65,7 @@ export default {
     };
   },
   computed: {
-    programList() {
+    programOptions() {
       return map(this.programs, it => ({ text: `${it.name}`, value: it.id }));
     },
     enrollDisabled() {
