@@ -33,14 +33,12 @@ function list({ query: { email, role, filter }, options }, res) {
   });
 }
 
-function create(req, res) {
+async function create(req, res) {
   const { body, origin } = req;
-  return User.restoreOrBuild(pick(body, inputAttrs))
-    .then(([result]) => {
-      if (result.isRejected()) return createError(CONFLICT, 'User exists!');
-      return User.invite(result.value(), { origin });
-    })
-    .then(user => res.jsend.success(user.profile));
+  const [err, user] = await User.restoreOrBuild(pick(body, inputAttrs));
+  if (err) return createError(CONFLICT, 'User exists!');
+  await User.invite(user, { origin });
+  res.jsend.success(user.profile);
 }
 
 function patch({ params, body }, res) {
@@ -106,7 +104,7 @@ function resetPassword({ body, params }, res) {
 async function bulkImport(req, res) {
   const origin = req.origin();
   let users = (await Datasheet.load(req.file)).toJSON({ include: inputAttrs });
-  const errors = await User.import(users, { origin });
+  const errors = await bulkCreate(users, { origin });
   if (!errors) return res.end();
   const creator = 'Boutique';
   const format = req.body.format || mime.getExtension(req.file.mimetype);
@@ -125,3 +123,14 @@ module.exports = {
   forgotPassword,
   resetPassword
 };
+
+async function bulkCreate(users, { concurrency = 16, ...options } = {}) {
+  const errors = [];
+  await User.restoreOrBuildAll(users, { concurrency })
+    .map(([err, user], index) => {
+      if (!err && user) return User.invite(user, options);
+      const { message = 'Failed to import user.' } = err;
+      errors.push({ ...users[index], message });
+    }, { concurrency });
+  return errors.length && errors;
+}

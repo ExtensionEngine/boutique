@@ -24,12 +24,13 @@ function list({ query: { programId, studentId, filter }, options }, res) {
 async function create({ body }, res) {
   const { studentId, programId } = body;
   if (!Array.isArray(studentId)) {
-    const [result] = await Enrollment.restoreOrCreate(studentId, programId);
-    if (result.isRejected()) return createError(CONFLICT, 'Enrollment exists!');
-    const enrollment = await result.value().reload({ include: ['student'] });
+    const [err, enrollment] = await Enrollment.restoreOrCreate({ studentId, programId });
+    if (err) return createError(CONFLICT, 'Enrollment exists!');
+    await enrollment.reload({ include: ['student'] });
     return res.jsend.success(enrollment);
   }
-  const [students, enrollments] = await bulkCreate(studentId, programId);
+  const data = studentId.map(id => ({ studentId: id, programId }));
+  const [students, enrollments] = await bulkCreate(data);
   const failed = students.map(it => ({
     programId,
     studentId: it.id,
@@ -50,14 +51,14 @@ module.exports = {
   destroy
 };
 
-async function bulkCreate(studentIds, programId, options = {}) {
+async function bulkCreate(enrollments, { concurrency = 16, ...options } = {}) {
   const enrollmentIds = [];
   const failedStudentIds = [];
-  const results = await Enrollment.restoreOrCreate(studentIds, programId, options);
-  results.forEach((it, index) => {
-    if (it.isRejected()) return failedStudentIds.push(studentIds[index]);
-    enrollmentIds.push(it.value().id);
-  });
+  await Enrollment.restoreOrCreateAll(enrollments, { concurrency })
+    .map(([err, enrollment], index) => {
+      if (err) return failedStudentIds.push(enrollments[index].studentId);
+      enrollmentIds.push(enrollment.id);
+    }, { concurrency });
   return Promise.all([
     User.findAll({ where: { id: failedStudentIds } }),
     Enrollment.findAll({ where: { id: enrollmentIds }, include: ['student'] })
