@@ -34,8 +34,8 @@
       </v-data-table>
     </div>
     <confirmation-dialog
-      :visible.sync="confirmationDialog"
-      :action="confirmationAction"
+      :visible.sync="confirmation.dialog"
+      :action="confirmation.action"
       @confirmed="fetch()"
       heading="Unenroll"
       message="Are you sure you want to unenroll learner?"/>
@@ -61,8 +61,7 @@ export default {
       filter: null,
       dataTable: { rowsPerPage: 10, ...defaultPage() },
       totalItems: 0,
-      confirmationDialog: null,
-      confirmationAction: null
+      confirmation: { dialog: null }
     };
   },
   computed: {
@@ -76,7 +75,7 @@ export default {
     defaultPage,
     noEnrollmentsMessage() {
       return this.filter
-        ? `Your search for '${this.filter}' found no results.`
+        ? `Your search for "${this.filter}" found no results.`
         : 'Click on the button above to enroll learner.';
     }
   },
@@ -90,8 +89,8 @@ export default {
       this.totalItems = total;
     }, 400),
     unenroll(enrollment) {
-      this.confirmationDialog = true;
-      this.confirmationAction = () => api.remove(enrollment);
+      this.confirmation.dialog = true;
+      this.confirmation.action = () => api.remove(enrollment);
     }
   },
   watch: {
@@ -108,6 +107,6 @@ export default {
 
 <style lang="scss" scoped>
 .table-toolbar {
-  background-color: #fff;
+  background: #fff;
 }
 </style>

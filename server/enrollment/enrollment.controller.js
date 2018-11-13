@@ -17,11 +17,11 @@ const createFilter = q => map(['email', 'firstName', 'lastName'],
 
 function list({ query: { programId, studentId, filter }, options }, res) {
   const cond = [];
-  const includeStudent = { model: User, as: 'student' };
-  if (filter) includeStudent.where = { [Op.or]: createFilter(filter) };
+  const include = [{ model: User, as: 'student' }];
+  if (filter) include[0].where = { [Op.or]: createFilter(filter) };
   if (programId) cond.push({ programId });
   if (studentId) cond.push({ studentId });
-  const opts = { where: { [Op.and]: cond }, include: [includeStudent], ...options };
+  const opts = { where: { [Op.and]: cond }, include, ...options };
   return Enrollment.findAndCountAll(opts).then(({ rows, count }) => {
     res.jsend.success({ items: map(rows, processOutput), total: count });
   });
