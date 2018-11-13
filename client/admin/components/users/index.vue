@@ -4,7 +4,11 @@
       <v-toolbar color="#f5f5f5" flat>
         <v-spacer/>
         <import-dialog @imported="fetch(defaultPage)"/>
-        <bulk-enrollment-dialog :disabled="disableEnroll" :users="checkedItems"/>
+        <bulk-enrollment-dialog
+          :disabled="disableEnroll"
+          :enroll="enroll"
+          :users="checkedItems"
+          :programs="programs"/>
         <v-btn @click.stop="showUserDialog()" color="success" outline>
           Add user
         </v-btn>
@@ -63,7 +67,9 @@
 import api from '@/admin/api/user';
 import BulkEnrollmentDialog from './BulkEnrollmentDialog';
 import ConfirmationDialog from '../common/ConfirmationDialog';
+import enrollmentApi from '@/admin/api/enrollment';
 import ImportDialog from './ImportDialog';
+import { mapState } from 'vuex';
 import throttle from 'lodash/throttle';
 import UserDialog from './UserDialog';
 
@@ -86,6 +92,7 @@ export default {
     };
   },
   computed: {
+    ...mapState('programs', { programs: 'items' }),
     headers: () => ([
       { text: 'Email', value: 'email', align: 'left' },
       { text: 'Role', value: 'role', align: 'left' },
@@ -116,7 +123,8 @@ export default {
     removeUser(user) {
       this.confirmationAction = () => api.remove(user);
       this.confirmationDialog = true;
-    }
+    },
+    enroll: enrollmentApi.create
   },
   watch: {
     dataTable() {

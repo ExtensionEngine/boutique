@@ -12,12 +12,8 @@ function fetch(opts) {
     .then(extractData);
 }
 
-function create(item) {
-  return request.post(url.root, item).then(extractData);
-}
-
-function bulkEnroll(items) {
-  return request.post(url.bulkEnroll, items).then(extractData);
+function create(payload) {
+  return request.post(url.root, payload).then(extractData);
 }
 
 function remove(item) {
@@ -27,6 +23,5 @@ function remove(item) {
 export default {
   fetch,
   create,
-  bulkEnroll,
   remove
 };
