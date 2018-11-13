@@ -3,8 +3,7 @@ import request from '@/common/api/request';
 
 const url = {
   root: '/enrollments',
-  resource: it => `/enrollments/${it.id}`,
-  bulkEnroll: '/enrollments/bulkEnroll'
+  resource: it => `/enrollments/${it.id}`
 };
 
 function fetch(opts) {
