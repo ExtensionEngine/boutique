@@ -42,7 +42,9 @@
 </template>
 
 <script>
+import api from '@/admin/api/enrollment';
 import map from 'lodash/map';
+import { mapState } from 'vuex';
 import { withFocusTrap } from '@/common/focustrap';
 import { withValidation } from '@/common/validation';
 
@@ -53,9 +55,7 @@ export default {
   mixins: [withValidation(), withFocusTrap({ el })],
   props: {
     disabled: { type: Boolean, default: true },
-    enroll: { type: Function, required: true },
-    users: { type: Array, default: () => ([]) },
-    programs: { type: Object, default: () => ({}) }
+    users: { type: Array, default: () => ([]) }
   },
   data() {
     return {
@@ -65,6 +65,7 @@ export default {
     };
   },
   computed: {
+    ...mapState('programs', { programs: 'items' }),
     programOptions() {
       return map(this.programs, it => ({ text: `${it.name}`, value: it.id }));
     },
@@ -76,7 +77,7 @@ export default {
     submit() {
       this.enrolling = true;
       const userIds = map(this.users, 'id');
-      return this.enroll({ studentId: userIds, programId: this.programId })
+      return api.create({ studentId: userIds, programId: this.programId })
         .then(({ failed = [] }) => {
           if (failed.length <= 0) return this.close();
           const msg = `Enrolling failed for ${failed.length} users`;
