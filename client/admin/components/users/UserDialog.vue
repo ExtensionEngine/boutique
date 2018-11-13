@@ -17,7 +17,11 @@
         </v-card-title>
         <v-card-text>
           <v-text-field
-            v-validate="{ required: true, email: true, 'unique-email': userData }"
+            v-validate="{
+              required: true,
+              email: true,
+              'unique:email': { initialValue: userData }
+            }"
             v-model="user.email"
             :error-messages="vErrors.collect('email')"
             label="E-mail"
@@ -59,6 +63,7 @@
 </template>
 
 <script>
+import { uniqueProp, withValidation } from '@/common/validation';
 import api from '@/admin/api/user';
 import cloneDeep from 'lodash/cloneDeep';
 import humanize from 'humanize-string';
@@ -66,7 +71,6 @@ import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
 import { role } from '@/../common/config';
 import { withFocusTrap } from '@/common/focustrap';
-import { withValidation } from '@/common/validation';
 
 const el = vm => vm.$children[0].$refs.dialog;
 const resetUser = () => {
@@ -78,14 +82,11 @@ const resetUser = () => {
   };
 };
 const rules = {
-  'unique-email': {
-    getMessage: field => `The ${field} is not unique.`,
-    validate: (email, [userData]) => {
-      if (userData && email === userData.email) return true;
-      return api.fetch({ params: { email } })
-        .then(({ total }) => ({ valid: !total }));
-    }
-  }
+  'unique:email': uniqueProp('email', {
+    message: 'Email is not unique!',
+    search: api.fetch.bind(api),
+    deleted: true
+  })
 };
 
 export default {

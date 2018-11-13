@@ -1,4 +1,5 @@
 import api from '@/admin/api/program';
+import isMatch from 'lodash/isMatch';
 import VeeValidate from 'vee-validate';
 
 const alphanumerical = {
@@ -43,3 +44,22 @@ const mixin = ({ rules = {}, ...config } = {}) => ({
 });
 
 export const withValidation = mixin;
+
+export function uniqueProp(prop, { message, search, ...options } = {}) {
+  const { getMessage = () => message, deleted = false } = options;
+  return {
+    getMessage,
+    validate: async (value, [{ where, initialValue } = {}]) => {
+      where = { ...where, [prop]: value };
+      if (isMatch(initialValue, where)) return true;
+      const items = await search({ params: { ...where, deleted } });
+      const data = first(items);
+      return { valid: !isMatch(data, where), data };
+    }
+  };
+
+  function first(result) {
+    if (Array.isArray(result)) return result[0];
+    if (Array.isArray(result.items)) return result.items[0];
+  }
+}

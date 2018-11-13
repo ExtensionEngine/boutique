@@ -8,7 +8,7 @@
           <v-autocomplete
             v-validate="{
               required: true,
-              'unique-enrollment': { studentId, programId }
+              'unique:enrollment': { where: { programId } }
             }"
             v-model="studentId"
             :items="students"
@@ -34,21 +34,19 @@
 </template>
 
 <script>
+import { uniqueProp, withValidation } from '@/common/validation';
 import enrollmentApi from '@/admin/api/enrollment';
 import map from 'lodash/map';
 import pick from 'lodash/pick';
 import userApi from '@/admin/api/user';
 import { withFocusTrap } from '@/common/focustrap';
-import { withValidation } from '@/common/validation';
 
 const el = vm => vm.$children[0].$refs.dialog;
 const rules = {
-  'unique-enrollment': {
-    getMessage: field => `Learner is already enrolled!`,
-    validate: (option, [params]) => {
-      return enrollmentApi.fetch({ params }).then(res => !res.total);
-    }
-  }
+  'unique:enrollment': uniqueProp('studentId', {
+    message: 'Learner is already enrolled!',
+    search: enrollmentApi.fetch.bind(enrollmentApi)
+  })
 };
 
 export default {
