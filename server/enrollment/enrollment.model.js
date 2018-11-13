@@ -1,6 +1,9 @@
 'use strict';
 
-const { Model } = require('sequelize');
+const { Model, UniqueConstraintError } = require('sequelize');
+const castArray = require('lodash/castArray');
+const find = require('lodash/find');
+const Promise = require('bluebird');
 
 class Enrollment extends Model {
   static fields(DataTypes) {
@@ -38,6 +41,24 @@ class Enrollment extends Model {
       paranoid: true,
       freezeTableName: true
     };
+  }
+
+  static async restoreOrCreate(studentIds, programId, { concurrency = 16 } = {}) {
+    studentIds = castArray(studentIds);
+    const where = { studentId: studentIds, programId };
+    const found = await this.findAll({ where, paranoid: false });
+    return Promise.map(studentIds, studentId => Promise.try(() => {
+      const enrollment = find(found, { studentId });
+      if (enrollment && !enrollment.deletedAt) {
+        const message = 'Enrollment already exists!';
+        throw new UniqueConstraintError({ message });
+      }
+      if (enrollment) {
+        enrollment.setDataValue('deleteAt', null);
+        return enrollment.save();
+      }
+      return this.create({ studentId, programId });
+    }).reflect(), { concurrency });
   }
 }
 
