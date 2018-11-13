@@ -29,11 +29,11 @@
       </v-data-table>
     </div>
     <confirmation-dialog
-      :visible.sync="confirmationDialog"
-      :action="confirmationAction"
+      :visible.sync="confirmation.dialog"
+      :action="confirmation.action"
+      :message="confirmation.message"
       @confirmed="fetch()"
-      heading="Unenroll"
-      message="Are you sure you want to unenroll learner?"/>
+      heading="Unenroll"/>
   </div>
 </template>
 
@@ -54,8 +54,7 @@ export default {
       enrollments: [],
       dataTable: { rowsPerPage: 10, ...defaultPage() },
       totalItems: 0,
-      confirmationDialog: null,
-      confirmationAction: null,
+      confirmation: { dialog: null },
       isLoading: true
     };
   },
@@ -81,8 +80,11 @@ export default {
       this.isLoading = false;
     }, 400),
     unenroll(enrollment) {
-      this.confirmationDialog = true;
-      this.confirmationAction = () => api.remove(enrollment);
+      const { student: { firstName, lastName } } = enrollment;
+      const name = firstName + ' ' + lastName;
+      this.confirmation.message = `Are you sure you want to unenroll "${name}"?`;
+      this.confirmation.action = () => api.remove(enrollment);
+      this.confirmation.dialog = true;
     }
   },
   watch: {

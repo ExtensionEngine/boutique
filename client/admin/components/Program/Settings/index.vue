@@ -42,8 +42,8 @@
     <confirmation-dialog
       :visible.sync="confirmationDialog"
       :action="removeProgram"
-      heading="Delete program"
-      message="Are you sure you want to delete program?"/>
+      :message="`Are you sure you want to delete ''${program.name}''?`"
+      heading="Delete program"/>
   </div>
 </template>
 

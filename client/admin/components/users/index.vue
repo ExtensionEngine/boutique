@@ -44,11 +44,11 @@
         @updated="fetch(defaultPage)"
         @created="fetch(defaultPage)"/>
       <confirmation-dialog
-        :visible.sync="confirmationDialog"
-        :action="confirmationAction"
+        :visible.sync="confirmation.dialog"
+        :action="confirmation.action"
+        :message="confirmation.message"
         @confirmed="fetch()"
-        heading="Remove user"
-        message="Are you sure you want to remove user?"/>
+        heading="Remove user"/>
     </v-flex>
   </v-layout>
 </template>
@@ -70,8 +70,7 @@ export default {
       filter: null,
       userDialog: false,
       editedUser: null,
-      confirmationDialog: null,
-      confirmationAction: null,
+      confirmation: { dialog: null },
       dataTable: defaultPage(),
       totalItems: 0
     };
@@ -100,8 +99,10 @@ export default {
       this.totalItems = total;
     }, 400),
     removeUser(user) {
-      this.confirmationAction = () => api.remove(user);
-      this.confirmationDialog = true;
+      const name = user.firstName + ' ' + user.lastName;
+      this.confirmation.message = `Are you sure you want to remove user "${name}"?`;
+      this.confirmation.action = () => api.remove(user);
+      this.confirmation.dialog = true;
     }
   },
   watch: {
