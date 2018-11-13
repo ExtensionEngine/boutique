@@ -1,12 +1,11 @@
-@import '~bulma/bulma';
-
-// Google Web Fonts
 @import '~sass-web-fonts/web-fonts';
-/* stylelint-disable-next-line function-comma-newline-after */
-$web-font-path: web-fonts-url(('Roboto': (300, 400, 500, 700)));
 $mdi-font-path: '~@mdi/font/fonts';
 
+// Google Web Fonts
+/* stylelint-disable-next-line function-comma-newline-after */
+@import url(web-fonts-url(('Roboto': (300, 400, 500, 700))));
 @import '~@mdi/font/scss/materialdesignicons';
+@import '~bulma/bulma';
 
 .system-font-stack {
   /* stylelint-disable value-list-comma-newline-after */
