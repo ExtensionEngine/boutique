@@ -5,11 +5,7 @@
     :disabled="disabled"
     width="700"
     class="bulk-enrollment">
-    <v-btn
-      slot="activator"
-      :disabled="disabled"
-      color="success"
-      outline>
+    <v-btn slot="activator" :disabled="disabled" color="success" outline>
       Enroll
     </v-btn>
     <v-form @submit.prevent="submit">
@@ -65,8 +61,7 @@ export default {
     return {
       visible: false,
       programId: null,
-      enrolling: false,
-      errorMessage: null
+      enrolling: false
     };
   },
   computed: {
