@@ -20,7 +20,7 @@
             v-validate="{
               required: true,
               email: true,
-              'unique:email': { initialValue: userData }
+              'unique:email': { initialValue: userData.email }
             }"
             v-model="user.email"
             :error-messages="vErrors.collect('email')"

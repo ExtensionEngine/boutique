@@ -51,7 +51,7 @@ export function uniqueProp(prop, { message, search, ...options } = {}) {
     getMessage,
     validate: async (value, [{ where, initialValue } = {}]) => {
       where = { ...where, [prop]: value };
-      if (isMatch(initialValue, where)) return true;
+      if (initialValue && value === initialValue) return true;
       const items = await search({ params: { ...where, deleted } });
       const data = first(items);
       return { valid: !isMatch(data, where), data };
