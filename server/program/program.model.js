@@ -1,9 +1,7 @@
 'use strict';
 
-const { Model, Sequelize } = require('sequelize');
-const trim = require('lodash/trim');
+const { Model, Op } = require('sequelize');
 
-const { Op } = Sequelize;
 class Program extends Model {
   static fields(DataTypes) {
     return {
@@ -12,7 +10,7 @@ class Program extends Model {
         allowNull: false,
         unique: true,
         validate: { notEmpty: true, len: [2, 255] },
-        set(value) { this.setDataValue('name', trim(value)); }
+        set(value = '') { this.setDataValue('name', value.trim()); }
       },
       startDate: {
         type: DataTypes.DATE,
