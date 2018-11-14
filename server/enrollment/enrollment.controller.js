@@ -12,13 +12,9 @@ const Op = Sequelize.Op;
 const processInput = input => pick(input, ['studentId', 'programId']);
 const processOutput = it => ({ ...it.dataValues, student: it.student.profile });
 
-const createFilter = q => map(['email', 'firstName', 'lastName'],
-  it => ({ [it]: { [Op.iLike]: `%${q}%` } }));
-
 function list({ query: { programId, studentId, filter }, options }, res) {
   const cond = [];
-  const include = [{ model: User, as: 'student' }];
-  if (filter) include[0].where = { [Op.or]: createFilter(filter) };
+  const include = [{ model: User.match(filter), as: 'student' }];
   if (programId) cond.push({ programId });
   if (studentId) cond.push({ studentId });
   const opts = { where: { [Op.and]: cond }, include, ...options };

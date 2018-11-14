@@ -1,7 +1,7 @@
 'use strict';
 
 const { auth: config = {} } = require('../config');
-const { Model, UniqueConstraintError } = require('sequelize');
+const { Model, Sequelize, Op, UniqueConstraintError } = require('sequelize');
 const { role } = require('../../common/config');
 const bcrypt = require('bcrypt');
 const castArray = require('lodash/castArray');
@@ -14,6 +14,7 @@ const pick = require('lodash/pick');
 const Promise = require('bluebird');
 const Role = require('../../common/config/role');
 const values = require('lodash/values');
+const { where } = require('../common/database/helpers');
 
 class User extends Model {
   static fields(DataTypes) {
@@ -96,6 +97,26 @@ class User extends Model {
         return Promise.map(users, user => user.encryptPassword());
       }
     };
+  }
+
+  static scopes() {
+    return {
+      searchByPattern: (pattern = '') => ({
+        where: where([Sequelize.fn(
+          'concat_ws',
+          ' ',
+          Sequelize.col('email'),
+          Sequelize.col('first_name'),
+          Sequelize.col('last_name')
+        ),
+        { [Op.iLike]: `%${pattern}%` }],
+        { scope: true })
+      })
+    };
+  }
+
+  static match(pattern) {
+    return User.scope({ method: ['searchByPattern', pattern] });
   }
 
   static async invite(user, options) {

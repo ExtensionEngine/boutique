@@ -1,5 +1,7 @@
 'use strict';
 
+const { Sequelize, Op } = require('sequelize');
+
 // eslint-disable-next-line no-extra-parens
 const AsyncFunction = (async function () {}).constructor;
 
@@ -10,6 +12,7 @@ const notEmpty = input => input.length > 0;
 module.exports = {
   getValidator,
   setLogging,
+  where,
   wrapAsyncMethods
 };
 
@@ -44,4 +47,9 @@ function transformProperties(obj, cb) {
     const val = cb(descriptors[name], name);
     if (val) obj[name] = val;
   });
+}
+
+function where(args, { scope = false } = {}) {
+  if (!scope) return Sequelize.where(...args);
+  return { [Op.and]: [Sequelize.where(...args)] };
 }
