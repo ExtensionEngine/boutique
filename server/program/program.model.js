@@ -10,7 +10,9 @@ class Program extends Model {
         allowNull: false,
         unique: true,
         validate: { notEmpty: true, len: [2, 255] },
-        set(value = '') { this.setDataValue('name', value.trim()); }
+        set(value = '') {
+          return this.setDataValue('name', value.trim());
+        }
       },
       startDate: {
         type: DataTypes.DATE,

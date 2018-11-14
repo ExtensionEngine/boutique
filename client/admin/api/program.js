@@ -10,6 +10,4 @@ function fetch(params = {}) {
     .then(extractData);
 }
 
-export default {
-  fetch
-};
+export default { fetch };
