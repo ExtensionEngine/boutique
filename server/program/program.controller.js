@@ -3,10 +3,16 @@
 const { Enrollment, Program, sequelize, Sequelize } = require('../common/database');
 const pick = require('lodash/pick');
 
+const { Op } = Sequelize;
+
 const processInput = input => pick(input, ['name', 'startDate', 'endDate']);
 
-function list(req, res) {
-  return Program.findAll().then(programs => res.jsend.success(programs));
+function list({ query }, res) {
+  const { name, deleted } = query;
+  const where = {};
+  if (name) where.name = { [Op.iLike]: name.trim() };
+  return Program.findAll({ where, paranoid: !deleted })
+    .then(programs => res.jsend.success(programs));
 }
 
 function get({ program }, res) {

@@ -1,6 +1,6 @@
 'use strict';
 
-const { Model } = require('sequelize');
+const { Model, Op } = require('sequelize');
 
 class Program extends Model {
   static fields(DataTypes) {
@@ -8,7 +8,11 @@ class Program extends Model {
       name: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: { notEmpty: true, len: [2, 255] }
+        unique: true,
+        validate: { notEmpty: true, len: [2, 255] },
+        set(value = '') {
+          return this.setDataValue('name', value.trim());
+        }
       },
       startDate: {
         type: DataTypes.DATE,
@@ -51,6 +55,14 @@ class Program extends Model {
       paranoid: true,
       freezeTableName: true,
       validate: {
+        async isProgramNameUnique() {
+          const where = { name: { [Op.iLike]: this.name } };
+          if (this.id) where.id = { [Op.not]: this.id };
+          const program = await Program.findOne({ where });
+          if (program) {
+            throw new Error(`Program named ${program.name} already exists.`);
+          }
+        },
         endDateRequiresStartDate() {
           if (this.endDate && !this.startDate) {
             throw new Error('The End Date requires Start Date.');
