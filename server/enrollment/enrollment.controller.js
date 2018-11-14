@@ -1,16 +1,14 @@
 'use strict';
 
-const { Enrollment, Sequelize } = require('../common/database');
 const { createError } = require('../common/errors');
+const { Enrollment, User, Sequelize } = require('../common/database');
 const HttpStatus = require('http-status');
 const map = require('lodash/map');
-const pick = require('lodash/pick');
 
-const { BAD_REQUEST } = HttpStatus;
+const { CONFLICT } = HttpStatus;
 const Op = Sequelize.Op;
 
-const processInput = input => pick(input, ['studentId', 'programId']);
-const processOutput = it => ({ ...it.dataValues, student: it.student.profile });
+const processOutput = model => ({ ...model.toJSON(), student: model.student.profile });
 
 function list({ query: { programId, studentId }, options }, res) {
   const cond = [];
@@ -22,17 +20,22 @@ function list({ query: { programId, studentId }, options }, res) {
   });
 }
 
-function create({ body }, res) {
-  const data = processInput(body);
-  return Enrollment.findOne({ where: data, paranoid: false })
-    .then(existing => {
-      if (!existing) return Enrollment.create(data);
-      if (!existing.deletedAt) createError(BAD_REQUEST, 'Enrollment exists!');
-      existing.setDataValue('deletedAt', null);
-      return existing.save();
-    })
-    .then(({ id }) => Enrollment.findById(id, { include: ['student'] }))
-    .then(enrollment => res.jsend.success(processOutput(enrollment)));
+async function create({ body }, res) {
+  const { studentId, programId } = body;
+  if (!Array.isArray(studentId)) {
+    const [result] = await Enrollment.restoreOrCreate(studentId, programId);
+    if (result.isRejected()) return createError(CONFLICT);
+    const enrollment = await result.value().reload({ include: ['student'] });
+    return res.jsend.success(enrollment);
+  }
+  const [students, enrollments] = await bulkCreate(studentId, programId);
+  const failed = students.map(it => ({
+    programId,
+    studentId: it.id,
+    student: it.profile
+  }));
+  const created = map(enrollments, processOutput);
+  res.jsend.success({ failed, created });
 }
 
 function destroy({ params }, res) {
@@ -45,3 +48,17 @@ module.exports = {
   create,
   destroy
 };
+
+async function bulkCreate(studentIds, programId, options = {}) {
+  const enrollmentIds = [];
+  const failedStudentIds = [];
+  const results = await Enrollment.restoreOrCreate(studentIds, programId, options);
+  results.forEach((it, index) => {
+    if (it.isRejected()) return failedStudentIds.push(studentIds[index]);
+    enrollmentIds.push(it.value().id);
+  });
+  return Promise.all([
+    User.findAll({ where: { id: failedStudentIds } }),
+    Enrollment.findAll({ where: { id: enrollmentIds }, include: ['student'] })
+  ]);
+}

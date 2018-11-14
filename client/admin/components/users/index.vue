@@ -4,6 +4,7 @@
       <v-toolbar color="#f5f5f5" flat>
         <v-spacer/>
         <import-dialog @imported="fetch(defaultPage)"/>
+        <bulk-enrollment-dialog :disabled="!selectedUsers.length" :users="selectedUsers"/>
         <v-btn @click.stop="showUserDialog()" color="success" outline>
           Add user
         </v-btn>
@@ -20,21 +21,33 @@
           </v-flex>
         </v-layout>
         <v-data-table
+          v-model="selectedUsers"
           :headers="headers"
           :items="users"
-          :pagination.sync="dataTable"
           :total-items="totalItems"
-          :must-sort="true">
-          <template slot="items" slot-scope="{ item }">
-            <td>{{ item.email }}</td>
-            <td>{{ item.role }}</td>
-            <td>{{ item.firstName }}</td>
-            <td>{{ item.lastName }}</td>
-            <td>{{ item.createdAt | formatDate }}</td>
-            <td>
-              <v-icon @click="showUserDialog(item)" small>mdi-pencil</v-icon>
-              <v-icon @click="removeUser(item)" small class="ml-3">mdi-delete</v-icon>
-            </td>
+          :pagination.sync="dataTable"
+          :must-sort="true"
+          class="user-table"
+          select-all>
+          <template slot="items" slot-scope="props">
+            <tr>
+              <td>
+                <v-checkbox v-model="props.selected" primary hide-details/>
+              </td>
+              <td>{{ props.item.email }}</td>
+              <td>{{ props.item.role }}</td>
+              <td>{{ props.item.firstName }}</td>
+              <td>{{ props.item.lastName }}</td>
+              <td>{{ props.item.createdAt | formatDate }}</td>
+              <td class="text-xs-center">
+                <v-icon @click="showUserDialog(props.item)" small>
+                  mdi-pencil
+                </v-icon>
+                <v-icon @click="removeUser(props.item)" small class="ml-3">
+                  mdi-delete
+                </v-icon>
+              </td>
+            </tr>
           </template>
         </v-data-table>
       </div>
@@ -55,6 +68,7 @@
 
 <script>
 import api from '@/admin/api/user';
+import BulkEnrollmentDialog from './BulkEnrollmentDialog';
 import ConfirmationDialog from '../common/ConfirmationDialog';
 import ImportDialog from './ImportDialog';
 import throttle from 'lodash/throttle';
@@ -66,23 +80,25 @@ export default {
   name: 'user-list',
   data() {
     return {
+      isLoading: false,
       users: [],
+      selectedUsers: [],
       filter: null,
+      dataTable: defaultPage(),
+      totalItems: 0,
       userDialog: false,
       editedUser: null,
-      confirmation: { dialog: null },
-      dataTable: defaultPage(),
-      totalItems: 0
+      confirmation: { dialog: null }
     };
   },
   computed: {
     headers: () => ([
-      { text: 'Email', value: 'email', align: 'left' },
+      { text: 'Email', value: 'email' },
       { text: 'Role', value: 'role' },
       { text: 'First Name', value: 'firstName' },
       { text: 'Last Name', value: 'lastName' },
       { text: 'Date Created', value: 'createdAt' },
-      { text: 'Actions', value: 'email', sortable: false }
+      { text: 'Actions', value: 'email', align: 'center', sortable: false }
     ]),
     defaultPage
   },
@@ -115,12 +131,16 @@ export default {
       this.fetch();
     }
   },
-  components: { ConfirmationDialog, ImportDialog, UserDialog }
+  components: { BulkEnrollmentDialog, ConfirmationDialog, ImportDialog, UserDialog }
 };
 </script>
 
 <style lang="scss" scoped>
 .table-toolbar {
   background-color: #fff;
+}
+
+.user-table /deep/ .v-input--checkbox {
+  justify-content: center;
 }
 </style>

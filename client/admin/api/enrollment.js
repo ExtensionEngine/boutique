@@ -11,8 +11,8 @@ function fetch(opts) {
     .then(extractData);
 }
 
-function create(item) {
-  return request.post(url.root, item).then(extractData);
+function create(payload) {
+  return request.post(url.root, payload).then(extractData);
 }
 
 function remove(item) {

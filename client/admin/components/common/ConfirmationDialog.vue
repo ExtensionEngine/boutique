@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import Promise from 'bluebird';
 import { withFocusTrap } from '@/common/focustrap';
 
 const el = vm => vm.$children[0].$refs.dialog;
