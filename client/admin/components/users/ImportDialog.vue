@@ -66,7 +66,7 @@ const inputFormats = {
 
 export default {
   name: 'import-dialog',
-  mixins: [withValidation(), withFocusTrap({ el })],
+  mixins: [withValidation(), withFocusTrap({ el, watch: 'showDialog' })],
   data() {
     return {
       showDialog: false,
@@ -131,12 +131,6 @@ export default {
     resetErrors() {
       this.serverErrorsReport = null;
       this.vErrors.clear();
-    }
-  },
-  watch: {
-    showDialog(val) {
-      if (!val) return;
-      this.$nextTick(() => this.focusTrap.toggle(val));
     }
   }
 };

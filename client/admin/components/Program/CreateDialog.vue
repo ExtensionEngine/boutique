@@ -32,7 +32,7 @@ const getDefaultData = () => ({ name: '' });
 
 export default {
   name: 'program-dialog',
-  mixins: [withValidation(), withFocusTrap({ el })],
+  mixins: [withValidation(), withFocusTrap({ el, watch: 'visible' })],
   data() {
     return {
       visible: false,
@@ -54,7 +54,6 @@ export default {
   },
   watch: {
     visible(val) {
-      this.$nextTick(() => this.focusTrap.toggle(val));
       if (!val) return;
       this.program = getDefaultData();
       this.vErrors.clear();

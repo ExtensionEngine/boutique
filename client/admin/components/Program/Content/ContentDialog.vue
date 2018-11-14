@@ -9,8 +9,6 @@
             v-model="sourceId"
             :items="availableRepos"
             :loading="isLoading"
-            @focus="focusTrap.pause()"
-            @blur="focusTrap.unpause()"
             item-value="sourceId"
             no-data-text="No available repositories for import"
             prepend-icon="mdi-magnify"
@@ -40,7 +38,7 @@ const el = vm => vm.$children[0].$refs.dialog;
 
 export default {
   name: 'content-import-dialog',
-  mixins: [withFocusTrap({ el })],
+  mixins: [withFocusTrap({ el, watch: 'visible' })],
   props: {
     programId: { type: Number, required: true },
     importedRepos: { type: Array, default: () => ([]) }
@@ -72,7 +70,6 @@ export default {
   },
   watch: {
     visible(val) {
-      this.$nextTick(() => this.focusTrap.toggle(val));
       if (!val) return;
       this.isLoading = true;
       return api.getCatalog().then(repos => {

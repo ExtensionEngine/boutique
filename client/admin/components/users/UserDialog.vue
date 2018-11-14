@@ -28,8 +28,6 @@
             v-model="user.role"
             :items="roles"
             :error-messages="vErrors.collect('role')"
-            @focus="focusTrap.pause()"
-            @blur="focusTrap.unpause()"
             label="Role"
             data-vv-name="role"
             class="mb-3"/>
@@ -80,7 +78,7 @@ const resetUser = () => {
 
 export default {
   name: 'user-dialog',
-  mixins: [withValidation(), withFocusTrap({ el })],
+  mixins: [withValidation(), withFocusTrap({ el, watch: 'show' })],
   props: {
     visible: { type: Boolean, default: false },
     userData: { type: Object, default: () => ({}) }
@@ -127,7 +125,6 @@ export default {
   },
   watch: {
     show(val) {
-      this.$nextTick(() => this.focusTrap.toggle(val));
       if (!val) return;
       this.vErrors.clear();
       if (!isEmpty(this.userData)) this.user = cloneDeep(this.userData);

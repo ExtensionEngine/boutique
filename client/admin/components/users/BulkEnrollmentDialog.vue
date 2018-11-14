@@ -17,8 +17,6 @@
             :items="programOptions"
             :disabled="enrolling"
             :error-messages="vErrors.collect('program')"
-            @focus="focusTrap.pause()"
-            @blur="focusTrap.unpause()"
             name="program"
             label="Program"
             placeholder="Start typing to Search"
