@@ -100,9 +100,11 @@ export default {
     }, 400),
     removeUser(user) {
       const name = user.firstName + ' ' + user.lastName;
-      this.confirmation.message = `Are you sure you want to remove user "${name}"?`;
-      this.confirmation.action = () => api.remove(user);
-      this.confirmation.dialog = true;
+      Object.assign(this.confirmation, {
+        message: `Are you sure you want to remove user "${name}"?`,
+        action: () => api.remove(user),
+        dialog: true
+      });
     }
   },
   watch: {

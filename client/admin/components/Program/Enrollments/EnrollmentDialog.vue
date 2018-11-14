@@ -79,7 +79,8 @@ export default {
       return userApi.fetch({ params })
         .then(({ items: students }) => {
           this.students = map(students, it => ({
-            text: `${it.email} - ${it.firstName} ${it.lastName}`, value: it.id
+            text: `${it.email} - ${it.firstName} ${it.lastName}`,
+            value: it.id
           }));
         })
         .finally(() => (this.isLoading = false));

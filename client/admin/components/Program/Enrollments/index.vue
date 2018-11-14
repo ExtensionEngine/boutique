@@ -82,9 +82,11 @@ export default {
     unenroll(enrollment) {
       const { student: { firstName, lastName } } = enrollment;
       const name = firstName + ' ' + lastName;
-      this.confirmation.message = `Are you sure you want to unenroll "${name}"?`;
-      this.confirmation.action = () => api.remove(enrollment);
-      this.confirmation.dialog = true;
+      Object.assign(this.confirmation, {
+        message: `Are you sure you want to unenroll "${name}"?`,
+        action: () => api.remove(enrollment),
+        dialog: true
+      });
     }
   },
   watch: {
