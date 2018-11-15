@@ -57,11 +57,11 @@
         @updated="fetch(defaultPage)"
         @created="fetch(defaultPage)"/>
       <confirmation-dialog
-        :visible.sync="confirmationDialog"
-        :action="confirmationAction"
+        :visible.sync="confirmation.dialog"
+        :action="confirmation.action"
+        :message="confirmation.message"
         @confirmed="fetch()"
-        heading="Remove user"
-        message="Are you sure you want to remove user?"/>
+        heading="Remove user"/>
     </v-flex>
   </v-layout>
 </template>
@@ -80,7 +80,6 @@ export default {
   name: 'user-list',
   data() {
     return {
-      isLoading: false,
       users: [],
       selectedUsers: [],
       filter: null,
@@ -88,8 +87,7 @@ export default {
       totalItems: 0,
       userDialog: false,
       editedUser: null,
-      confirmationDialog: null,
-      confirmationAction: null
+      confirmation: { dialog: null }
     };
   },
   computed: {
@@ -109,17 +107,19 @@ export default {
       this.userDialog = true;
     },
     fetch: throttle(async function (opts) {
-      this.isLoading = true;
       Object.assign(this.dataTable, opts);
       const params = { ...this.dataTable, filter: this.filter };
       const { items, total } = await api.fetch(params);
       this.users = items;
       this.totalItems = total;
-      this.isLoading = false;
     }, 400),
     removeUser(user) {
-      this.confirmationAction = () => api.remove(user);
-      this.confirmationDialog = true;
+      const name = user.firstName + ' ' + user.lastName;
+      Object.assign(this.confirmation, {
+        message: `Are you sure you want to remove user "${name}"?`,
+        action: () => api.remove(user),
+        dialog: true
+      });
     }
   },
   watch: {

@@ -36,9 +36,9 @@
     <confirmation-dialog
       :visible.sync="confirmation.dialog"
       :action="confirmation.action"
+      :message="confirmation.message"
       @confirmed="fetch()"
-      heading="Unenroll"
-      message="Are you sure you want to unenroll learner?"/>
+      heading="Unenroll"/>
   </div>
 </template>
 
@@ -51,6 +51,7 @@ import pick from 'lodash/pick';
 import throttle from 'lodash/throttle';
 
 const defaultPage = () => ({ sortBy: 'updatedAt', descending: true, page: 1 });
+const fullName = student => `${student.firstName} ${student.lastName}`;
 
 export default {
   name: 'enrollments',
@@ -89,9 +90,11 @@ export default {
       this.totalItems = total;
     }, 400),
     unenroll(enrollment) {
+      const { student } = enrollment;
       Object.assign(this.confirmation, {
-        dialog: true,
-        action: () => api.remove(enrollment)
+        message: `Are you sure you want to unenroll "${fullName(student)}"?`,
+        action: () => api.remove(enrollment),
+        dialog: true
       });
     }
   },

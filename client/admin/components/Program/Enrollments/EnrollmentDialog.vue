@@ -76,12 +76,14 @@ export default {
       if (this.studentId) return;
       this.isLoading = true;
       const params = { emailLike: email, role: 'STUDENT', limit: 30 };
-      return userApi.fetch({ params }).then(({ items: students }) => {
-        this.isLoading = false;
-        this.students = map(students, it => ({
-          text: `${it.email} - ${it.firstName} ${it.lastName}`, value: it.id
-        }));
-      });
+      return userApi.fetch({ params })
+        .then(({ items: students }) => {
+          this.students = map(students, it => ({
+            text: `${it.email} - ${it.firstName} ${it.lastName}`,
+            value: it.id
+          }));
+        })
+        .finally(() => (this.isLoading = false));
     }
   },
   watch: {

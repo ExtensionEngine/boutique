@@ -42,8 +42,8 @@
     <confirmation-dialog
       :visible.sync="confirmationDialog"
       :action="removeProgram"
-      heading="Delete program"
-      message="Are you sure you want to delete program?"/>
+      :message="confirmationMessage"
+      heading="Delete program"/>
   </div>
 </template>
 
@@ -71,7 +71,10 @@ export default {
     };
   },
   computed: {
-    dateFormat: () => DST_FORMAT
+    dateFormat: () => DST_FORMAT,
+    confirmationMessage() {
+      return `Are you sure you want to delete "${this.program.name}"?`;
+    }
   },
   methods: {
     ...mapActions('programs', ['save', 'remove']),
