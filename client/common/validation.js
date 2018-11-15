@@ -1,5 +1,5 @@
 import api from '@/admin/api/program';
-import isMatch from 'lodash/isMatch';
+import find from 'lodash/find';
 import VeeValidate from 'vee-validate';
 
 const alphanumerical = {
@@ -52,14 +52,14 @@ export function uniqueProp(prop, { message, search, ...options } = {}) {
     validate: async (value, [{ where, initialValue } = {}]) => {
       where = { ...where, [prop]: value };
       if (initialValue && value === initialValue) return true;
-      const items = await search({ params: { ...where, deleted } });
-      const data = first(items);
-      return { valid: !isMatch(data, where), data };
+      const items = getItems(await search({ params: { ...where, deleted } }));
+      const data = find(items, where);
+      return { valid: !data, data };
     }
   };
 
-  function first(result) {
-    if (Array.isArray(result)) return result[0];
-    if (Array.isArray(result.items)) return result.items[0];
+  function getItems(result) {
+    if (Array.isArray(result)) return result;
+    if (Array.isArray(result.items)) return result.items;
   }
 }
