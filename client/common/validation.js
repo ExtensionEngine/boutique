@@ -1,16 +1,29 @@
 import { upperCaseFirst as capitalize } from 'change-case';
+import enrollmentApi from '@/admin/api/enrollment';
 import programApi from '@/admin/api/program';
+import userApi from '@/admin/api/user';
 import VeeValidate from 'vee-validate';
 
-VeeValidate.Validator.extend('alphanumerical', {
+export const registerRule = (name, rule) => VeeValidate.Validator.extend(name, rule);
+
+registerRule('alphanumerical', {
   getMessage: field => `${capitalize(field)} field must contain at least 1 letter and 1 numeric value.`,
   validate: value => /\d/.test(value) && /[a-zA-Z]/.test(value)
 });
-VeeValidate.Validator.extend('unique:program-name', uniqueProp('name', {
+registerRule('unique:program.name', uniqueProp('name', {
   getMessage: (field, args, { name }) => `Program named "${name}" already exists.`,
   isDirty: (value, initialValue) => value.toLowerCase() !== initialValue.toLowerCase(),
-  deleted: true,
-  search: programApi.fetch.bind(programApi)
+  search: programApi.fetch.bind(programApi),
+  deleted: true
+}));
+registerRule('unique:user.email', uniqueProp('email', {
+  message: 'Email is not unique!',
+  search: userApi.fetch.bind(userApi),
+  deleted: true
+}));
+registerRule('unique:enrollment', uniqueProp('studentId', {
+  message: 'Learner is already enrolled!',
+  search: enrollmentApi.fetch.bind(enrollmentApi)
 }));
 
 export default VeeValidate;

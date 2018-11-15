@@ -34,24 +34,18 @@
 </template>
 
 <script>
-import { uniqueProp, withValidation } from '@/common/validation';
 import enrollmentApi from '@/admin/api/enrollment';
 import map from 'lodash/map';
 import pick from 'lodash/pick';
 import userApi from '@/admin/api/user';
 import { withFocusTrap } from '@/common/focustrap';
+import { withValidation } from '@/common/validation';
 
 const el = vm => vm.$children[0].$refs.dialog;
-const rules = {
-  'unique:enrollment': uniqueProp('studentId', {
-    message: 'Learner is already enrolled!',
-    search: enrollmentApi.fetch.bind(enrollmentApi)
-  })
-};
 
 export default {
   name: 'enrollment-dialog',
-  mixins: [withValidation({ rules }), withFocusTrap({ el })],
+  mixins: [withValidation(), withFocusTrap({ el })],
   props: {
     programId: { type: Number, required: true }
   },

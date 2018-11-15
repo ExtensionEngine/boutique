@@ -20,7 +20,7 @@
             v-validate="{
               required: true,
               email: true,
-              'unique:email': { initialValue: userData && userData.email }
+              'unique:user.email': { initialValue: userData && userData.email }
             }"
             v-model="user.email"
             :error-messages="vErrors.collect('email')"
@@ -63,7 +63,6 @@
 </template>
 
 <script>
-import { uniqueProp, withValidation } from '@/common/validation';
 import api from '@/admin/api/user';
 import cloneDeep from 'lodash/cloneDeep';
 import humanize from 'humanize-string';
@@ -71,6 +70,7 @@ import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
 import { role } from '@/../common/config';
 import { withFocusTrap } from '@/common/focustrap';
+import { withValidation } from '@/common/validation';
 
 const el = vm => vm.$children[0].$refs.dialog;
 const resetUser = () => {
@@ -81,17 +81,10 @@ const resetUser = () => {
     role: null
   };
 };
-const rules = {
-  'unique:email': uniqueProp('email', {
-    message: 'Email is not unique!',
-    search: api.fetch.bind(api),
-    deleted: true
-  })
-};
 
 export default {
   name: 'user-dialog',
-  mixins: [withValidation({ rules }), withFocusTrap({ el })],
+  mixins: [withValidation(), withFocusTrap({ el })],
   props: {
     visible: { type: Boolean, default: false },
     userData: { type: Object, default: () => ({}) }

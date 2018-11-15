@@ -10,7 +10,7 @@
               required: true,
               min: 2,
               max: 255,
-              'unique:program-name': null
+              'unique:program.name': null
             }"
             v-model.trim="program.name"
             :error-messages="vErrors.collect('name')"
