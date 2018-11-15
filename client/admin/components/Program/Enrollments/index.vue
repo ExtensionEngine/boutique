@@ -89,8 +89,10 @@ export default {
       this.totalItems = total;
     }, 400),
     unenroll(enrollment) {
-      this.confirmation.dialog = true;
-      this.confirmation.action = () => api.remove(enrollment);
+      Object.assign(this.confirmation, {
+        dialog: true,
+        action: () => api.remove(enrollment)
+      });
     }
   },
   watch: {
