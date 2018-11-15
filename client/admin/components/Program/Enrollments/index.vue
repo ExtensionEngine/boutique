@@ -4,19 +4,24 @@
       <v-spacer/>
       <enrollment-dialog :programId="programId" @enrolled="fetch(defaultPage)"/>
     </v-toolbar>
-    <v-alert
-      :value="!isLoading && !totalItems"
-      color="#aaa"
-      class="mr-4">
-      Click on the button above to enroll learner.
-    </v-alert>
-    <div v-show="totalItems" class="elevation-1 ml-2 mr-4">
+    <div class="elevation-1 ml-2 mr-4">
+      <v-layout class="px-4 py-3 table-toolbar">
+        <v-flex lg3 offset-lg9>
+          <v-text-field
+            v-model.trim="filter"
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            clearable/>
+        </v-flex>
+      </v-layout>
       <v-data-table
         :headers="headers"
         :items="enrollments"
         :pagination.sync="dataTable"
         :total-items="totalItems"
-        :must-sort="true">
+        :must-sort="true"
+        :no-data-text="noEnrollmentsMessage">
         <template slot="items" slot-scope="{ item }">
           <td>{{ get(item.student, 'email') }}</td>
           <td>{{ get(item.student, 'firstName') }}</td>
@@ -42,9 +47,11 @@ import api from '@/admin/api/enrollment';
 import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
 import EnrollmentDialog from './EnrollmentDialog';
 import get from 'lodash/get';
+import pick from 'lodash/pick';
 import throttle from 'lodash/throttle';
 
 const defaultPage = () => ({ sortBy: 'updatedAt', descending: true, page: 1 });
+const fullName = student => `${student.firstName} ${student.lastName}`;
 
 export default {
   name: 'enrollments',
@@ -52,10 +59,10 @@ export default {
   data() {
     return {
       enrollments: [],
+      filter: null,
       dataTable: { rowsPerPage: 10, ...defaultPage() },
       totalItems: 0,
-      confirmation: { dialog: null },
-      isLoading: true
+      confirmation: { dialog: null }
     };
   },
   computed: {
@@ -66,24 +73,26 @@ export default {
       { text: 'Created At', value: 'createdAt' },
       { text: 'Actions', value: 'id', sortable: false, align: 'center' }
     ]),
-    defaultPage
+    defaultPage,
+    noEnrollmentsMessage() {
+      return this.filter
+        ? `Your search for "${this.filter}" found no results.`
+        : 'Click on the button above to enroll learner.';
+    }
   },
   methods: {
     get,
     fetch: throttle(async function (opts) {
-      this.isLoading = true;
       Object.assign(this.dataTable, opts);
-      const params = { programId: this.programId };
+      const params = pick(this, ['programId', 'filter']);
       const { items, total } = await api.fetch({ ...this.dataTable, params });
       this.enrollments = items;
       this.totalItems = total;
-      this.isLoading = false;
     }, 400),
     unenroll(enrollment) {
-      const { student: { firstName, lastName } } = enrollment;
-      const name = firstName + ' ' + lastName;
+      const { student } = enrollment;
       Object.assign(this.confirmation, {
-        message: `Are you sure you want to unenroll "${name}"?`,
+        message: `Are you sure you want to unenroll "${fullName(student)}"?`,
         action: () => api.remove(enrollment),
         dialog: true
       });
@@ -92,8 +101,17 @@ export default {
   watch: {
     dataTable() {
       this.fetch();
+    },
+    filter() {
+      this.fetch();
     }
   },
   components: { ConfirmationDialog, EnrollmentDialog }
 };
 </script>
+
+<style lang="scss" scoped>
+.table-toolbar {
+  background: #fff;
+}
+</style>

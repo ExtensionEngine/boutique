@@ -10,11 +10,12 @@ const Op = Sequelize.Op;
 
 const processOutput = model => ({ ...model.toJSON(), student: model.student.profile });
 
-function list({ query: { programId, studentId }, options }, res) {
+function list({ query: { programId, studentId, filter }, options }, res) {
   const cond = [];
+  const include = [{ model: User.match(filter), as: 'student' }];
   if (programId) cond.push({ programId });
   if (studentId) cond.push({ studentId });
-  const opts = { where: { [Op.and]: cond }, include: ['student'], ...options };
+  const opts = { where: { [Op.and]: cond }, include, ...options };
   return Enrollment.findAndCountAll(opts).then(({ rows, count }) => {
     res.jsend.success({ items: map(rows, processOutput), total: count });
   });

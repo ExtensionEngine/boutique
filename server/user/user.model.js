@@ -1,8 +1,9 @@
 'use strict';
 
 const { auth: config = {} } = require('../config');
-const { Model, UniqueConstraintError } = require('sequelize');
+const { Model, Sequelize, Op, UniqueConstraintError } = require('sequelize');
 const { role } = require('../../common/config');
+const { sql } = require('../common/database/helpers');
 const bcrypt = require('bcrypt');
 const castArray = require('lodash/castArray');
 const find = require('lodash/find');
@@ -67,6 +68,15 @@ class User extends Model {
     };
   }
 
+  static get text() {
+    return sql.concat(
+      Sequelize.col('email'),
+      Sequelize.col('first_name'),
+      Sequelize.col('last_name'),
+      { separator: ' ' }
+    );
+  }
+
   static associate({ Enrollment }) {
     this.hasMany(Enrollment, {
       foreignKey: { name: 'studentId', field: 'student_id' }
@@ -96,6 +106,21 @@ class User extends Model {
         return Promise.map(users, user => user.encryptPassword());
       }
     };
+  }
+
+  static scopes() {
+    return {
+      searchByPattern(pattern) {
+        const cond = { [Op.iLike]: `%${pattern}%` };
+        const where = sql.where(this.text, cond, { scope: true });
+        return { where };
+      }
+    };
+  }
+
+  static match(pattern) {
+    if (!pattern) return User;
+    return User.scope({ method: ['searchByPattern', pattern] });
   }
 
   static async invite(user, options) {
