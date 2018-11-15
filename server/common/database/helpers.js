@@ -1,6 +1,8 @@
 'use strict';
 
 const { Sequelize, Op } = require('sequelize');
+const isMatchWith = require('lodash/isMatchWith');
+const last = require('lodash/last');
 
 // eslint-disable-next-line no-extra-parens
 const AsyncFunction = (async function () {}).constructor;
@@ -12,7 +14,8 @@ const notEmpty = input => input.length > 0;
 module.exports = {
   getValidator,
   setLogging,
-  where,
+  seqConcat,
+  seqWhere,
   wrapAsyncMethods
 };
 
@@ -49,7 +52,25 @@ function transformProperties(obj, cb) {
   });
 }
 
-function where(args, { scope = false } = {}) {
-  if (!scope) return Sequelize.where(...args);
+function seqConcat() {
+  const [options, args] = parse({ separator: '' }, ...arguments);
+  if (!options.separator) return Sequelize.fn('concat', ...args);
+  return Sequelize.fn('concat_ws', options.separator, ...args);
+}
+
+function seqWhere() {
+  const [options, args] = parse({ scope: false }, ...arguments);
+  if (!options.scope) return Sequelize.where(...args);
   return { [Op.and]: [Sequelize.where(...args)] };
+}
+
+function matches(obj, defaults) {
+  const isSameType = (arg1, arg2) => typeof arg1 === typeof arg2;
+  return isMatchWith(obj, defaults, isSameType);
+}
+
+function parse(defaultOptions, ...args) {
+  let options = last(args);
+  options = matches(options, defaultOptions) ? args.pop() : defaultOptions;
+  return [options, args];
 }
