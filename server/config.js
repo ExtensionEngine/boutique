@@ -29,8 +29,8 @@ module.exports = {
     password: process.env.EMAIL_PASSWORD,
     host: process.env.EMAIL_HOST,
     port: process.env.EMAIL_PORT || null,
-    ssl: process.env.EMAIL_SSL,
-    tls: process.env.EMAIL_TLS
+    ssl: Boolean(process.env.EMAIL_SSL),
+    tls: Boolean(process.env.EMAIL_TLS)
   },
   storage: {
     amazon: {
