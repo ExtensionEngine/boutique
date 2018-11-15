@@ -6,7 +6,7 @@ const makeDir = require('make-dir');
 const path = require('path');
 const { promisify } = require('util');
 const { storage } = require('../../../config');
-const ncp = promisify(require('ncp').ncp);
+const copyRecursive = promisify(require('ncp').ncp);
 
 const schema = Joi.object().keys({
   path: Joi.string().required()
@@ -22,7 +22,7 @@ class FsStore extends FsBlobStore {
   copyDir(src, dest) {
     const srcPath = path.join(storage.filesystem.path, src);
     const destPath = path.join(storage.filesystem.path, dest);
-    return makeDir(destPath).then(() => ncp(srcPath, destPath));
+    return makeDir(destPath).then(() => copyRecursive(srcPath, destPath));
   }
 
   getFileUrl(key) {
