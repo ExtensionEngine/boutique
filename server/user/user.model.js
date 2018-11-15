@@ -3,6 +3,7 @@
 const { auth: config = {} } = require('../config');
 const { Model, Sequelize, Op, UniqueConstraintError } = require('sequelize');
 const { role } = require('../../common/config');
+const { sql } = require('../common/database/helpers');
 const bcrypt = require('bcrypt');
 const castArray = require('lodash/castArray');
 const find = require('lodash/find');
@@ -14,7 +15,6 @@ const pick = require('lodash/pick');
 const Promise = require('bluebird');
 const Role = require('../../common/config/role');
 const values = require('lodash/values');
-const { sql } = require('../common/database/helpers');
 
 class User extends Model {
   static fields(DataTypes) {
@@ -67,6 +67,7 @@ class User extends Model {
       }
     };
   }
+
   static get text() {
     return sql.concat(
       Sequelize.col('email'),

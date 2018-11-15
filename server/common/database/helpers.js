@@ -1,14 +1,14 @@
 'use strict';
 
 const { Sequelize, Op } = require('sequelize');
+const has = require('lodash/has');
+const inRange = require('lodash/inRange');
 const last = require('lodash/last');
 
 // eslint-disable-next-line no-extra-parens
 const AsyncFunction = (async function () {}).constructor;
 
 const isAsyncFunction = arg => arg instanceof AsyncFunction;
-const inRange = require('lodash/inRange');
-const isString = arg => typeof arg === 'string';
 const notEmpty = input => input.length > 0;
 
 const sql = {
@@ -48,23 +48,23 @@ function setLogging(Model, state) {
   return options.logging;
 }
 
+function concat(...args) {
+  const options = has(last(args), 'separator') ? args.pop() : {};
+  if (!options.separator) return Sequelize.fn('concat', ...args);
+  return Sequelize.fn('concat_ws', options.separator, ...args);
+}
+
+// NOTE: Fixes https://github.com/sequelize/sequelize/issues/6440
+function where(attribute, logic, options = {}) {
+  const { comparator = '=', scope = false } = options;
+  const where = Sequelize.where(attribute, comparator, logic);
+  return !scope ? where : { [Op.and]: [where] };
+}
+
 function transformProperties(obj, cb) {
   const descriptors = Object.getOwnPropertyDescriptors(obj);
   Object.keys(descriptors).forEach(name => {
     const val = cb(descriptors[name], name);
     if (val) obj[name] = val;
   });
-}
-
-function concat(...args) {
-  const options = !isString(last(args)) ? args.pop() : {};
-  if (!options.separator) return Sequelize.fn('concat', ...args);
-  return Sequelize.fn('concat_ws', options.separator, ...args);
-}
-
-function where(attribute, logic, options = {}) {
-  const { scope = false, comparator = '=' } = options;
-  const where = Sequelize.where(attribute, comparator, logic);
-  if (!scope) return where;
-  return { [Op.and]: [where] };
 }
