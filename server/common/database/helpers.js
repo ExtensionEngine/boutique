@@ -1,7 +1,6 @@
 'use strict';
 
 const { Sequelize, Op } = require('sequelize');
-const isMatchWith = require('lodash/isMatchWith');
 const last = require('lodash/last');
 
 // eslint-disable-next-line no-extra-parens
@@ -9,13 +8,18 @@ const AsyncFunction = (async function () {}).constructor;
 
 const isAsyncFunction = arg => arg instanceof AsyncFunction;
 const inRange = require('lodash/inRange');
+const isString = arg => typeof arg === 'string';
 const notEmpty = input => input.length > 0;
 
+const sql = {
+  concat,
+  where
+};
+
 module.exports = {
+  sql,
   getValidator,
   setLogging,
-  seqConcat,
-  seqWhere,
   wrapAsyncMethods
 };
 
@@ -52,25 +56,15 @@ function transformProperties(obj, cb) {
   });
 }
 
-function seqConcat() {
-  const [options, args] = parse({ separator: '' }, ...arguments);
+function concat(...args) {
+  const options = !isString(last(args)) ? args.pop() : {};
   if (!options.separator) return Sequelize.fn('concat', ...args);
   return Sequelize.fn('concat_ws', options.separator, ...args);
 }
 
-function seqWhere() {
-  const [options, args] = parse({ scope: false }, ...arguments);
-  if (!options.scope) return Sequelize.where(...args);
-  return { [Op.and]: [Sequelize.where(...args)] };
-}
-
-function matches(obj, defaults) {
-  const isSameType = (arg1, arg2) => typeof arg1 === typeof arg2;
-  return isMatchWith(obj, defaults, isSameType);
-}
-
-function parse(defaultOptions, ...args) {
-  let options = last(args);
-  options = matches(options, defaultOptions) ? args.pop() : defaultOptions;
-  return [options, args];
+function where(attribute, logic, options = {}) {
+  const { scope = false, comparator = '=' } = options;
+  const where = Sequelize.where(attribute, comparator, logic);
+  if (!scope) return where;
+  return { [Op.and]: [where] };
 }

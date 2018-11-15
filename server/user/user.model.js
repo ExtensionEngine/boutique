@@ -14,7 +14,7 @@ const pick = require('lodash/pick');
 const Promise = require('bluebird');
 const Role = require('../../common/config/role');
 const values = require('lodash/values');
-const { seqConcat, seqWhere } = require('../common/database/helpers');
+const { sql } = require('../common/database/helpers');
 
 class User extends Model {
   static fields(DataTypes) {
@@ -67,6 +67,14 @@ class User extends Model {
       }
     };
   }
+  static get text() {
+    return sql.concat(
+      Sequelize.col('email'),
+      Sequelize.col('first_name'),
+      Sequelize.col('last_name'),
+      { separator: ' ' }
+    );
+  }
 
   static associate({ Enrollment }) {
     this.hasMany(Enrollment, {
@@ -103,7 +111,7 @@ class User extends Model {
     return {
       searchByPattern(pattern) {
         const cond = { [Op.iLike]: `%${pattern}%` };
-        const where = seqWhere(this.text, cond, { scope: true });
+        const where = sql.where(this.text, cond, { scope: true });
         return { where };
       }
     };
@@ -174,15 +182,6 @@ class User extends Model {
 
   isAdmin() {
     return this.role === Role.ADMIN;
-  }
-
-  static get text() {
-    return seqConcat(
-      Sequelize.col('email'),
-      Sequelize.col('first_name'),
-      Sequelize.col('last_name'),
-      { separator: ' ' }
-    );
   }
 }
 
