@@ -10,7 +10,12 @@
       <v-flex xs12 sm6 md4>
         <form @submit.prevent="saveProgram">
           <v-text-field
-            v-validate="{ required: true, min: 2, max: 255, 'unique-program-name': program }"
+            v-validate="{
+              required: true,
+              min: 2,
+              max: 255,
+              'unique:program-name': { initialValue: program && program.name }
+            }"
             v-model.trim="programData.name"
             :error-messages="vErrors.collect('name')"
             :disabled="!isEditing"

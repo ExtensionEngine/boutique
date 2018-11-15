@@ -1,30 +1,17 @@
-import api from '@/admin/api/program';
-import find from 'lodash/find';
+import { upperCaseFirst as capitalize } from 'change-case';
+import programApi from '@/admin/api/program';
 import VeeValidate from 'vee-validate';
 
-const alphanumerical = {
-  getMessage: field => {
-    return `The ${field} field must contain at least 1 letter and 1 numeric value.`;
-  },
-  validate: value => {
-    return (/\d/.test(value) && /[a-zA-Z]/.test(value));
-  }
-};
-
-const uniqueProgramName = {
-  getMessage: (field, args, data) => `Program named "${data}" already exists.`,
-  validate: async (name, [program]) => {
-    if (program && program.name.toLowerCase() === name.toLowerCase()) return true;
-    const [fetchedProgram] = await api.fetch({ params: { name, deleted: true } });
-    return {
-      valid: !fetchedProgram,
-      data: fetchedProgram && fetchedProgram.name
-    };
-  }
-};
-
-VeeValidate.Validator.extend('alphanumerical', alphanumerical);
-VeeValidate.Validator.extend('unique-program-name', uniqueProgramName);
+VeeValidate.Validator.extend('alphanumerical', {
+  getMessage: field => `${capitalize(field)} field must contain at least 1 letter and 1 numeric value.`,
+  validate: value => /\d/.test(value) && /[a-zA-Z]/.test(value)
+});
+VeeValidate.Validator.extend('unique:program-name', uniqueProp('name', {
+  getMessage: (field, args, { name }) => `Program named "${name}" already exists.`,
+  isDirty: (value, initialValue) => value.toLowerCase() !== initialValue.toLowerCase(),
+  deleted: true,
+  search: programApi.fetch.bind(programApi)
+}));
 
 export default VeeValidate;
 
@@ -46,14 +33,18 @@ const mixin = ({ rules = {}, ...config } = {}) => ({
 export const withValidation = mixin;
 
 export function uniqueProp(prop, { message, search, ...options } = {}) {
-  const { getMessage = () => message, deleted = false } = options;
+  const {
+    getMessage = () => message,
+    isChanged = (value, oldValue) => value !== oldValue,
+    deleted = false
+  } = options;
   return {
     getMessage,
-    validate: async (value, [{ where, initialValue } = {}]) => {
+    validate: async (value, [options]) => {
+      let { where, initialValue } = options || {};
       where = { ...where, [prop]: value };
-      if (initialValue && value === initialValue) return true;
-      const items = getItems(await search({ params: { ...where, deleted } }));
-      const data = find(items, where);
+      if (!isChanged(value, initialValue)) return true;
+      const [data] = getItems(await search({ params: { ...where, deleted } }));
       return { valid: !data, data };
     }
   };
