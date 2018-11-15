@@ -80,7 +80,6 @@ export default {
   name: 'user-list',
   data() {
     return {
-      isLoading: false,
       users: [],
       selectedUsers: [],
       filter: null,
