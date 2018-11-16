@@ -3,7 +3,7 @@ import Auth from '@/student/components/auth';
 import Courseware from '@/student/components/program/Courseware';
 import ForgotPassword from '@/student/components/auth/ForgotPassword';
 import get from 'lodash/get';
-import Home from '@/student/components/index';
+import Home from '@/student/components';
 import Login from '@/student/components/auth/Login';
 import NotFound from '@/admin/components/common/NotFound';
 import Program from '@/student/components/program';
