@@ -1,8 +1,6 @@
+import * as api from '@/admin/api';
 import { upperCaseFirst as capitalize } from 'change-case';
-import enrollmentApi from '@/admin/api/enrollment';
-import programApi from '@/admin/api/program';
 import uniqueProp from './uniqueProp';
-import userApi from '@/admin/api/user';
 
 const rules = {};
 
@@ -14,19 +12,19 @@ rules.alphanumerical = {
 rules['unique:program.name'] = uniqueProp('name', {
   getMessage: (field, args, { name }) => `Program named "${name}" already exists.`,
   isDirty: (value, initialValue) => value.toLowerCase() !== initialValue.toLowerCase(),
-  search: programApi.fetch.bind(programApi),
+  search: api.program.fetch,
   deleted: true
 });
 
 rules['unique:user.email'] = uniqueProp('email', {
   message: 'Email is not unique!',
-  search: userApi.fetch.bind(userApi),
+  search: api.user.fetch,
   deleted: true
 });
 
 rules['unique:enrollment'] = uniqueProp('studentId', {
   message: 'Learner is already enrolled!',
-  search: enrollmentApi.fetch.bind(enrollmentApi)
+  search: api.enrollment.fetch
 });
 
 export default rules;
