@@ -21,7 +21,7 @@
         <v-card-actions>
           <v-spacer/>
           <v-btn @click="close">Cancel</v-btn>
-          <v-btn color="success" outline type="submit">Import</v-btn>
+          <v-btn :disabled="isLoading || !sourceId" color="success" outline type="submit">Import</v-btn>
         </v-card-actions>
       </v-card>
     </v-form>

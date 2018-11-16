@@ -4,16 +4,21 @@
       <v-spacer/>
       <content-dialog :programId="programId" :importedRepos="importedRepos"/>
     </v-toolbar>
-    <v-alert
-      :value="!isLoading && !importedRepos.length"
-      color="#aaa"
-      class="mr-4">
-      Click on the button above to import content.
-    </v-alert>
-    <div v-if="importedRepos.length" class="elevation-1 ml-2 mr-4">
+    <div class="elevation-1 ml-2 mr-4">
+      <v-layout class="px-4 py-3 table-toolbar">
+        <v-flex lg3 offset-lg9>
+          <v-text-field
+            v-model.trim="filter"
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            clearable/>
+        </v-flex>
+      </v-layout>
       <v-data-table
         :headers="headers"
-        :items="importedRepos"
+        :items="filteredRepos"
+        :no-data-text="noContentMessage"
         item-key="_cid"
         hide-actions>
         <template slot="items" slot-scope="{ item }">
@@ -45,7 +50,7 @@ export default {
   name: 'imported-content',
   props: { programId: { type: Number, required: true } },
   data() {
-    return { isLoading: true };
+    return { filter: null };
   },
   computed: {
     ...mapState('contentRepo', { repoStore: 'items' }),
@@ -58,13 +63,24 @@ export default {
     importedRepos() {
       const { programId } = this;
       return filter(this.repoStore, { programId });
+    },
+    filteredRepos() {
+      const pattern = this.filter && this.filter.toLowerCase();
+      if (!pattern) return this.importedRepos;
+      return filter(this.importedRepos, it => {
+        return it.name && it.name.toLowerCase().includes(pattern);
+      });
+    },
+    noContentMessage() {
+      return this.filter
+        ? `Your search for "${this.filter}" found no results.`
+        : 'Click on the button above to import content.';
     }
   },
   methods: mapActions('contentRepo', ['fetch', 'save']),
   mounted() {
     const { programId } = this;
-    return this.fetch({ programId, srcVersion: true })
-      .then(() => (this.isLoading = false));
+    return this.fetch({ programId, srcVersion: true });
   },
   components: { ContentDialog }
 };
@@ -73,5 +89,9 @@ export default {
 <style lang="scss" scoped>
 .actions {
   width: 250px;
+}
+
+.table-toolbar {
+  background: #fff;
 }
 </style>
