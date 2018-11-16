@@ -67,6 +67,7 @@
 </template>
 
 <script>
+import { keys, withKeys } from '@/common/keys';
 import api from '@/admin/api/user';
 import BulkEnrollmentDialog from './BulkEnrollmentDialog';
 import ConfirmationDialog from '../common/ConfirmationDialog';
@@ -78,6 +79,7 @@ const defaultPage = () => ({ sortBy: 'updatedAt', descending: true, page: 1 });
 
 export default {
   name: 'user-list',
+  mixins: [withKeys({ multiSelect: keys.shift })],
   data() {
     return {
       users: [],
