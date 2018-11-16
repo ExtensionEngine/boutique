@@ -38,12 +38,12 @@
               <td>{{ props.item.role }}</td>
               <td>{{ props.item.firstName }}</td>
               <td>{{ props.item.lastName }}</td>
-              <td>{{ props.item.createdAt | formatDate }}</td>
-              <td class="text-xs-center">
+              <td class="no-wrap">{{ props.item.createdAt | formatDate }}</td>
+              <td class="no-wrap text-xs-center">
                 <v-icon @click="showUserDialog(props.item)" small>
                   mdi-pencil
                 </v-icon>
-                <v-icon @click="removeUser(props.item)" small class="ml-3">
+                <v-icon @click="removeUser(props.item)" small class="ml-2">
                   mdi-delete
                 </v-icon>
               </td>

@@ -18,9 +18,9 @@
         hide-actions>
         <template slot="items" slot-scope="{ item }">
           <td>{{ item.name }}</td>
-          <td>{{ item.repoVersion | formatDate }}</td>
-          <td>{{ item.publishedAt | formatDate }}</td>
-          <td class="text-md-center actions">
+          <td class="no-wrap">{{ item.repoVersion | formatDate }}</td>
+          <td class="no-wrap">{{ item.publishedAt | formatDate }}</td>
+          <td class="no-wrap text-xs-center actions">
             <v-btn
               v-if="item.repoVersion > item.publishedAt"
               @click="save(item)"

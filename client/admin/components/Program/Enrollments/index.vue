@@ -26,8 +26,8 @@
           <td>{{ get(item.student, 'email') }}</td>
           <td>{{ get(item.student, 'firstName') }}</td>
           <td>{{ get(item.student, 'lastName') }}</td>
-          <td>{{ item.createdAt | formatDate }}</td>
-          <td class="text-md-center">
+          <td class="no-wrap">{{ item.createdAt | formatDate }}</td>
+          <td class="text-xs-center">
             <v-icon @click="unenroll(item)" small>mdi-delete</v-icon>
           </td>
         </template>
