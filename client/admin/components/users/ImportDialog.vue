@@ -135,7 +135,6 @@ export default {
   },
   watch: {
     showDialog(val) {
-      if (!val) return;
       this.$nextTick(() => this.focusTrap.toggle(val));
     }
   }
