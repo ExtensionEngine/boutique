@@ -3,6 +3,8 @@ export { codes as keys } from 'keycode';
 const castArray = arg => Array.isArray(arg) ? arg : [arg];
 const isNumber = arg => typeof arg === 'number';
 const getCode = e => isNumber(e.which) ? e.which : e.keyCode;
+const onKeydown = e => keys.toggle(getCode(e), true);
+const onKeyup = e => keys.toggle(getCode(e), false);
 
 const keys = new (class {
   constructor() {
@@ -49,13 +51,3 @@ const mixin = (config = {}) => {
 };
 
 export const withKeys = mixin;
-
-function onKeydown(e) {
-  const keyCode = getCode(e);
-  keys.toggle(keyCode, true);
-}
-
-function onKeyup(e) {
-  const keyCode = getCode(e);
-  keys.toggle(keyCode, false);
-}
