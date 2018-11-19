@@ -61,8 +61,9 @@ export default {
       { text: 'Sync', value: 'id', sortable: false, align: 'center' }
     ]),
     importedRepos() {
-      const { programId } = this;
-      return filter(this.repoStore, { programId });
+      return filter(this.repoStore, it => {
+        return it.id && it.programId === this.programId;
+      });
     },
     filteredRepos() {
       const pattern = this.filter && this.filter.toLowerCase();

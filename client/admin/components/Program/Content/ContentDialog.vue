@@ -20,8 +20,15 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer/>
-          <v-btn @click="close">Cancel</v-btn>
-          <v-btn :disabled="isLoading || !sourceId" color="success" outline type="submit">Import</v-btn>
+          <v-btn :disabled="isImporting" @click="close">Cancel</v-btn>
+          <v-btn
+            :disabled="!sourceId"
+            :loading="isImporting"
+            color="success"
+            outline
+            type="submit">
+            Import
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
@@ -50,6 +57,7 @@ export default {
       visible: false,
       sourceId: null,
       catalog: [],
+      isImporting: false,
       isLoading: false
     };
   },
@@ -61,8 +69,12 @@ export default {
   methods: {
     ...mapActions('contentRepo', ['save']),
     importRepo() {
-      this.save(pick(this, ['sourceId', 'programId']));
-      this.close();
+      this.isImporting = true;
+      this.save(pick(this, ['sourceId', 'programId']))
+        .finally(() => {
+          this.isImporting = false;
+          this.close();
+        });
     },
     close() {
       this.visible = false;
