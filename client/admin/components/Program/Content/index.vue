@@ -45,6 +45,7 @@
 import { mapActions, mapState } from 'vuex';
 import ContentDialog from './ContentDialog';
 import filter from 'lodash/filter';
+import fuzzy from 'fuzzy';
 
 export default {
   name: 'imported-content',
@@ -66,10 +67,9 @@ export default {
       });
     },
     filteredRepos() {
-      const pattern = this.filter && this.filter.toLowerCase();
-      if (!pattern) return this.importedRepos;
+      if (!this.filter) return this.importedRepos;
       return filter(this.importedRepos, it => {
-        return it.name && it.name.toLowerCase().includes(pattern);
+        return it.name && fuzzy.test(this.filter, it.name);
       });
     },
     noContentMessage() {
