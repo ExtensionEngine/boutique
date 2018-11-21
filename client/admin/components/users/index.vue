@@ -32,7 +32,11 @@
           <template slot="items" slot-scope="props">
             <tr>
               <td>
-                <v-checkbox v-model="props.selected" primary hide-details/>
+                <v-checkbox
+                  v-model="props.selected"
+                  @change="$event ? selectMultiple() : deselectMultiple(props.item.id)"
+                  primary
+                  hide-details/>
               </td>
               <td>{{ props.item.email }}</td>
               <td>{{ props.item.role }}</td>
@@ -71,11 +75,20 @@ import { keys, withKeys } from '@/common/keys';
 import api from '@/admin/api/user';
 import BulkEnrollmentDialog from './BulkEnrollmentDialog';
 import ConfirmationDialog from '../common/ConfirmationDialog';
+import findIndex from 'lodash/findIndex';
 import ImportDialog from './ImportDialog';
+import last from 'lodash/last';
+import map from 'lodash/map';
+import remove from 'lodash/remove';
+import slice from 'lodash/slice';
 import throttle from 'lodash/throttle';
+import uniq from 'lodash/uniq';
 import UserDialog from './UserDialog';
 
 const defaultPage = () => ({ sortBy: 'updatedAt', descending: true, page: 1 });
+const getIndexes = (users, bounds) => {
+  return map(bounds, ({ id }) => findIndex(users, { id })).sort();
+};
 
 export default {
   name: 'user-list',
@@ -122,10 +135,28 @@ export default {
         action: () => api.remove(user),
         dialog: true
       });
+    },
+    selectMultiple() {
+      if (this.multiSelect && this.selectedUsers.length >= 2) {
+        const bounds = this.selectedUsers.slice(-2);
+        const [from, to] = getIndexes(this.users, bounds);
+        const toAppend = slice(this.users, from + 1, to);
+        this.selectedUsers.splice(-1, 0, ...toAppend);
+        this.selectedUsers = uniq(this.selectedUsers);
+      }
+    },
+    deselectMultiple(id) {
+      if (this.multiSelect && this.selectedUsers.length) {
+        const bounds = [last(this.selectedUsers), ({ id })];
+        const [from, to] = getIndexes(this.users, bounds);
+        const toRemove = map(slice(this.users, from, to + 1), 'id');
+        remove(this.selectedUsers, ({ id }) => toRemove.includes(id));
+      }
     }
   },
   watch: {
     dataTable() {
+      this.selectedUsers = [];
       this.fetch();
     },
     filter() {
