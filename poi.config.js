@@ -2,6 +2,7 @@ require('dotenv').config();
 const config = require('./server/config');
 const path = require('path');
 
+const isProduction = process.env.NODE_ENV === 'production';
 const aliases = {
   '@': path.resolve(__dirname, './client')
 };
@@ -17,7 +18,7 @@ const devServer = {
   }
 };
 
-module.exports = (options, req) => ({
+module.exports = args => ({
   plugins: [
     require('@poi/plugin-eslint')({ command: '*' }),
     require('@poi/plugin-bundle-report')()
@@ -38,7 +39,7 @@ module.exports = (options, req) => ({
     configureModuleResolution(config);
     config.resolve.alias.merge(aliases);
   },
-  sourceMap: options.mode === 'development',
+  sourceMap: !isProduction,
   hotEntry: ['student', 'admin'],
   generateStats: true,
   // Override using: `npm run dev:server -- --port <number>`
