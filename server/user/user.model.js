@@ -46,6 +46,10 @@ class User extends Model {
         type: DataTypes.STRING,
         field: 'last_name'
       },
+      lastActive: {
+        type: DataTypes.DATE,
+        field: 'last_active'
+      },
       createdAt: {
         type: DataTypes.DATE,
         field: 'created_at'
