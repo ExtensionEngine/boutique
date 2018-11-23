@@ -11,7 +11,7 @@ class ActivityTracker {
 
   track(user) {
     if (!user) return;
-    if (this.isTracked(user)) {
+    if (this._tracked[user.id]) {
       this.updateTrackingObject(user);
     } else {
       this.createTrackingObject(user);
@@ -46,13 +46,8 @@ class ActivityTracker {
   }
 
   lastActive(user) {
-    if (this.isTracked(user)) {
-      return this._tracked[user.id].lastActive;
-    }
-  }
-
-  isTracked(user) {
-    return user && this._tracked.hasOwnProperty(user.id);
+    if (!this._tracked[user.id]) return;
+    return this._tracked[user.id].lastActive;
   }
 }
 
