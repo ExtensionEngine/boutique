@@ -25,7 +25,7 @@ const createFilter = q => map(['email', 'firstName', 'lastName'],
   it => ({ [it]: { [Op.iLike]: `%${q}%` } }));
 
 const addLastActiveProperty = user => {
-  const lastActive = activityTracker.lastActive(user);
+  const lastActive = activityTracker.lastActive(user) || user.lastActive;
   return { ...user, lastActive };
 };
 
