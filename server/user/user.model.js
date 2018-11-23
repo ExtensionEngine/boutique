@@ -67,7 +67,7 @@ class User extends Model {
         type: DataTypes.VIRTUAL,
         get() {
           return pick(this,
-            ['id', 'firstName', 'lastName', 'email', 'role', 'createdAt']);
+            ['id', 'firstName', 'lastName', 'email', 'role', 'lastActive', 'createdAt']);
         }
       }
     };
