@@ -39,6 +39,7 @@
               <td>{{ props.item.firstName }}</td>
               <td>{{ props.item.lastName }}</td>
               <td class="no-wrap">{{ props.item.createdAt | formatDate }}</td>
+              <td>{{ props.item.lastActive | formatDate }}</td>
               <td class="no-wrap text-xs-center">
                 <v-icon @click="showUserDialog(props.item)" small>
                   mdi-pencil
@@ -99,7 +100,15 @@ export default {
     };
   },
   computed: {
-    headers,
+    headers: () => ([
+      { text: 'Email', value: 'email' },
+      { text: 'Role', value: 'role' },
+      { text: 'First Name', value: 'firstName' },
+      { text: 'Last Name', value: 'lastName' },
+      { text: 'Date Created', value: 'createdAt' },
+      { text: 'Last Active', value: 'lastActive' },
+      { text: 'Actions', value: 'email', align: 'center', sortable: false }
+    ]),
     defaultPage
   },
   methods: {

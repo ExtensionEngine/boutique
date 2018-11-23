@@ -6,12 +6,19 @@ class ActivityTracker {
   }
 
   track(user) {
-    if (!user || this.isTracked(user)) return;
+    if (!user) return;
+    if (this.isTracked(user)) return;
     this._tracked[user.id] = { lastActive: new Date() };
   }
 
+  lastActive(user) {
+    if (this.isTracked(user)) {
+      return this._tracked[user.id].lastActive;
+    }
+  }
+
   isTracked(user) {
-    return this._tracked.hasOwnProperty(user.id);
+    return user && this._tracked.hasOwnProperty(user.id);
   }
 }
 
