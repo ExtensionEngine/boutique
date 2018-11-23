@@ -24,36 +24,31 @@ class ActivityTracker {
     }
   }
 
+  untrack(user) {
+    this.save(user);
+    clearInterval(this._tracked[user.id].saveInterval);
+    delete this._tracked[user.id];
+  }
+
   createTrackingObject(user) {
     this._tracked[user.id] = {
       lastActive: new Date(),
-      untrackTimeout: setTimeout(this.untrack.bind(this, user), ONE_HOUR),
-      saveTimeout: setTimeout(this.save.bind(this, user), TEN_MINUTES)
+      untrackTimeout: setTimeout(this.untrack.bind(this, user), TEN_MINUTES),
+      saveInterval: setInterval(this.save.bind(this, user), ONE_HOUR)
     };
   }
 
   updateTrackingObject(user) {
     clearTimeout(this._tracked[user.id].untrackTimeout);
-    clearTimeout(this._tracked[user.id].saveTimeout);
     Object.assign(this._tracked[user.id], {
       lastActive: new Date(),
-      untrackTimeout: setTimeout(this.untrack.bind(this, user), ONE_HOUR),
-      saveTimeout: setTimeout(this.save.bind(this, user), TEN_MINUTES)
+      untrackTimeout: setTimeout(this.untrack.bind(this, user), TEN_MINUTES)
     });
   }
 
   save(user) {
-    this.updateLastActiveField(user);
-  }
-
-  updateLastActiveField(user) {
     const options = { lastActive: this.lastActive(user) };
     updateUserModel(user, options);
-  }
-
-  untrack(user) {
-    this.updateLastActiveField(user);
-    delete this._tracked[user.id];
   }
 
   lastActive(user) {
