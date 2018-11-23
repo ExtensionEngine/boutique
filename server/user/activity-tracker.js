@@ -2,12 +2,11 @@
 
 const { User } = require('../common/database');
 
-const ONE_HOUR = 3600000;
-const TEN_MINUTES = 600000;
-
 class ActivityTracker {
-  constructor() {
+  constructor({ saveInterval, ttl }) {
     this._tracked = {};
+    this.ttl = ttl;
+    this.saveInterval = saveInterval;
   }
 
   track(user) {
@@ -28,8 +27,8 @@ class ActivityTracker {
   createTrackingObject(user) {
     this._tracked[user.id] = {
       lastActive: new Date(),
-      untrackTimeout: setTimeout(this.untrack.bind(this, user), TEN_MINUTES),
-      saveInterval: setInterval(this.save.bind(this, user), ONE_HOUR)
+      untrackTimeout: setTimeout(this.untrack.bind(this, user), this.saveInterval),
+      saveInterval: setInterval(this.save.bind(this, user), this.ttl)
     };
   }
 
@@ -37,7 +36,7 @@ class ActivityTracker {
     clearTimeout(this._tracked[user.id].untrackTimeout);
     Object.assign(this._tracked[user.id], {
       lastActive: new Date(),
-      untrackTimeout: setTimeout(this.untrack.bind(this, user), TEN_MINUTES)
+      untrackTimeout: setTimeout(this.untrack.bind(this, user), this.saveInterval)
     });
   }
 
@@ -57,4 +56,4 @@ class ActivityTracker {
   }
 }
 
-module.exports = new ActivityTracker();
+module.exports = new ActivityTracker({ saveInterval: 3600000, ttl: 600000 });
