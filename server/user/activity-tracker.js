@@ -2,11 +2,6 @@
 
 const { User } = require('../common/database');
 
-const updateUserModel = async (user, options) => {
-  const fetched = await User.findById(user.id);
-  if (fetched) await fetched.update(options);
-};
-
 const ONE_HOUR = 3600000;
 const TEN_MINUTES = 600000;
 
@@ -47,8 +42,8 @@ class ActivityTracker {
   }
 
   save(user) {
-    const options = { lastActive: this.lastActive(user) };
-    updateUserModel(user, options);
+    const lastActive = this.lastActive(user);
+    return User.update({ lastActive }, { where: { id: user.id } });
   }
 
   lastActive(user) {
