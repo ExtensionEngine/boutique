@@ -32,7 +32,7 @@ class ActivityTracker {
     };
   }
 
-  async updateTrackingObject(user) {
+  updateTrackingObject(user) {
     clearTimeout(this._tracked[user.id].untrackTimeout);
     clearTimeout(this._tracked[user.id].saveTimeout);
     Object.assign(this._tracked[user.id], {
