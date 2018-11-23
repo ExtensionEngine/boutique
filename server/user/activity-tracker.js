@@ -2,6 +2,13 @@
 
 const { User } = require('../common/database');
 
+const updateUserModel = async (user, options) => {
+  const fetched = await User.findById(user.id);
+  if (fetched) await fetched.update(options);
+};
+
+const ONE_HOUR = 3600000;
+
 class ActivityTracker {
   constructor() {
     this._tracked = {};
@@ -18,16 +25,23 @@ class ActivityTracker {
 
   createTrackingObject(user) {
     this._tracked[user.id] = {
-      lastActive: new Date()
+      lastActive: new Date(),
+      untrackTimeout: setTimeout(this.untrack.bind(this, user), ONE_HOUR)
     };
   }
 
   async updateTrackingObject(user) {
+    clearTimeout(this._tracked[user.id].untrackTimeout);
     Object.assign(this._tracked[user.id], {
-      lastActive: new Date()
+      lastActive: new Date(),
+      untrackTimeout: setTimeout(this.untrack.bind(this, user), ONE_HOUR)
     });
-    const fetched = await User.findById(user.id);
-    if (fetched) fetched.update({ lastActive: this.lastActive(user) });
+  }
+
+  untrack(user) {
+    const options = { lastActive: this.lastActive(user) };
+    updateUserModel(user, options);
+    delete this._tracked[user.id];
   }
 
   lastActive(user) {
