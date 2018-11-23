@@ -1,6 +1,6 @@
 'use strict';
 
-const activityTracker = require('./activity-tracker');
+const ActivityTracker = require('./activity-tracker');
 const { createError } = require('../common/errors');
 const { Enrollment, Sequelize, sequelize, User } = require('../common/database');
 const Audience = require('../common/auth/audience');
@@ -26,7 +26,7 @@ const createFilter = q => map(['email', 'firstName', 'lastName'],
   it => ({ [it]: { [Op.iLike]: `%${q}%` } }));
 
 const addLastActiveProperty = user => {
-  const lastActive = activityTracker.lastActive(user) || user.lastActive;
+  const lastActive = ActivityTracker.lastActive(user) || user.lastActive;
   return { ...user, lastActive };
 };
 
