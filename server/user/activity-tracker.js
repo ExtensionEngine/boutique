@@ -8,6 +8,7 @@ const updateUserModel = async (user, options) => {
 };
 
 const ONE_HOUR = 3600000;
+const TEN_MINUTES = 600000;
 
 class ActivityTracker {
   constructor() {
@@ -26,21 +27,32 @@ class ActivityTracker {
   createTrackingObject(user) {
     this._tracked[user.id] = {
       lastActive: new Date(),
-      untrackTimeout: setTimeout(this.untrack.bind(this, user), ONE_HOUR)
+      untrackTimeout: setTimeout(this.untrack.bind(this, user), ONE_HOUR),
+      saveTimeout: setTimeout(this.save.bind(this, user), TEN_MINUTES)
     };
   }
 
   async updateTrackingObject(user) {
     clearTimeout(this._tracked[user.id].untrackTimeout);
+    clearTimeout(this._tracked[user.id].saveTimeout);
     Object.assign(this._tracked[user.id], {
       lastActive: new Date(),
-      untrackTimeout: setTimeout(this.untrack.bind(this, user), ONE_HOUR)
+      untrackTimeout: setTimeout(this.untrack.bind(this, user), ONE_HOUR),
+      saveTimeout: setTimeout(this.save.bind(this, user), TEN_MINUTES)
     });
   }
 
-  untrack(user) {
+  save(user) {
+    this.updateLastActiveField(user);
+  }
+
+  updateLastActiveField(user) {
     const options = { lastActive: this.lastActive(user) };
     updateUserModel(user, options);
+  }
+
+  untrack(user) {
+    this.updateLastActiveField(user);
     delete this._tracked[user.id];
   }
 
