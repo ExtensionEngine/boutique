@@ -16,9 +16,8 @@ passport.use(new Strategy(jwtOptions, (payload, done) => {
   return User.findById(payload.id)
     .then(user => {
       activityTracker.track(user);
-      return user;
+      done(null, user || false);
     })
-    .then(user => done(null, user || false))
     .error(err => done(err, false));
 }));
 

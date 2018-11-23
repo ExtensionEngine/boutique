@@ -1,5 +1,6 @@
 'use strict';
 
+const activityTracker = require('./activity-tracker');
 const { createError } = require('../common/errors');
 const { Enrollment, Sequelize, sequelize, User } = require('../common/database');
 const Datasheet = require('./datasheet');
@@ -23,13 +24,22 @@ const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
 const createFilter = q => map(['email', 'firstName', 'lastName'],
   it => ({ [it]: { [Op.iLike]: `%${q}%` } }));
 
+const addLastActiveProperty = user => {
+  const lastActive = activityTracker.lastActive(user);
+  return { ...user, lastActive };
+};
+
 function list({ query: { email, role, filter }, options }, res) {
   const where = { [Op.and]: [] };
   if (filter) where[Op.or] = createFilter(filter);
   if (email) where[Op.and].push({ email });
   if (role) where[Op.and].push({ role });
   return User.findAndCountAll({ where, ...options }).then(({ rows, count }) => {
-    return res.jsend.success({ items: map(rows, 'profile'), total: count });
+    const items = map(rows, 'profile');
+    return res.jsend.success({
+      items: map(items, addLastActiveProperty),
+      total: count
+    });
   });
 }
 
