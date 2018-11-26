@@ -24,7 +24,7 @@ const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
 const createFilter = q => map(['email', 'firstName', 'lastName'],
   it => ({ [it]: { [Op.iLike]: `%${q}%` } }));
 
-const addLastActiveProperty = user => {
+const processOutput = user => {
   const lastActive = ActivityTracker.lastActive(user.id) || user.lastActive;
   return { ...user, lastActive };
 };
@@ -37,7 +37,7 @@ function list({ query: { email, role, filter }, options }, res) {
   return User.findAndCountAll({ where, ...options }).then(({ rows, count }) => {
     const items = map(rows, 'profile');
     return res.jsend.success({
-      items: map(items, addLastActiveProperty),
+      items: map(items, processOutput),
       total: count
     });
   });
@@ -57,7 +57,7 @@ function patch({ params, body }, res) {
   return User.findById(params.id, { paranoid: false })
     .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
     .then(user => user.update(pick(body, inputAttrs)))
-    .then(user => res.jsend.success(user.profile));
+    .then(user => res.jsend.success(processOutput(user.profile)));
 }
 
 function destroy({ params }, res) {
@@ -82,7 +82,7 @@ function login({ body }, res) {
     .then(user => user || createError(NOT_FOUND, 'Wrong password!'))
     .then(user => {
       const token = user.createToken({ expiresIn: '5 days' });
-      res.jsend.success({ token, user: user.profile });
+      res.jsend.success({ token, user: processOutput(user.profile) });
     });
 }
 
