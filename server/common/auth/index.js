@@ -32,11 +32,8 @@ passport.use(new Strategy(jwtOptions, (payload, done) => {
     .then(user => {
       ActivityTracker.track(user.id);
       done(null, user || false);
-    }).catch(err => {
-      done(err, false);
-    }).error(err => {
-      done(err, false);
-    });
+    })
+    .catch(err => done(err, false));
 }));
 
 passport.serializeUser((user, done) => done(null, user));
