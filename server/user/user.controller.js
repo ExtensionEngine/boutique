@@ -36,10 +36,7 @@ function list({ query: { email, role, filter }, options }, res) {
   if (role) where[Op.and].push({ role });
   return User.findAndCountAll({ where, ...options }).then(({ rows, count }) => {
     const items = map(rows, 'profile');
-    return res.jsend.success({
-      items: map(items, processOutput),
-      total: count
-    });
+    return res.jsend.success({ items: map(items, processOutput), total: count });
   });
 }
 

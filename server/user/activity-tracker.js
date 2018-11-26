@@ -8,27 +8,27 @@ const toMiliseconds = min => min * 60 * 1000;
 
 class ActivityTracker {
   constructor({ saveInterval, ttl }) {
-    this._tracked = {};
+    this.tracked = {};
     this.saveInterval = toMiliseconds(saveInterval);
     this.ttl = toMiliseconds(ttl);
   }
 
   track(id) {
-    if (!this._tracked[id]) {
-      this._tracked[id] = {
+    if (!this.tracked[id]) {
+      this.tracked[id] = {
         save: throttle(() => this.save(id), this.saveInterval),
         untrack: debounce(() => this.untrack(id), this.ttl)
       };
     }
-    this._tracked[id].lastActive = new Date();
-    this._tracked[id].untrack();
-    this._tracked[id].save();
+    this.tracked[id].lastActive = new Date();
+    this.tracked[id].untrack();
+    this.tracked[id].save();
   }
 
   untrack(id) {
     this.save(id).then(() => {
-      this._tracked[id].save.cancel();
-      delete this._tracked[id];
+      this.tracked[id].save.cancel();
+      delete this.tracked[id];
     });
   }
 
@@ -38,8 +38,8 @@ class ActivityTracker {
   }
 
   lastActive(id) {
-    if (!this._tracked[id]) return;
-    return this._tracked[id].lastActive;
+    if (!this.tracked[id]) return;
+    return this.tracked[id].lastActive;
   }
 }
 
