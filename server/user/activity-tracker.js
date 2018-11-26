@@ -1,53 +1,43 @@
 'use strict';
 
 const { User } = require('../common/database');
+const debounce = require('lodash/debounce');
+const throttle = require('lodash/throttle');
 
 class ActivityTracker {
   constructor({ saveInterval, ttl }) {
     this._tracked = {};
-    this.ttl = ttl;
     this.saveInterval = saveInterval;
+    this.ttl = ttl;
   }
 
-  track(user) {
-    if (!user) return;
-    if (this._tracked[user.id]) {
-      this.updateTrackingObject(user);
-    } else {
-      this.createTrackingObject(user);
+  track(id) {
+    if (!this._tracked[id]) {
+      this._tracked[id] = {
+        save: throttle(() => this.save(id), this.saveInterval),
+        untrack: debounce(() => this.untrack(id), this.ttl)
+      };
     }
+    this._tracked[id].lastActive = new Date();
+    this._tracked[id].untrack();
+    this._tracked[id].save();
   }
 
-  untrack(user) {
-    this.save(user);
-    clearInterval(this._tracked[user.id].saveInterval);
-    delete this._tracked[user.id];
-  }
-
-  createTrackingObject(user) {
-    this._tracked[user.id] = {
-      lastActive: new Date(),
-      untrackTimeout: setTimeout(this.untrack.bind(this, user), this.saveInterval),
-      saveInterval: setInterval(this.save.bind(this, user), this.ttl)
-    };
-  }
-
-  updateTrackingObject(user) {
-    clearTimeout(this._tracked[user.id].untrackTimeout);
-    Object.assign(this._tracked[user.id], {
-      lastActive: new Date(),
-      untrackTimeout: setTimeout(this.untrack.bind(this, user), this.saveInterval)
+  untrack(id) {
+    this.save(id).then(() => {
+      this._tracked[id].save.cancel();
+      delete this._tracked[id];
     });
   }
 
-  save(user) {
-    const lastActive = this.lastActive(user);
-    return User.update({ lastActive }, { where: { id: user.id } });
+  save(id) {
+    const lastActive = this.lastActive(id);
+    return User.update({ lastActive }, { where: { id } });
   }
 
-  lastActive(user) {
-    if (!this._tracked[user.id]) return;
-    return this._tracked[user.id].lastActive;
+  lastActive(id) {
+    if (!this._tracked[id]) return;
+    return this._tracked[id].lastActive;
   }
 }
 

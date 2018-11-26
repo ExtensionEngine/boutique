@@ -28,12 +28,15 @@ const jwtOptions = {
 };
 
 passport.use(new Strategy(jwtOptions, (payload, done) => {
-  return User.findById(payload.id)
+  return User.findById(payload.id, { rejectOnEmpty: true })
     .then(user => {
-      ActivityTracker.track(user);
+      ActivityTracker.track(user.id);
       done(null, user || false);
-    })
-    .error(err => done(err, false));
+    }).catch(err => {
+      done(err, false);
+    }).error(err => {
+      done(err, false);
+    });
 }));
 
 passport.serializeUser((user, done) => done(null, user));
