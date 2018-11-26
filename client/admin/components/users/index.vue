@@ -39,7 +39,10 @@
               <td>{{ props.item.firstName }}</td>
               <td>{{ props.item.lastName }}</td>
               <td class="no-wrap">{{ props.item.createdAt | formatDate }}</td>
-              <td>{{ props.item.lastActive | formatDate }}</td>
+              <td>
+                <span v-if="!props.item.lastActive">Never</span>
+                <timeago v-else :datetime="props.item.lastActive"/>
+              </td>
               <td class="no-wrap text-xs-center">
                 <v-icon @click="showUserDialog(props.item)" small>
                   mdi-pencil

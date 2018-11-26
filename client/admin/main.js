@@ -6,6 +6,7 @@ import VeeValidate from '@/common/validation';
 import Vue from 'vue';
 import VueHotkey from 'v-hotkey';
 import Vuetify from 'vuetify';
+import VueTimeago from 'vue-timeago';
 import VueVisible from 'vue-visible';
 
 Vue.use(VeeValidate, {
@@ -15,6 +16,7 @@ Vue.use(VeeValidate, {
   inject: false
 });
 Vue.use(VueHotkey);
+Vue.use(VueTimeago);
 Vue.use(VueVisible);
 Vue.use(Vuetify, { iconfont: 'mdi' });
 
