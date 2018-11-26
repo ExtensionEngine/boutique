@@ -4,11 +4,13 @@ const { User } = require('../common/database');
 const debounce = require('lodash/debounce');
 const throttle = require('lodash/throttle');
 
+const toMiliseconds = min => min * 60 * 1000;
+
 class ActivityTracker {
   constructor({ saveInterval, ttl }) {
     this._tracked = {};
-    this.saveInterval = saveInterval;
-    this.ttl = ttl;
+    this.saveInterval = toMiliseconds(saveInterval);
+    this.ttl = toMiliseconds(ttl);
   }
 
   track(id) {
@@ -41,4 +43,4 @@ class ActivityTracker {
   }
 }
 
-module.exports = new ActivityTracker({ saveInterval: 3600000, ttl: 600000 });
+module.exports = new ActivityTracker({ saveInterval: 60, ttl: 10 });
