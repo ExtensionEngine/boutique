@@ -4,7 +4,7 @@ const { User } = require('../common/database');
 const debounce = require('lodash/debounce');
 const throttle = require('lodash/throttle');
 
-const toMiliseconds = min => min * 60 * 1000;
+const toMiliseconds = min => min * 60000;
 
 class ActivityTracker {
   constructor({ saveInterval, ttl }) {
@@ -26,7 +26,9 @@ class ActivityTracker {
   }
 
   untrack(id) {
+    if (!this.tracked[id]) return;
     this.save(id).then(() => {
+      this.tracked[id].untrack.cancel();
       this.tracked[id].save.cancel();
       delete this.tracked[id];
     });
