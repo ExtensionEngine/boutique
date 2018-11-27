@@ -38,7 +38,7 @@ function create(req, res) {
   return User.restoreOrBuild(pick(body, inputAttrs))
     .then(([result]) => {
       if (result.isRejected()) return createError(CONFLICT);
-      return User.invite(result.value(), { origin });
+      return User.invite(result.value(), { origin: origin() });
     })
     .then(user => res.jsend.success(user.profile));
 }
@@ -79,7 +79,7 @@ function login({ body }, res) {
 function invite({ params, origin }, res) {
   return User.findById(params.id, { paranoid: false })
     .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
-    .then(user => User.invite(user, { origin }))
+    .then(user => User.invite(user, { origin: origin() }))
     .then(() => res.status(ACCEPTED).end());
 }
 
