@@ -13,6 +13,8 @@ logger.info(getConfig(server), '📧  SMTP client created');
 
 const send = promisify(server.send.bind(server));
 
+const resetUrl = (origin, user) => `${origin}/#/auth/reset-password/${user.token}`;
+
 module.exports = {
   send,
   invite,
@@ -50,10 +52,6 @@ function resetPassword(user, { origin }) {
     subject: 'Reset password',
     attachment: [{ data: `<html>${message}</html>`, alternative: true }]
   });
-}
-
-function resetUrl(origin, user) {
-  return `${origin}/#/auth/reset-password/${user.token}`;
 }
 
 function getConfig(server) {
