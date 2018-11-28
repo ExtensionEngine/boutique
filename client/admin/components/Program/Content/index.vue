@@ -9,6 +9,7 @@
         <v-flex lg3 offset-lg9>
           <v-text-field
             v-model.trim="filter"
+            :disabled="importedRepos.length <= 0"
             append-icon="mdi-magnify"
             label="Search"
             single-line
@@ -50,21 +51,20 @@ import fuzzysearch from 'fuzzysearch';
 const fuzzy = (needle, haystack) => {
   return fuzzysearch(needle.toLowerCase(), haystack.toLowerCase());
 };
+const headers = () => [
+  { text: 'Name', value: 'name', align: 'left' },
+  { text: 'Published Version', value: 'repoVersion' },
+  { text: 'Imported Version', value: 'publishedAt' },
+  { text: 'Sync', value: 'id', sortable: false, align: 'center' }
+];
 
 export default {
   name: 'imported-content',
   props: { programId: { type: Number, required: true } },
-  data() {
-    return { filter: null };
-  },
+  data: () => ({ filter: null }),
   computed: {
     ...mapState('contentRepo', { repoStore: 'items' }),
-    headers: () => ([
-      { text: 'Name', value: 'name', align: 'left' },
-      { text: 'Published Version', value: 'repoVersion' },
-      { text: 'Imported Version', value: 'publishedAt' },
-      { text: 'Sync', value: 'id', sortable: false, align: 'center' }
-    ]),
+    headers,
     importedRepos() {
       return filter(this.repoStore, it => {
         return it.id && it.programId === this.programId;
@@ -72,7 +72,7 @@ export default {
     },
     filteredRepos() {
       if (!this.filter) return this.importedRepos;
-      return filter(this.importedRepos, it => {
+      return this.importedRepos.filter(it => {
         return it.name && fuzzy(this.filter, it.name);
       });
     },
@@ -83,7 +83,7 @@ export default {
     }
   },
   methods: mapActions('contentRepo', ['fetch', 'save']),
-  mounted() {
+  created() {
     const { programId } = this;
     return this.fetch({ programId, srcVersion: true });
   },
@@ -94,9 +94,5 @@ export default {
 <style lang="scss" scoped>
 .actions {
   width: 250px;
-}
-
-.table-toolbar {
-  background: #fff;
 }
 </style>
