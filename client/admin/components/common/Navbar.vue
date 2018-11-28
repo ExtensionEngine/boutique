@@ -5,6 +5,7 @@
       <v-icon class="mr-2">mdi-shopping</v-icon>
       Boutique
       <span class="font-weight-light">LMS</span>
+      <span class="font-weight-light">{{ programName }}</span>
     </span>
     <v-spacer></v-spacer>
     <v-menu min-width="220px" transition="slide-y-transition" offset-y>
@@ -24,13 +25,22 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
+import find from 'lodash/find';
 
 export default {
   name: 'main-toolbar',
   props: {
     drawer: { type: Boolean, default: true }
   },
-  computed: mapState('auth', ['user']),
+  computed: {
+    ...mapState('auth', ['user']),
+    ...mapState('programs', { programs: 'items' }),
+    programName() {
+      const { programId } = this.$route.params;
+      const program = find(this.programs, { id: programId });
+      return program && ('/ ' + program.name);
+    }
+  },
   methods: mapActions('auth', ['logout'])
 };
 </script>
