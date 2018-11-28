@@ -26,7 +26,8 @@
         <v-list-tile
           v-for="program in persistedPrograms"
           :key="program.id"
-          :to="{ name: 'enrollments', params: { programId: program.id } }">
+          :to="{ name: 'enrollments', params: { programId: program.id } }"
+          :class="program.id === selectedProgramId ? 'selected' : {}">
           <v-list-tile-content>
             <v-list-tile-title class="grey--text">
               {{ program.name }}
@@ -51,6 +52,9 @@ export default {
     ...mapState('programs', { programs: 'items' }),
     persistedPrograms() {
       return filter(this.programs, 'id');
+    },
+    selectedProgramId() {
+      return this.$route.params.programId;
     }
   },
   components: { ProgramModal }
@@ -60,5 +64,9 @@ export default {
 <style lang="scss">
 .main-drawer .v-navigation-drawer__border {
   display: none;
+}
+
+.selected {
+  background: rgba(0, 0, 0, 0.04);
 }
 </style>
