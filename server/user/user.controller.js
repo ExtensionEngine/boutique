@@ -38,7 +38,7 @@ function create(req, res) {
   return User.restoreOrBuild(pick(body, inputAttrs))
     .then(([result]) => {
       if (result.isRejected()) return createError(CONFLICT);
-      return User.invite(result.value(), { origin: origin() });
+      return User.invite(result.value(), { origin });
     })
     .then(user => res.jsend.success(user.profile));
 }
@@ -79,13 +79,11 @@ function login({ body }, res) {
 function invite({ params, origin }, res) {
   return User.findById(params.id, { paranoid: false })
     .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
-    .then(user => User.invite(user, { origin: origin() }))
+    .then(user => User.invite(user, { origin }))
     .then(() => res.status(ACCEPTED).end());
 }
 
-function forgotPassword(req, res) {
-  const { email } = req.body;
-  const origin = req.origin();
+function forgotPassword({ origin, body: { email } }, res) {
   return User.find({ where: { email } })
     .then(user => user || createError(NOT_FOUND, 'User not found!'))
     .then(user => user.sendResetToken({ origin }))
@@ -103,13 +101,12 @@ function resetPassword({ body, params }, res) {
     .then(() => res.end());
 }
 
-async function bulkImport(req, res) {
-  const origin = req.origin();
-  let users = (await Datasheet.load(req.file)).toJSON({ include: inputAttrs });
-  const errors = await User.import(users, { origin });
+async function bulkImport({ body, file, origin }, res) {
+  let users = (await Datasheet.load(file)).toJSON({ include: inputAttrs });
+  const errors = await User.import(users, { origin: origin });
   if (!errors) return res.end();
   const creator = 'Boutique';
-  const format = req.body.format || mime.getExtension(req.file.mimetype);
+  const format = body.format || mime.getExtension(file.mimetype);
   const report = (new Datasheet({ columns, data: errors })).toWorkbook({ creator });
   return report.send(res, { format });
 }
