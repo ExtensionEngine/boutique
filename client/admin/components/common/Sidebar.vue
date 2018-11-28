@@ -27,7 +27,7 @@
           v-for="program in persistedPrograms"
           :key="program.id"
           :to="{ name: 'enrollments', params: { programId: program.id } }"
-          :class="program.id === selectedProgramId ? 'selected' : {}">
+          :class="{ selected: program.id === $route.params.programId }">
           <v-list-tile-content>
             <v-list-tile-title class="grey--text">
               {{ program.name }}
@@ -52,9 +52,6 @@ export default {
     ...mapState('programs', { programs: 'items' }),
     persistedPrograms() {
       return filter(this.programs, 'id');
-    },
-    selectedProgramId() {
-      return this.$route.params.programId;
     }
   },
   components: { ProgramModal }
@@ -67,6 +64,6 @@ export default {
 }
 
 .selected {
-  background: rgba(0, 0, 0, 0.04);
+  background: #ebebeb;
 }
 </style>
