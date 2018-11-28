@@ -83,7 +83,8 @@ function invite({ params, origin }, res) {
     .then(() => res.status(ACCEPTED).end());
 }
 
-function forgotPassword({ origin, body: { email } }, res) {
+function forgotPassword({ origin, body }, res) {
+  const { email } = body;
   return User.find({ where: { email } })
     .then(user => user || createError(NOT_FOUND, 'User not found!'))
     .then(user => user.sendResetToken({ origin }))
