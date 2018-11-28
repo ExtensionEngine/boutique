@@ -47,6 +47,10 @@ import ContentDialog from './ContentDialog';
 import filter from 'lodash/filter';
 import fuzzysearch from 'fuzzysearch';
 
+const fuzzy = (needle, haystack) => {
+  return fuzzysearch(needle.toLowerCase(), haystack.toLowerCase());
+};
+
 export default {
   name: 'imported-content',
   props: { programId: { type: Number, required: true } },
@@ -67,10 +71,9 @@ export default {
       });
     },
     filteredRepos() {
-      const pattern = this.filter && this.filter.toLowerCase();
-      if (!pattern) return this.importedRepos;
+      if (!this.filter) return this.importedRepos;
       return filter(this.importedRepos, it => {
-        return it.name && fuzzysearch(pattern, it.name.toLowerCase());
+        return it.name && fuzzy(this.filter, it.name);
       });
     },
     noContentMessage() {
