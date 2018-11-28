@@ -102,7 +102,7 @@ function resetPassword({ body, params }, res) {
 }
 
 async function bulkImport({ body, file, origin }, res) {
-  let users = (await Datasheet.load(file)).toJSON({ include: inputAttrs });
+  const users = (await Datasheet.load(file)).toJSON({ include: inputAttrs });
   const errors = await User.import(users, { origin: origin });
   if (!errors) return res.end();
   const creator = 'Boutique';
