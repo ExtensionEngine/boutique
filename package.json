@@ -51,7 +51,7 @@
     "sass-loader": "^7.1.0",
     "sequelize-cli": "^5.2.0",
     "split2": "^3.0.0",
-    "stylelint": "^9.6.0",
+    "stylelint": "^9.8.0",
     "stylelint-config-standard": "^18.2.0",
     "stylelint-order": "^1.0.0",
     "stylelint-scss": "^3.3.2",
