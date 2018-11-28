@@ -16,7 +16,7 @@ Vue.use(VeeValidate, {
   inject: false
 });
 Vue.use(VueHotkey);
-Vue.use(VueTimeago);
+Vue.use(VueTimeago, { name: 'vTimeago' });
 Vue.use(VueVisible);
 Vue.use(Vuetify, { iconfont: 'mdi' });
 
