@@ -4,8 +4,8 @@
     <span class="title ml-3 mr-5">
       <v-icon class="mr-2">mdi-shopping</v-icon>
       Boutique
-      <span class="font-weight-light">LMS</span>
-      <span class="font-weight-light">{{ programName }}</span>
+      <span class="font-weight-light">LMS {{ programName ? '/' : '' }}</span>
+      <span class="font-weight-light subheading">{{ programName }}</span>
     </span>
     <v-spacer></v-spacer>
     <v-menu min-width="220px" transition="slide-y-transition" offset-y>
@@ -36,9 +36,10 @@ export default {
     ...mapState('auth', ['user']),
     ...mapState('programs', { programs: 'items' }),
     programName() {
-      const { programId } = this.$route.params;
-      const program = find(this.programs, { id: programId });
-      return program && ('/ ' + program.name);
+      const id = this.$route.params.programId;
+      if (!id) return;
+      const program = find(this.programs, { id });
+      return program && program.name;
     }
   },
   methods: mapActions('auth', ['logout'])
