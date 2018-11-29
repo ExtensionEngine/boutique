@@ -36,7 +36,7 @@
           class="user-table"
           select-all>
           <template slot="items" slot-scope="props">
-            <tr :class="{ archived: props.item.deletedAt }">
+            <tr :class="{ 'archived': props.item.deletedAt }">
               <td>
                 <v-checkbox v-model="props.selected" primary hide-details/>
               </td>
@@ -161,13 +161,11 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .user-table /deep/ .v-input--checkbox {
   justify-content: center;
 }
-</style>
 
-<style lang="scss" scoped>
 .archived {
   background: #ebebeb;
 }
