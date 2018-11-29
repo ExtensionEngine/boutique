@@ -25,6 +25,10 @@ function remove(item) {
   return request.delete(url.resource(item));
 }
 
+function reactivate(item) {
+  return request.post(url.resource(item), item).then(extractData);
+}
+
 function invite(item) {
   return request.post(url.invite(item));
 }
@@ -38,6 +42,7 @@ export default {
   create,
   update,
   remove,
+  reactivate,
   invite,
   bulkImport
 };

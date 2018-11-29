@@ -49,8 +49,11 @@
                 <v-icon @click="showUserDialog(props.item)" small>
                   mdi-pencil
                 </v-icon>
-                <v-icon @click="removeUser(props.item)" small class="ml-2">
+                <v-icon v-if="!props.item.deletedAt" @click="removeUser(props.item)" small class="ml-2">
                   mdi-delete
+                </v-icon>
+                <v-icon v-else @click="reactivateUser(props.item)" small class="ml-2">
+                  mdi-account-plus
                 </v-icon>
               </td>
             </tr>
@@ -65,9 +68,9 @@
       <confirmation-dialog
         :visible.sync="confirmation.dialog"
         :action="confirmation.action"
+        :heading="confirmation.heading"
         :message="confirmation.message"
-        @confirmed="fetch()"
-        heading="Remove user"/>
+        @confirmed="fetch()"/>
     </v-flex>
   </v-layout>
 </template>
@@ -127,8 +130,18 @@ export default {
     removeUser(user) {
       const name = user.firstName + ' ' + user.lastName;
       Object.assign(this.confirmation, {
+        heading: 'Remove user',
         message: `Are you sure you want to remove user "${name}"?`,
         action: () => api.remove(user),
+        dialog: true
+      });
+    },
+    reactivateUser(user) {
+      const name = user.firstName + ' ' + user.lastName;
+      Object.assign(this.confirmation, {
+        heading: 'Reactivate user',
+        message: `Are you sure you want to reactivate user "${name}"?`,
+        action: () => api.reactivate(user),
         dialog: true
       });
     }
