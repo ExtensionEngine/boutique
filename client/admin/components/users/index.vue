@@ -116,8 +116,11 @@ export default {
     },
     fetch: throttle(async function (opts) {
       Object.assign(this.dataTable, opts);
-      const params = { ...this.dataTable, filter: this.filter };
-      const { items, total } = await api.fetch(params);
+      const { items, total } = await api.fetch({
+        ...this.dataTable,
+        filter: this.filter,
+        deleted: this.showArchived
+      });
       this.users = items;
       this.totalItems = total;
     }, 400),
@@ -135,6 +138,9 @@ export default {
       this.fetch();
     },
     filter() {
+      this.fetch();
+    },
+    showArchived() {
       this.fetch();
     }
   },
