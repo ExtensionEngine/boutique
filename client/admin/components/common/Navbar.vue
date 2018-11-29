@@ -30,13 +30,14 @@ import find from 'lodash/find';
 export default {
   name: 'main-toolbar',
   props: {
-    drawer: { type: Boolean, default: true }
+    drawer: { type: Boolean, default: true },
+    programId: { type: Number, default: null }
   },
   computed: {
     ...mapState('auth', ['user']),
     ...mapState('programs', { programs: 'items' }),
     programName() {
-      const id = this.$route.params.programId;
+      const id = this.programId;
       if (!id) return;
       const program = find(this.programs, { id });
       return program && program.name;

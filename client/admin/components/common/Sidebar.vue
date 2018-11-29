@@ -27,7 +27,7 @@
           v-for="program in persistedPrograms"
           :key="program.id"
           :to="{ name: 'enrollments', params: { programId: program.id } }"
-          :class="{ selected: program.id === $route.params.programId }">
+          :class="{ selected: program.id === programId }">
           <v-list-tile-content>
             <v-list-tile-title class="grey--text">
               {{ program.name }}
@@ -46,7 +46,8 @@ import ProgramModal from '../Program/CreateDialog';
 
 export default {
   props: {
-    drawer: { type: Boolean, default: true }
+    drawer: { type: Boolean, default: true },
+    programId: { type: Number, default: null }
   },
   computed: {
     ...mapState('programs', { programs: 'items' }),

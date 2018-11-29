@@ -1,10 +1,10 @@
 <template>
   <v-app id="app">
-    <sidebar :drawer.sync="drawer"/>
-    <navbar :drawer.sync="drawer"/>
+    <sidebar :drawer.sync="drawer" :programId="programId"/>
+    <navbar :drawer.sync="drawer" :programId="programId"/>
     <v-content>
       <v-container fluid fill-height class="grey lighten-4">
-        <router-view/>
+        <router-view :programId.sync="programId"/>
       </v-container>
     </v-content>
   </v-app>
@@ -18,7 +18,7 @@ import Sidebar from '@/admin/components/common/Sidebar';
 export default {
   name: 'admin-app',
   data() {
-    return { drawer: true };
+    return { drawer: true, programId: null };
   },
   methods: mapActions('programs', ['fetch']),
   created() {

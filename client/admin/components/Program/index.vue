@@ -31,8 +31,19 @@ export default {
     }
   },
   methods: mapActions('programs', ['get']),
+  watch: {
+    programId: {
+      handler(val) {
+        return this.$emit('update:programId', val);
+      },
+      immediate: true
+    }
+  },
   created() {
     this.get(this.programId);
+  },
+  destroyed() {
+    return this.$emit('update:programId', null);
   }
 };
 </script>
