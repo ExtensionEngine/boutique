@@ -49,11 +49,11 @@
                 <v-icon @click="showUserDialog(props.item)" small>
                   mdi-pencil
                 </v-icon>
-                <v-icon v-if="!props.item.deletedAt" @click="removeUser(props.item)" small class="ml-2">
-                  mdi-delete
+                <v-icon v-if="!props.item.deletedAt" @click="archiveUser(props.item)" small class="ml-2">
+                  mdi-account-off
                 </v-icon>
                 <v-icon v-else @click="reactivateUser(props.item)" small class="ml-2">
-                  mdi-account-plus
+                  mdi-account-convert
                 </v-icon>
               </td>
             </tr>
@@ -127,11 +127,11 @@ export default {
       this.users = items;
       this.totalItems = total;
     }, 400),
-    removeUser(user) {
+    archiveUser(user) {
       const name = user.firstName + ' ' + user.lastName;
       Object.assign(this.confirmation, {
-        heading: 'Remove user',
-        message: `Are you sure you want to remove user "${name}"?`,
+        heading: 'Archive user',
+        message: `Are you sure you want to archive user "${name}"?`,
         action: () => api.remove(user),
         dialog: true
       });
