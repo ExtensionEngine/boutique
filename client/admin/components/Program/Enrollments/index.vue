@@ -52,6 +52,13 @@ import throttle from 'lodash/throttle';
 
 const defaultPage = () => ({ sortBy: 'updatedAt', descending: true, page: 1 });
 const fullName = student => `${student.firstName} ${student.lastName}`;
+const headers = () => [
+  { text: 'Email', value: 'student.email', align: 'left' },
+  { text: 'First Name', value: 'student.first_name' },
+  { text: 'Last Name', value: 'student.last_name' },
+  { text: 'Created At', value: 'createdAt' },
+  { text: 'Actions', value: 'id', sortable: false, align: 'center' }
+];
 
 export default {
   name: 'enrollments',
@@ -66,13 +73,7 @@ export default {
     };
   },
   computed: {
-    headers: () => ([
-      { text: 'Email', value: 'student.email', align: 'left' },
-      { text: 'First Name', value: 'student.first_name' },
-      { text: 'Last Name', value: 'student.last_name' },
-      { text: 'Created At', value: 'createdAt' },
-      { text: 'Actions', value: 'id', sortable: false, align: 'center' }
-    ]),
+    headers,
     defaultPage,
     noEnrollmentsMessage() {
       return this.filter
@@ -109,9 +110,3 @@ export default {
   components: { ConfirmationDialog, EnrollmentDialog }
 };
 </script>
-
-<style lang="scss" scoped>
-.table-toolbar {
-  background: #fff;
-}
-</style>
