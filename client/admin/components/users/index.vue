@@ -11,7 +11,13 @@
       </v-toolbar>
       <div class="elevation-1 ml-2 mr-4">
         <v-layout class="px-4 py-3 table-toolbar">
-          <v-flex lg3 offset-lg9>
+          <v-flex lg6>
+            <v-checkbox
+              v-model="showArchived"
+              label="Show archived users"/>
+          </v-flex>
+          <v-spacer/>
+          <v-flex lg3>
             <v-text-field
               v-model="filter"
               append-icon="mdi-magnify"
@@ -95,6 +101,7 @@ export default {
       totalItems: 0,
       userDialog: false,
       editedUser: null,
+      showArchived: null,
       confirmation: { dialog: null }
     };
   },
