@@ -3,14 +3,13 @@
 const { User } = require('../common/database');
 const debounce = require('lodash/debounce');
 const throttle = require('lodash/throttle');
-
-const toMiliseconds = min => min * 60000;
+const ms = require('ms');
 
 class ActivityTracker {
   constructor({ saveInterval, ttl }) {
     this.tracked = {};
-    this.saveInterval = toMiliseconds(saveInterval);
-    this.ttl = toMiliseconds(ttl);
+    this.saveInterval = ms(saveInterval);
+    this.ttl = ms(ttl);
   }
 
   track(id) {
@@ -21,22 +20,19 @@ class ActivityTracker {
       };
     }
     this.tracked[id].lastActive = new Date();
-    this.tracked[id].untrack();
-    this.tracked[id].save();
+    ['untrack', 'save'].forEach(fn => this.tracked[id][fn]());
   }
 
-  untrack(id) {
+  async untrack(id) {
     if (!this.tracked[id]) return;
-    this.save(id).then(() => {
-      this.tracked[id].untrack.cancel();
-      this.tracked[id].save.cancel();
-      this.tracked[id] = null;
-    });
+    await this.save(id);
+    ['untrack', 'save'].forEach(fn => this.tracked[id][fn].cancel());
+    this.tracked[id] = null;
   }
 
-  save(id) {
+  async save(id) {
     const lastActive = this.lastActive(id);
-    return User.update({ lastActive }, { where: { id } });
+    await User.update({ lastActive }, { where: { id } });
   }
 
   lastActive(id) {
@@ -45,4 +41,7 @@ class ActivityTracker {
   }
 }
 
-module.exports = new ActivityTracker({ saveInterval: 60, ttl: 10 });
+module.exports = new ActivityTracker({
+  saveInterval: '1 hour',
+  ttl: '10 minutes'
+});
