@@ -34,7 +34,7 @@
               <td>
                 <v-checkbox
                   v-model="props.selected"
-                  @change="$event ? selectMultiple() : deselectMultiple(props.item.id)"
+                  @change="onToggle($event, props.item.id)"
                   primary
                   hide-details/>
               </td>
@@ -136,22 +136,23 @@ export default {
         dialog: true
       });
     },
+    onToggle(isSelection, userId) {
+      isSelection ? this.selectMultiple() : this.deselectMultiple(userId);
+    },
     selectMultiple() {
-      if (this.multiSelect && this.selectedUsers.length >= 2) {
-        const bounds = this.selectedUsers.slice(-2);
-        const [from, to] = getIndexes(this.users, bounds);
-        const toAppend = slice(this.users, from + 1, to);
-        this.selectedUsers.splice(-1, 0, ...toAppend);
-        this.selectedUsers = uniq(this.selectedUsers);
-      }
+      if (!this.multiSelect || this.selectedUsers.length < 2) return;
+      const bounds = this.selectedUsers.slice(-2);
+      const [from, to] = getIndexes(this.users, bounds);
+      const toAppend = slice(this.users, from + 1, to);
+      this.selectedUsers.splice(-1, 0, ...toAppend);
+      this.selectedUsers = uniq(this.selectedUsers);
     },
     deselectMultiple(id) {
-      if (this.multiSelect && this.selectedUsers.length) {
-        const bounds = [last(this.selectedUsers), ({ id })];
-        const [from, to] = getIndexes(this.users, bounds);
-        const toRemove = map(slice(this.users, from, to + 1), 'id');
-        remove(this.selectedUsers, ({ id }) => toRemove.includes(id));
-      }
+      if (!this.multiSelect || !this.selectedUsers.length) return;
+      const bounds = [last(this.selectedUsers), ({ id })];
+      const [from, to] = getIndexes(this.users, bounds);
+      const toRemove = map(slice(this.users, from, to + 1), 'id');
+      remove(this.selectedUsers, ({ id }) => toRemove.includes(id));
     }
   },
   watch: {
