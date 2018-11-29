@@ -61,13 +61,6 @@ function destroy({ params }, res) {
   });
 }
 
-async function reactivate({ params }, res) {
-  const user = await User.findById(params.id, { paranoid: false });
-  if (!user) createError(NOT_FOUND);
-  user.restore();
-  res.end();
-}
-
 function login({ body }, res) {
   const { email, password } = body;
   if (!email || !password) {
@@ -126,7 +119,6 @@ module.exports = {
   create,
   patch,
   destroy,
-  reactivate,
   login,
   invite,
   forgotPassword,

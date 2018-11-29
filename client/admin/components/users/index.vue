@@ -141,7 +141,7 @@ export default {
       Object.assign(this.confirmation, {
         heading: 'Reactivate user',
         message: `Are you sure you want to reactivate user "${name}"?`,
-        action: () => api.reactivate(user),
+        action: () => api.create(user),
         dialog: true
       });
     }

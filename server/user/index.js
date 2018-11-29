@@ -14,7 +14,6 @@ router
   .use(auth)
   .get('/', ctrl.list)
   .post('/', ctrl.create)
-  .post('/:id', ctrl.reactivate)
   .patch('/:id', ctrl.patch)
   .delete('/:id', ctrl.destroy)
   .post('/:id/invite', ctrl.invite)
