@@ -89,6 +89,14 @@ const defaultPage = () => ({ sortBy: 'updatedAt', descending: true, page: 1 });
 const getIndexes = (users, bounds) => {
   return map(bounds, ({ id }) => findIndex(users, { id })).sort();
 };
+const headers = () => [
+  { text: 'Email', value: 'email' },
+  { text: 'Role', value: 'role' },
+  { text: 'First Name', value: 'firstName' },
+  { text: 'Last Name', value: 'lastName' },
+  { text: 'Date Created', value: 'createdAt' },
+  { text: 'Actions', value: 'email', align: 'center', sortable: false }
+];
 
 export default {
   name: 'user-list',
@@ -106,14 +114,7 @@ export default {
     };
   },
   computed: {
-    headers: () => ([
-      { text: 'Email', value: 'email' },
-      { text: 'Role', value: 'role' },
-      { text: 'First Name', value: 'firstName' },
-      { text: 'Last Name', value: 'lastName' },
-      { text: 'Date Created', value: 'createdAt' },
-      { text: 'Actions', value: 'email', align: 'center', sortable: false }
-    ]),
+    headers,
     defaultPage
   },
   methods: {
@@ -169,10 +170,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.table-toolbar {
-  background-color: #fff;
-}
-
 .user-table /deep/ .v-input--checkbox {
   justify-content: center;
 }
