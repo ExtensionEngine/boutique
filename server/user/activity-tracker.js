@@ -30,7 +30,7 @@ class ActivityTracker {
     this.save(id).then(() => {
       this.tracked[id].untrack.cancel();
       this.tracked[id].save.cancel();
-      delete this.tracked[id];
+      this.tracked[id] = null;
     });
   }
 
