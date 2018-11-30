@@ -49,10 +49,18 @@
                 <v-icon @click="showUserDialog(props.item)" small>
                   mdi-pencil
                 </v-icon>
-                <v-icon v-if="!props.item.deletedAt" @click="archiveUser(props.item)" small class="ml-2">
+                <v-icon
+                  v-if="!props.item.deletedAt"
+                  @click="showConfirmationDialog(props.item, 'archive')"
+                  small
+                  class="ml-2">
                   mdi-account-off
                 </v-icon>
-                <v-icon v-else @click="reactivateUser(props.item)" small class="ml-2">
+                <v-icon
+                  v-else
+                  @click="showConfirmationDialog(props.item, 'reactivate')"
+                  small
+                  class="ml-2">
                   mdi-account-convert
                 </v-icon>
               </td>
@@ -79,6 +87,7 @@
 import api from '@/admin/api/user';
 import BulkEnrollmentDialog from './BulkEnrollmentDialog';
 import ConfirmationDialog from '../common/ConfirmationDialog';
+import humanize from 'humanize-string';
 import ImportDialog from './ImportDialog';
 import throttle from 'lodash/throttle';
 import UserDialog from './UserDialog';
@@ -92,6 +101,10 @@ const headers = () => [
   { text: 'Date Created', value: 'createdAt' },
   { text: 'Actions', value: 'email', align: 'center', sortable: false }
 ];
+const actions = (user) => ({
+  archive: () => api.remove(user),
+  reactivate: () => api.create(user)
+});
 
 export default {
   name: 'user-list',
@@ -127,23 +140,14 @@ export default {
       this.users = items;
       this.totalItems = total;
     }, 400),
-    archiveUser(user) {
+    showConfirmationDialog(user, action) {
       const name = user.firstName + ' ' + user.lastName;
-      Object.assign(this.confirmation, {
-        heading: 'Archive user',
-        message: `Are you sure you want to archive user "${name}"?`,
-        action: () => api.remove(user),
+      this.confirmation = {
+        heading: `${humanize(action)} user`,
+        message: `Are you sure you want to ${action} user "${name}"?`,
+        action: actions(user)[action],
         dialog: true
-      });
-    },
-    reactivateUser(user) {
-      const name = user.firstName + ' ' + user.lastName;
-      Object.assign(this.confirmation, {
-        heading: 'Reactivate user',
-        message: `Are you sure you want to reactivate user "${name}"?`,
-        action: () => api.create(user),
-        dialog: true
-      });
+      };
     }
   },
   watch: {
