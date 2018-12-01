@@ -3,6 +3,7 @@
 const { createError } = require('../common/errors');
 const { Enrollment, Sequelize, sequelize, User } = require('../common/database');
 const Datasheet = require('./datasheet');
+const { generate } = require('./helpers');
 const HttpStatus = require('http-status');
 const mime = require('mime');
 const map = require('lodash/map');
@@ -15,8 +16,7 @@ const columns = {
   email: { header: 'Email', width: 30 },
   firstName: { header: 'First Name', width: 30 },
   lastName: { header: 'Last Name', width: 30 },
-  role: { header: 'Role', width: 30 },
-  message: { header: 'Error', width: 30 }
+  role: { header: 'Role', width: 30 }
 };
 const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
 
@@ -107,19 +107,28 @@ async function bulkImport({ body, file, origin }, res) {
   const errors = await User.import(users, { origin: origin });
   if (!errors) return res.end();
   const creator = 'Boutique';
-  const format = body.format || mime.getExtension(file.mimetype);
+  columns.message = { header: 'Error', width: 30 };
   const report = (new Datasheet({ columns, data: errors })).toWorkbook({ creator });
+  const format = body.format || mime.getExtension(file.mimetype);
   return report.send(res, { format });
+}
+
+function getImportTemplate(req, res) {
+  const creator = 'GradsOfLife';
+  const data = generate();
+  const report = (new Datasheet({ columns, data })).toWorkbook({ creator });
+  return report.send(res, { format: 'xlsx' });
 }
 
 module.exports = {
   list,
-  bulkImport,
   create,
+  bulkImport,
   patch,
   destroy,
   login,
   invite,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  getImportTemplate
 };

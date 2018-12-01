@@ -5,7 +5,8 @@ const url = {
   root: '/users',
   resource: it => `/users/${it.id}`,
   invite: it => `/users/${it.id}/invite`,
-  import: '/users/import'
+  import: '/users/import',
+  getImportTemplate: '/users/import/template'
 };
 
 function fetch(params = {}) {
@@ -33,11 +34,16 @@ function bulkImport(items) {
   return request.post(url.import, items, { responseType: 'blob' });
 }
 
+function getImportTemplate() {
+  return request.get(url.getImportTemplate, { responseType: 'blob' });
+}
+
 export default {
   fetch,
   create,
   update,
   remove,
   invite,
-  bulkImport
+  bulkImport,
+  getImportTemplate
 };

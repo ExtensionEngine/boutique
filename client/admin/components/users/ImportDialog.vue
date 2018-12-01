@@ -32,6 +32,9 @@
           </label>
         </v-card-text>
         <v-card-actions>
+          <v-btn @click="downloadTemplateFile" flat color="blue-grey">
+            Download Template
+          </v-btn>
           <v-spacer/>
           <v-fade-transition>
             <v-btn
@@ -127,6 +130,12 @@ export default {
       const extension = inputFormats[this.serverErrorsReport.type];
       saveAs(this.serverErrorsReport, `Errors.${extension}`);
       this.$refs.fileName.focus();
+    },
+    downloadTemplateFile() {
+      return api.getImportTemplate().then(response => {
+        saveAs(response.data, 'Template.xlsx');
+        this.$refs.fileName.focus();
+      });
     },
     resetErrors() {
       this.serverErrorsReport = null;
