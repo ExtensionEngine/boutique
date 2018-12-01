@@ -109,16 +109,16 @@ export default {
     },
     save() {
       this.importing = true;
-      return api.bulkImport(this.form).then(response => {
+      return api.bulkImport(this.form).then(({ data, count }) => {
         this.importing = false;
-        if (response.data.size) {
-          this.$nextTick(() => this.$refs.fileName.focus());
-          this.vErrors.add({ field: 'file', msg: 'All users aren\'t imported' });
-          this.serverErrorsReport = response.data;
-          return;
-        }
-        this.$emit('imported');
-        this.close();
+        if (count) this.$emit('imported');
+        if (!data.size) return this.close();
+        this.$nextTick(() => this.$refs.fileName.focus());
+        this.vErrors.add({
+          field: 'file',
+          msg: `${count} users were successfully imported.`
+        });
+        this.serverErrorsReport = data;
       }).catch(err => {
         this.importing = false;
         this.vErrors.add({ field: 'file', msg: 'Importing users failed.' });

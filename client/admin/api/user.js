@@ -1,4 +1,5 @@
 import { extractData, processParams } from '@/common/api/helpers';
+import get from 'lodash/get';
 import request from '@/common/api/request';
 
 const url = {
@@ -31,7 +32,11 @@ function invite(item) {
 }
 
 function bulkImport(items) {
-  return request.post(url.import, items, { responseType: 'blob' });
+  return request.post(url.import, items, { responseType: 'blob' })
+    .then(({ data, headers }) => {
+      const count = parseInt(get(headers, 'data-imported-count'), 10);
+      return { data, count };
+    });
 }
 
 function getImportTemplate() {
