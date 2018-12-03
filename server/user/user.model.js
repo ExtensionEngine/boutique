@@ -1,6 +1,7 @@
 'use strict';
 
-const { auth: config = {} } = require('../config');
+const config = require('../config');
+const ActivityTracker = require('./activity-tracker')(config.activityTracker);
 const { Model, Sequelize, Op, UniqueConstraintError } = require('sequelize');
 const { role } = require('../../common/config');
 const { sql } = require('../common/database/helpers');
@@ -18,6 +19,14 @@ const Role = require('../../common/config/role');
 const values = require('lodash/values');
 
 class User extends Model {
+  constructor(...args) {
+    super(...args);
+    this.session = {
+      start: () => ActivityTracker.startSession(this),
+      end: () => ActivityTracker.endSession(this)
+    };
+  }
+
   static fields(DataTypes) {
     return {
       email: {
@@ -66,8 +75,10 @@ class User extends Model {
       profile: {
         type: DataTypes.VIRTUAL,
         get() {
-          return pick(this,
+          const profile = pick(this,
             ['id', 'firstName', 'lastName', 'email', 'role', 'lastActive', 'createdAt']);
+          profile.lastActive = ActivityTracker.lastActive(this);
+          return profile;
         }
       }
     };
@@ -168,7 +179,7 @@ class User extends Model {
 
   async encryptPassword() {
     if (!this.password) return;
-    this.password = await bcrypt.hash(this.password, config.saltRounds);
+    this.password = await bcrypt.hash(this.password, config.auth.saltRounds);
     return this;
   }
 
@@ -189,7 +200,7 @@ class User extends Model {
 
   createToken(options = {}) {
     const payload = pick(this, ['id', 'email']);
-    return jwt.sign(payload, config.secret, options);
+    return jwt.sign(payload, config.auth.secret, options);
   }
 
   isAdmin() {

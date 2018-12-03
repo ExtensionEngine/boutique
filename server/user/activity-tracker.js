@@ -1,47 +1,61 @@
 'use strict';
 
-const { User } = require('../common/database');
-const debounce = require('lodash/debounce');
 const throttle = require('lodash/throttle');
-const ms = require('ms');
+const logger = require('../common/logger')('activity-tracker');
+
+let ttl, saveInterval;
+const trackedUsers = {};
 
 class ActivityTracker {
-  constructor({ saveInterval, ttl }) {
-    this.tracked = {};
-    this.saveInterval = ms(saveInterval);
-    this.ttl = ms(ttl);
+  constructor(user) {
+    this._user = user;
+    this._throttledSave = throttle(() => this.save(), saveInterval);
   }
 
-  track(id) {
-    if (!this.tracked[id]) {
-      this.tracked[id] = {
-        save: throttle(() => this.save(id), this.saveInterval),
-        untrack: debounce(() => this.untrack(id), this.ttl)
-      };
-    }
-    this.tracked[id].lastActive = new Date();
-    ['untrack', 'save'].forEach(fn => this.tracked[id][fn]());
+  get user() {
+    return this._user;
   }
 
-  async untrack(id) {
-    if (!this.tracked[id]) return;
-    await this.save(id);
-    ['untrack', 'save'].forEach(fn => this.tracked[id][fn].cancel());
-    this.tracked[id] = null;
+  get lastActive() {
+    return this._lastActive;
   }
 
-  async save(id) {
-    const lastActive = this.lastActive(id);
-    await User.update({ lastActive }, { where: { id } });
+  track() {
+    if (!this.lastActive) logger.info(this.user.profile, '👤 Session started');
+    if (this._timer) clearTimeout(this._timer);
+    this._timer = setTimeout(() => this.destroy(), ttl);
+    this._lastActive = new Date();
+    this._throttledSave();
   }
 
-  lastActive(id) {
-    if (!this.tracked[id]) return;
-    return this.tracked[id].lastActive;
+  destroy() {
+    if (this._timer) clearTimeout(this._timer);
+    this._throttledSave.flush();
+    trackedUsers[this.user.id] = null;
+    logger.info(this.user.profile, '👤 Session ended');
+  }
+
+  async save() {
+    const { lastActive } = this;
+    await this.user.update({ lastActive });
+  }
+
+  static lastActive(user) {
+    if (trackedUsers[user.id]) return trackedUsers[user.id].lastActive;
+    return user.lastActive;
+  }
+
+  static startSession(user) {
+    trackedUsers[user.id] = trackedUsers[user.id] || new this(user);
+    return trackedUsers[user.id].track();
+  }
+
+  static endSession(user) {
+    return trackedUsers[user.id] && trackedUsers[user.id].destroy();
   }
 }
 
-module.exports = new ActivityTracker({
-  saveInterval: '1 hour',
-  ttl: '10 minutes'
-});
+module.exports = (config = {}) => {
+  ({ ttl, saveInterval } = config);
+  return ActivityTracker;
+};

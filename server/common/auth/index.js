@@ -1,6 +1,5 @@
 'use strict';
 
-const ActivityTracker = require('../../user/activity-tracker');
 const { auth: config = {} } = require('../../config');
 const { ExtractJwt, Strategy } = require('passport-jwt');
 const { User } = require('../database');
@@ -30,7 +29,7 @@ const jwtOptions = {
 passport.use(new Strategy(jwtOptions, (payload, done) => {
   return User.findById(payload.id, { rejectOnEmpty: true })
     .then(user => {
-      ActivityTracker.track(user.id);
+      user.session.start();
       done(null, user || false);
     })
     .catch(err => done(err, false));

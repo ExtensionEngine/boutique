@@ -1,5 +1,6 @@
 'use strict';
 
+const ms = require('ms');
 const path = require('path');
 
 module.exports = {
@@ -46,5 +47,9 @@ module.exports = {
     provider: process.env.STORAGE_PROVIDER,
     sourcePath: process.env.PUBLISHED_CONTENT,
     importPath: process.env.IMPORTED_CONTENT
+  },
+  activityTracker: {
+    saveInterval: ms('1 hour'),
+    ttl: ms('10 minutes')
   }
 };
