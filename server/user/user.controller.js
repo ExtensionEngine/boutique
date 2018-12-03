@@ -1,6 +1,5 @@
 'use strict';
 
-const ActivityTracker = require('./activity-tracker');
 const { createError } = require('../common/errors');
 const { Enrollment, Sequelize, sequelize, User } = require('../common/database');
 const Datasheet = require('./datasheet');
@@ -24,18 +23,13 @@ const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
 const createFilter = q => map(['email', 'firstName', 'lastName'],
   it => ({ [it]: { [Op.iLike]: `%${q}%` } }));
 
-const processOutput = user => {
-  const lastActive = ActivityTracker.lastActive(user.id) || user.lastActive;
-  return { ...user.profile, lastActive };
-};
-
 function list({ query: { email, role, filter }, options }, res) {
   const where = { [Op.and]: [] };
   if (filter) where[Op.or] = createFilter(filter);
   if (email) where[Op.and].push({ email });
   if (role) where[Op.and].push({ role });
   return User.findAndCountAll({ where, ...options }).then(({ rows, count }) => {
-    return res.jsend.success({ items: map(rows, processOutput), total: count });
+    return res.jsend.success({ items: map(rows, 'profile'), total: count });
   });
 }
 
@@ -53,14 +47,14 @@ function patch({ params, body }, res) {
   return User.findById(params.id, { paranoid: false })
     .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
     .then(user => user.update(pick(body, inputAttrs)))
-    .then(user => res.jsend.success(processOutput(user)));
+    .then(user => res.jsend.success(user.profile));
 }
 
 function destroy({ params }, res) {
   sequelize.transaction(async transaction => {
     const user = await User.findById(params.id, { transaction });
     if (!user) createError(NOT_FOUND);
-    ActivityTracker.untrack(params.id);
+    user.session.end();
     await Enrollment.destroy({ where: { studentId: user.id }, transaction });
     await user.destroy({ transaction });
     res.end();
@@ -79,7 +73,7 @@ function login({ body }, res) {
     .then(user => user || createError(NOT_FOUND, 'Wrong password!'))
     .then(user => {
       const token = user.createToken({ expiresIn: '5 days' });
-      res.jsend.success({ token, user: processOutput(user) });
+      res.jsend.success({ token, user: user.profile });
     });
 }
 
