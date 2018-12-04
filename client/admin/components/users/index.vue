@@ -10,20 +10,22 @@
         </v-btn>
       </v-toolbar>
       <div class="elevation-1 ml-2 mr-4">
-        <v-layout class="px-4 py-3 table-toolbar">
-          <v-flex lg6>
-            <v-checkbox
-              v-model="showArchived"
-              label="Show archived users"/>
-          </v-flex>
-          <v-spacer/>
+        <v-layout column align-end class="px-4 table-toolbar">
           <v-flex lg3>
             <v-text-field
               v-model="filter"
               append-icon="mdi-magnify"
               label="Search"
               single-line
+              hide-details
               clearable/>
+          </v-flex>
+          <v-flex lg3>
+            <v-checkbox
+              v-model="showArchived"
+              label="Show archived users"
+              class="d-inline-block mt-2 pt-0 archived-checkbox"
+              hide-details/>
           </v-flex>
         </v-layout>
         <v-data-table
@@ -50,18 +52,10 @@
                   mdi-pencil
                 </v-icon>
                 <v-icon
-                  v-if="!props.item.deletedAt"
-                  @click="showConfirmationDialog(props.item, 'archive')"
+                  @click="showConfirmationDialog(props.item)"
                   small
                   class="ml-2">
-                  mdi-account-off
-                </v-icon>
-                <v-icon
-                  v-else
-                  @click="showConfirmationDialog(props.item, 'reactivate')"
-                  small
-                  class="ml-2">
-                  mdi-account-convert
+                  {{ `mdi-account-${props.item.deletedAt ? 'convert' : 'off'}` }}
                 </v-icon>
               </td>
             </tr>
@@ -74,10 +68,9 @@
         @updated="fetch(defaultPage)"
         @created="fetch(defaultPage)"/>
       <confirmation-dialog
-        :visible.sync="confirmation.dialog"
-        :action="confirmation.action"
-        :heading="confirmation.heading"
-        :message="confirmation.message"
+        v-bind="confirmation"
+        :visible="!!confirmation"
+        @update:visible="confirmation = null"
         @confirmed="fetch()"/>
     </v-flex>
   </v-layout>
@@ -101,7 +94,7 @@ const headers = () => [
   { text: 'Date Created', value: 'createdAt' },
   { text: 'Actions', value: 'email', align: 'center', sortable: false }
 ];
-const actions = (user) => ({
+const actions = user => ({
   archive: () => api.remove(user),
   reactivate: () => api.create(user)
 });
@@ -118,7 +111,7 @@ export default {
       userDialog: false,
       editedUser: null,
       showArchived: null,
-      confirmation: { dialog: null }
+      confirmation: null
     };
   },
   computed: {
@@ -140,13 +133,13 @@ export default {
       this.users = items;
       this.totalItems = total;
     }, 400),
-    showConfirmationDialog(user, action) {
+    showConfirmationDialog(user) {
+      const action = user.deletedAt ? 'reactivate' : 'archive';
       const name = user.firstName + ' ' + user.lastName;
       this.confirmation = {
         heading: `${humanize(action)} user`,
         message: `Are you sure you want to ${action} user "${name}"?`,
-        action: actions(user)[action],
-        dialog: true
+        action: actions(user)[action]
       };
     }
   },
@@ -172,5 +165,22 @@ export default {
 
 .archived {
   background: #ebebeb;
+}
+
+.archived-checkbox /deep/ .v-input__slot {
+  flex-direction: row-reverse;
+
+  .v-input--selection-controls__input {
+    justify-content: center;
+    margin-right: 0;
+  }
+
+  .v-icon {
+    font-size: 18px;
+  }
+
+  label {
+    font-size: 14px;
+  }
 }
 </style>
