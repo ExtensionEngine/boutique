@@ -7,7 +7,8 @@ router
   .get('/catalog', ctrl.getCatalog)
   .get('/', ctrl.list)
   .post('/', ctrl.upsert)
-  .patch('/:id', ctrl.upsert);
+  .patch('/:id', ctrl.upsert)
+  .delete('/:id', ctrl.destroy);
 
 module.exports = {
   path: '/content-repo',

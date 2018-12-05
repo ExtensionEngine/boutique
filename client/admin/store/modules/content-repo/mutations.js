@@ -1,4 +1,5 @@
 export {
   fetch,
-  save
+  save,
+  remove
 } from '@/common/store/helpers/mutations';

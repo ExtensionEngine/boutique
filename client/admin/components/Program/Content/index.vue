@@ -36,14 +36,26 @@
             </v-btn>
             <span v-else-if="item.repoVersion">Synced</span>
           </td>
+          <td class="no-wrap text-xs-center">
+            <v-icon @click="showConfirmationDialog(item)" small>
+              mdi-delete
+            </v-icon>
+          </td>
         </template>
       </v-data-table>
+      <confirmation-dialog
+        :visible.sync="confirmation.dialog"
+        :action="confirmation.action"
+        :heading="confirmation.heading"
+        :message="confirmation.message"
+        @confirmed="fetch()"/>
     </div>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex';
+import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
 import ContentDialog from './ContentDialog';
 import filter from 'lodash/filter';
 import fuzzysearch from 'fuzzysearch';
@@ -55,13 +67,17 @@ const headers = () => [
   { text: 'Name', value: 'name', align: 'left' },
   { text: 'Published Version', value: 'repoVersion' },
   { text: 'Imported Version', value: 'publishedAt' },
-  { text: 'Sync', value: 'id', sortable: false, align: 'center' }
+  { text: 'Sync', value: 'id', sortable: false, align: 'center' },
+  { text: 'Actions', value: 'id', sortable: false, align: 'center' }
 ];
 
 export default {
   name: 'imported-content',
   props: { programId: { type: Number, required: true } },
-  data: () => ({ filter: null }),
+  data: () => ({
+    filter: null,
+    confirmation: { dialog: null }
+  }),
   computed: {
     ...mapState('contentRepo', { repoStore: 'items' }),
     headers,
@@ -82,12 +98,22 @@ export default {
         : 'Click on the button above to import content.';
     }
   },
-  methods: mapActions('contentRepo', ['fetch', 'save']),
+  methods: {
+    ...mapActions('contentRepo', ['fetch', 'save', 'remove']),
+    showConfirmationDialog(item) {
+      Object.assign(this.confirmation, {
+        message: `Are you sure you want to archive "${item.name}"?`,
+        heading: 'Archive content repository',
+        action: () => this.remove(item),
+        dialog: true
+      });
+    }
+  },
   created() {
     const { programId } = this;
     return this.fetch({ programId, srcVersion: true });
   },
-  components: { ContentDialog }
+  components: { ConfirmationDialog, ContentDialog }
 };
 </script>
 

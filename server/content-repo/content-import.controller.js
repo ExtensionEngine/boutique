@@ -38,8 +38,14 @@ async function upsert({ body }, res) {
   });
 }
 
+async function destroy(req, res) {
+  await ContentRepo.destroy({ where: { id: req.params.id } });
+  res.end();
+}
+
 module.exports = {
   list,
   getCatalog,
-  upsert
+  upsert,
+  destroy
 };
