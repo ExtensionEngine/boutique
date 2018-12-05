@@ -85,6 +85,7 @@ const headers = () => [
   { text: 'First Name', value: 'firstName' },
   { text: 'Last Name', value: 'lastName' },
   { text: 'Date Created', value: 'createdAt' },
+  { text: 'Last Active', value: 'lastActive' },
   { text: 'Actions', value: 'email', align: 'center', sortable: false }
 ];
 

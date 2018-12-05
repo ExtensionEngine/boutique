@@ -2,6 +2,7 @@ import request from './request';
 
 const url = {
   login: '/users/login',
+  logout: '/users/logout',
   forgotPassword: '/users/forgotPassword',
   resetPassword: '/users/resetPassword'
 };
@@ -16,9 +17,8 @@ function login(credentials) {
 }
 
 function logout() {
-  window.localStorage.removeItem('LMS_TOKEN');
-  // TODO: Add server side invalidation
-  return Promise.resolve(true);
+  return request.post(url.logout)
+    .finally(() => window.localStorage.removeItem('LMS_TOKEN'));
 }
 
 function forgotPassword(email) {
