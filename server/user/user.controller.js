@@ -77,6 +77,13 @@ function login({ body }, res) {
     });
 }
 
+function logout(req, res) {
+  const id = req.user.id;
+  return User.findById(id)
+    .then(user => user.session.end())
+    .then(() => res.end());
+}
+
 function invite({ params, origin }, res) {
   return User.findById(params.id, { paranoid: false })
     .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
@@ -120,6 +127,7 @@ module.exports = {
   patch,
   destroy,
   login,
+  logout,
   invite,
   forgotPassword,
   resetPassword
