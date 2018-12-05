@@ -1,7 +1,7 @@
 <template>
   <v-app id="app">
     <sidebar :drawer.sync="drawer" :programId="programId"/>
-    <navbar :drawer.sync="drawer" :programId="programId"/>
+    <navbar :drawer.sync="drawer"/>
     <v-content>
       <v-container fluid fill-height class="grey lighten-4">
         <router-view :programId.sync="programId"/>
