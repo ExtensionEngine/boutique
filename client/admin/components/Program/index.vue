@@ -1,7 +1,8 @@
 <template>
-  <v-layout :key="programId">
+  <v-layout :key="programId" column>
+    <v-breadcrumbs v-if="program" :items="items" divider="/" class="py-1"/>
     <v-flex>
-      <v-tabs color="#f5f5f5" class="mt-2">
+      <v-tabs color="#f5f5f5" class="mt-0">
         <v-tab :to="{ name: 'enrollments', params: { programId } }" ripple>
           Enrollments
         </v-tab>
@@ -28,6 +29,12 @@ export default {
     ...mapState('programs', { programs: 'items' }),
     program() {
       return find(this.programs, { id: this.programId });
+    },
+    items() {
+      return [
+        { text: 'Programs', disabled: true },
+        { text: this.program.name, disabled: true }
+      ];
     }
   },
   methods: mapActions('programs', ['get']),
