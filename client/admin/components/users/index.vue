@@ -96,7 +96,7 @@ const headers = () => [
 ];
 const actions = user => ({
   archive: () => api.remove(user),
-  reactivate: () => api.create(user)
+  restore: () => api.create(user)
 });
 
 export default {
@@ -134,7 +134,7 @@ export default {
       this.totalItems = total;
     }, 400),
     showConfirmationDialog(user) {
-      const action = user.deletedAt ? 'reactivate' : 'archive';
+      const action = user.deletedAt ? 'restore' : 'archive';
       const name = user.firstName + ' ' + user.lastName;
       this.confirmation = {
         heading: `${humanize(action)} user`,
