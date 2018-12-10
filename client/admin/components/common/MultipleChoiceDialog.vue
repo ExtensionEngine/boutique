@@ -3,7 +3,11 @@
     <v-form>
       <v-card>
         <v-card-title class="headline">{{ heading }}</v-card-title>
-        <v-card-text>{{ message }}</v-card-text>
+        <v-card-text class="pb-1">{{ message }}</v-card-text>
+        <v-card-text v-if="warning" class="pt-1 caption">
+          <span class="warning-label">Warning: </span>
+          {{ warning }}
+        </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn @click="close" flat>Cancel</v-btn>
@@ -34,6 +38,7 @@ export default {
     display: { type: Boolean, default: false },
     heading: { type: String, default: '' },
     message: { type: String, default: '' },
+    warning: { type: String, default: '' },
     actions: { type: Array, default: () => [] } // todo: validate
   },
   computed: {
@@ -64,3 +69,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.warning-label {
+  color: red;
+}
+</style>

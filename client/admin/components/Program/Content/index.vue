@@ -37,8 +37,11 @@
             <span v-else-if="item.repoVersion">Synced</span>
           </td>
           <td class="no-wrap text-xs-center">
-            <v-icon @click="showConfirmationDialog(item)" small>
+            <v-icon v-if="!item.deletedAt" @click="showConfirmationDialog(item)" small>
               mdi-delete
+            </v-icon>
+            <v-icon v-else @click="showMultipleChoiceDialog(item)" small>
+              mdi-restore
             </v-icon>
           </td>
         </template>
@@ -49,16 +52,21 @@
         :heading="confirmation.heading"
         :message="confirmation.message"
         @confirmed="fetch()"/>
+      <multiple-choice-dialog
+        v-bind="multipleChoice"
+        @update:display="multipleChoice.display = null"/>
     </div>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex';
+import api from '@/admin/api/contentRepo';
 import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
 import ContentDialog from './ContentDialog';
 import filter from 'lodash/filter';
 import fuzzysearch from 'fuzzysearch';
+import MultipleChoiceDialog from '@/admin/components/common/MultipleChoiceDialog';
 
 const fuzzy = (needle, haystack) => {
   return fuzzysearch(needle.toLowerCase(), haystack.toLowerCase());
@@ -76,6 +84,7 @@ export default {
   props: { programId: { type: Number, required: true } },
   data: () => ({
     filter: null,
+    multipleChoice: null,
     confirmation: { dialog: null }
   }),
   computed: {
@@ -107,13 +116,25 @@ export default {
         action: () => this.remove(item),
         dialog: true
       });
+    },
+    showMultipleChoiceDialog(item) {
+      this.multipleChoice = {
+        heading: `${item.name}`,
+        message: `Would you like to restore this course or import the latest published version?`,
+        warning: 'Importing new repository overwrites the existing (archived) copy.',
+        actions: [
+          { label: 'restore', callback: () => api.restore(item) },
+          { label: 'import', callback: () => api.patch(item) }
+        ],
+        display: true
+      };
     }
   },
   created() {
     const { programId } = this;
-    return this.fetch({ programId, srcVersion: true });
+    return this.fetch({ programId, srcVersion: true, deleted: true });
   },
-  components: { ConfirmationDialog, ContentDialog }
+  components: { ConfirmationDialog, ContentDialog, MultipleChoiceDialog }
 };
 </script>
 

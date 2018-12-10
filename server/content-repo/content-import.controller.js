@@ -1,15 +1,15 @@
-'use strict';
 
+'use strict';
 const { ContentRepo } = require('../common/database');
 const forEach = require('lodash/forEach');
 const keyBy = require('lodash/keyBy');
 const pick = require('lodash/pick');
 const Storage = require('./content-storage');
 
-const outputAttributes = ['id', 'sourceId', 'programId', 'name', 'publishedAt'];
+const outputAttributes = ['id', 'sourceId', 'programId', 'name', 'publishedAt', 'deletedAt'];
 
-async function list({ query: { programId, srcVersion = false } }, res) {
-  const opts = { where: { programId }, attributes: outputAttributes };
+async function list({ query: { programId, srcVersion = false, deleted } }, res) {
+  const opts = { where: { programId }, attributes: outputAttributes, paranoid: !deleted };
   const repos = await ContentRepo.findAll(opts);
   if (srcVersion) {
     const reposById = keyBy(await Storage.getCatalog(), 'id');
@@ -38,6 +38,11 @@ async function upsert({ body }, res) {
   });
 }
 
+async function restore(req, res) {
+  await ContentRepo.restore({ where: { id: req.body.id } });
+  res.end();
+}
+
 async function destroy(req, res) {
   await ContentRepo.destroy({ where: { id: req.params.id } });
   res.end();
@@ -47,5 +52,6 @@ module.exports = {
   list,
   getCatalog,
   upsert,
+  restore,
   destroy
 };
