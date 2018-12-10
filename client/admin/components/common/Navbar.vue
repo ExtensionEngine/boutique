@@ -31,10 +31,7 @@ export default {
     drawer: { type: Boolean, default: true },
     programId: { type: Number, default: null }
   },
-  computed: {
-    ...mapState('auth', ['user']),
-    ...mapState('programs', { programs: 'items' })
-  },
+  computed: mapState('auth', ['user']),
   methods: mapActions('auth', ['logout'])
 };
 </script>
