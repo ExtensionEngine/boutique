@@ -52,6 +52,6 @@ module.exports = {
   list,
   getCatalog,
   upsert,
-  restore,
-  destroy
+  destroy,
+  restore
 };

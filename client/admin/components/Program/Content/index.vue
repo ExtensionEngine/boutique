@@ -60,10 +60,8 @@
         </template>
       </v-data-table>
       <confirmation-dialog
-        :visible.sync="confirmation.dialog"
-        :action="confirmation.action"
-        :heading="confirmation.heading"
-        :message="confirmation.message"
+        v-bind="confirmation"
+        @update:visible="confirmation = null"
         @confirmed="fetchProgramRepos()"/>
       <multiple-choice-dialog
         v-bind="multipleChoice"
@@ -99,8 +97,8 @@ export default {
   data: () => ({
     filter: null,
     showArchived: true,
-    multipleChoice: null,
-    confirmation: { dialog: null }
+    confirmation: null,
+    multipleChoice: null
   }),
   computed: {
     ...mapState('contentRepo', { repoStore: 'items' }),
@@ -129,12 +127,12 @@ export default {
       return this.fetch({ programId, srcVersion: true, deleted: true });
     },
     showConfirmationDialog(item) {
-      Object.assign(this.confirmation, {
+      this.confirmation = {
         message: `Are you sure you want to archive "${item.name}"?`,
         heading: 'Archive content repository',
         action: () => api.archive(item),
-        dialog: true
-      });
+        visible: true
+      };
     },
     showMultipleChoiceDialog(item) {
       this.multipleChoice = {
