@@ -5,7 +5,7 @@
         <v-card-title class="headline">{{ heading }}</v-card-title>
         <v-card-text class="pb-1">{{ message }}</v-card-text>
         <v-card-text v-if="warning" class="pt-1 caption">
-          <span class="warning-label">Warning: </span>
+          <span class="warning-label">Warning:</span>
           {{ warning }}
         </v-card-text>
         <v-card-actions>
@@ -14,6 +14,7 @@
           <v-btn
             v-for="(action, index) in actions"
             :key="index"
+            :disabled="isLoading"
             @click="execute(action.callback)"
             type="submit"
             color="red"
@@ -30,21 +31,26 @@
 import { withFocusTrap } from '@/common/focustrap';
 
 const el = vm => vm.$children[0].$refs.dialog;
+const validator = actions => {
+  if (!(actions instanceof Array)) return false;
+  return actions.every(el => el.label && el.callback);
+};
 
 export default {
   name: 'multiple-choice-dialog',
   mixins: [withFocusTrap({ el })],
   props: {
-    display: { type: Boolean, default: false },
+    visible: { type: Boolean, default: false },
     heading: { type: String, default: '' },
     message: { type: String, default: '' },
     warning: { type: String, default: '' },
-    actions: { type: Array, default: () => [] } // todo: validate
+    actions: { type: Array, default: () => [], validator: validator }
   },
+  data: () => ({ isLoading: false }),
   computed: {
     show: {
       get() {
-        return this.display;
+        return this.visible;
       },
       set(value) {
         if (!value) this.close();
@@ -53,13 +59,16 @@ export default {
   },
   methods: {
     close() {
-      this.$emit('update:display', false);
+      this.$emit('closed', false);
     },
     execute(action) {
-      return Promise.resolve(action()).then(() => {
-        this.close();
-        this.$emit('executed');
-      });
+      this.isLoading = true;
+      return Promise.resolve(action())
+        .then(() => {
+          this.close();
+          this.$emit('completed');
+        })
+        .finally(() => (this.isLoading = false));
     }
   },
   watch: {

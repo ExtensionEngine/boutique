@@ -75,8 +75,7 @@ class ContentRepo extends Model {
     return !id
       ? ContentRepo.create(data)
       : ContentRepo.update(data, { where: { id }, returning: true, paranoid: false })
-          .then(([_, rows]) => rows[0])
-          .then(row => row.restore());
+          .then(([_, rows]) => rows[0].restore());
   }
 }
 

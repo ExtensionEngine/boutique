@@ -5,15 +5,23 @@
       <content-dialog :programId="programId" :importedRepos="importedRepos"/>
     </v-toolbar>
     <div class="elevation-1 ml-2 mr-4">
-      <v-layout class="px-4 py-3 table-toolbar">
-        <v-flex lg3 offset-lg9>
+      <v-layout column align-end class="px-4 table-toolbar">
+        <v-flex lg3>
           <v-text-field
             v-model.trim="filter"
             :disabled="importedRepos.length <= 0"
             append-icon="mdi-magnify"
             label="Search"
+            hide-details
             single-line
             clearable/>
+        </v-flex>
+        <v-flex lg3>
+          <v-checkbox
+            v-model="showArchived"
+            label="Show archived content"
+            class="d-inline-block mt-2 pt-0 archived-checkbox"
+            hide-details/>
         </v-flex>
       </v-layout>
       <v-data-table
@@ -23,27 +31,32 @@
         item-key="_cid"
         hide-actions>
         <template slot="items" slot-scope="{ item }">
-          <td>{{ item.name }}</td>
-          <td class="no-wrap">{{ item.repoVersion | formatDate }}</td>
-          <td class="no-wrap">{{ item.publishedAt | formatDate }}</td>
-          <td class="no-wrap text-xs-center actions">
-            <v-btn
-              v-if="item.repoVersion > item.publishedAt"
-              @click="save(item)"
-              flat
-              small>
-              Sync
-            </v-btn>
-            <span v-else-if="item.repoVersion">Synced</span>
-          </td>
-          <td class="no-wrap text-xs-center">
-            <v-icon v-if="!item.deletedAt" @click="showConfirmationDialog(item)" small>
-              mdi-delete
-            </v-icon>
-            <v-icon v-else @click="showMultipleChoiceDialog(item)" small>
-              mdi-restore
-            </v-icon>
-          </td>
+          <tr
+            v-show="!item.deletedAt || showArchived"
+            :class="{ 'archived': item.deletedAt }"
+            :key="item.sourceId">
+            <td>{{ item.name }}</td>
+            <td class="no-wrap">{{ item.repoVersion | formatDate }}</td>
+            <td class="no-wrap">{{ item.publishedAt | formatDate }}</td>
+            <td class="no-wrap text-xs-center actions">
+              <v-btn
+                v-if="item.repoVersion > item.publishedAt"
+                @click="save(item)"
+                flat
+                small>
+                Sync
+              </v-btn>
+              <span v-else-if="item.repoVersion">Synced</span>
+            </td>
+            <td class="no-wrap text-xs-center">
+              <v-icon v-if="!item.deletedAt" @click="showConfirmationDialog(item)" small>
+                mdi-delete
+              </v-icon>
+              <v-icon v-else @click="showMultipleChoiceDialog(item)" small>
+                mdi-restore
+              </v-icon>
+            </td>
+          </tr>
         </template>
       </v-data-table>
       <confirmation-dialog
@@ -51,10 +64,11 @@
         :action="confirmation.action"
         :heading="confirmation.heading"
         :message="confirmation.message"
-        @confirmed="fetch()"/>
+        @confirmed="fetchProgramRepos()"/>
       <multiple-choice-dialog
         v-bind="multipleChoice"
-        @update:display="multipleChoice.display = null"/>
+        @closed="multipleChoice = null"
+        @completed="fetchProgramRepos()"/>
     </div>
   </div>
 </template>
@@ -84,6 +98,7 @@ export default {
   props: { programId: { type: Number, required: true } },
   data: () => ({
     filter: null,
+    showArchived: true,
     multipleChoice: null,
     confirmation: { dialog: null }
   }),
@@ -108,31 +123,34 @@ export default {
     }
   },
   methods: {
-    ...mapActions('contentRepo', ['fetch', 'save', 'remove']),
+    ...mapActions('contentRepo', ['fetch', 'save']),
+    fetchProgramRepos() {
+      const { programId } = this;
+      return this.fetch({ programId, srcVersion: true, deleted: true });
+    },
     showConfirmationDialog(item) {
       Object.assign(this.confirmation, {
         message: `Are you sure you want to archive "${item.name}"?`,
         heading: 'Archive content repository',
-        action: () => this.remove(item),
+        action: () => api.archive(item),
         dialog: true
       });
     },
     showMultipleChoiceDialog(item) {
       this.multipleChoice = {
         heading: `${item.name}`,
-        message: `Would you like to restore this course or import the latest published version?`,
+        message: 'Would you like to restore this course or import the latest published version?',
         warning: 'Importing new repository overwrites the existing (archived) copy.',
         actions: [
           { label: 'restore', callback: () => api.restore(item) },
           { label: 'import', callback: () => api.patch(item) }
         ],
-        display: true
+        visible: true
       };
     }
   },
   created() {
-    const { programId } = this;
-    return this.fetch({ programId, srcVersion: true, deleted: true });
+    this.fetchProgramRepos();
   },
   components: { ConfirmationDialog, ContentDialog, MultipleChoiceDialog }
 };
@@ -141,5 +159,26 @@ export default {
 <style lang="scss" scoped>
 .actions {
   width: 250px;
+}
+
+.archived {
+  background: #ebebeb;
+}
+
+.archived-checkbox /deep/ .v-input__slot {
+  flex-direction: row-reverse;
+
+  .v-input--selection-controls__input {
+    justify-content: center;
+    margin-right: 0;
+  }
+
+  .v-icon {
+    font-size: 18px;
+  }
+
+  label {
+    font-size: 14px;
+  }
 }
 </style>

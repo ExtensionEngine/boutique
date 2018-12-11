@@ -3,8 +3,8 @@ import request from '@/common/api/request';
 
 const url = {
   catalog: '/content-repo/catalog',
-  restore: '/content-repo/restore',
-  resource: id => `/content-repo/${id}`
+  resource: id => `/content-repo/${id}`,
+  restore: id => `content-repo/${id}/restore`
 };
 
 function getCatalog() {
@@ -15,12 +15,17 @@ function patch(item) {
   return request.patch(url.resource(item.id), item);
 }
 
+function archive(item) {
+  return request.delete(url.resource(item.id));
+}
+
 function restore(item) {
-  return request.post(url.restore, item);
+  return request.post(url.restore(item.id));
 }
 
 export default {
   getCatalog,
+  archive,
   restore,
   patch
 };

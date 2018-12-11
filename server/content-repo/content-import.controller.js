@@ -38,14 +38,14 @@ async function upsert({ body }, res) {
   });
 }
 
-async function restore(req, res) {
-  await ContentRepo.restore({ where: { id: req.body.id } });
-  res.end();
+function destroy({ params }, res) {
+  ContentRepo.destroy({ where: { id: params.id } })
+    .then(() => res.end());
 }
 
-async function destroy(req, res) {
-  await ContentRepo.destroy({ where: { id: req.params.id } });
-  res.end();
+function restore({ params }, res) {
+  ContentRepo.restore({ where: { id: params.id } })
+    .then(() => res.end());
 }
 
 module.exports = {
