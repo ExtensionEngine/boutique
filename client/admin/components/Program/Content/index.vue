@@ -23,7 +23,7 @@
         item-key="_cid"
         hide-actions>
         <template slot="items" slot-scope="{ item }">
-          <td>{{ item.name }}</td>
+          <td v-html="filter ? item.html : item.name"></td>
           <td class="no-wrap">{{ item.repoVersion | formatDate }}</td>
           <td class="no-wrap">{{ item.publishedAt | formatDate }}</td>
           <td class="no-wrap text-xs-center actions">
@@ -46,11 +46,9 @@
 import { mapActions, mapState } from 'vuex';
 import ContentDialog from './ContentDialog';
 import filter from 'lodash/filter';
-import fuzzysearch from 'fuzzysearch';
+import getFuzzyMatches from '@/common/fuzzysearch';
+import highlight from '@/common/highlight';
 
-const fuzzy = (needle, haystack) => {
-  return fuzzysearch(needle.toLowerCase(), haystack.toLowerCase());
-};
 const headers = () => [
   { text: 'Name', value: 'name', align: 'left' },
   { text: 'Published Version', value: 'repoVersion' },
@@ -73,7 +71,10 @@ export default {
     filteredRepos() {
       if (!this.filter) return this.importedRepos;
       return this.importedRepos.filter(it => {
-        return it.name && fuzzy(this.filter, it.name);
+        const indices = getFuzzyMatches(it.name, this.filter);
+        if (!indices.length) return false;
+        it.html = highlight(it.name, indices);
+        return true;
       });
     },
     noContentMessage() {

@@ -80,7 +80,6 @@
     "file-type": "^10.1.0",
     "focus-trap": "^3.0.0",
     "fs-blob-store": "^5.2.1",
-    "fuzzysearch": "^1.0.3",
     "get-stream": "^4.1.0",
     "helmet": "^3.14.0",
     "http-errors": "^1.7.1",
