@@ -46,7 +46,7 @@
 import { mapActions, mapState } from 'vuex';
 import ContentDialog from './ContentDialog';
 import filter from 'lodash/filter';
-import getFuzzyMatches from '@/common/fuzzysearch';
+import Fuse from 'fuse.js';
 import highlight from '@/common/highlight';
 
 const headers = () => [
@@ -70,11 +70,12 @@ export default {
     },
     filteredRepos() {
       if (!this.filter) return this.importedRepos;
-      return this.importedRepos.filter(it => {
-        const indices = getFuzzyMatches(it.name, this.filter);
-        if (!indices.length) return false;
-        it.html = highlight(it.name, indices);
-        return true;
+      const options = { keys: ['name'], includeMatches: true };
+      const fuse = new Fuse(this.importedRepos, options);
+      const result = fuse.search(this.filter);
+      return result.map(it => {
+        it.item.html = highlight(it.item.name, it.matches[0].indices);
+        return it.item;
       });
     },
     noContentMessage() {
