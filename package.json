@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev:client": "poi",
+    "dev:client": "poi --serve",
     "dev:server": "nodemon -r dotenv/config ./server | bunyan",
     "db": "node ./server/script/sequelize",
     "db:reset": "npm run db drop && npm run db create && npm run db migrate",
@@ -14,8 +14,8 @@
     "lint": "npm run lint:js; npm run lint:scss",
     "debug": "nodemon --inspect-brk -r dotenv/config ./server | bunyan",
     "start": "NODE_ENV=production node -r dotenv/config ./server",
-    "build": "poi build",
-    "bundle-report": "poi build --bundle-report",
+    "build": "poi --prod",
+    "bundle-report": "poi --prod --bundle-report",
     "clean": "del-cli dist/* !dist/.gitkeep",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -32,7 +32,7 @@
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@poi/plugin-bundle-report": "^10.0.1",
-    "@poi/plugin-eslint": "^10.0.2",
+    "@poi/plugin-eslint": "^12.0.0",
     "dargs": "^6.0.0",
     "del-cli": "^1.1.0",
     "emoji-strip": "^1.0.1",
@@ -47,7 +47,7 @@
     "eslint-plugin-vue": "^4.7.1",
     "node-sass": "^4.9.4",
     "nodemon": "^1.18.6",
-    "poi": "^10.2.10",
+    "poi": "^12.2.2",
     "sass-loader": "^7.1.0",
     "sequelize-cli": "^5.2.0",
     "split2": "^3.0.0",
