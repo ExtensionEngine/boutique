@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 const config = require('./server/config');
 const path = require('path');
 
@@ -40,6 +41,10 @@ module.exports = {
     configureModuleResolution(config);
     config.resolve.alias.merge(aliases);
     config.resolve.extensions.merge(extensions);
+  },
+  configureWebpack(config) {
+    if (!process.argv.includes('--bundle-report')) return;
+    config.plugins.push(new BundleAnalyzerPlugin());
   },
   devServer
 };
