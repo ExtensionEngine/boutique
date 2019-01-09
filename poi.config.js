@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const config = require('./server/config');
 const path = require('path');
 
