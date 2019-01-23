@@ -4,10 +4,15 @@ const config = require('./server/config');
 const path = require('path');
 
 const isProduction = process.env.NODE_ENV === 'production';
-const aliases = { '@': path.resolve(__dirname, './client') };
 const extensions = ['.vue'];
+const aliases = {
+  '@': path.resolve(__dirname, './client')
+};
 
 const devServer = {
+  headers: {
+    'X-Powered-By': 'Webpack DevSever'
+  },
   proxy: {
     '/api': {
       target: `http://${config.ip}:${config.port}`

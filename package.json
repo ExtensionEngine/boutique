@@ -46,7 +46,7 @@
     "eslint-plugin-vue": "^4.7.1",
     "node-sass": "^4.9.4",
     "nodemon": "^1.18.6",
-    "poi": "^12.2.2",
+    "poi": "^12.4.8",
     "sass-loader": "^7.1.0",
     "sequelize-cli": "^5.2.0",
     "split2": "^3.0.0",
