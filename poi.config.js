@@ -30,10 +30,10 @@ module.exports = args => ({
   outDir: 'dist',
   html: [{
     filename: 'admin/index.html',
-    excludeChunks: ['student']
+    excludeChunks: ['student', 'vendors~student']
   }, {
     filename: 'index.html',
-    excludeChunks: ['admin']
+    excludeChunks: ['admin', 'vendors~admin']
   }],
   chainWebpack(config) {
     configureModuleResolution(config);
