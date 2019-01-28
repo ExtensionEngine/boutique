@@ -25,6 +25,13 @@ const devServer = {
   hotEntries: ['admin', 'student']
 };
 
+const optimization = {
+  splitChunks: {
+    chunks: 'all'
+  },
+  runtimeChunk: true
+};
+
 module.exports = {
   plugins: [
     '@poi/eslint'
@@ -49,6 +56,7 @@ module.exports = {
     config.resolve.extensions.merge(extensions);
   },
   configureWebpack(config) {
+    config.optimization = optimization;
     if (!argv._.includes('--bundle-report')) return;
     config.plugins.push(new BundleAnalyzerPlugin());
   },
