@@ -15,7 +15,8 @@
     "debug": "nodemon --inspect-brk -r dotenv/config ./server | bunyan",
     "start": "NODE_ENV=production node -r dotenv/config ./server",
     "build": "poi --prod",
-    "bundle-report": "poi --prod --bundle-report",
+    "webpack:inspect-config": "poi --inspect-webpack",
+    "webpack:bundle-report": "poi --prod --bundle-report",
     "clean": "del-cli dist/* !dist/.gitkeep",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
