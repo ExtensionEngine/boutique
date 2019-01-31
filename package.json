@@ -9,7 +9,7 @@
     "db:reset": "npm run db drop && npm run db create && npm run db migrate",
     "db:seed": "npm run db seed:all",
     "user:add": "node ./server/script/add-user.js",
-    "lint:js": "eslint --ext .js,.vue server client",
+    "lint:js": "eslint --ext .js,.vue .",
     "lint:scss": "stylelint \"client/**/*.vue\" \"client/**/*.scss\"",
     "lint": "npm run lint:js; npm run lint:scss",
     "debug": "nodemon --inspect-brk -r dotenv/config ./server | bunyan",
