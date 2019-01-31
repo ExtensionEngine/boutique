@@ -15,7 +15,7 @@
     "debug": "nodemon --inspect-brk -r dotenv/config ./server | bunyan",
     "start": "NODE_ENV=production node -r dotenv/config ./server",
     "build": "poi --prod",
-    "bundle-report": "poi --prod -- --bundle-report",
+    "bundle-report": "poi --prod --bundle-report",
     "clean": "del-cli dist/* !dist/.gitkeep",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -47,7 +47,7 @@
     "minimist": "^1.2.0",
     "node-sass": "^4.9.4",
     "nodemon": "^1.18.6",
-    "poi": "^12.4.8",
+    "poi": "^12.5.4",
     "sass-loader": "^7.1.0",
     "sequelize-cli": "^5.2.0",
     "split2": "^3.0.0",
