@@ -3,10 +3,17 @@ import request from '@/common/api/request';
 
 const url = {
   root: '/users',
+  profile: '/users/me',
   resource: it => `/users/${it.id}`,
   invite: it => `/users/${it.id}/invite`,
   import: '/users/import'
 };
+
+function getProfile(token) {
+  const params = {};
+  if (token) params.token = token;
+  return request.get(url.profile, { params }).then(extractData);
+}
 
 function fetch(params = {}) {
   return request.get(url.root, { params: processParams(params) })
@@ -34,6 +41,7 @@ function bulkImport(items) {
 }
 
 export default {
+  getProfile,
   fetch,
   create,
   update,

@@ -22,15 +22,18 @@ passport.use(new LocalStrategy(options, (email, password, done) => {
 const jwtOptions = {
   ...config,
   jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme(config.scheme),
-  secretOrKey: config.secret,
-  audience: Audience.Scope.Access
+  secretOrKey: config.secret
 };
 
-passport.use(new Strategy(jwtOptions, (payload, done) => {
-  return User.findById(payload.id)
-    .then(user => done(null, user || false))
-    .error(err => done(err, false));
-}));
+passport.use(new Strategy({
+  ...jwtOptions,
+  audience: Audience.Scope.Access
+}, verify));
+passport.use('token', new Strategy({
+  ...jwtOptions,
+  audience: Audience.Scope.Setup,
+  jwtFromRequest: ExtractJwt.fromUrlQueryParameter('token')
+}, verify));
 
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((user, done) => done(null, user));
@@ -45,3 +48,9 @@ module.exports = {
     return passport.authenticate(strategy, { ...options, failWithError: true });
   }
 };
+
+function verify(payload, done) {
+  return User.findById(payload.id)
+    .then(user => done(null, user || false))
+    .error(err => done(err, false));
+}
