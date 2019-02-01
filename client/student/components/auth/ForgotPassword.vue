@@ -22,6 +22,7 @@
 
 <script>
 import { delay } from 'bluebird';
+import get from 'lodash/get';
 import { mapActions } from 'vuex';
 import VInput from '@/common/components/form/VInput';
 
@@ -37,11 +38,17 @@ export default {
     submit() {
       this.forgotPassword({ email: this.email })
         .then(() => {
-          this.message = 'Reset email sent';
+          this.message =
+            'Please check your email and click the link to reset your password.';
           return delay(2000);
         })
         .then(() => this.$router.push('/'))
-        .catch(() => (this.message = 'Oops! Something went wrong.'));
+        .catch(err => {
+          const status = get(err, 'response.status');
+          this.message = status === 404
+            ? `We couldn't find account associated with ${this.email}.`
+            : 'Oops! Something went wrong.';
+        });
     }
   },
   components: { VInput }
