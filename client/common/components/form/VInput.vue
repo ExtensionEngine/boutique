@@ -40,6 +40,9 @@ export default {
       return this.vErrors.has(this.name);
     }
   },
-  inject: ['$validator']
+  inject: ['$validator'],
+  beforeDestroy() {
+    this.$validator.pause();
+  }
 };
 </script>
