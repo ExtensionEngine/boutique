@@ -29,7 +29,7 @@ app.use(express.static(config.staticFolder));
 app.use(jsend);
 
 // Log http requests
-const isSuccessful = res => res.statusCode >= 200 && res.statusCode < 400;
+const isSuccessful = res => res.statusCode >= 200 && res.statusCode < 300;
 const format = process.env.NODE_ENV === 'production' ? 'combined' : 'dev';
 app.use(morgan(format, {
   skip: (req, res) => isSuccessful(res),
