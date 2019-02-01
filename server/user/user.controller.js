@@ -76,6 +76,12 @@ function invite({ params, origin }, res) {
     .then(() => res.status(ACCEPTED).end());
 }
 
+function changePassword({ body, user }, res) {
+  const { password, newPassword } = body;
+  return user.changePassword(password, newPassword)
+    .then(() => res.status(ACCEPTED).end());
+}
+
 function forgotPassword({ origin, body }, res) {
   const { email } = body;
   return User.find({ where: { email } })
@@ -117,6 +123,7 @@ module.exports = {
   destroy,
   login,
   invite,
+  changePassword,
   forgotPassword,
   resetPassword,
   getProfile

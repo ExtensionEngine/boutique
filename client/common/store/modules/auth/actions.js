@@ -9,6 +9,10 @@ export const logout = () => {
   return auth.logout();
 };
 
+export const changePassword = (context, payload) => {
+  return auth.changePassword(payload);
+};
+
 export const forgotPassword = (context, { email }) => {
   return auth.forgotPassword(email);
 };

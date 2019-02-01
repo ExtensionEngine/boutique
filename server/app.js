@@ -1,6 +1,6 @@
 'use strict';
 
-const { INTERNAL_SERVER_ERROR, NOT_FOUND } = require('http-status');
+const { INTERNAL_SERVER_ERROR } = require('http-status');
 const AuthError = require('passport/lib/errors/authenticationerror');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -43,6 +43,16 @@ app.use(morgan(format, {
 // Mount main router
 app.use(config.apiPath, nocache(), router);
 
+app.use('/.well-known/change-password', (req, res, next) => {
+  if (config.useHistoryApiFallback) return res.redirect('')
+  res.redirect(`/#${req.originalUrl}`);
+});
+
+// Handle non-existing routes.
+if (config.useHistoryApiFallback) {
+  app.use(fallback('index.html', { root: config.staticFolder }));
+}
+
 // Global error handler.
 app.use((err, req, res, next) => {
   if ((err instanceof HttpError) || (err instanceof AuthError)) {
@@ -52,11 +62,5 @@ app.use((err, req, res, next) => {
   res.status(INTERNAL_SERVER_ERROR).end();
   logger.error({ req, err }, '🚨  Internal Error:', err.message);
 });
-
-// Handle non-existing routes.
-const notFound = config.useHistoryApiFallback
-  ? fallback('index.html', { root: config.staticFolder })
-  : (_, res) => res.sendStatus(NOT_FOUND);
-app.use(notFound);
 
 module.exports = app;

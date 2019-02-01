@@ -1,5 +1,6 @@
 import Activity from '@/student/components/program/Activity';
 import Auth from '@/student/components/auth';
+import ChangePassword from '@/student/components/auth/ChangePassword';
 import Courseware from '@/student/components/program/Courseware';
 import ForgotPassword from '@/student/components/auth/ForgotPassword';
 import get from 'lodash/get';
@@ -41,7 +42,15 @@ const router = new Router({
       path: 'reset-password/:token',
       name: 'reset-password',
       component: ResetPassword
+    }, {
+      path: 'change-password',
+      name: 'change-password',
+      component: ChangePassword,
+      meta: { auth: true }
     }]
+  }, {
+    path: '/.well-known/change-password',
+    redirect: { name: 'change-password' }
   }, {
     path: '/',
     component: Home,
@@ -73,6 +82,7 @@ router.beforeEach((to, from, next) => {
   const user = get(store.state, 'auth.user');
   const isNotAuthenticated = to.matched.some(it => it.meta.auth) && !user;
   if (isNotAuthenticated) return next({ name: 'login' });
+  if (to.name === 'change-password') return next();
   if (user && user.role === role.ADMIN) {
     document.location.replace(`${document.location.origin}/admin`);
   }

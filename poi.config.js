@@ -12,11 +12,10 @@ const devServer = {
   headers: {
     'X-Powered-By': 'Webpack DevSever'
   },
-  proxy: {
-    '/api': {
-      target: `http://${config.ip}:${config.port}`
-    }
-  },
+  proxy: [{
+    context: ['/.well-known/', '/api'],
+    target: `http://${config.ip}:${config.port}`
+  }],
   // Override using: `npm run dev:client -- --port <number>`
   port: 8081,
   hotEntries: ['admin', 'student']

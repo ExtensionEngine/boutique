@@ -2,6 +2,7 @@ import request from './request';
 
 const url = {
   login: '/users/login',
+  changePassword: '/users/changePassword',
   forgotPassword: '/users/forgotPassword',
   resetPassword: '/users/resetPassword'
 };
@@ -21,6 +22,10 @@ function logout() {
   return Promise.resolve(true);
 }
 
+function changePassword(body) {
+  return request.post(url.changePassword, body);
+}
+
 function forgotPassword(email) {
   return request.post(url.forgotPassword, { email });
 }
@@ -32,6 +37,7 @@ function resetPassword(body) {
 export default {
   login,
   logout,
+  changePassword,
   forgotPassword,
   resetPassword
 };

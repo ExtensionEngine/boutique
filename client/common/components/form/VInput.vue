@@ -27,15 +27,30 @@ export default {
   name: 'v-input',
   inheritAttrs: false,
   props: {
-    type: { type: String, default: 'text' },
-    name: { type: String, required: true },
-    value: { type: String, required: true },
-    validate: { type: [String, Object], default: null }
+    type: {
+      type: String,
+      default: 'text'
+    },
+    name: {
+      type: String,
+      required: true
+    },
+    label: {
+      type: String,
+      default() {
+        return humanize(this.name);
+      }
+    },
+    value: {
+      type: String,
+      required: true
+    },
+    validate: {
+      type: [String, Object],
+      default: null
+    }
   },
   computed: {
-    label() {
-      return humanize(this.name);
-    },
     showError() {
       return this.vErrors.has(this.name);
     }

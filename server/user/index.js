@@ -12,6 +12,7 @@ router
   .post('/forgotPassword', ctrl.forgotPassword)
   .post('/resetPassword', ctrl.resetPassword)
   .get('/me', auth.authenticate(['jwt', 'token']), ctrl.getProfile)
+  .post('/changePassword', auth.authenticate('jwt'), ctrl.changePassword)
   .use(auth.authenticate('jwt'))
   .get('/', ctrl.list)
   .post('/', ctrl.create)

@@ -14,6 +14,9 @@
         </v-avatar>
       </v-btn>
       <v-list>
+        <v-list-tile href="/#/auth/change-password">
+          Change password
+        </v-list-tile>
         <v-list-tile @click="logout">
           <v-list-tile-title>Logout</v-list-tile-title>
         </v-list-tile>

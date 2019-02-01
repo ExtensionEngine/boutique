@@ -5,9 +5,11 @@ const { Model, Sequelize, Op, UniqueConstraintError } = require('sequelize');
 const { role } = require('../../common/config');
 const { sql } = require('../common/database/helpers');
 const Audience = require('../common/auth/audience');
+const AuthError = require('passport/lib/errors/authenticationerror');
 const bcrypt = require('bcrypt');
 const castArray = require('lodash/castArray');
 const find = require('lodash/find');
+const HttpStatus = require('http-status');
 const jwt = require('jsonwebtoken');
 const logger = require('../common/logger')();
 const mail = require('../common/mail');
@@ -171,6 +173,12 @@ class User extends Model {
   async authenticate(password) {
     const result = await bcrypt.compare(password, this.password);
     return result && this;
+  }
+
+  async changePassword(password, newPassword) {
+    const isAuthenticated = await this.authenticate(password);
+    if (!isAuthenticated) throw new AuthError(HttpStatus[401]);
+    return this.update({ password: newPassword });
   }
 
   sendResetToken(options) {
