@@ -7,10 +7,10 @@
         <v-card-text>
           <v-autocomplete
             v-model="sourceId"
-            :items="availableRepos"
-            :loading="isLoading"
             @focus="focusTrap.pause()"
             @blur="focusTrap.unpause()"
+            :items="availableRepos"
+            :loading="isLoading"
             item-value="sourceId"
             no-data-text="No available repositories for import"
             prepend-icon="mdi-magnify"
@@ -20,7 +20,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer/>
-          <v-btn :disabled="isImporting" @click="close">Cancel</v-btn>
+          <v-btn @click="close" :disabled="isImporting">Cancel</v-btn>
           <v-btn
             :disabled="!sourceId"
             :loading="isImporting"

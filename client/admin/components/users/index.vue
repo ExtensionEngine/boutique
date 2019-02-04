@@ -29,7 +29,7 @@
           :must-sort="true"
           class="user-table"
           select-all>
-          <template slot="items" slot-scope="props">
+          <template slot-scope="props" slot="items">
             <tr>
               <td>
                 <v-checkbox v-model="props.selected" primary hide-details/>
@@ -52,15 +52,15 @@
         </v-data-table>
       </div>
       <user-dialog
-        :visible.sync="userDialog"
-        :userData="editedUser"
         @updated="fetch(defaultPage)"
-        @created="fetch(defaultPage)"/>
+        @created="fetch(defaultPage)"
+        :visible.sync="userDialog"
+        :userData="editedUser"/>
       <confirmation-dialog
+        @confirmed="fetch()"
         :visible.sync="confirmation.dialog"
         :action="confirmation.action"
         :message="confirmation.message"
-        @confirmed="fetch()"
         heading="Remove user"/>
     </v-flex>
   </v-layout>

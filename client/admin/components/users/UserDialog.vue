@@ -7,10 +7,10 @@
           <v-spacer/>
           <v-btn
             v-if="!isNewUser"
+            @click="invite"
             :disabled="isLoading"
             :loading="isLoading"
             :outline="true"
-            @click="invite"
             color="blue-grey">
             Reinvite
           </v-btn>
@@ -26,10 +26,10 @@
           <v-select
             v-validate="'required'"
             v-model="user.role"
-            :items="roles"
-            :error-messages="vErrors.collect('role')"
             @focus="focusTrap.pause()"
             @blur="focusTrap.unpause()"
+            :items="roles"
+            :error-messages="vErrors.collect('role')"
             label="Role"
             data-vv-name="role"
             class="mb-3"/>

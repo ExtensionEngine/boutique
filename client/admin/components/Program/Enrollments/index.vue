@@ -2,7 +2,7 @@
   <div class="mt-3">
     <v-toolbar color="#f5f5f5" flat>
       <v-spacer/>
-      <enrollment-dialog :programId="programId" @enrolled="fetch(defaultPage)"/>
+      <enrollment-dialog @enrolled="fetch(defaultPage)" :programId="programId"/>
     </v-toolbar>
     <div class="elevation-1 ml-2 mr-4">
       <v-layout class="px-4 py-3 table-toolbar">
@@ -22,7 +22,7 @@
         :total-items="totalItems"
         :must-sort="true"
         :no-data-text="noEnrollmentsMessage">
-        <template slot="items" slot-scope="{ item }">
+        <template slot-scope="{ item }" slot="items">
           <td>{{ get(item.student, 'email') }}</td>
           <td>{{ get(item.student, 'firstName') }}</td>
           <td>{{ get(item.student, 'lastName') }}</td>
@@ -34,10 +34,10 @@
       </v-data-table>
     </div>
     <confirmation-dialog
+      @confirmed="fetch()"
       :visible.sync="confirmation.dialog"
       :action="confirmation.action"
       :message="confirmation.message"
-      @confirmed="fetch()"
       heading="Unenroll"/>
   </div>
 </template>

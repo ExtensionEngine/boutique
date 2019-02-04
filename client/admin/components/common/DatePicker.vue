@@ -16,7 +16,7 @@
       :data-vv-as="label"
       append-icon="mdi-calendar"
       readonly/>
-    <v-date-picker :value="normalizedValue" @input="save($event)" no-title/>
+    <v-date-picker @input="save($event)" :value="normalizedValue" no-title/>
   </v-menu>
 </template>
 
