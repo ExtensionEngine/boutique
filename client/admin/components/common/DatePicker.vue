@@ -6,8 +6,8 @@
     offset-y
     transition="scale-transition">
     <v-text-field
-      v-validate="processedValidation"
       slot="activator"
+      v-validate="processedValidation"
       :name="name"
       :value="normalizedValue"
       :label="label"

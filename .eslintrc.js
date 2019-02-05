@@ -42,7 +42,7 @@ module.exports = {
         'RENDER_MODIFIERS',
         'UNIQUE',
         'TWO_WAY_BINDING',
-        'OTHER_DIRETIVES',
+        'OTHER_DIRECTIVES',
         'EVENTS',
         'CONTENT',
         'GLOBAL',

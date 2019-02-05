@@ -1,7 +1,7 @@
 <template>
   <v-dialog
-    v-hotkey="{ esc: close }"
     v-model="visible"
+    v-hotkey="{ esc: close }"
     :disabled="disabled"
     width="700"
     class="bulk-enrollment">

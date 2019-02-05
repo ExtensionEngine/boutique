@@ -22,7 +22,7 @@
         :no-data-text="noContentMessage"
         item-key="_cid"
         hide-actions>
-        <template slot-scope="{ item }" slot="items">
+        <template slot="items" slot-scope="{ item }">
           <td>{{ item.name }}</td>
           <td class="no-wrap">{{ item.repoVersion | formatDate }}</td>
           <td class="no-wrap">{{ item.publishedAt | formatDate }}</td>

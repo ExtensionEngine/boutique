@@ -22,7 +22,7 @@
         :total-items="totalItems"
         :must-sort="true"
         :no-data-text="noEnrollmentsMessage">
-        <template slot-scope="{ item }" slot="items">
+        <template slot="items" slot-scope="{ item }">
           <td>{{ get(item.student, 'email') }}</td>
           <td>{{ get(item.student, 'firstName') }}</td>
           <td>{{ get(item.student, 'lastName') }}</td>

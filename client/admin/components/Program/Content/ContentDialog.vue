@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-hotkey="{ esc: close }" v-model="visible" width="700">
+  <v-dialog v-model="visible" v-hotkey="{ esc: close }" width="700">
     <v-btn slot="activator" color="success" outline>Import Content</v-btn>
     <v-form @submit.prevent="importRepo">
       <v-card class="pa-3">

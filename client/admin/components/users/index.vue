@@ -29,7 +29,7 @@
           :must-sort="true"
           class="user-table"
           select-all>
-          <template slot-scope="props" slot="items">
+          <template slot="items" slot-scope="props">
             <tr>
               <td>
                 <v-checkbox v-model="props.selected" primary hide-details/>
