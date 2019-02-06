@@ -1,7 +1,7 @@
 <template>
   <v-dialog
-    v-hotkey="{ esc: close }"
     v-model="visible"
+    v-hotkey="{ esc: close }"
     :disabled="disabled"
     width="700"
     class="bulk-enrollment">
@@ -14,11 +14,11 @@
         <v-card-text>
           <v-autocomplete
             v-model="programId"
+            @focus="focusTrap.pause()"
+            @blur="focusTrap.unpause()"
             :items="programOptions"
             :disabled="enrolling"
             :error-messages="vErrors.collect('program')"
-            @focus="focusTrap.pause()"
-            @blur="focusTrap.unpause()"
             name="program"
             label="Program"
             placeholder="Start typing to Search"
@@ -27,7 +27,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer/>
-          <v-btn :disabled="enrolling" @click="close">Cancel</v-btn>
+          <v-btn @click="close" :disabled="enrolling">Cancel</v-btn>
           <v-btn
             :disabled="enrollDisabled"
             :loading="enrolling"

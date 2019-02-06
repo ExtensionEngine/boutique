@@ -4,7 +4,7 @@ module.exports = {
   root: true,
   parserOptions: {
     sourceType: 'module',
-    ecmaVersion: 2017
+    ecmaVersion: 2018
   },
   // https://github.com/Flet/eslint-config-semistandard
   extends: ['semistandard', 'plugin:vue/recommended'],
@@ -27,6 +27,9 @@ module.exports = {
     'sort-imports': ['error', { ignoreCase: true }],
     // Vue rules
     'vue/html-self-closing': 'off',
+    'vue/html-closing-bracket-spacing': 'off',
+    'vue/html-closing-bracket-newline': 'off',
+    'vue/singleline-html-element-content-newline': 'off',
     'vue/attribute-hyphenation': 'off',
     'vue/max-attributes-per-line': ['error', { singleline: 5 }],
     'vue/name-property-casing': ['error', 'kebab-case'],
@@ -38,7 +41,8 @@ module.exports = {
         'CONDITIONALS',
         'RENDER_MODIFIERS',
         'UNIQUE',
-        'BINDING',
+        'TWO_WAY_BINDING',
+        'OTHER_DIRECTIVES',
         'EVENTS',
         'CONTENT',
         'GLOBAL',
