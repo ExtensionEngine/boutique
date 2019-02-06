@@ -31,7 +31,7 @@ module.exports = {
       options: { exclude: '.gitkeep' }
     },
     require.resolve('./build/plugins/html-version-spec'),
-    require.resolve('./build/plugins/ergo')
+    require.resolve('./build/plugins/hotel')
   ],
   pages: {
     admin: {

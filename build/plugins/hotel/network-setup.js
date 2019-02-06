@@ -41,7 +41,7 @@ module.exports = class NetworkSetup {
       throw new TypeError(`Invalid url provided: ${proxyUrl}`);
     }
     this.services.forEach(service => {
-      this._run(['-setautoproxyurl', service, proxyUrl]);
+      this._run(['-setautoproxyurl', service, proxyUrl || '""']);
       this._run(['-setautoproxystate', service, proxyUrl ? 'on' : 'off']);
     });
   }

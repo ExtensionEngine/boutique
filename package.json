@@ -60,7 +60,6 @@
     "stylelint-config-standard": "^18.2.0",
     "stylelint-order": "^1.0.0",
     "stylelint-scss": "^3.3.2",
-    "temp-write": "^3.4.0",
     "vue-template-compiler": "^2.5.17",
     "webpack-bundle-analyzer": "^3.0.3"
   },
