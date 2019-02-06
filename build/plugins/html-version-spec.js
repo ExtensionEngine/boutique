@@ -1,41 +1,33 @@
 'use strict';
 
-const get = require('lodash/get');
-const git = require('git-rev-sync');
+const { execFileSync } = require('child_process');
+
+const execSync = (cmd, args, opts) => execFileSync(cmd, args, opts).toString().trim();
 
 exports.name = 'html-version-spec';
 
 exports.apply = api => {
   api.hook('createWebpackChain', config => {
-    const { pages } = api.config;
-    const { html } = api.config.output;
-
-    if (html === false) return;
-    if (pages) {
-      for (const entryName of Object.keys(pages)) {
-        config.plugin(`html-page-${entryName}`).tap(args => withVersion(api, args));
-      }
-    } else {
-      config.plugin('html').tap(args => withVersion(api, args));
-    }
+    if (api.config.output.html === false) return;
+    const meta = { version: getVersion(api.pkg) };
+    getHtmlPlugins(api.config).forEach(name => {
+      config.plugin(name).tap(([args]) => [{ ...args, meta }]);
+    });
   });
 };
 
-function withVersion(api, args) {
-  const semver = get(api, 'pkg.data.version');
-  let shortRev;
+function getHtmlPlugins(config) {
+  if (!config.pages) return ['html'];
+  return Object.keys(config.pages).map(it => `html-page-${it}`);
+}
 
+function getVersion(pkg) {
+  const semver = pkg.data.version;
   try {
-    shortRev = git.short();
+    const rev = execSync('git', ['rev-parse', '--short', 'HEAD']);
+    return `${semver}-rev-${rev}`;
   } catch (err) {
     console.error(err);
   }
-
-  if (semver && shortRev) {
-    args[0].meta = {
-      version: `${semver}-rev-${shortRev}`
-    };
-  }
-
-  return args;
+  return `${semver}`;
 }
