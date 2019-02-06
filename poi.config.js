@@ -27,7 +27,8 @@ const devServer = {
 
 module.exports = {
   plugins: [
-    '@poi/eslint'
+    '@poi/eslint',
+    require.resolve('./build/plugins/html-version-spec')
   ],
   pages: {
     admin: {
