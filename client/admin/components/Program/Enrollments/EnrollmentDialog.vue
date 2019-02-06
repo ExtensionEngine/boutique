@@ -1,22 +1,22 @@
 <template>
-  <v-dialog v-hotkey="{ esc: close }" v-model="visible" width="500">
+  <v-dialog v-model="visible" v-hotkey="{ esc: close }" width="500">
     <v-btn slot="activator" color="success" outline>Enroll learner</v-btn>
     <v-form @submit.prevent="enroll">
       <v-card class="pa-3">
         <v-card-title class="headline">Enroll learner</v-card-title>
         <v-card-text>
           <v-autocomplete
+            v-model="studentId"
             v-validate="{
               required: true,
               'unique-enrollment': { studentId, programId }
             }"
-            v-model="studentId"
+            @focus="focusTrap.pause()"
+            @blur="focusTrap.unpause()"
             :items="students"
             :search-input.sync="email"
             :error-messages="vErrors.collect('learner')"
             :loading="isLoading"
-            @focus="focusTrap.pause()"
-            @blur="focusTrap.unpause()"
             label="Learner"
             placeholder="Start typing to Search"
             prepend-icon="mdi-magnify"
