@@ -1,6 +1,4 @@
 require('dotenv').config();
-const argv = require('minimist')(process.argv.slice(2));
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const config = require('./server/config');
 const path = require('path');
 
@@ -21,13 +19,13 @@ const devServer = {
   },
   // Override using: `npm run dev:client -- --port <number>`
   port: 8081,
-  hot: true,
   hotEntries: ['admin', 'student']
 };
 
 module.exports = {
   plugins: [
     '@poi/eslint',
+    '@poi/bundle-report',
     require.resolve('./build/plugins/html-version-spec')
   ],
   pages: {
@@ -45,21 +43,8 @@ module.exports = {
     sourceMap: !isProduction
   },
   chainWebpack(config) {
-    configureModuleResolution(config);
     config.resolve.alias.merge(aliases);
     config.resolve.extensions.merge(extensions);
   },
-  configureWebpack(config) {
-    if (!argv._.includes('--bundle-report')) return;
-    config.plugins.push(new BundleAnalyzerPlugin());
-  },
   devServer
 };
-
-// NOTE: Remove absolute path to local `node_modules` from configuration
-// https://github.com/webpack/webpack/issues/6538#issuecomment-367324775
-function configureModuleResolution(config) {
-  const localModules = path.join(__dirname, 'node_modules');
-  config.resolve.modules.delete(localModules);
-  config.resolveLoader.modules.delete(localModules);
-}
