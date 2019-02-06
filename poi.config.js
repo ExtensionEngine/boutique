@@ -30,7 +30,8 @@ module.exports = {
       resolve: require.resolve('./build/plugins/clean-out-dir'),
       options: { exclude: '.gitkeep' }
     },
-    require.resolve('./build/plugins/html-version-spec')
+    require.resolve('./build/plugins/html-version-spec'),
+    require.resolve('./build/plugins/ergo')
   ],
   pages: {
     admin: {
