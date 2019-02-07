@@ -1,19 +1,27 @@
 'use strict';
 
-const { readFileSync, writeFileSync } = require('fs');
 const execa = require('execa');
 const exitHook = require('exit-hook');
-const NetworkSetup = require('./network-setup');
+const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const confFile = path.join(os.homedir(), '.hotel/conf.json');
-const isSupported = () => process.platform === 'darwin' && has('hotel');
-
 exports.name = 'hotel';
 
+const isMacOS = process.platform === 'darwin';
+const hotelDir = path.join(os.homedir(), '.hotel');
+const confFile = path.join(hotelDir, 'conf.json');
+const prefix = `${exports.name}-plugin:`;
+
+const isRunning = () => fs.existsSync(path.join(hotelDir, 'daemon.pid'));
+const readConf = () => JSON.parse(fs.readFileSync(confFile));
+
 exports.apply = api => {
-  if (!api.cli.options.serve && !isSupported()) return;
+  if (!api.cli.options.serve || !isMacOS) return;
+  if (!has('hotel')) {
+    api.logger.tip(prefix, 'Install `hotel` to enable dev proxy:\n$ npm i -g hotel\n');
+    return;
+  }
   let port;
   api.hook('createServer', config => ({ port } = config));
   api.hook('createWebpackChain', config => {
@@ -22,7 +30,7 @@ exports.apply = api => {
         let isFirstBuild = true;
         compiler.hooks.done.tap('hotel-proxy', stats => {
           if (!isFirstBuild || stats.hasErrors() || stats.hasWarnings()) return;
-          setupProxy(port, api.pkg.data.name);
+          setupProxy(port, api.pkg.data.name, api);
           isFirstBuild = false;
         });
       }
@@ -30,24 +38,41 @@ exports.apply = api => {
   });
 };
 
-async function setupProxy(port, hostname, tld = '.test') {
-  tld = tld.replace(/^\./, '');
-  updateJsonFile(confFile, { tld });
-  execa.sync('hotel', ['add', `http://localhost:${port}`, '--name', hostname]);
-  execa.sync('hotel', ['start']);
-  const networksetup = new NetworkSetup();
-  networksetup.autoProxyUrl = 'http://localhost:2000/proxy.pac';
+async function setupProxy(port, hostname, { logger }) {
+  const serverUrl = `http://localhost:${port}`;
+  // Register application.
+  logger.debug(prefix, hotel('add', [serverUrl, '--name', hostname]));
+  let isStarted = !isRunning();
+  // Re-start proxy server.
+  const stdout = hotel('start');
+  logger.success(prefix, stdout);
+  const [, proxyServerUrl] = stdout.split(/\s+/g);
+  // Set system wide proxy.
+  const debug = (...args) => logger.debug(prefix, ...args);
+  const network = require('./network')({ logger: { debug } });
+  const services = network.getServices();
+  logger.debug('services:', services);
+  const oldStates = services.map(it => ({
+    service: it,
+    ...network.getAutoProxyUrl(it)
+  }));
+  logger.debug('old states:', oldStates);
+  services.forEach(it => network.setAutoProxyUrl(it, `${proxyServerUrl}/proxy.pac`));
+  const tld = readConf().tld || 'localhost';
+  const devUrl = `http://${hostname}.${tld}`;
+  logger.success(prefix, `Proxy ${devUrl} -> ${serverUrl}`);
   exitHook(() => {
-    execa.sync('hotel', ['stop']);
-    networksetup.autoProxyUrl = null;
+    // Stop proxy server if allowed.
+    if (isStarted) logger.success(prefix, hotel('stop'));
+    // Reset system proxy.
+    oldStates.forEach(({ service, url, state }) => {
+      return network.setAutoProxyUrl(service, url, state);
+    });
   });
 }
 
-function updateJsonFile(path, data) {
-  const config = JSON.parse(readFileSync(path));
-  Object.assign(config, data);
-  writeFileSync(path, JSON.stringify(config, null, 2));
-  return config;
+function hotel(cmd, args = [], options = {}) {
+  return execa.sync('hotel', [cmd, ...args], options).stdout;
 }
 
 function has(cmd) {
