@@ -26,6 +26,10 @@ module.exports = {
   plugins: [
     '@poi/eslint',
     '@poi/bundle-report',
+    {
+      resolve: require.resolve('./build/plugins/clean-out-dir'),
+      options: { exclude: '.gitkeep' }
+    },
     require.resolve('./build/plugins/html-version-spec')
   ],
   pages: {
