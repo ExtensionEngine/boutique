@@ -1,9 +1,7 @@
 <template>
   <div>
     <div v-if="message">
-      <div class="notification is-warning">
-        {{ message }}
-      </div>
+      <div class="notification is-warning">{{ message }}</div>
       <div class="options">
         <a @click="$router.go(-1)">Back</a>
       </div>
@@ -25,6 +23,13 @@ import { delay } from 'bluebird';
 import { mapActions } from 'vuex';
 import VInput from '@/common/components/form/VInput';
 
+const messages = {
+  emailSent: () => `Email with password reset link sent.
+Please check your email and follow instructions to reset your password.`,
+  invalidEmail: email => `We couldn't find account associated with ${email}.`,
+  genericError: () => 'Oops! Something went wrong.'
+};
+
 export default {
   data() {
     return {
@@ -37,11 +42,15 @@ export default {
     submit() {
       this.forgotPassword({ email: this.email })
         .then(() => {
-          this.message = 'Reset email sent';
-          return delay(2000);
+          this.message = messages.emailSent();
+          return delay(5000);
         })
         .then(() => this.$router.push('/'))
-        .catch(() => (this.message = 'Oops! Something went wrong.'));
+        .catch(err => {
+          this.message = err.response.status === 404
+            ? messages.invalidEmail(this.email)
+            : messages.genericError();
+        });
     }
   },
   components: { VInput }
