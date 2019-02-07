@@ -34,6 +34,7 @@
     "@babel/core": "^7.1.2",
     "@poi/plugin-bundle-report": "^12.1.0",
     "@poi/plugin-eslint": "^12.0.0",
+    "clean-webpack-plugin": "^1.0.1",
     "dargs": "^6.0.0",
     "del-cli": "^1.1.0",
     "emoji-strip": "^1.0.1",
