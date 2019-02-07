@@ -1,7 +1,5 @@
 'use strict';
 
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-
 exports.name = 'clean-out-dir';
 
 exports.apply = (api, opts = {}) => {
@@ -11,6 +9,6 @@ exports.apply = (api, opts = {}) => {
     opts.root = opts.root || api.cwd;
     config
       .plugin('clean-out-dir')
-      .use(CleanWebpackPlugin, [path, opts]);
+      .use(require.resolve('clean-webpack-plugin'), [path, opts]);
   });
 };
