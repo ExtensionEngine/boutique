@@ -1,14 +1,12 @@
 import axios from 'axios';
 
-// TODO: read this from configuration.
-const BASE_URL = '/api/v1/';
+const config = {
+  baseURL: process.env.API_PATH,
+  withCredentials: true
+};
 
 // Instance of axios to be used for all API requests.
-const client = axios.create({
-  baseURL: BASE_URL,
-  withCredentials: true,
-  headers: { 'Content-Type': 'application/json' }
-});
+const client = axios.create(config);
 
 client.interceptors.request.use(config => {
   const token = window.localStorage.getItem('LMS_TOKEN');
@@ -30,3 +28,6 @@ client.interceptors.response.use(res => res, err => {
 });
 
 export default client;
+
+const base = axios.create(config);
+export { base as client };
