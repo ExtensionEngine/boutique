@@ -3,7 +3,20 @@
 const { auth: config = {} } = require('../../config');
 const { ExtractJwt, Strategy } = require('passport-jwt');
 const { User } = require('../database');
+const LocalStrategy = require('passport-local');
 const passport = require('passport');
+
+const options = {
+  usernameField: 'email',
+  session: false
+};
+
+passport.use(new LocalStrategy(options, (email, password, done) => {
+  return User.findOne({ where: { email } })
+    .then(user => user && user.authenticate(password))
+    .then(user => done(null, user || false))
+    .error(err => done(err, false));
+}));
 
 const jwtOptions = {
   ...config,
