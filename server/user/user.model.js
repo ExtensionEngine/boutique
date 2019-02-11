@@ -124,7 +124,7 @@ class User extends Model {
   }
 
   static async invite(user, options) {
-    user.token = user.createToken({ expiresIn: '3 days' });
+    user.token = user.createToken({ expiresIn: '5 days', audience: 'setup' });
     mail.invite(user, options).catch(err =>
       logger.error('Error: Sending invite email failed:', err.message));
     return user.save({ paranoid: false });
@@ -170,7 +170,7 @@ class User extends Model {
   }
 
   sendResetToken(options) {
-    this.token = this.createToken({ expiresIn: '5 days' });
+    this.token = this.createToken({ expiresIn: '5 days', audience: 'setup' });
     mail.resetPassword(this, options).catch(err =>
       logger.error('Error: Sending reset password email failed:', err.message));
     return this.save();

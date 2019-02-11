@@ -21,7 +21,8 @@ passport.use(new LocalStrategy(options, (email, password, done) => {
 const jwtOptions = {
   ...config,
   jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme(config.scheme),
-  secretOrKey: config.secret
+  secretOrKey: config.secret,
+  audience: 'access'
 };
 
 passport.use(new Strategy(jwtOptions, (payload, done) => {
