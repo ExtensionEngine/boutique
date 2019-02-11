@@ -105,6 +105,7 @@
     "nocache": "^2.0.0",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
     "pg": "^7.5.0",
     "promise-queue": "^2.2.5",
     "s3-blob-store": "^3.2.0",

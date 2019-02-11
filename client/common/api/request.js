@@ -1,13 +1,18 @@
 import axios from 'axios';
 
-// TODO: read this from configuration.
-const BASE_URL = '/api/v1/';
+const config = {
+  baseURL: process.env.API_PATH,
+  withCredentials: true
+};
 
 // Instance of axios to be used for all API requests.
-const client = axios.create({
-  baseURL: BASE_URL,
-  withCredentials: true,
-  headers: { 'Content-Type': 'application/json' }
+const client = axios.create(config);
+
+Object.defineProperty(client, 'base', {
+  get() {
+    if (!this.base_) this.base_ = axios.create(config);
+    return this.base_;
+  }
 });
 
 client.interceptors.request.use(config => {
