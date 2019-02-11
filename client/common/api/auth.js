@@ -1,4 +1,4 @@
-import request, { client } from './request';
+import request from './request';
 
 const url = {
   login: '/users/login',
@@ -7,7 +7,7 @@ const url = {
 };
 
 function login(credentials) {
-  return client.post(url.login, credentials)
+  return request.base.post(url.login, credentials)
     .then(res => res.data.data)
     .then(({ token, user }) => {
       window.localStorage.setItem('LMS_TOKEN', token);

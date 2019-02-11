@@ -8,6 +8,13 @@ const config = {
 // Instance of axios to be used for all API requests.
 const client = axios.create(config);
 
+Object.defineProperty(client, 'base', {
+  get() {
+    if (!this.base_) this.base_ = axios.create(config);
+    return this.base_;
+  }
+});
+
 client.interceptors.request.use(config => {
   const token = window.localStorage.getItem('LMS_TOKEN');
   if (token) {
@@ -28,6 +35,3 @@ client.interceptors.response.use(res => res, err => {
 });
 
 export default client;
-
-const base = axios.create(config);
-export { base as client };
