@@ -49,9 +49,6 @@ const router = new Router({
       meta: { auth: true }
     }]
   }, {
-    path: '/.well-known/change-password',
-    redirect: { name: 'change-password' }
-  }, {
     path: '/',
     component: Home,
     meta: { auth: true },
@@ -85,6 +82,9 @@ const requiresAuth = route => route.matched.some(it => it.meta.auth);
 router.beforeEach((to, from, next) => {
   const user = get(store.state, 'auth.user');
   if (requiresAuth(to) && !user) return next({ name: 'login' });
+  if (to.query.url === '/.well-known/change-password') {
+    return next({ name: 'change-password', replace: true });
+  }
   if (to.name === 'change-password') return next();
   if (isAdmin(user)) return navigateTo('/admin/');
   return next();

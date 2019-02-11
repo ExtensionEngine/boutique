@@ -43,9 +43,9 @@ app.use(morgan(format, {
 // Mount main router
 app.use(config.apiPath, nocache(), router);
 
-app.use('/.well-known/change-password', (req, res, next) => {
-  if (config.useHistoryApiFallback) return res.redirect('')
-  res.redirect(`/#${req.originalUrl}`);
+app.use('/.well-known/change-password', (req, res) => {
+  const path = config.useHistoryApiFallback ? '/' : '/#';
+  res.redirect(`${path}?url=${req.originalUrl}`);
 });
 
 // Handle non-existing routes.
