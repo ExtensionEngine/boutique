@@ -78,14 +78,15 @@ const router = new Router({
   }, fallbackRoute]
 });
 
+const isAdmin = user => user && user.role === role.ADMIN;
+const navigateTo = path => location.replace(`${location.origin}${path}`);
+const requiresAuth = route => route.matched.some(it => it.meta.auth);
+
 router.beforeEach((to, from, next) => {
   const user = get(store.state, 'auth.user');
-  const isNotAuthenticated = to.matched.some(it => it.meta.auth) && !user;
-  if (isNotAuthenticated) return next({ name: 'login' });
+  if (requiresAuth(to) && !user) return next({ name: 'login' });
   if (to.name === 'change-password') return next();
-  if (user && user.role === role.ADMIN) {
-    document.location.replace(`${document.location.origin}/admin`);
-  }
+  if (isAdmin(user)) return navigateTo('/admin/');
   return next();
 });
 
