@@ -1,6 +1,7 @@
 import Content from '@/admin/components/Program/Content';
 import Enrollments from '@/admin/components/Program/Enrollments';
 import get from 'lodash/get';
+import Home from '@/admin/components';
 import NotFound from '@/admin/components/common/NotFound';
 import Program from '@/admin/components/Program';
 import role from '@/../common/config/role';
@@ -21,41 +22,44 @@ const fallbackRoute = { path: '*', component: NotFound };
 
 const router = new Router({
   routes: [{
-    path: '',
-    name: 'users',
-    component: Users,
-    meta: { auth: true }
-  }, {
-    path: '/programs/:programId',
-    component: Program,
-    props: parseProgramId,
+    path: '/',
+    component: Home,
+    meta: { auth: true },
     children: [{
-      path: '',
-      name: 'enrollments',
-      component: Enrollments,
-      props: parseProgramId
+      path: 'users',
+      alias: '',
+      name: 'users',
+      component: Users
     }, {
-      path: 'content',
-      name: 'importedContent',
-      component: Content,
-      props: parseProgramId
-    }, {
-      path: 'settings',
-      name: 'programSettings',
-      component: Settings,
-      props: parseProgramId
+      path: 'programs/:programId',
+      component: Program,
+      props: parseProgramId,
+      children: [{
+        path: '',
+        name: 'enrollments',
+        component: Enrollments,
+        props: parseProgramId
+      }, {
+        path: 'content',
+        name: 'importedContent',
+        component: Content,
+        props: parseProgramId
+      }, {
+        path: 'settings',
+        name: 'programSettings',
+        component: Settings,
+        props: parseProgramId
+      }]
     }]
   }, fallbackRoute]
 });
 
+const isAdmin = user => user && user.role === role.ADMIN;
+
 router.beforeEach((to, from, next) => {
   const user = get(store.state, 'auth.user');
-  const isNotAuthenticated = to.matched.some(it => it.meta.auth) && !user;
-  const isNotAuthorized = user && user.role !== role.ADMIN;
-  if (isNotAuthenticated || isNotAuthorized) return loadMainSpa();
-  next();
+  if (!isAdmin(user)) return window.location.replace(window.location.origin);
+  return next();
 });
-
-const loadMainSpa = () => window.location.replace(window.location.origin);
 
 export default router;

@@ -36,6 +36,8 @@ import { withValidation } from '@/common/validation';
 
 const LOGIN_ERR_MESSAGE = 'User email and password do not match';
 
+const navigateTo = path => location.replace(`${location.origin}${path}`);
+
 export default {
   name: 'login',
   mixins: [withValidation()],
@@ -54,8 +56,8 @@ export default {
         if (!isValid) return;
         this.login(pick(this, ['email', 'password']))
           .then(user => {
-            if (user.role !== role.ADMIN) return this.$router.push('/');
-            document.location.replace(`${document.location.origin}/admin`);
+            if (user.role === role.ADMIN) return navigateTo('/admin/');
+            this.$router.push('/');
           })
           .catch(() => (this.message = LOGIN_ERR_MESSAGE));
       });
