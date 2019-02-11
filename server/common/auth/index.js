@@ -3,6 +3,7 @@
 const { auth: config = {} } = require('../../config');
 const { ExtractJwt, Strategy } = require('passport-jwt');
 const { User } = require('../database');
+const Audience = require('./audience');
 const LocalStrategy = require('passport-local');
 const passport = require('passport');
 
@@ -22,7 +23,7 @@ const jwtOptions = {
   ...config,
   jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme(config.scheme),
   secretOrKey: config.secret,
-  audience: 'access'
+  audience: Audience.Scope.Access
 };
 
 passport.use(new Strategy(jwtOptions, (payload, done) => {

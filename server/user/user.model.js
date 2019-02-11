@@ -4,6 +4,7 @@ const { auth: config = {} } = require('../config');
 const { Model, Sequelize, Op, UniqueConstraintError } = require('sequelize');
 const { role } = require('../../common/config');
 const { sql } = require('../common/database/helpers');
+const Audience = require('../common/auth/audience');
 const bcrypt = require('bcrypt');
 const castArray = require('lodash/castArray');
 const find = require('lodash/find');
@@ -124,7 +125,10 @@ class User extends Model {
   }
 
   static async invite(user, options) {
-    user.token = user.createToken({ expiresIn: '5 days', audience: 'setup' });
+    user.token = user.createToken({
+      audience: Audience.Scope.Setup,
+      expiresIn: '5 days'
+    });
     mail.invite(user, options).catch(err =>
       logger.error('Error: Sending invite email failed:', err.message));
     return user.save({ paranoid: false });
@@ -170,7 +174,10 @@ class User extends Model {
   }
 
   sendResetToken(options) {
-    this.token = this.createToken({ expiresIn: '5 days', audience: 'setup' });
+    this.token = this.createToken({
+      audience: Audience.Scope.Setup,
+      expiresIn: '5 days'
+    });
     mail.resetPassword(this, options).catch(err =>
       logger.error('Error: Sending reset password email failed:', err.message));
     return this.save();

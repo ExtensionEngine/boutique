@@ -2,6 +2,7 @@
 
 const { createError } = require('../common/errors');
 const { Enrollment, Sequelize, sequelize, User } = require('../common/database');
+const Audience = require('../common/auth/audience');
 const Datasheet = require('./datasheet');
 const HttpStatus = require('http-status');
 const mime = require('mime');
@@ -61,7 +62,10 @@ function destroy({ params }, res) {
 }
 
 function login({ user }, res) {
-  const token = user.createToken({ expiresIn: '5 days', audience: 'access' });
+  const token = user.createToken({
+    audience: Audience.Scope.Access,
+    expiresIn: '5 days'
+  });
   res.jsend.success({ token, user: user.profile });
 }
 
