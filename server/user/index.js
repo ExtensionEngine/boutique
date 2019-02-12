@@ -11,7 +11,7 @@ router
   .post('/login', auth.authenticate('local'), ctrl.login)
   .post('/forgotPassword', ctrl.forgotPassword)
   .post('/resetPassword', ctrl.resetPassword)
-  .use(auth)
+  .use(auth.authenticate('jwt'))
   .post('/logout', ctrl.logout)
   .get('/', ctrl.list)
   .post('/', ctrl.create)
