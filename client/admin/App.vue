@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: 'app'
+  name: 'admin-app'
 };
 </script>
 

@@ -6,6 +6,7 @@ import ForgotPassword from '@/student/components/auth/ForgotPassword';
 import get from 'lodash/get';
 import Home from '@/student/components';
 import Login from '@/student/components/auth/Login';
+import { navigateTo } from '@/common/navigation';
 import NotFound from '@/admin/components/common/NotFound';
 import Program from '@/student/components/program';
 import ProgramSelection from '@/student/components/ProgramSelection';
@@ -76,7 +77,6 @@ const router = new Router({
 });
 
 const isAdmin = user => user && user.role === role.ADMIN;
-const navigateTo = path => location.replace(`${location.origin}${path}`);
 const requiresAuth = route => route.matched.some(it => it.meta.auth);
 
 router.beforeEach((to, from, next) => {
@@ -86,7 +86,7 @@ router.beforeEach((to, from, next) => {
     return next({ name: 'change-password', replace: true });
   }
   if (to.name === 'change-password') return next();
-  if (isAdmin(user)) return navigateTo('/admin/');
+  if (isAdmin(user)) return navigateTo('/admin');
   return next();
 });
 

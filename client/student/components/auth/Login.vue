@@ -29,14 +29,13 @@
 
 <script>
 import { mapActions } from 'vuex';
+import { navigateTo } from '@/common/navigation';
 import pick from 'lodash/pick';
 import role from '@/../common/config/role';
 import VInput from '@/common/components/form/VInput';
 import { withValidation } from '@/common/validation';
 
 const LOGIN_ERR_MESSAGE = 'User email and password do not match';
-
-const navigateTo = path => location.replace(`${location.origin}${path}`);
 
 export default {
   name: 'login',
@@ -56,7 +55,7 @@ export default {
         if (!isValid) return;
         this.login(pick(this, ['email', 'password']))
           .then(user => {
-            if (user.role === role.ADMIN) return navigateTo('/admin/');
+            if (user.role === role.ADMIN) return navigateTo('/admin');
             this.$router.push('/');
           })
           .catch(() => (this.message = LOGIN_ERR_MESSAGE));

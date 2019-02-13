@@ -16,7 +16,7 @@ import Navbar from '@/admin/components/common/Navbar';
 import Sidebar from '@/admin/components/common/Sidebar';
 
 export default {
-  name: 'admin-app',
+  name: 'home',
   data() {
     return { drawer: true };
   },
