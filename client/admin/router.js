@@ -2,6 +2,7 @@ import Content from '@/admin/components/Program/Content';
 import Enrollments from '@/admin/components/Program/Enrollments';
 import get from 'lodash/get';
 import Home from '@/admin/components';
+import { navigateTo } from '@/common/navigation';
 import NotFound from '@/admin/components/common/NotFound';
 import Program from '@/admin/components/Program';
 import role from '@/../common/config/role';
@@ -58,7 +59,7 @@ const isAdmin = user => user && user.role === role.ADMIN;
 
 router.beforeEach((to, from, next) => {
   const user = get(store.state, 'auth.user');
-  if (!isAdmin(user)) return window.location.replace(window.location.origin);
+  if (!isAdmin(user)) return navigateTo('/');
   return next();
 });
 

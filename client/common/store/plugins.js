@@ -1,6 +1,7 @@
-const clone = require('lodash/cloneDeep');
-const get = require('lodash/get');
-const set = require('lodash/set');
+import clone from 'lodash/cloneDeep';
+import get from 'lodash/get';
+import { navigateTo } from '@/common/navigation';
+import set from 'lodash/set';
 
 export const auth = ({ actions, path, key, storage }) => store => {
   key = key || 'USER';
@@ -25,6 +26,6 @@ export const auth = ({ actions, path, key, storage }) => store => {
   store.subscribeAction(({ type }) => {
     if (type !== logout) return;
     storage.removeItem(key);
-    window.location.replace(window.location.origin);
+    navigateTo('/');
   });
 };

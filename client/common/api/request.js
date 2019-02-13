@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { navigateTo } from '@/common/navigation';
 
 const config = {
   baseURL: process.env.API_PATH,
@@ -28,10 +29,9 @@ client.interceptors.request.use(config => {
 client.interceptors.response.use(res => res, err => {
   if (err.response.status === 401) {
     window.localStorage.removeItem('LMS_TOKEN');
-    window.location.replace(window.location.origin);
-  } else {
-    throw err;
+    return navigateTo('/');
   }
+  throw err;
 });
 
 export default client;
