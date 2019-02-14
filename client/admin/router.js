@@ -1,7 +1,6 @@
 import Content from '@/admin/components/Program/Content';
 import Enrollments from '@/admin/components/Program/Enrollments';
 import get from 'lodash/get';
-import Home from '@/admin/components';
 import { navigateTo } from '@/common/navigation';
 import NotFound from '@/admin/components/common/NotFound';
 import Program from '@/admin/components/Program';
@@ -23,34 +22,29 @@ const fallbackRoute = { path: '*', component: NotFound };
 
 const router = new Router({
   routes: [{
-    path: '/',
-    component: Home,
-    meta: { auth: true },
+    path: '',
+    name: 'users',
+    component: Users,
+    meta: { auth: true }
+  }, {
+    path: '/programs/:programId',
+    component: Program,
+    props: parseProgramId,
     children: [{
-      path: 'users',
-      alias: '',
-      name: 'users',
-      component: Users
+      path: '',
+      name: 'enrollments',
+      component: Enrollments,
+      props: parseProgramId
     }, {
-      path: 'programs/:programId',
-      component: Program,
-      props: parseProgramId,
-      children: [{
-        path: '',
-        name: 'enrollments',
-        component: Enrollments,
-        props: parseProgramId
-      }, {
-        path: 'content',
-        name: 'importedContent',
-        component: Content,
-        props: parseProgramId
-      }, {
-        path: 'settings',
-        name: 'programSettings',
-        component: Settings,
-        props: parseProgramId
-      }]
+      path: 'content',
+      name: 'importedContent',
+      component: Content,
+      props: parseProgramId
+    }, {
+      path: 'settings',
+      name: 'programSettings',
+      component: Settings,
+      props: parseProgramId
     }]
   }, fallbackRoute]
 });

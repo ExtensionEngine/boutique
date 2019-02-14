@@ -37,6 +37,6 @@ html, body {
 }
 
 [v-router-cloak] {
-  display: none;
+  display: none !important;
 }
 </style>

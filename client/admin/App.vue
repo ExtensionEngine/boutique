@@ -1,15 +1,32 @@
 <template>
-  <div v-router-cloak>
-    <router-view/>
-  </div>
+  <v-app v-router-cloak id="app">
+    <sidebar :drawer.sync="drawer"/>
+    <navbar :drawer.sync="drawer"/>
+    <v-content>
+      <v-container fluid fill-height class="grey lighten-4">
+        <router-view/>
+      </v-container>
+    </v-content>
+  </v-app>
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+import Navbar from '@/admin/components/common/Navbar';
 import { RouterCloak } from '@/common/navigation';
+import Sidebar from '@/admin/components/common/Sidebar';
 
 export default {
   name: 'admin-app',
-  directives: { RouterCloak }
+  data() {
+    return { drawer: true };
+  },
+  methods: mapActions('programs', ['fetch']),
+  created() {
+    this.fetch();
+  },
+  directives: { RouterCloak },
+  components: { Navbar, Sidebar }
 };
 </script>
 
@@ -34,6 +51,10 @@ html, body {
 }
 
 [v-router-cloak] {
-  display: none;
+  display: none !important;
+}
+
+.v-content {
+  background-color: #f5f5f5;
 }
 </style>
