@@ -22,7 +22,7 @@ const fallbackRoute = { path: '*', component: NotFound };
 
 const router = new Router({
   routes: [{
-    path: '',
+    path: '/',
     name: 'users',
     component: Users,
     meta: { auth: true }
