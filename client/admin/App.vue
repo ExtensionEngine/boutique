@@ -1,10 +1,15 @@
 <template>
-  <router-view/>
+  <div v-router-cloak>
+    <router-view/>
+  </div>
 </template>
 
 <script>
+import { RouterCloak } from '@/common/navigation';
+
 export default {
-  name: 'admin-app'
+  name: 'admin-app',
+  directives: { RouterCloak }
 };
 </script>
 
@@ -26,5 +31,9 @@ html, body {
   height: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+[v-router-cloak] {
+  display: none;
 }
 </style>

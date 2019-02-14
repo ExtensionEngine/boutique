@@ -1,12 +1,15 @@
 <template>
-  <div id="app" class="system-font-stack">
+  <div v-router-cloak class="system-font-stack">
     <router-view/>
   </div>
 </template>
 
 <script>
+import { RouterCloak } from '@/common/navigation';
+
 export default {
-  name: 'app'
+  name: 'app',
+  directives: { RouterCloak }
 };
 </script>
 
@@ -31,5 +34,9 @@ html, body {
   overflow-y: scroll;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+[v-router-cloak] {
+  display: none;
 }
 </style>
