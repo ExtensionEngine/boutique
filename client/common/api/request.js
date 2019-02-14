@@ -1,8 +1,11 @@
 import axios from 'axios';
 import { EventEmitter } from 'events';
 
+const baseURL = process.env.API_PATH || '/api/v1/';
+const authScheme = process.env.AUTH_JWT_SCHEME || 'JWT';
+
 const config = {
-  baseURL: process.env.API_PATH,
+  baseURL,
   withCredentials: true
 };
 
@@ -10,7 +13,7 @@ class Auth extends EventEmitter {
   constructor(storage = window.localStorage) {
     super();
     this.storage = storage;
-    this.storageKey = 'AUTH_TOKEN';
+    this.storageKey = 'TOKEN';
   }
 
   get token() {
@@ -41,7 +44,7 @@ Object.defineProperty(client, 'base', {
 client.interceptors.request.use(config => {
   const { token } = client.auth;
   if (token) {
-    config.headers['Authorization'] = `JWT ${token}`;
+    config.headers['Authorization'] = `${authScheme} ${token}`;
   } else if (!token && config.headers['Authorization']) {
     delete config.headers['Authorization'];
   }
