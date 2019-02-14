@@ -1,12 +1,35 @@
 import axios from 'axios';
+import { EventEmitter } from 'events';
 
 const config = {
   baseURL: process.env.API_PATH,
   withCredentials: true
 };
 
+class Auth extends EventEmitter {
+  constructor(storage = window.localStorage) {
+    super();
+    this.storage = storage;
+    this.storageKey = 'AUTH_TOKEN';
+  }
+
+  get token() {
+    return this.storage.getItem(this.storageKey);
+  }
+
+  set token(val) {
+    if (!val) {
+      this.storage.removeItem(this.storageKey);
+      return this.emit('token:remove');
+    }
+    this.storage.setItem(this.storageKey, val);
+    this.emit('token:set', val);
+  }
+}
+
 // Instance of axios to be used for all API requests.
 const client = axios.create(config);
+client.auth = new Auth();
 
 Object.defineProperty(client, 'base', {
   get() {
@@ -16,7 +39,7 @@ Object.defineProperty(client, 'base', {
 });
 
 client.interceptors.request.use(config => {
-  const token = window.localStorage.getItem('LMS_TOKEN');
+  const { token } = client.auth;
   if (token) {
     config.headers['Authorization'] = `JWT ${token}`;
   } else if (!token && config.headers['Authorization']) {
@@ -26,12 +49,8 @@ client.interceptors.request.use(config => {
 });
 
 client.interceptors.response.use(res => res, err => {
-  if (err.response.status === 401) {
-    window.localStorage.removeItem('LMS_TOKEN');
-    window.location.replace(window.location.origin);
-  } else {
-    throw err;
-  }
+  if (err.response.status !== 401) throw err;
+  client.auth.token = null;
 });
 
 export default client;
