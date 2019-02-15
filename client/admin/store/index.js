@@ -10,13 +10,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 Vue.use(Vuex);
 
-request.auth.storageKey = 'LMS_TOKEN';
-request.auth.on('token:remove', () => {
-  window.localStorage.removeItem('LMS_USER');
-  window.location.replace(window.location.origin);
-});
-
-export default new Vuex.Store({
+const store = new Vuex.Store({
   modules: {
     auth,
     contentRepo,
@@ -25,3 +19,11 @@ export default new Vuex.Store({
   plugins: [authPlugin({ storageKey: 'LMS_USER' })],
   strict: !isProduction
 });
+
+request.auth.storageKey = 'LMS_TOKEN';
+request.auth.on('error', () => {
+  store.dispatch('auth/logout');
+  window.location.replace(window.location.origin);
+});
+
+export default store;

@@ -53,7 +53,7 @@ client.interceptors.request.use(config => {
 
 client.interceptors.response.use(res => res, err => {
   if (err.response.status !== 401) throw err;
-  client.auth.token = null;
+  client.auth.emit('error', err);
 });
 
 export default client;
