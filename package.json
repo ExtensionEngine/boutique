@@ -8,6 +8,7 @@
     "db": "node ./server/script/sequelize",
     "db:reset": "npm run db drop && npm run db create && npm run db migrate",
     "db:seed": "npm run db seed:all",
+    "db:migration:create": "npm run db migration:create -- --name placeholder",
     "user:add": "node ./server/script/add-user.js",
     "lint:js": "eslint --ext .js,.vue .",
     "lint:scss": "stylelint \"client/**/*.vue\" \"client/**/*.scss\"",
