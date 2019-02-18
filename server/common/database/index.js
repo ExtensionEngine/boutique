@@ -95,7 +95,7 @@ module.exports = db;
 
 function createConnection(config) {
   if (!config.url) return new Sequelize(config);
-  return new Sequelize(config.url);
+  return new Sequelize(config.url, config);
 }
 
 function getConfig(sequelize) {
