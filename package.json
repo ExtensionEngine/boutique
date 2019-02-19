@@ -19,7 +19,8 @@
     "webpack:inspect-config": "poi --inspect-webpack",
     "webpack:bundle-report": "poi --prod --bundle-report",
     "clean": "del-cli dist/* !dist/.gitkeep",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "sort:packages": "npx sort-package-json"
   },
   "repository": {
     "type": "git",
@@ -62,7 +63,9 @@
     "stylelint-order": "^1.0.0",
     "stylelint-scss": "^3.3.2",
     "vue-template-compiler": "^2.5.17",
-    "webpack-bundle-analyzer": "^3.0.3"
+    "webpack-bundle-analyzer": "^3.0.3",
+    "inquirer": "^6.2.0",
+    "is-email-like": "^1.0.0"
   },
   "dependencies": {
     "@mdi/font": "^3.0.39",
