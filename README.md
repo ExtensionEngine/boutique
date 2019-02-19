@@ -7,7 +7,7 @@
 [![js semistandard style](https://badgen.net/badge/code%20style/semistandard/pink)](https://github.com/Flet/semistandard)
 [![Open Source Love](https://badges.frapsoft.com/os/v2/open-source.svg?v=102)](https://github.com/ellerbrock/open-source-badge/)
 
-> ### :construction: Under construction :construction:
+> Under construction :construction:
 
 LMS
 
@@ -17,12 +17,13 @@ LMS
 - npm (>= 5.8.0)
 - PostgreSQL (>= 9.4)
 
+Check `engines` field in [`package.json`](https://github.com/ExtensionEngine/boutique/blob/develop/package.json)
+
 ## :computer: Installation
 
 ### Prerequisites
-
-- Node.js & npm: https://nodejs.org/en/download/
-- PostgreSQL: https://www.postgresql.org/download/
+- [Node.js & npm](https://nodejs.org/en/download/)
+- [PostgreSQL](https://www.postgresql.org/download/) 
 - Clone this repo
 
 ### Setup
