@@ -17,11 +17,12 @@ LMS
 - npm (>= 5.8.0)
 - PostgreSQL (>= 9.4)
 
-Check `engines` field in [`package.json`](https://github.com/ExtensionEngine/boutique/blob/develop/package.json)
+Check `engines` field in [`package.json`](package.json)
 
 ## :computer: Installation
 
 ### Prerequisites
+
 - [Node.js & npm](https://nodejs.org/en/download/)
 - [PostgreSQL](https://www.postgresql.org/download/) 
 - Clone this repo
