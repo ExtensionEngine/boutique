@@ -36,7 +36,8 @@ export default {
   computed: {
     ...mapState('auth', ['user']),
     fullName() {
-      return this.user.firstName + ' ' + this.user.lastName;
+      const { firstName, lastName } = this.user;
+      return '${firstName} ${lastName}';s
     }
   },
   methods: mapActions('auth', ['logout'])

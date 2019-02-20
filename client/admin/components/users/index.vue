@@ -107,9 +107,9 @@ export default {
     };
   },
   computed: {
+    ...mapState('auth', ['user']),
     headers,
-    defaultPage,
-    ...mapState('auth', ['user'])
+    defaultPage
   },
   methods: {
     showUserDialog(user = null) {
