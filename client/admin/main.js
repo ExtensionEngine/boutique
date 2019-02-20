@@ -3,6 +3,7 @@ import format from 'date-fns/format';
 import router from './router';
 import store from './store';
 import VeeValidate from '@/common/validation';
+import VTooltip from 'v-tooltip';
 import Vue from 'vue';
 import VueHotkey from 'v-hotkey';
 import Vuetify from 'vuetify';
@@ -14,6 +15,7 @@ Vue.use(VeeValidate, {
   errorBagName: 'vErrors',
   inject: false
 });
+Vue.use(VTooltip);
 Vue.use(VueHotkey);
 Vue.use(VueVisible);
 Vue.use(Vuetify, { iconfont: 'mdi' });
