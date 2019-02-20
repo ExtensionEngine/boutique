@@ -13,7 +13,7 @@ LMS
 
 ## :page_with_curl: Dependencies
 
-- Node.js (10.x.)
+- Node.js (10.x)
 - npm (>= 6.8.0)
 - PostgreSQL (>= 9.4)
 
