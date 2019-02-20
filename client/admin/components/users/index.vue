@@ -43,7 +43,11 @@
                 <v-icon @click="showUserDialog(props.item)" small>
                   mdi-pencil
                 </v-icon>
-                <v-icon @click="removeUser(props.item)" small class="ml-2">
+                <v-icon
+                  v-if="user.id != props.item.id"
+                  @click="removeUser(props.item)"
+                  small
+                  class="ml-2">
                   mdi-delete
                 </v-icon>
               </td>
@@ -71,6 +75,7 @@ import api from '@/admin/api/user';
 import BulkEnrollmentDialog from './BulkEnrollmentDialog';
 import ConfirmationDialog from '../common/ConfirmationDialog';
 import ImportDialog from './ImportDialog';
+import { mapState } from 'vuex';
 import throttle from 'lodash/throttle';
 import UserDialog from './UserDialog';
 
@@ -100,7 +105,8 @@ export default {
   },
   computed: {
     headers,
-    defaultPage
+    defaultPage,
+    ...mapState('auth', ['user'])
   },
   methods: {
     showUserDialog(user = null) {
