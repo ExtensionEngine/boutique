@@ -8,7 +8,7 @@
     </span>
     <v-spacer></v-spacer>
     <v-menu min-width="220px" transition="slide-y-transition" offset-y>
-      <v-btn slot="activator" icon large class="mr-2">
+      <v-btn slot="activator" v-tooltip.left="fullName" icon large class="mr-2">
         <v-avatar size="42px" color="#eaeaea">
           <span class="grey--text headline">{{ user.firstName[0] }}</span>
         </v-avatar>
@@ -30,7 +30,12 @@ export default {
   props: {
     drawer: { type: Boolean, default: true }
   },
-  computed: mapState('auth', ['user']),
+  computed: {
+    ...mapState('auth', ['user']),
+    fullName() {
+      return this.user.firstName + ' ' + this.user.lastName;
+    }
+  },
   methods: mapActions('auth', ['logout'])
 };
 </script>
