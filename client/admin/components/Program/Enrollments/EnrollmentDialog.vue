@@ -101,7 +101,7 @@ export default {
     if (this.$validator.rules['unique-enrollment']) return;
     this.$validator.extend('unique-enrollment', {
       getMessage: field => `Learner is already enrolled!`,
-      validate: (option, [params]) => {
+      validate: (option, params) => {
         return enrollmentApi.fetch({ params }).then(res => !res.total);
       }
     });
