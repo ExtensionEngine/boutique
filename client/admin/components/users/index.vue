@@ -50,6 +50,9 @@
                   class="ml-2">
                   mdi-delete
                 </v-icon>
+                <v-icon v-else small color="#ddd" class="ml-2">
+                  mdi-delete
+                </v-icon>
               </td>
             </tr>
           </template>
