@@ -45,7 +45,7 @@
                 </v-icon>
                 <v-icon
                   @click="removeUser(props.item)"
-                  :disabled="user.id != props.item.id"
+                  :disabled="user.id == props.item.id"
                   small
                   class="ml-2">
                   mdi-delete
