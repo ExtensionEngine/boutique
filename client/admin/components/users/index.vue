@@ -44,13 +44,10 @@
                   mdi-pencil
                 </v-icon>
                 <v-icon
-                  v-if="user.id != props.item.id"
                   @click="removeUser(props.item)"
+                  :disabled="user.id != props.item.id"
                   small
                   class="ml-2">
-                  mdi-delete
-                </v-icon>
-                <v-icon v-else small color="#ddd" class="ml-2">
                   mdi-delete
                 </v-icon>
               </td>
