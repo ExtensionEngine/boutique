@@ -8,53 +8,58 @@
     <v-btn slot="activator" color="blue-grey" outline>
       <v-icon>mdi-cloud-upload</v-icon>Import
     </v-btn>
-    <v-form @submit.prevent="save">
-      <v-card class="pa-3">
-        <v-card-title class="headline">Import Users</v-card-title>
-        <v-card-text>
-          <label for="userImportInput">
-            <div
-              @drag.stop.prevent
-              @dragstart.stop.prevent
-              @dragend.stop.prevent="isDragged = false"
-              @dragover.stop.prevent="isDragged = true"
-              @dragenter.stop.prevent="isDragged = true"
-              @dragleave.stop.prevent="isDragged = false"
-              @drop.stop.prevent="onFilesDroped"
-              class="file-import"
-              :class="{ dragged: isDragged }">
-              <v-input :error-messages="vErrors.collect('file')">
-                Chose or drop the .xlsx or .csv file!
-              </v-input>
-              <v-btn v-if="filename" ref="fileName">{{ filename }}</v-btn>
-              <input
-                ref="fileInput"
-                v-validate="inputValidation"
-                @change="onFileSelected"
-                id="userImportInput"
-                name="file"
-                type="file"
-                multiple>
+    <v-form submit.prevent="save">
+      <div
+        @drag.stop.prevent
+        @dragstart.stop.prevent
+        @dragend.stop.prevent="isDragged = false"
+        @dragover.stop.prevent="isDragged = true"
+        @dragenter.stop.prevent="isDragged = true"
+        @dragleave.stop.prevent="isDragged = false"
+        @drop.stop.prevent="onFilesDroped">
+        <v-card class="pa-3">
+          <v-card-title class="headline">Import Users</v-card-title>
+          <v-card-text>
+            <div v-if="!isDragged" class="select-file">
+              <label for="userImportInput">
+                <v-text-field
+                  ref="fileName"
+                  v-model="filename"
+                  :error-messages="vErrors.collect('file')"
+                  :disabled="importing"
+                  prepend-icon="mdi-attachment"
+                  label="Upload .xlsx or .csv file"
+                  readonly
+                  single-line/>
+                <input
+                  ref="fileInput"
+                  v-validate="inputValidation"
+                  @input="onFileSelected"
+                  id="userImportInput"
+                  name="file"
+                  type="file">
+              </label>
             </div>
-          </label>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer/>
-          <v-fade-transition>
-            <v-btn
-              v-show="serverErrorsReport"
-              @click="downloadErrorsFile"
-              color="error">
-              <v-icon>mdi-cloud-download</v-icon>Errors
+            <div v-else class="drop-file">Drop files here</div>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer/>
+            <v-fade-transition>
+              <v-btn
+                v-show="serverErrorsReport"
+                @click="downloadErrorsFile"
+                color="error">
+                <v-icon>mdi-cloud-download</v-icon>Errors
+              </v-btn>
+            </v-fade-transition>
+            <v-btn @click="close">Cancel</v-btn>
+            <v-btn :disabled="importDisabled" color="success" type="submit">
+              <span v-if="!importing">Import</span>
+              <v-icon v-else>mdi-loading mdi-spin</v-icon>
             </v-btn>
-          </v-fade-transition>
-          <v-btn @click="close">Cancel</v-btn>
-          <v-btn :disabled="importDisabled" color="success" type="submit">
-            <span v-if="!importing">Import</span>
-            <v-icon v-else>mdi-loading mdi-spin</v-icon>
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+          </v-card-actions>
+        </v-card>
+      </div>
     </v-form>
   </v-dialog>
 </template>
@@ -92,9 +97,16 @@ export default {
   },
   methods: {
     onFileSelected(e) {
+      this.fileToForm(e.target.files);
+    },
+    onFilesDroped(e) {
+      this.fileToForm(e.dataTransfer.files);
+      this.isDragged = false;
+    },
+    fileToForm(files) {
       this.form = new FormData();
       this.resetErrors();
-      const [file] = e.target.files;
+      const [file] = files;
       if (!file) {
         this.filename = null;
         return;
@@ -104,9 +116,6 @@ export default {
         if (!isValid) return;
         this.form.append('file', file, file.name);
       });
-    },
-    onFilesDroped(e) {
-      this.$refs.fileInput.files = e.dataTransfer.files;
     },
     close() {
       if (this.importing) return;
@@ -185,30 +194,14 @@ export default {
   justify-content: center;
 }
 
-.file-import {
+.drop-file {
   display: block;
   border: 1px dashed gray;
   border-radius: 5px;
-  padding: 25px 10px;
+  padding: 50px 10px;
   text-align: center;
   color: gray;
   cursor: pointer;
-}
-
-.dragged {
   background-color: #fafafa;
 }
-
-.file-list {
-  display: block;
-  background-color:white;
-  border-radius: 5px;
-  padding: 5px;
-  margin: 5px;
-}
-
-.v-input__slot{
-  text-align: center;
-}
-
 </style>
