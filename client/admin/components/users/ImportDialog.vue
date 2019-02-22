@@ -13,22 +13,29 @@
         <v-card-title class="headline">Import Users</v-card-title>
         <v-card-text>
           <label for="userImportInput">
-            <v-text-field
-              ref="fileName"
-              v-model="filename"
-              :error-messages="vErrors.collect('file')"
-              :disabled="importing"
-              prepend-icon="mdi-attachment"
-              label="Upload .xlsx or .csv file"
-              readonly
-              single-line/>
-            <input
-              ref="fileInput"
-              v-validate="inputValidation"
-              @change="onFileSelected"
-              id="userImportInput"
-              name="file"
-              type="file">
+            <div
+              @drag.stop.prevent
+              @dragstart.stop.prevent
+              @dragend.stop.prevent="isDragged = false"
+              @dragover.stop.prevent="isDragged = true"
+              @dragenter.stop.prevent="isDragged = true"
+              @dragleave.stop.prevent="isDragged = false"
+              @drop.stop.prevent="onFilesDroped"
+              class="file-import"
+              :class="{ dragged: isDragged }">
+              <v-input :error-messages="vErrors.collect('file')">
+                Chose or drop the .xlsx or .csv file!
+              </v-input>
+              <v-btn v-if="filename" ref="fileName">{{ filename }}</v-btn>
+              <input
+                ref="fileInput"
+                v-validate="inputValidation"
+                @change="onFileSelected"
+                id="userImportInput"
+                name="file"
+                type="file"
+                multiple>
+            </div>
           </label>
         </v-card-text>
         <v-card-actions>
@@ -73,6 +80,7 @@ export default {
       importing: false,
       filename: null,
       form: null,
+      isDragged: false,
       serverErrorsReport: null
     };
   },
@@ -97,9 +105,13 @@ export default {
         this.form.append('file', file, file.name);
       });
     },
+    onFilesDroped(e) {
+      this.$refs.fileInput.files = e.dataTransfer.files;
+    },
     close() {
       if (this.importing) return;
       this.filename = null;
+      this.isDragged = false;
       this.$refs.fileInput.value = null;
       this.resetErrors();
       this.showDialog = false;
@@ -172,4 +184,31 @@ export default {
   display: flex;
   justify-content: center;
 }
+
+.file-import {
+  display: block;
+  border: 1px dashed gray;
+  border-radius: 5px;
+  padding: 25px 10px;
+  text-align: center;
+  color: gray;
+  cursor: pointer;
+}
+
+.dragged {
+  background-color: #fafafa;
+}
+
+.file-list {
+  display: block;
+  background-color:white;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 5px;
+}
+
+.v-input__slot{
+  text-align: center;
+}
+
 </style>
