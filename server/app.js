@@ -1,6 +1,6 @@
 'use strict';
 
-const { INTERNAL_SERVER_ERROR, NOT_FOUND } = require('http-status');
+const { INTERNAL_SERVER_ERROR } = require('http-status');
 const AuthError = require('passport/lib/errors/authenticationerror');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -46,12 +46,10 @@ app.use(morgan(format, {
 app.use(config.apiPath, nocache(), router);
 
 if (config.useHistoryApiFallback) {
-  const historyMiddleware = history({
-    verbose: true,
-    rewrites: config.histroyApiFallbackRewrites
-  });
-  app.use(historyMiddleware);
-  app.use(staticMiddleware);
+  app.use(
+    history(config.histroyApiFallbackOptions),
+    staticMiddleware
+  );
 }
 
 // Global error handler.

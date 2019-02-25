@@ -26,7 +26,6 @@ const fallbackRoute = { path: '*', component: NotFound };
 
 const router = new Router({
   mode: 'history',
-  base: '/student/',
   routes: [{
     path: '/auth',
     name: 'auth',
