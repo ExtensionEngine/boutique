@@ -20,6 +20,8 @@ const parseProgramId = ({ params }) => ({
 const fallbackRoute = { path: '*', component: NotFound };
 
 const router = new Router({
+  mode: 'history',
+  base: '/admin/',
   routes: [{
     path: '',
     name: 'users',

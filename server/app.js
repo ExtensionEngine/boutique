@@ -5,7 +5,7 @@ const AuthError = require('passport/lib/errors/authenticationerror');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const express = require('express');
-const fallback = require('express-history-api-fallback');
+const history = require('connect-history-api-fallback');
 const helmet = require('helmet');
 const HttpError = require('http-errors').HttpError;
 const jsend = require('jsend').middleware;
@@ -25,7 +25,9 @@ app.use(cors({ origin: config.cors.allowedOrigins, credentials: true }));
 app.use(bodyParser.json({ limit: config.uploadLimit }));
 app.use(auth.initialize());
 app.use(origin());
-app.use(express.static(config.staticFolder));
+
+const staticMiddleware = express.static(config.staticFolder);
+app.use(staticMiddleware);
 app.use(jsend);
 
 // Log http requests
@@ -43,6 +45,15 @@ app.use(morgan(format, {
 // Mount main router
 app.use(config.apiPath, nocache(), router);
 
+if (config.useHistoryApiFallback) {
+  const historyMiddleware = history({
+    verbose: true,
+    rewrites: config.histroyApiFallbackRewrites
+  });
+  app.use(historyMiddleware);
+  app.use(staticMiddleware);
+}
+
 // Global error handler.
 app.use((err, req, res, next) => {
   if ((err instanceof HttpError) || (err instanceof AuthError)) {
@@ -52,11 +63,5 @@ app.use((err, req, res, next) => {
   res.status(INTERNAL_SERVER_ERROR).end();
   logger.error({ req, err }, '🚨  Internal Error:', err.message);
 });
-
-// Handle non-existing routes.
-const notFound = config.useHistoryApiFallback
-  ? fallback('index.html', { root: config.staticFolder })
-  : (_, res) => res.sendStatus(NOT_FOUND);
-app.use(notFound);
 
 module.exports = app;
