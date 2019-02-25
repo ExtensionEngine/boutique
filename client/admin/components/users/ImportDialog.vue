@@ -8,39 +8,40 @@
     <v-btn slot="activator" color="blue-grey" outline>
       <v-icon>mdi-cloud-upload</v-icon>Import
     </v-btn>
-    <v-form submit.prevent="save">
-      <div
-        @drag.stop.prevent
-        @dragstart.stop.prevent
-        @dragend.stop.prevent="isDragged = false"
-        @dragover.stop.prevent="isDragged = true"
-        @dragenter.stop.prevent="isDragged = true"
-        @dragleave.stop.prevent="isDragged = false"
-        @drop.stop.prevent="onFilesDroped">
+    <v-form @submit.prevent="save">
+      <div>
         <v-card class="pa-3">
           <v-card-title class="headline">Import Users</v-card-title>
           <v-card-text>
-            <div v-if="!isDragged" class="select-file">
-              <label for="userImportInput">
-                <v-text-field
-                  ref="fileName"
-                  v-model="filename"
-                  :error-messages="vErrors.collect('file')"
-                  :disabled="importing"
-                  prepend-icon="mdi-attachment"
-                  label="Upload .xlsx or .csv file"
-                  readonly
-                  single-line/>
-                <input
-                  ref="fileInput"
-                  v-validate="inputValidation"
-                  @input="onFileSelected"
-                  id="userImportInput"
-                  name="file"
-                  type="file">
-              </label>
+            <div
+              :class="{ 'drop-file': isDragged }"
+              class="select-file">
+              <v-btn @click="launchFilePicker" color="info">
+                <v-icon>mdi-upload</v-icon>
+                Upload .xslx or .csv file
+              </v-btn>
+              <div>Or drag and drop file here</div>
+              <input
+                ref="fileInput"
+                v-validate="inputValidation"
+                @change="onFileSelected"
+                id="userImportInput"
+                name="file"
+                type="file">
+              <v-chip v-if="filename" @input="removeFile" close>{{ filename }}</v-chip>
+              <div class="errors-list">{{ vErrors.collect('file')[0] }}</div>
+              <div
+                v-if="isDragged"
+                ref="dropZone"
+                @drag.stop.prevent
+                @dragstart.stop.prevent
+                @dragend.stop.prevent="isDragged = false"
+                @dragover.stop.prevent="isDragged = true"
+                @dragenter.stop.prevent="isDragged = true"
+                @dragleave.stop.prevent="isDragged = false"
+                @drop.stop.prevent="onFilesDroped"
+                class="drop-zone"/>
             </div>
-            <div v-else class="drop-file">Drop files here</div>
           </v-card-text>
           <v-card-actions>
             <v-spacer/>
@@ -93,9 +94,22 @@ export default {
     importDisabled() {
       return !this.filename || this.vErrors.any() || this.importing;
     },
-    inputValidation: () => ({ required: true, mimes: Object.keys(inputFormats) })
+    inputValidation: () => ({ required: false, mimes: Object.keys(inputFormats) })
   },
   methods: {
+    showDropZone() {
+      this.isDragged = true;
+    },
+    removeFile() {
+      this.filename = null;
+      this.form = null;
+      this.$refs.fileInput.value = null;
+      this.isDragged = false;
+      this.resetErrors();
+    },
+    launchFilePicker() {
+      this.$refs.fileInput.click();
+    },
     onFileSelected(e) {
       this.fileToForm(e.target.files);
     },
@@ -112,6 +126,7 @@ export default {
         return;
       }
       this.filename = file.name;
+      console.log(file);
       return this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
         this.form.append('file', file, file.name);
@@ -158,6 +173,9 @@ export default {
     showDialog(val) {
       this.$nextTick(() => this.focusTrap.toggle(val));
     }
+  },
+  mounted() {
+    window.addEventListener('dragenter', this.showDropZone);
   }
 };
 </script>
@@ -194,14 +212,30 @@ export default {
   justify-content: center;
 }
 
-.drop-file {
-  display: block;
-  border: 1px dashed gray;
-  border-radius: 5px;
+.select-file {
   padding: 50px 10px;
   text-align: center;
-  color: gray;
-  cursor: pointer;
-  background-color: #fafafa;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  color:gray;
+}
+
+.drop-file {
+  background-color: #eee;
+  outline: 2px dashed #aaa;
+  outline-offset: -10px;
+}
+
+.errors-list {
+  color: red;
+}
+
+.drop-zone {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
 }
 </style>
