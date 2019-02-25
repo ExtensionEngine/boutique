@@ -20,7 +20,8 @@
     "webpack:inspect-config": "poi --inspect-webpack",
     "webpack:bundle-report": "poi --prod --bundle-report",
     "clean": "del-cli dist/* !dist/.gitkeep",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postshrinkwrap": "sed -i.bak 's/http:\\/\\//https:\\/\\//g' package-lock.json && rm -v package-lock.json.bak"
   },
   "repository": {
     "type": "git",
