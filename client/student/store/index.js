@@ -19,8 +19,6 @@ const store = new Vuex.Store({
 });
 
 request.auth.storageKey = 'LMS_TOKEN';
-request.auth.on('error', () => {
-  store.dispatch('auth/logout');
-});
+request.auth.on('error', () => store.dispatch('auth/logout'));
 
 export default store;

@@ -45,9 +45,9 @@ client.interceptors.request.use(config => {
   const { token } = client.auth;
   if (token) {
     config.headers['Authorization'] = `${authScheme} ${token}`;
-  } else if (!token && config.headers['Authorization']) {
-    delete config.headers['Authorization'];
+    return config;
   }
+  delete config.headers['Authorization'];
   return config;
 });
 
