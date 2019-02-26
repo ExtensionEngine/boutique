@@ -14,33 +14,27 @@
           <v-card-title class="headline">Import Users</v-card-title>
           <v-card-text>
             <div
-              :class="{ 'drop-file': isDragged }"
-              class="select-file">
+              class="select-file"
+              :class="{ 'drop-file': isDragged }">
               <v-btn @click="launchFilePicker" color="info">
                 <v-icon>mdi-upload</v-icon>
                 Upload .xslx or .csv file
               </v-btn>
               <div>Or drag and drop file here</div>
-              <input
-                ref="fileInput"
-                v-validate="inputValidation"
-                @change="onFileSelected"
-                id="userImportInput"
-                name="file"
-                type="file">
               <v-chip v-if="filename" @input="removeFile" close>{{ filename }}</v-chip>
               <div class="errors-list">{{ vErrors.collect('file')[0] }}</div>
-              <div
-                v-if="isDragged"
+              <input
                 ref="dropZone"
-                @drag.stop.prevent
-                @dragstart.stop.prevent
-                @dragend.stop.prevent="isDragged = false"
-                @dragover.stop.prevent="isDragged = true"
-                @dragenter.stop.prevent="isDragged = true"
-                @dragleave.stop.prevent="isDragged = false"
-                @drop.stop.prevent="onFilesDroped"
-                class="drop-zone"/>
+                v-validate="inputValidation"
+                @change="onFileSelected"
+                @dragend="hideDropZone"
+                @dragover="showDropZone"
+                @dragenter="showDropZone"
+                @dragleave="hideDropZone"
+                @drop="hideDropZone"
+                class="drop-zone"
+                name="file"
+                type="file" />
             </div>
           </v-card-text>
           <v-card-actions>
@@ -94,49 +88,47 @@ export default {
     importDisabled() {
       return !this.filename || this.vErrors.any() || this.importing;
     },
-    inputValidation: () => ({ required: false, mimes: Object.keys(inputFormats) })
+    inputValidation: () => ({ required: true, mimes: Object.keys(inputFormats) })
   },
   methods: {
     showDropZone() {
+      this.$refs.dropZone.style.visibility = 'visible';
       this.isDragged = true;
+    },
+    hideDropZone() {
+      this.$refs.dropZone.style.visibility = 'hidden';
+      this.isDragged = false;
     },
     removeFile() {
       this.filename = null;
       this.form = null;
-      this.$refs.fileInput.value = null;
+      this.$refs.dropZone.value = null;
       this.isDragged = false;
       this.resetErrors();
     },
     launchFilePicker() {
-      this.$refs.fileInput.click();
+      this.$refs.dropZone.click();
     },
     onFileSelected(e) {
-      this.fileToForm(e.target.files);
-    },
-    onFilesDroped(e) {
-      this.fileToForm(e.dataTransfer.files);
-      this.isDragged = false;
-    },
-    fileToForm(files) {
       this.form = new FormData();
       this.resetErrors();
-      const [file] = files;
+      const [file] = e.target.files;
       if (!file) {
         this.filename = null;
         return;
       }
       this.filename = file.name;
-      console.log(file);
       return this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
         this.form.append('file', file, file.name);
+        console.log(this.$refs.dropZone.value);
       });
     },
     close() {
       if (this.importing) return;
       this.filename = null;
       this.isDragged = false;
-      this.$refs.fileInput.value = null;
+      this.$refs.dropZone.value = null;
       this.resetErrors();
       this.showDialog = false;
     },
@@ -182,7 +174,6 @@ export default {
 
 <style lang="scss" scoped>
 .v-form input {
-  display: none;
 }
 
 .v-btn .v-icon {
@@ -237,5 +228,6 @@ export default {
   width: 100%;
   height: 100%;
   z-index: 999;
+  visibility: hidden;
 }
 </style>
