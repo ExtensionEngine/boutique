@@ -48,7 +48,8 @@ module.exports = {
     sourceMap: !isProduction
   },
   envs: {
-    API_PATH: process.env.API_PATH
+    API_PATH: process.env.API_PATH,
+    HISTORY_API_FALLBACK: process.env.HISTORY_API_FALLBACK
   },
   chainWebpack(config) {
     config.resolve.alias.merge(aliases);
