@@ -93,9 +93,11 @@ export default {
   },
   methods: {
     showDropZone() {
-      this.$refs.dropZone.style.visibility = 'visible';
-      this.$refs.dialog.overlay.style.backgroundColor = 'rgba(0,191,255, 0.5)';
-      this.isDragged = true;
+      if (this.showDialog) {
+        this.$refs.dropZone.style.visibility = 'visible';
+        this.$refs.dialog.overlay.style.backgroundColor = 'rgba(0,191,255, 0.5)';
+        this.isDragged = true;
+      }
     },
     hideDropZone() {
       this.$refs.dropZone.style.visibility = 'hidden';
