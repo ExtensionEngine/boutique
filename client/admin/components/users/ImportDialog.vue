@@ -124,7 +124,6 @@ export default {
       return this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
         this.form.append('file', file, file.name);
-        console.log(this.$refs.dropZone.value);
       });
     },
     close() {
