@@ -1,5 +1,6 @@
 <template>
   <v-dialog
+    ref="dialog"
     v-model="showDialog"
     v-hotkey="{ esc: close }"
     persistent
@@ -93,10 +94,12 @@ export default {
   methods: {
     showDropZone() {
       this.$refs.dropZone.style.visibility = 'visible';
+      this.$refs.dialog.overlay.style.backgroundColor = 'rgba(0,191,255, 0.5)';
       this.isDragged = true;
     },
     hideDropZone() {
       this.$refs.dropZone.style.visibility = 'hidden';
+      this.$refs.dialog.overlay.style.backgroundColor = '';
       this.isDragged = false;
     },
     removeFile() {
@@ -173,34 +176,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.v-form input {
-}
-
 .v-btn .v-icon {
   padding-right: 6px;
 }
 
-.v-text-field {
-  /deep/ .v-text-field__slot {
-    cursor: pointer;
-
-    input {
-      pointer-events: none;
-    }
-  }
-
-  /deep/ .mdi {
-    transform: rotate(-90deg);
-  }
-}
-
 .v-card__actions {
   margin-top: 20px;
-}
-
-.loader-container {
-  display: flex;
-  justify-content: center;
 }
 
 .select-file {
