@@ -1,13 +1,10 @@
 'use strict';
 
-const { INTERNAL_SERVER_ERROR } = require('http-status');
-const AuthError = require('passport/lib/errors/authenticationerror');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const express = require('express');
 const history = require('connect-history-api-fallback');
 const helmet = require('helmet');
-const HttpError = require('http-errors').HttpError;
 const jsend = require('jsend').middleware;
 const morgan = require('morgan');
 const nocache = require('nocache');
@@ -15,7 +12,11 @@ require('express-async-errors');
 
 const auth = require('./common/auth');
 const config = require('./config');
-const logger = require('./common/logger')();
+const {
+  apiErrorHandler,
+  notFoundRouteHandler,
+  globalErrorHandler
+} = require('./common/errors');
 const origin = require('./common/origin');
 const router = require('./router');
 
@@ -43,7 +44,13 @@ app.use(morgan(format, {
 }));
 
 // Mount main router
-app.use(config.apiPath, nocache(), router);
+app.use(
+  config.apiPath,
+  nocache(),
+  router,
+  notFoundRouteHandler,
+  apiErrorHandler
+);
 
 if (config.useHistoryApiFallback) {
   app.use(
@@ -52,14 +59,6 @@ if (config.useHistoryApiFallback) {
   );
 }
 
-// Global error handler.
-app.use((err, req, res, next) => {
-  if ((err instanceof HttpError) || (err instanceof AuthError)) {
-    res.status(err.status).jsend.error(err.message);
-    return;
-  }
-  res.status(INTERNAL_SERVER_ERROR).end();
-  logger.error({ req, err }, '🚨  Internal Error:', err.message);
-});
+app.use(globalErrorHandler);
 
 module.exports = app;
