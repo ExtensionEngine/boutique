@@ -10,7 +10,7 @@ module.exports = {
   histroyApiFallbackOptions: {
     rewrites: [
       { from: /^\/admin\/.+/, to: '/admin/' },
-      { from: /\/.+/, to: '/' }
+      { from: /^\/.+/, to: '/' }
     ]
   },
   apiPath: process.env.API_PATH || '/api/v1/',
