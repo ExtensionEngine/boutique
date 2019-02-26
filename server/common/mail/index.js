@@ -1,11 +1,14 @@
 'use strict';
 
-const { email: config } = require('../config');
+const { createLogger, Level } = require('../logger');
+const { email: config } = require('../../config');
 const { promisify } = require('util');
 const { URL } = require('url');
 const email = require('emailjs');
-const logger = require('./logger')('mailer');
+const logger = createLogger('mailer', { level: Level.DEBUG });
 const pick = require('lodash/pick');
+const path = require('path');
+const renderTemplate = require('./templates');
 
 const from = `${config.sender.name} <${config.sender.address}>`;
 const server = email.server.connect(config);
@@ -25,10 +28,11 @@ function invite(user, { origin }) {
   const href = resetUrl(origin, user);
   const { hostname } = new URL(href);
   const recipient = user.email;
-  const message = `
-    An account has been created for you on ${hostname}.
-    Please click <a href="${href}">here</a> to complete your registration.`;
-
+  const recipientName = user.firstName;
+  const message = renderTemplate(
+    path.join(__dirname, '/templates/assets/welcome.mjml'),
+    { href, origin, hostname, recipientName }
+  );
   logger.info({ recipient, sender: from }, '📧  Sending invite email to:', recipient);
   return send({
     from,
@@ -41,10 +45,11 @@ function invite(user, { origin }) {
 function resetPassword(user, { origin }) {
   const href = resetUrl(origin, user);
   const recipient = user.email;
-  const message = `
-    You requested password reset.
-    Please click <a href="${href}">here</a> to complete the reset process.`;
-
+  const recipientName = user.firstName;
+  const message = renderTemplate(
+    path.join(__dirname, '/templates/assets/reset.mjml'),
+    { href, recipientName }
+  );
   logger.info({ recipient, sender: from }, '📧  Sending reset password email to:', recipient);
   return send({
     from,

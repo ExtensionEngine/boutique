@@ -1,0 +1,48 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-class name="title"
+        font-size="30px"
+        color="#030303"
+        background-color="#FFC125" />
+      <mj-class name="content"
+        color="#585858"
+        background-color="white" />
+      <mj-class name="ctaButton"
+        color="white"
+        background-color="#99983E" />
+    </mj-attributes>
+    <mj-style inline="inline">
+      strong {
+        font-weight: bold;
+      }
+      .icon {
+        vertical-align: text-bottom;
+      }
+    </mj-style>
+  </mj-head>
+  <mj-body>
+    <mj-section mj-class="title">
+      <mj-column>
+        <mj-text mj-class="title">
+          <img class="icon" src="/assets/shopping.png" /> Boutique LMS
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section mj-class="content">
+      <mj-column>
+        <mj-text mj-class="content"><strong>{recipientName}</strong>,</mj-text>
+        <mj-text mj-class="content">
+          You have requested password reset.<br />
+          Please reset your password by clicking the button below.
+        </mj-text>
+        <mj-button mj-class="ctaButton" href="{href}">
+          Reset password
+        </mj-button>
+        <mj-text mj-class="content">
+          If you didn't request this, please ignore this email.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
