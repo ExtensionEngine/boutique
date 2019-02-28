@@ -23,7 +23,7 @@
       <mj-class name="divider"
         border-width="1px"
         border-color="#eaeaea"
-        padding="20px 25px" />
+        padding="20px 25px"/>
     </mj-attributes>
     <mj-style inline="inline">
       strong {
@@ -42,23 +42,23 @@
     <mj-section mj-class="title">
       <mj-column>
         <mj-text mj-class="title">
-          <img class="icon" src="/assets/shopping.png" /> Boutique LMS
+          <img class="icon" src="./assets/shopping.png"/> Boutique LMS
         </mj-text>
       </mj-column>
     </mj-section>
     <mj-section mj-class="content">
       <mj-column>
         <mj-text mj-class="content">
-          Hello, <strong>{recipientName}</strong>,
+          Welcome <strong class="name">{recipientName}</strong>,
         </mj-text>
         <mj-text mj-class="content" padding-bottom="0">
-          You have requested password reset.
+          An account has been created for you on <a href="{origin}">{hostname}</a>.
         </mj-text>
         <mj-text mj-class="content">
-          Please reset your password by clicking the button below:
+          Please finish your registration by clicking the button below:
         </mj-text>
         <mj-button mj-class="ctaButton" href="{href}">
-          Reset password
+          Complete registration
         </mj-button>
         <mj-text mj-class="content">
           Or copy and paste this URL into your browser:

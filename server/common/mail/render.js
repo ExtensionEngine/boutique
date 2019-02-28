@@ -5,14 +5,19 @@ const cheerio = require('cheerio');
 const createDataUri = require('create-data-uri');
 const fileType = require('file-type');
 const fs = require('fs');
-const logger = require('../../logger')('mailer');
+const logger = require('../logger')('mailer');
 const mapKeys = require('lodash/mapKeys');
 const map = require('lodash/map');
 const mjml2html = require('mjml');
 const path = require('path');
 const pupa = require('pupa');
 
-function renderTemplate(templatePath, params, style) {
+module.exports = {
+  renderHtml,
+  renderText
+};
+
+function renderHtml(templatePath, data, style) {
   const template = fs.readFileSync(templatePath, 'utf8');
   const $ = cheerio.load(template, { xmlMode: true });
   const $style = $('mj-attributes');
@@ -21,11 +26,14 @@ function renderTemplate(templatePath, params, style) {
   const $icon = $('.icon');
   const iconPath = $icon.attr('src');
   $icon.attr('src', getDataUri(iconPath));
-  const output = pupa($.html(), params);
+  const output = pupa($.html(), data);
   return mjml2html(output, { minify: true }).html;
 }
 
-module.exports = renderTemplate;
+function renderText(templatePath, data) {
+  const template = fs.readFileSync(templatePath, 'utf8');
+  return pupa(template, data);
+}
 
 function getAttributes($, style = {}) {
   return map(style, (declarations, name) => $('<mj-class>').attr({
@@ -35,7 +43,7 @@ function getAttributes($, style = {}) {
 }
 
 function getDataUri(imagePath) {
-  const buf = fs.readFileSync(path.join(__dirname, imagePath));
+  const buf = fs.readFileSync(path.join(__dirname, './templates/', imagePath));
   const { mime } = fileType(buf) || {};
   return createDataUri(mime, buf.toString('base64'));
 }
