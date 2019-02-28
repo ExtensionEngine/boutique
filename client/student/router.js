@@ -6,6 +6,7 @@ import get from 'lodash/get';
 import Home from '@/student/components';
 import Login from '@/student/components/auth/Login';
 import NotFound from '@/admin/components/common/NotFound';
+import PreviewComponent from '@/student/components/program/Activity/ContentContainer';
 import Program from '@/student/components/program';
 import ProgramSelection from '@/student/components/ProgramSelection';
 import ResetPassword from '@/student/components/auth/ResetPassword';
@@ -66,7 +67,13 @@ const router = new Router({
         props: parseParams
       }]
     }]
-  }, fallbackRoute]
+  },
+  {
+    path: '/activityContainer/:programId/:repositoryId/:containerId',
+    component: PreviewComponent,
+    props: parseParams
+  },
+  fallbackRoute]
 });
 
 router.beforeEach((to, from, next) => {
