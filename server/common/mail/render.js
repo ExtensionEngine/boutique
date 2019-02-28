@@ -23,9 +23,11 @@ function renderHtml(templatePath, data, style) {
   const $style = $('mj-attributes');
   $style.append(getAttributes($, style));
   logger.debug({ style: dump($, $style) }, 'Style email using `mj-attributes`:');
-  const $icon = $('.icon');
-  const iconPath = $icon.attr('src');
-  $icon.attr('src', getDataUri(iconPath));
+  $('img[src]').each((_, el) => {
+    const $image = $(el);
+    const imagePath = $image.attr('src');
+    $image.attr('src', getDataUri(imagePath));
+  });
   const output = pupa($.html(), data);
   return mjml2html(output, { minify: true }).html;
 }
