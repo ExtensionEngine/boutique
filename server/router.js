@@ -8,6 +8,7 @@ const get = require('lodash/get');
 const program = require('./program');
 const { Sequelize } = require('./common/database');
 const user = require('./user');
+const previewRouter = require('./preview');
 
 const router = express.Router();
 // TODO: Remove this demo route!
@@ -17,6 +18,7 @@ router.use(user.path, user.router);
 router.use(contentRepo.path, auth, contentRepo.router);
 router.use(program.path, auth, program.router);
 router.use(enrollment.path, auth, enrollment.router);
+router.use('/', previewRouter.router);
 
 module.exports = router;
 
