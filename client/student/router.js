@@ -69,7 +69,7 @@ const router = new Router({
     }]
   },
   {
-    path: '/activityContainer/:programId/:repositoryId/:containerId',
+    path: '/previewComponent/:programId/:repositoryId/:containerId',
     component: PreviewComponent,
     props: parseParams
   },
