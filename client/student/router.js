@@ -6,7 +6,7 @@ import get from 'lodash/get';
 import Home from '@/student/components';
 import Login from '@/student/components/auth/Login';
 import NotFound from '@/admin/components/common/NotFound';
-import PreviewComponent from '@/student/components/program/Activity/ContentContainer';
+import PreviewComponent from '@/student/components/program/Activity/PreviewContainer';
 import Program from '@/student/components/program';
 import ProgramSelection from '@/student/components/ProgramSelection';
 import ResetPassword from '@/student/components/auth/ResetPassword';
@@ -69,7 +69,8 @@ const router = new Router({
     }]
   },
   {
-    path: '/previewComponent/:programId/:repositoryId/:containerId',
+    path: '/previewComponent/:containerId',
+    name: 'preview',
     component: PreviewComponent,
     props: parseParams
   },
