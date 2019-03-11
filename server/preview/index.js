@@ -2,29 +2,32 @@
 
 const router = require('express').Router();
 const fs = require('fs');
+var path = require('path');
 const { promisify } = require('util');
 
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
+const deleteFile = promisify(fs.unlink);
 
 router
-  .post('/preview', postPreview)
-  .get('/preview/:containerId', getPreview);
+  .post('/', createPreview)
+  .get('/:containerId', fetchPreview);
 
-async function postPreview(req, res) {
-  const path = `${__dirname}/${req.body.id}.json`;
-  await writeFile(path, JSON.stringify(req.body));
+async function createPreview(req, res) {
+  const filePath = path.join(__dirname, req.body.id + '.json');
+  await writeFile(filePath, JSON.stringify(req.body));
   return res.redirect(`/#/previewComponent/${req.body.id}`);
 }
 
-async function getPreview(req, res) {
+async function fetchPreview(req, res) {
   const { containerId } = req.params;
-  const path = `${__dirname}/${containerId}.json`;
-  const data = await readFile(path, 'utf8');
-  fs.unlink(path, (err) => {
-    if (err) throw err;
-  });
+  const filePath = path.join(__dirname, containerId + '.json');
+  const data = await readFile(filePath, 'utf8');
+  deleteFile(filePath);
   return res.jsend.success(JSON.parse(data));
 }
 
-module.exports = { router };
+module.exports = {
+  path: '/preview',
+  router
+};
