@@ -12,16 +12,13 @@
 </template>
 
 <script>
-import api from '@/student/api/content';
 import CircularProgress from '@/student/components/common/CircularProgress';
 import TailorTeachingElements from 'tailor-teaching-elements';
 
 export default {
   name: 'content-container',
   props: {
-    programId: { type: Number, required: true },
-    repositoryId: { type: Number, required: true },
-    containerId: { type: Number, required: true }
+    getContainer: { type: Function, required: true }
   },
   data() {
     return {
@@ -30,7 +27,7 @@ export default {
     };
   },
   created() {
-    api.getContainer(this.programId, this.repositoryId, this.containerId)
+    this.getContainer()
       .then(container => (this.container = container))
       .finally(() => (this.isLoading = false));
   },

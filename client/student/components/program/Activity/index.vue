@@ -18,13 +18,12 @@
     </nav>
     <content-container
       :key="containerId"
-      :programId="programId"
-      :repositoryId="repositoryId"
-      :containerId="containerId"/>
+      :getContainer="getContainer"/>
   </div>
 </template>
 
 <script>
+import api from '@/student/api/content';
 import ContentContainer from './ContentContainer';
 import find from 'lodash/find';
 import { mapGetters } from 'vuex';
@@ -44,6 +43,11 @@ export default {
       return isCoursewareFlat
         ? courseware
         : find(courseware, { subActivities: [{ id }] }).subActivities;
+    }
+  },
+  methods: {
+    async getContainer() {
+      return api.getContainer(this.programId, this.repositoryId, this.containerId);
     }
   },
   components: { ContentContainer }
