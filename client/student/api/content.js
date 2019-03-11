@@ -19,12 +19,7 @@ function getContainer(programId, repositoryId, id) {
   return request.get(containerUrl).then(extractData);
 }
 
-function getPreview(containerId) {
-  return request.get(`/preview/${containerId}`).then(extractData);
-}
-
 export default {
   fetchSyllabus,
-  getContainer,
-  getPreview
+  getContainer
 };
