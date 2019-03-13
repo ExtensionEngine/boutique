@@ -25,6 +25,7 @@
               <v-chip v-if="filename" @input="removeFile" close>{{ filename }}</v-chip>
               <div class="errors-list">{{ vErrors.collect('file')[0] }}</div>
               <input
+                v-show="isDragged"
                 ref="dropZone"
                 v-validate="inputValidation"
                 @change="onFileSelected"
@@ -94,13 +95,11 @@ export default {
   methods: {
     showDropZone() {
       if (this.showDialog) {
-        this.$refs.dropZone.style.visibility = 'visible';
         this.$refs.dialog.overlay.style.backgroundColor = 'rgba(0,191,255, 0.5)';
         this.isDragged = true;
       }
     },
     hideDropZone() {
-      this.$refs.dropZone.style.visibility = 'hidden';
       this.$refs.dialog.overlay.style.backgroundColor = '';
       this.isDragged = false;
     },
@@ -210,6 +209,5 @@ export default {
   width: 100%;
   height: 100%;
   z-index: 999;
-  visibility: hidden;
 }
 </style>
