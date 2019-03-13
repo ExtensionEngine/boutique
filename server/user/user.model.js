@@ -155,7 +155,7 @@ class User extends Model {
         throw new UniqueConstraintError({ message });
       }
       if (user) {
-        user.setDataValue('deleteAt', null);
+        user.setDataValue('deletedAt', null);
         return user;
       }
       return this.build(userData);
