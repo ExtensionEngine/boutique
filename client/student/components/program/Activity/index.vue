@@ -46,7 +46,7 @@ export default {
     }
   },
   methods: {
-    async getContainer() {
+    getContainer() {
       return api.getContainer(this.programId, this.repositoryId, this.containerId);
     }
   },
