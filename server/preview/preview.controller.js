@@ -4,8 +4,9 @@ const mkdirp = require('mkdirp');
 const fs = require('fs');
 const path = require('path');
 const { promisify } = require('util');
+const { storage } = require('../config');
 
-const previewPath = 'data/preview';
+const previewPath = path.join(storage.filesystem.path, storage.previewPath);
 
 async function createPreview(req, res) {
   const filePath = path.join(previewPath, `${req.body.id}.json`);
