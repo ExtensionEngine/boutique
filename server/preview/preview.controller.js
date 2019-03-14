@@ -1,17 +1,18 @@
 'use strict';
 
-const mkdirp = require('mkdirp');
-const fs = require('fs');
-const path = require('path');
 const { promisify } = require('util');
 const { storage } = require('../config');
+const fs = require('fs');
+const mkdirp = promisify(require('mkdirp'));
+const path = require('path');
 
 const previewPath = path.join(storage.filesystem.path, storage.previewPath);
 
 async function createPreview(req, res) {
-  const filePath = path.join(previewPath, `${req.body.id}.json`);
+  const filePath = path.join(previewPath, `${req.body.uid}.json`);
+  await mkdirp(previewPath);
   await writeJsonFile(filePath, req.body);
-  return res.redirect(`/#/previewComponent/${req.body.id}`);
+  return res.redirect(`/#/previewComponent/${req.body.uid}`);
 }
 
 async function fetchPreview(req, res) {
@@ -27,8 +28,7 @@ module.exports = {
 };
 
 function writeJsonFile(path, content) {
-  return promisify(mkdirp)(previewPath)
-  .then(() => promisify(fs.writeFile)(path, JSON.stringify(content), 'utf8'));
+  return promisify(fs.writeFile)(path, JSON.stringify(content), 'utf8');
 }
 
 function readJsonFile(path) {
