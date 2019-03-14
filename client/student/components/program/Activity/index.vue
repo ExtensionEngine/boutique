@@ -47,11 +47,13 @@ export default {
   },
   methods: {
     getContainer() {
-      return api.getContainer(this.programId, this.repositoryId, this.containerId);
+      const { programId, repositoryId, containerId } = this;
+      return api.getContainer(programId, repositoryId, containerId);
     }
   },
   components: { ContentContainer }
 };
+
 </script>
 
 <style lang="scss" scoped>
