@@ -12,7 +12,7 @@ async function createPreview(req, res) {
   const filePath = path.join(previewPath, `${req.body.uid}.json`);
   await mkdirp(previewPath);
   await writeJsonFile(filePath, req.body);
-  return res.redirect(`/#/previewComponent/${req.body.uid}`);
+  return res.sendStatus(200);
 }
 
 async function fetchPreview(req, res) {
