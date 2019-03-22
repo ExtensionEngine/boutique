@@ -86,7 +86,7 @@ router.beforeEach((to, from, next) => {
   const user = get(store.state, 'auth.user');
   const isNotAuthenticated = to.matched.some(it => it.meta.auth) && !user;
   if (isNotAuthenticated) return next({ name: 'login' });
-  if (user && user.role === role.ADMIN) {
+  if (to.name !== 'preview' && user && user.role === role.ADMIN) {
     document.location.replace(`${document.location.origin}/admin`);
   }
   return next();
