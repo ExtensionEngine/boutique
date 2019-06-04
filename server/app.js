@@ -54,7 +54,7 @@ app.use(
 
 if (config.useHistoryApiFallback) {
   app.use(
-    history(config.histroyApiFallbackOptions),
+    history(config.historyApiFallbackOptions),
     staticMiddleware
   );
 }

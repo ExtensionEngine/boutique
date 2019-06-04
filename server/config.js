@@ -8,7 +8,7 @@ module.exports = {
   port: process.env.PORT,
   ip: process.env.IP,
   useHistoryApiFallback: yn(process.env.HISTORY_API_FALLBACK),
-  histroyApiFallbackOptions: {
+  historyApiFallbackOptions: {
     rewrites: [
       { from: /^\/admin\/.+/, to: '/admin/' },
       { from: /^\/.+/, to: '/' }

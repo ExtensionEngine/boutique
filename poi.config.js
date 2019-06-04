@@ -21,7 +21,7 @@ const devServer = {
   // Override using: `npm run dev:client -- --port <number>`
   port: 8081,
   hotEntries: ['admin', 'student'],
-  historyApiFallback: config.histroyApiFallbackOptions
+  historyApiFallback: config.historyApiFallbackOptions
 };
 
 module.exports = {
