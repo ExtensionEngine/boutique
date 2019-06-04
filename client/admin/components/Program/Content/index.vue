@@ -33,8 +33,8 @@
         <template slot="items" slot-scope="{ item }">
           <tr
             v-show="!item.deletedAt || showArchived"
-            :class="{ 'archived': item.deletedAt }"
-            :key="item.sourceId">
+            :key="item.sourceId"
+            :class="{ 'archived': item.deletedAt }">
             <td>{{ item.name }}</td>
             <td class="no-wrap">{{ item.repoVersion | formatDate }}</td>
             <td class="no-wrap">{{ item.publishedAt | formatDate }}</td>
@@ -60,13 +60,13 @@
         </template>
       </v-data-table>
       <confirmation-dialog
-        v-bind="confirmation"
         @update:visible="confirmation = null"
-        @confirmed="fetchProgramRepos()"/>
+        @confirmed="fetchProgramRepos()"
+        v-bind="confirmation"/>
       <multiple-choice-dialog
-        v-bind="multipleChoice"
         @closed="multipleChoice = null"
-        @completed="fetchProgramRepos()"/>
+        @completed="fetchProgramRepos()"
+        v-bind="multipleChoice"/>
     </div>
   </div>
 </template>
