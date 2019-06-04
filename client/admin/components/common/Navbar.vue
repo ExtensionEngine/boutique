@@ -31,8 +31,7 @@ import { mapActions, mapState } from 'vuex';
 export default {
   name: 'main-toolbar',
   props: {
-    drawer: { type: Boolean, default: true },
-    programId: { type: Number, default: null }
+    drawer: { type: Boolean, default: true }
   },
   computed: {
     ...mapState('auth', ['user']),
