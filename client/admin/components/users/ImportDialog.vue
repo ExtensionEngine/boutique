@@ -15,8 +15,8 @@
           <v-card-title class="headline">Import Users</v-card-title>
           <v-card-text>
             <div
-              class="select-file"
-              :class="{ 'drop-file': isDragged }">
+              :class="{ 'drop-file': isDragged }"
+              class="select-file">
               <v-btn @click="launchFilePicker" color="info">
                 <v-icon>mdi-upload</v-icon>
                 Upload .xslx or .csv file
@@ -171,6 +171,9 @@ export default {
   },
   mounted() {
     window.addEventListener('dragenter', this.showDropZone);
+  },
+  beforeDestroy() {
+    window.removeEventListener('dragenter', this.showDropZone);
   }
 };
 </script>
@@ -187,9 +190,9 @@ export default {
 .select-file {
   padding: 50px 10px;
   text-align: center;
+  color: gray;
   background-color: #f5f5f5;
   border-radius: 5px;
-  color:gray;
 }
 
 .drop-file {
