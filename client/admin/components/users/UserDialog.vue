@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-hotkey="{ esc: close }" v-model="show" width="700">
+  <v-dialog v-model="show" v-hotkey="{ esc: close }" width="700">
     <v-form @submit.prevent="save">
       <v-card class="pa-3">
         <v-card-title class="headline pr-0">
@@ -7,42 +7,42 @@
           <v-spacer/>
           <v-btn
             v-if="!isNewUser"
+            @click="invite"
             :disabled="isLoading"
             :loading="isLoading"
             :outline="true"
-            @click="invite"
             color="blue-grey">
             Reinvite
           </v-btn>
         </v-card-title>
         <v-card-text>
           <v-text-field
-            v-validate="{ required: true, email: true, 'unique-email': userData }"
             v-model="user.email"
+            v-validate="{ required: true, email: true, 'unique-email': userData }"
             :error-messages="vErrors.collect('email')"
             label="E-mail"
             data-vv-name="email"
             class="mb-3"/>
           <v-select
-            v-validate="'required'"
             v-model="user.role"
-            :items="roles"
-            :error-messages="vErrors.collect('role')"
+            v-validate="'required'"
             @focus="focusTrap.pause()"
             @blur="focusTrap.unpause()"
+            :items="roles"
+            :error-messages="vErrors.collect('role')"
             label="Role"
             data-vv-name="role"
             class="mb-3"/>
           <v-text-field
-            v-validate="'required|alpha|min:2|max:50'"
             v-model="user.firstName"
+            v-validate="'required|alpha|min:2|max:50'"
             :error-messages="vErrors.collect('firstName')"
             label="First Name"
             data-vv-name="firstName"
             class="mb-3"/>
           <v-text-field
-            v-validate="'required|alpha|min:2|max:50'"
             v-model="user.lastName"
+            v-validate="'required|alpha|min:2|max:50'"
             :error-messages="vErrors.collect('lastName')"
             label="Last Name"
             data-vv-name="lastName"
@@ -137,7 +137,7 @@ export default {
     if (this.$validator.rules['unique-email']) return;
     this.$validator.extend('unique-email', {
       getMessage: field => `The ${field} is not unique.`,
-      validate: (email, [userData]) => {
+      validate: (email, userData) => {
         if (userData && email === userData.email) return true;
         return api.fetch({ params: { email } })
           .then(({ total }) => ({ valid: !total }));

@@ -21,7 +21,6 @@ const ContentRepo = require('../../content-repo/content-repo.model');
 const isProduction = process.env.NODE_ENV === 'production';
 const sequelize = createConnection(config);
 const { Sequelize: { DataTypes } } = sequelize;
-logger.info(getConfig(sequelize), '🗄️  Connected to database');
 
 const defineModel = Model => {
   const fields = invoke(Model, 'fields', DataTypes, sequelize) || {};
@@ -58,7 +57,9 @@ function initialize() {
   umzug.on('reverting', migration => logger.info({ migration }, '⬇️  Reverting:', migration));
   umzug.on('reverted', migration => logger.info({ migration }, '⬇️  Reverted:', migration));
 
-  return checkPostgreVersion(sequelize)
+  return sequelize.authenticate()
+    .then(() => logger.info(getConfig(sequelize), '🗄️  Connected to database'))
+    .then(() => checkPostgreVersion(sequelize))
     .then(() => !isProduction && umzug.up())
     .then(() => umzug.executed())
     .then(migrations => {
