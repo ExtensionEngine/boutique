@@ -4,13 +4,13 @@
     <div class="control">
       <input
         v-validate="validate"
+        @input="$emit('input', $event.target.value)"
         :value="value"
         :type="type"
         :name="name"
         :data-vv-as="label"
         :placeholder="label"
         v-bind="$attrs"
-        @input="$emit('input', $event.target.value)"
         data-vv-delay="1000"
         class="input">
     </div>
@@ -40,6 +40,9 @@ export default {
       return this.vErrors.has(this.name);
     }
   },
-  inject: ['$validator']
+  inject: ['$validator'],
+  beforeDestroy() {
+    this.$validator.pause();
+  }
 };
 </script>

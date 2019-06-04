@@ -1,10 +1,10 @@
 <template>
   <div :class="{ expanded }" class="control has-icons-left">
     <input
-      :value="coursewareFilter"
       @input="setCoursewareFilter($event.target.value)"
       @focus="expanded = true"
       @blur="expanded = false"
+      :value="coursewareFilter"
       class="input control-bar"
       type="text"
       placeholder="Search...">

@@ -9,9 +9,12 @@
     <v-spacer></v-spacer>
     <v-menu min-width="220px" transition="slide-y-transition" offset-y>
       <v-btn slot="activator" icon large class="mr-2">
-        <v-avatar size="42px" color="#eaeaea">
-          <span class="grey--text headline">{{ user.firstName[0] }}</span>
-        </v-avatar>
+        <v-tooltip left>
+          <v-avatar slot="activator" size="42px" color="#eaeaea">
+            <span class="grey--text headline">{{ user.firstName[0] }}</span>
+          </v-avatar>
+          <span>{{ fullName }}</span>
+        </v-tooltip>
       </v-btn>
       <v-list>
         <v-list-tile @click="logout">
@@ -31,7 +34,13 @@ export default {
     drawer: { type: Boolean, default: true },
     programId: { type: Number, default: null }
   },
-  computed: mapState('auth', ['user']),
+  computed: {
+    ...mapState('auth', ['user']),
+    fullName() {
+      const { firstName, lastName } = this.user;
+      return `${firstName} ${lastName}`;
+    }
+  },
   methods: mapActions('auth', ['logout'])
 };
 </script>

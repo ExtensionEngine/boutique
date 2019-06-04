@@ -1,13 +1,13 @@
 <template>
-  <v-dialog v-hotkey="{ esc: close }" v-model="visible" width="600">
+  <v-dialog v-model="visible" v-hotkey="{ esc: close }" width="600">
     <v-btn slot="activator" small flat>Create</v-btn>
     <v-form @submit.prevent="save">
       <v-card class="pa-3">
         <v-card-title class="headline">New Program</v-card-title>
         <v-card-text>
           <v-text-field
-            v-validate="{ required: true, min: 2, max: 255, 'unique-program-name': null }"
             v-model.trim="program.name"
+            v-validate="{ required: true, min: 2, max: 255, 'unique-program-name': null }"
             :error-messages="vErrors.collect('name')"
             label="Name"
             data-vv-name="name"/>

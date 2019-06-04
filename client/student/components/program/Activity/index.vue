@@ -17,10 +17,10 @@
       </router-link>
     </nav>
     <content-container
+      :key="containerId"
       :programId="programId"
       :repositoryId="repositoryId"
-      :containerId="containerId"
-      :key="containerId"/>
+      :containerId="containerId"/>
   </div>
 </template>
 

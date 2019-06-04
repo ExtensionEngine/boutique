@@ -4,13 +4,13 @@
     <div class="control">
       <multiselect
         v-validate="validate"
-        :value="resolvedValue"
-        :name="name"
-        v-bind="options"
         @input="it => $emit('input', isValueObj ? (it && it.value) : it)"
         @close="close"
         @open="open"
         @search-change="val => $emit('search-change', val)"
+        :value="resolvedValue"
+        :name="name"
+        v-bind="options"
         data-vv-delay="1000">
       </multiselect>
     </div>
