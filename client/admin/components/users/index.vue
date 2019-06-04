@@ -11,7 +11,7 @@
       </v-toolbar>
       <div class="elevation-1 ml-2 mr-4">
         <v-layout column align-end class="px-4 table-toolbar">
-          <v-flex lg3>
+          <v-flex lg4>
             <v-text-field
               v-model="filter"
               append-icon="mdi-magnify"
@@ -20,11 +20,11 @@
               hide-details
               clearable/>
           </v-flex>
-          <v-flex lg3>
+          <v-flex lg4 class="my-2">
             <v-checkbox
               v-model="showArchived"
-              label="Show archived users"
-              class="d-inline-block mt-2 pt-0 archived-checkbox"
+              label="Show archived"
+              class="archived-checkbox"
               hide-details/>
           </v-flex>
         </v-layout>
@@ -38,7 +38,7 @@
           class="user-table"
           select-all>
           <template slot="items" slot-scope="props">
-            <tr :key="props.item.id" :class="{ 'archived': props.item.deletedAt }">
+            <tr :key="props.item.id">
               <td>
                 <v-checkbox v-model="props.selected" primary hide-details/>
               </td>
@@ -52,6 +52,7 @@
                   mdi-pencil
                 </v-icon>
                 <v-icon
+                  :class="{ 'red--text': props.item.deletedAt }"
                   @click="showConfirmationDialog(props.item)"
                   small
                   class="ml-2">
@@ -110,7 +111,7 @@ export default {
       totalItems: 0,
       userDialog: false,
       editedUser: null,
-      showArchived: null,
+      showArchived: false,
       confirmation: null
     };
   },
@@ -128,7 +129,7 @@ export default {
       const { items, total } = await api.fetch({
         ...this.dataTable,
         filter: this.filter,
-        deleted: this.showArchived
+        archived: this.showArchived
       });
       this.users = items;
       this.totalItems = total;
@@ -161,10 +162,6 @@ export default {
 <style lang="scss" scoped>
 .user-table /deep/ .v-input--checkbox {
   justify-content: center;
-}
-
-.archived {
-  background: #ebebeb;
 }
 
 .archived-checkbox /deep/ .v-input__slot {

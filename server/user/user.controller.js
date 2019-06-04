@@ -23,12 +23,12 @@ const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
 const createFilter = q => map(['email', 'firstName', 'lastName'],
   it => ({ [it]: { [Op.iLike]: `%${q}%` } }));
 
-function list({ query: { email, role, filter, deleted }, options }, res) {
+function list({ query: { email, role, filter, archived }, options }, res) {
   const where = { [Op.and]: [] };
   if (filter) where[Op.or] = createFilter(filter);
   if (email) where[Op.and].push({ email });
   if (role) where[Op.and].push({ role });
-  return User.findAndCountAll({ where, ...options, paranoid: !deleted })
+  return User.findAndCountAll({ where, ...options, paranoid: !archived })
     .then(({ rows, count }) => {
       return res.jsend.success({ items: map(rows, 'profile'), total: count });
     });
