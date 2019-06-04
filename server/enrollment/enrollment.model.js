@@ -54,7 +54,7 @@ class Enrollment extends Model {
         throw new UniqueConstraintError({ message });
       }
       if (enrollment) {
-        enrollment.setDataValue('deleteAt', null);
+        enrollment.setDataValue('deletedAt', null);
         return enrollment.save();
       }
       return this.create({ studentId, programId });

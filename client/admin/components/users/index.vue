@@ -52,8 +52,8 @@
                   mdi-pencil
                 </v-icon>
                 <v-icon
-                  :class="{ 'red--text': props.item.deletedAt }"
                   @click="archiveOrRestore(props.item)"
+                  :class="{ 'red--text': props.item.deletedAt }"
                   small
                   class="ml-2">
                   mdi-account-{{ props.item.deletedAt ? 'convert' : 'off' }}
@@ -64,15 +64,15 @@
         </v-data-table>
       </div>
       <user-dialog
-        :visible.sync="userDialog"
-        :userData="editedUser"
         @updated="fetch(defaultPage)"
-        @created="fetch(defaultPage)"/>
+        @created="fetch(defaultPage)"
+        :visible.sync="userDialog"
+        :userData="editedUser"/>
       <confirmation-dialog
-        v-bind="confirmation"
-        :visible="!!confirmation"
         @update:visible="confirmation = null"
-        @confirmed="fetch()"/>
+        @confirmed="fetch()"
+        v-bind="confirmation"
+        :visible="!!confirmation"/>
     </v-flex>
   </v-layout>
 </template>

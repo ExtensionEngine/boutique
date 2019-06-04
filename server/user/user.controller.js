@@ -2,13 +2,14 @@
 
 const { createError } = require('../common/errors');
 const { Enrollment, Sequelize, sequelize, User } = require('../common/database');
+const Audience = require('../common/auth/audience');
 const Datasheet = require('./datasheet');
 const HttpStatus = require('http-status');
 const mime = require('mime');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
 
-const { ACCEPTED, BAD_REQUEST, CONFLICT, NOT_FOUND } = HttpStatus;
+const { ACCEPTED, CONFLICT, NOT_FOUND } = HttpStatus;
 const { Op } = Sequelize;
 
 const columns = {
@@ -61,20 +62,12 @@ function destroy({ params }, res) {
   });
 }
 
-function login({ body }, res) {
-  const { email, password } = body;
-  if (!email || !password) {
-    return createError(BAD_REQUEST, 'Please enter email and password!');
-  }
-
-  return User.find({ where: { email } })
-    .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
-    .then(user => user.authenticate(password))
-    .then(user => user || createError(NOT_FOUND, 'Wrong password!'))
-    .then(user => {
-      const token = user.createToken({ expiresIn: '5 days' });
-      res.jsend.success({ token, user: user.profile });
-    });
+function login({ user }, res) {
+  const token = user.createToken({
+    audience: Audience.Scope.Access,
+    expiresIn: '5 days'
+  });
+  res.jsend.success({ token, user: user.profile });
 }
 
 function invite({ params, origin }, res) {
@@ -92,7 +85,7 @@ function forgotPassword({ origin, body }, res) {
     .then(() => res.end());
 }
 
-function resetPassword({ body, params }, res) {
+function resetPassword({ body }, res) {
   const { password, token } = body;
   return User.find({ where: { token } })
     .then(user => user || createError(NOT_FOUND, 'Invalid token!'))
