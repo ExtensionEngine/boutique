@@ -20,7 +20,8 @@
     "webpack:inspect-config": "poi --inspect-webpack",
     "webpack:bundle-report": "poi --prod --bundle-report",
     "clean": "del-cli dist/* !dist/.gitkeep",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postshrinkwrap": "sed -i.bak 's/http:\\/\\//https:\\/\\//g' package-lock.json && rm -v package-lock.json.bak"
   },
   "repository": {
     "type": "git",
@@ -33,7 +34,7 @@
   "homepage": "https://github.com/ExtensionEngine/boutique#readme",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.1.2",
+    "@babel/core": "^7.3.3",
     "@poi/plugin-bundle-report": "^12.1.0",
     "@poi/plugin-eslint": "^12.0.0",
     "clean-webpack-plugin": "^1.0.1",
