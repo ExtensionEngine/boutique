@@ -56,7 +56,7 @@
                   @click="archiveOrRestore(props.item)"
                   small
                   class="ml-2">
-                  {{ `mdi-account-${props.item.deletedAt ? 'convert' : 'off'}` }}
+                  mdi-account-{{ props.item.deletedAt ? 'convert' : 'off' }}
                 </v-icon>
               </td>
             </tr>
