@@ -1,6 +1,7 @@
 require('dotenv').config();
 const config = require('./server/config');
 const path = require('path');
+const yn = require('yn');
 
 const isProduction = process.env.NODE_ENV === 'production';
 const extensions = ['.vue'];
@@ -49,7 +50,7 @@ module.exports = {
   },
   envs: {
     API_PATH: process.env.API_PATH,
-    HISTORY_API_FALLBACK: process.env.HISTORY_API_FALLBACK
+    HISTORY_API_FALLBACK: yn(process.env.HISTORY_API_FALLBACK)
   },
   chainWebpack(config) {
     config.resolve.alias.merge(aliases);

@@ -1,12 +1,13 @@
 'use strict';
 
 const path = require('path');
+const yn = require('yn');
 
 module.exports = {
   hostname: process.env.HOSTNAME,
   port: process.env.PORT,
   ip: process.env.IP,
-  useHistoryApiFallback: process.env.HISTORY_API_FALLBACK,
+  useHistoryApiFallback: yn(process.env.HISTORY_API_FALLBACK),
   histroyApiFallbackOptions: {
     rewrites: [
       { from: /^\/admin\/.+/, to: '/admin/' },
