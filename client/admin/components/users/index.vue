@@ -48,16 +48,25 @@
               <td>{{ props.item.lastName }}</td>
               <td class="no-wrap">{{ props.item.createdAt | formatDate }}</td>
               <td class="no-wrap text-xs-center">
-                <v-icon @click="showUserDialog(props.item)" small>
-                  mdi-pencil
-                </v-icon>
-                <v-icon
-                  @click="archiveOrRestore(props.item)"
-                  :class="{ 'red--text': props.item.deletedAt }"
+                <v-btn
+                  @click="showUserDialog(props.item)"
+                  color="grey darken-2"
                   small
-                  class="ml-2">
-                  mdi-account-{{ props.item.deletedAt ? 'convert' : 'off' }}
-                </v-icon>
+                  flat
+                  icon>
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+                <v-btn
+                  @click="archiveOrRestore(props.item)"
+                  :disabled="user.id === props.item.id"
+                  color="grey darken-2"
+                  small
+                  flat
+                  icon>
+                  <v-icon>
+                    mdi-account-{{ props.item.deletedAt ? 'convert' : 'off' }}
+                  </v-icon>
+                </v-btn>
               </td>
             </tr>
           </template>
@@ -83,6 +92,7 @@ import BulkEnrollmentDialog from './BulkEnrollmentDialog';
 import ConfirmationDialog from '../common/ConfirmationDialog';
 import humanize from 'humanize-string';
 import ImportDialog from './ImportDialog';
+import { mapState } from 'vuex';
 import throttle from 'lodash/throttle';
 import UserDialog from './UserDialog';
 
@@ -116,6 +126,7 @@ export default {
     };
   },
   computed: {
+    ...mapState('auth', ['user']),
     headers,
     defaultPage
   },
