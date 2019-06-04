@@ -20,7 +20,7 @@
               hide-details
               clearable/>
           </v-flex>
-          <v-flex lg4 class="my-2">
+          <v-flex lg4 class="my-1">
             <v-checkbox
               v-model="showArchived"
               label="Show archived"
@@ -53,7 +53,7 @@
                 </v-icon>
                 <v-icon
                   :class="{ 'red--text': props.item.deletedAt }"
-                  @click="showConfirmationDialog(props.item)"
+                  @click="archiveOrRestore(props.item)"
                   small
                   class="ml-2">
                   {{ `mdi-account-${props.item.deletedAt ? 'convert' : 'off'}` }}
@@ -134,7 +134,7 @@ export default {
       this.users = items;
       this.totalItems = total;
     }, 400),
-    showConfirmationDialog(user) {
+    archiveOrRestore(user) {
       const action = user.deletedAt ? 'restore' : 'archive';
       const name = user.firstName + ' ' + user.lastName;
       this.confirmation = {
