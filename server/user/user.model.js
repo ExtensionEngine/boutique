@@ -63,7 +63,7 @@ class User extends Model {
         type: DataTypes.VIRTUAL,
         get() {
           return pick(this,
-            ['id', 'firstName', 'lastName', 'email', 'role', 'createdAt']);
+            ['id', 'firstName', 'lastName', 'email', 'role', 'createdAt', 'deletedAt']);
         }
       }
     };
@@ -155,7 +155,7 @@ class User extends Model {
         throw new UniqueConstraintError({ message });
       }
       if (user) {
-        user.setDataValue('deleteAt', null);
+        user.setDataValue('deletedAt', null);
         return user;
       }
       return this.build(userData);

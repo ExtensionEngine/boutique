@@ -1,4 +1,5 @@
 import axios from 'axios';
+import store from '@/student/store';
 
 const config = {
   baseURL: process.env.API_PATH,
@@ -27,6 +28,8 @@ client.interceptors.request.use(config => {
 
 client.interceptors.response.use(res => res, err => {
   if (err.response.status === 401) {
+    store.commit('auth/logout');
+    window.localStorage.removeItem('LMS_USER');
     window.localStorage.removeItem('LMS_TOKEN');
     window.location.replace(window.location.origin);
   } else {
