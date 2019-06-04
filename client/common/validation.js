@@ -13,7 +13,8 @@ const alphanumerical = {
 const uniqueProgramName = {
   getMessage: (field, args, data) => `Program named "${data}" already exists.`,
   validate: async (name, program) => {
-    if (program && program.name.toLowerCase() === name.toLowerCase()) return true;
+    const { name: programName } = program;
+    if (programName && programName.toLowerCase() === name.toLowerCase()) return true;
     const [fetchedProgram] = await api.fetch({ params: { name, deleted: true } });
     return {
       valid: !fetchedProgram,
