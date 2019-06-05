@@ -1,16 +1,21 @@
-
 'use strict';
+
 const { ContentRepo } = require('../common/database');
 const forEach = require('lodash/forEach');
 const keyBy = require('lodash/keyBy');
 const pick = require('lodash/pick');
 const Storage = require('./content-storage');
 
-const outputAttributes = ['id', 'sourceId', 'programId', 'name', 'publishedAt', 'deletedAt'];
+const outputAttributes = [
+  'id', 'sourceId', 'programId', 'name', 'publishedAt', 'deletedAt'
+];
 
-async function list({ query: { programId, srcVersion = false, deleted } }, res) {
-  const opts = { where: { programId }, attributes: outputAttributes, paranoid: !deleted };
-  const repos = await ContentRepo.findAll(opts);
+async function list({ query: { programId, srcVersion = false, archived } }, res) {
+  const repos = await ContentRepo.findAll({
+    where: { programId },
+    attributes: outputAttributes,
+    paranoid: !archived
+  });
   if (srcVersion) {
     const reposById = keyBy(await Storage.getCatalog(), 'id');
     forEach(repos, it => {
@@ -39,12 +44,12 @@ async function upsert({ body }, res) {
 }
 
 function destroy({ params }, res) {
-  ContentRepo.destroy({ where: { id: params.id } })
+  return ContentRepo.destroy({ where: { id: params.id } })
     .then(() => res.end());
 }
 
 function restore({ params }, res) {
-  ContentRepo.restore({ where: { id: params.id } })
+  return ContentRepo.restore({ where: { id: params.id } })
     .then(() => res.end());
 }
 

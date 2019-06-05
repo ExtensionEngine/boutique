@@ -6,7 +6,7 @@
     </v-toolbar>
     <div class="elevation-1 ml-2 mr-4">
       <v-layout column align-end class="px-4 table-toolbar">
-        <v-flex lg3>
+        <v-flex lg4>
           <v-text-field
             v-model.trim="filter"
             :disabled="importedRepos.length <= 0"
@@ -16,11 +16,11 @@
             single-line
             clearable/>
         </v-flex>
-        <v-flex lg3>
+        <v-flex lg4>
           <v-checkbox
             v-model="showArchived"
-            label="Show archived content"
-            class="d-inline-block mt-2 pt-0 archived-checkbox"
+            label="Show archived"
+            class="my-2 archived-checkbox"
             hide-details/>
         </v-flex>
       </v-layout>
@@ -34,11 +34,11 @@
           <tr
             v-show="!item.deletedAt || showArchived"
             :key="item.sourceId"
-            :class="{ 'archived': item.deletedAt }">
+            :class="{ 'grey lighten-2': item.deletedAt }">
             <td>{{ item.name }}</td>
-            <td class="no-wrap">{{ item.repoVersion | formatDate }}</td>
-            <td class="no-wrap">{{ item.publishedAt | formatDate }}</td>
-            <td class="no-wrap text-xs-center actions">
+            <td class="text-no-wrap">{{ item.repoVersion | formatDate }}</td>
+            <td class="text-no-wrap">{{ item.publishedAt | formatDate }}</td>
+            <td class="text-no-wrap text-xs-center actions">
               <v-btn
                 v-if="item.repoVersion > item.publishedAt"
                 @click="save(item)"
@@ -48,13 +48,21 @@
               </v-btn>
               <span v-else-if="item.repoVersion">Synced</span>
             </td>
-            <td class="no-wrap text-xs-center">
-              <v-icon v-if="!item.deletedAt" @click="showConfirmationDialog(item)" small>
-                mdi-delete
-              </v-icon>
-              <v-icon v-else @click="showMultipleChoiceDialog(item)" small>
-                mdi-restore
-              </v-icon>
+            <td>
+              <v-btn
+                v-if="!item.deletedAt"
+                @click="showConfirmationDialog(item)"
+                icon
+                flat>
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+              <v-btn
+                v-else
+                @click="showRestoreDialog(item)"
+                icon
+                flat>
+                <v-icon>mdi-restore</v-icon>
+              </v-btn>
             </td>
           </tr>
         </template>
@@ -64,9 +72,9 @@
         @confirmed="fetchProgramRepos()"
         v-bind="confirmation"/>
       <multiple-choice-dialog
-        @closed="multipleChoice = null"
+        @closed="restoreOptions = null"
         @completed="fetchProgramRepos()"
-        v-bind="multipleChoice"/>
+        v-bind="restoreOptions"/>
     </div>
   </div>
 </template>
@@ -80,8 +88,8 @@ import filter from 'lodash/filter';
 import fuzzysearch from 'fuzzysearch';
 import MultipleChoiceDialog from '@/admin/components/common/MultipleChoiceDialog';
 
-const fuzzy = (needle, haystack) => {
-  return fuzzysearch(needle.toLowerCase(), haystack.toLowerCase());
+const fuzzy = (input, content) => {
+  return fuzzysearch(input.toLowerCase(), content.toLowerCase());
 };
 const headers = () => [
   { text: 'Name', value: 'name', align: 'left' },
@@ -96,9 +104,9 @@ export default {
   props: { programId: { type: Number, required: true } },
   data: () => ({
     filter: null,
-    showArchived: true,
     confirmation: null,
-    multipleChoice: null
+    showArchived: true,
+    restoreOptions: null
   }),
   computed: {
     ...mapState('contentRepo', { repoStore: 'items' }),
@@ -124,7 +132,7 @@ export default {
     ...mapActions('contentRepo', ['fetch', 'save']),
     fetchProgramRepos() {
       const { programId } = this;
-      return this.fetch({ programId, srcVersion: true, deleted: true });
+      return this.fetch({ programId, srcVersion: true, archived: true });
     },
     showConfirmationDialog(item) {
       this.confirmation = {
@@ -134,10 +142,10 @@ export default {
         visible: true
       };
     },
-    showMultipleChoiceDialog(item) {
-      this.multipleChoice = {
+    showRestoreDialog(item) {
+      this.restoreOptions = {
         heading: `${item.name}`,
-        message: 'Would you like to restore this course or import the latest published version?',
+        message: 'Would you like to restore this course or import the latest version?',
         warning: 'Importing new repository overwrites the existing (archived) copy.',
         actions: [
           { label: 'restore', callback: () => api.restore(item) },
@@ -157,10 +165,6 @@ export default {
 <style lang="scss" scoped>
 .actions {
   width: 250px;
-}
-
-.archived {
-  background: #ebebeb;
 }
 
 .archived-checkbox /deep/ .v-input__slot {
