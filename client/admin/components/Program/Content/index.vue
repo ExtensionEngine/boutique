@@ -149,7 +149,7 @@ export default {
         warning: 'Importing new repository overwrites the existing (archived) copy.',
         actions: [
           { label: 'restore', callback: () => api.restore(item) },
-          { label: 'import', callback: () => api.patch(item) }
+          { label: 'import', callback: () => this.save(item) }
         ],
         visible: true
       };

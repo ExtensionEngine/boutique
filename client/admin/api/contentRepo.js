@@ -11,10 +11,6 @@ function getCatalog() {
   return request.get(url.catalog).then(extractData);
 }
 
-function patch(item) {
-  return request.patch(url.resource(item.id), item);
-}
-
 function archive(item) {
   return request.delete(url.resource(item.id));
 }
@@ -26,6 +22,5 @@ function restore(item) {
 export default {
   getCatalog,
   archive,
-  restore,
-  patch
+  restore
 };
