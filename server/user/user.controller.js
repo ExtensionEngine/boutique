@@ -109,7 +109,7 @@ async function bulkImport({ body, file, origin }, res) {
 }
 
 function getImportTemplate(req, res) {
-  const creator = 'GradsOfLife';
+  const creator = 'Boutique';
   const data = generate();
   const report = (new Datasheet({ columns, data })).toWorkbook({ creator });
   return report.send(res, { format: 'xlsx' });
