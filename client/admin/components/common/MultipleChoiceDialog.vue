@@ -14,8 +14,8 @@
           <v-btn
             v-for="(action, index) in actions"
             :key="index"
-            :disabled="isLoading"
             @click="execute(action.callback)"
+            :disabled="isLoading"
             type="submit"
             color="red"
             flat>
