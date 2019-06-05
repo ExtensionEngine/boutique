@@ -1,13 +1,26 @@
 <template>
   <v-dialog v-model="show" max-width="500">
-    <v-form @submit.prevent="executeAction">
+    <v-form>
       <v-card>
         <v-card-title class="headline">{{ heading }}</v-card-title>
-        <v-card-text>{{ message }}</v-card-text>
+        <v-card-text class="pb-1">{{ message }}</v-card-text>
+        <v-card-text v-if="warning" class="pt-1 caption">
+          <span class="warning-label">Warning:</span>
+          {{ warning }}
+        </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn @click="close" flat>Cancel</v-btn>
-          <v-btn :disabled="isLoading" type="submit" color="red" flat>Yes</v-btn>
+          <v-btn
+            v-for="(action, index) in actions"
+            :key="index"
+            :disabled="isLoading"
+            @click="execute(action.callback)"
+            type="submit"
+            color="red"
+            flat>
+            {{ action.label }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
@@ -18,15 +31,20 @@
 import { withFocusTrap } from '@/common/focustrap';
 
 const el = vm => vm.$children[0].$refs.dialog;
+const validator = actions => {
+  if (!(actions instanceof Array)) return false;
+  return actions.every(el => el.label && el.callback);
+};
 
 export default {
-  name: 'confirmation-dialog',
+  name: 'multiple-choice-dialog',
   mixins: [withFocusTrap({ el })],
   props: {
     visible: { type: Boolean, default: false },
     heading: { type: String, default: '' },
-    message: { type: String, default: 'Are you sure?' },
-    action: { type: Function, default: () => true }
+    message: { type: String, default: '' },
+    warning: { type: String, default: '' },
+    actions: { type: Array, default: () => [], validator: validator }
   },
   data: () => ({ isLoading: false }),
   computed: {
@@ -41,14 +59,14 @@ export default {
   },
   methods: {
     close() {
-      this.$emit('update:visible', false);
+      this.$emit('closed', false);
     },
-    executeAction() {
+    execute(action) {
       this.isLoading = true;
-      return Promise.resolve(this.action())
+      return Promise.resolve(action())
         .then(() => {
           this.close();
-          this.$emit('confirmed');
+          this.$emit('completed');
         })
         .finally(() => (this.isLoading = false));
     }
@@ -60,3 +78,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.warning-label {
+  color: red;
+}
+</style>
