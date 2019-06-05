@@ -141,7 +141,7 @@ class User extends Model {
       const { message = 'Failed to import user.' } = result.reason();
       errors.push({ ...users[i], message });
     }, { concurrency });
-    return errors.length && errors;
+    return errors;
   }
 
   static async restoreOrBuild(users, { concurrency = 16 } = {}) {
