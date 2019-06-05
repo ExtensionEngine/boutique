@@ -1,24 +1,64 @@
 'use strict';
 
-const config = require('../../sequelize.config.js');
 const dargs = require('dargs');
+const minimist = require('minimist');
+const path = require('path');
+const safeRequire = require('safe-require');
 
-const isGenerator = input => input.includes(':generate') || input.includes(':create');
-
-const delimiter = ':';
-const shorthands = [
+const actions = [
   'migrate',
   'seed',
   'create',
   'drop'
 ];
+const isAction = cmd => actions.some(it => cmd.startsWith(it));
 
-const input = process.argv[2] || '';
-const [cmd] = input.split(delimiter);
-
-if (!isGenerator(input) && cmd && shorthands.includes(cmd)) {
-  process.argv[2] = `db:${input}`;
+// Load config.
+const config = safeRequire(path.join(process.cwd(), 'sequelize.config.js'));
+if (!config) {
+  console.error('Error: `sequelize.config.js` not found');
+  process.exit(1);
 }
-if (cmd) process.argv.push(...dargs(config));
 
+// Disable query logging.
+setLogging(config, false);
+
+const argv = minimist(process.argv.slice(2));
+process.argv.length = 2;
+
+// Resolve command with arguments.
+const args = getArgs(argv);
+process.argv.push(...args);
+
+// Resolve options.
+const options = Object.assign({}, config, getOptions(argv));
+process.argv.push(...dargs(options));
+
+// Make it rain!
 require('sequelize-cli/lib/sequelize');
+
+function setLogging({ config: configPath }, state) {
+  const config = require(configPath);
+  config.logging = state;
+  return config;
+}
+
+function getArgs(argv) {
+  let [cmd, ...args] = argv._;
+  if (!cmd) return args;
+  if (isAction(cmd)) cmd = `db:${cmd}`;
+  return [cmd, ...args];
+}
+
+function getOptions(argv) {
+  return reduce(argv, (acc, val, key) => {
+    if (['_', '--'].includes(key)) return acc;
+    return Object.assign(acc, { [key]: val });
+  }, {});
+}
+
+function reduce(obj, callback, initalValue) {
+  return Object.keys(obj).reduce((acc, key) => {
+    return callback(acc, obj[key], key);
+  }, initalValue);
+}

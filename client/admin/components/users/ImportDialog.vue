@@ -1,7 +1,7 @@
 <template>
   <v-dialog
-    v-hotkey="{ esc: close }"
     v-model="showDialog"
+    v-hotkey="{ esc: close }"
     persistent
     no-click-animation
     width="700">
@@ -23,8 +23,8 @@
               readonly
               single-line/>
             <input
-              v-validate="inputValidation"
               ref="fileInput"
+              v-validate="inputValidation"
               @change="onFileSelected"
               id="userImportInput"
               name="file"
