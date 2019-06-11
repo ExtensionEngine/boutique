@@ -8,12 +8,17 @@
       app
       class="grey lighten-4">
       <v-list dense class="grey lighten-4 pt-4">
-        <v-list-tile :to="{ name: 'users' }">
-          <v-list-tile-action><v-icon>mdi-contacts</v-icon></v-list-tile-action>
+        <v-list-tile
+          v-for="({ name, route, icon }) in sidebarLinks"
+          :key="name"
+          :to="{ name: route }"
+          exact>
+          <v-list-tile-action><v-icon>{{ icon }}</v-icon></v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title class="grey--text">Users</v-list-tile-title>
+            <v-list-tile-title class="grey--text">{{ name }}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
+
         <v-divider dark class="my-3"/>
         <v-layout row align-center>
           <v-flex xs6>
@@ -44,6 +49,11 @@ import filter from 'lodash/filter';
 import { mapState } from 'vuex';
 import ProgramModal from '../Program/CreateDialog';
 
+const sidebarLinks = () => [
+  { name: 'Users', route: 'users', icon: 'mdi-contacts' },
+  { name: 'Groups', route: 'groups', icon: 'mdi-account-multiple' }
+];
+
 export default {
   props: {
     drawer: { type: Boolean, default: true }
@@ -52,7 +62,8 @@ export default {
     ...mapState('programs', { programs: 'items' }),
     persistedPrograms() {
       return filter(this.programs, 'id');
-    }
+    },
+    sidebarLinks
   },
   components: { ProgramModal }
 };

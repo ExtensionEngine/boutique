@@ -1,6 +1,7 @@
 import Content from '@/admin/components/Program/Content';
 import Enrollments from '@/admin/components/Program/Enrollments';
 import get from 'lodash/get';
+import Groups from '@/admin/components/Groups';
 import NotFound from '@/admin/components/common/NotFound';
 import Program from '@/admin/components/Program';
 import role from '@/../common/config/role';
@@ -45,6 +46,11 @@ const router = new Router({
       component: Settings,
       props: parseProgramId
     }]
+  }, {
+    path: '/groups',
+    name: 'groups',
+    component: Groups,
+    meta: { auth: true }
   }, fallbackRoute]
 });
 
