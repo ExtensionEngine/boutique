@@ -8,12 +8,14 @@ const get = require('lodash/get');
 const program = require('./program');
 const { Sequelize } = require('./common/database');
 const user = require('./user');
+const group = require('./group');
 
 const router = express.Router();
 // TODO: Remove this demo route!
 router.use('/ping', (_, res) => res.jsend.success(null));
 router.use('/', parseOptions);
 router.use(user.path, user.router);
+router.use(group.path, group.router);
 router.use(contentRepo.path, auth, contentRepo.router);
 router.use(program.path, auth, program.router);
 router.use(enrollment.path, auth, enrollment.router);

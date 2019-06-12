@@ -17,6 +17,7 @@ const User = require('../../user/user.model');
 const Program = require('../../program/program.model');
 const Enrollment = require('../../enrollment/enrollment.model');
 const ContentRepo = require('../../content-repo/content-repo.model');
+const Group = require('../../group/group.model');
 
 const isProduction = process.env.NODE_ENV === 'production';
 const sequelize = createConnection(config);
@@ -73,7 +74,8 @@ const models = {
   User: defineModel(User),
   Program: defineModel(Program),
   Enrollment: defineModel(Enrollment),
-  ContentRepo: defineModel(ContentRepo)
+  ContentRepo: defineModel(ContentRepo),
+  Group: defineModel(Group)
 };
 
 forEach(models, model => {
