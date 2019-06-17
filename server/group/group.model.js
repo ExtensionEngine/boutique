@@ -1,7 +1,6 @@
 'use strict';
 
 const { Model } = require('sequelize');
-const pick = require('lodash/pick');
 
 class Group extends Model {
   static fields(DataTypes) {
@@ -13,35 +12,29 @@ class Group extends Model {
         validate: { notEmpty: true, len: [2, 50] }
       },
       description: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: { notEmpty: true, len: [2, 255] }
+        type: DataTypes.STRING
       },
       createdAt: {
         type: DataTypes.DATE,
-        field: 'created_at'
+        field: 'created_at',
+        allowNull: false
       },
       updatedAt: {
         type: DataTypes.DATE,
-        field: 'updated_at'
+        field: 'updated_at',
+        allowNull: false
       },
       deletedAt: {
         type: DataTypes.DATE,
         field: 'deleted_at'
-      },
-      profile: {
-        type: DataTypes.VIRTUAL,
-        get() {
-          return pick(this,
-            ['id', 'name', 'description', 'createdAt', 'deletedAt']);
-        }
       }
     };
   }
 
   static associate({ User }) {
-    this.hasMany(User);
+    this.hasMany(User, {
+      foreignKey: { name: 'groupId', field: 'group_id' }
+    });
   }
 
   static options() {

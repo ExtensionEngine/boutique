@@ -8,14 +8,14 @@
         <v-card-text>
           <v-text-field
             v-model="group.name"
-            v-validate="'required|min:2|max:50'"
+            v-validate="{ required: true, 'unique-name': groupData }"
             :error-messages="vErrors.collect('name')"
             label="Group Name"
             data-vv-name="name"
             class="mb-3"/>
           <v-text-field
             v-model="group.description"
-            v-validate="'required|min:2|max:255'"
+            v-validate="'max:255'"
             :error-messages="vErrors.collect('description')"
             label="Group Description"
             data-vv-name="description"
@@ -78,16 +78,12 @@ export default {
       this.$emit('update:visible', false);
     },
     save() {
-      this.$validator.validateAll().then(isValid => {
+      return this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
         const action = this.isNewGroup ? 'create' : 'update';
         api[action](this.group).then(() => this.$emit(`${action}d`));
         this.close();
       });
-    },
-    invite() {
-      this.isLoading = true;
-      api.invite(this.group).finally(() => (this.isLoading = false));
     }
   },
   watch: {
@@ -99,12 +95,12 @@ export default {
     }
   },
   mounted() {
-    if (this.$validator.rules['unique-email']) return;
-    this.$validator.extend('unique-email', {
+    if (this.$validator.rules['unique-name']) return;
+    this.$validator.extend('unique-name', {
       getMessage: field => `The ${field} is not unique.`,
-      validate: (email, groupData) => {
-        if (groupData && email === groupData.email) return true;
-        return api.fetch({ params: { email } })
+      validate: (name, groupData) => {
+        if (groupData && name === groupData.name) return true;
+        return api.fetch({ params: { name } })
           .then(({ total }) => ({ valid: !total }));
       }
     });

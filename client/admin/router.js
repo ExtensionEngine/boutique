@@ -27,6 +27,10 @@ const router = new Router({
     component: Users,
     meta: { auth: true }
   }, {
+    path: '/groups',
+    name: 'groups',
+    component: Groups
+  }, {
     path: '/programs/:programId',
     component: Program,
     props: parseProgramId,
@@ -46,11 +50,6 @@ const router = new Router({
       component: Settings,
       props: parseProgramId
     }]
-  }, {
-    path: '/groups',
-    name: 'groups',
-    component: Groups,
-    meta: { auth: true }
   }, fallbackRoute]
 });
 

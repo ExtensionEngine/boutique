@@ -1,5 +1,5 @@
 'use strict';
-const Promise = require('bluebird');
+
 const TABLE_NAME = 'group';
 
 module.exports = {
@@ -13,12 +13,12 @@ module.exports = {
         },
         name: {
           type: Sequelize.STRING(50),
-          allowNull: false
+          allowNull: false,
+          unique: true
         },
         description: {
-          type: Sequelize.STRING(255),
-          field: 'description',
-          allowNull: false
+          type: Sequelize.STRING,
+          field: 'description'
         },
         createdAt: {
           type: Sequelize.DATE,
@@ -39,19 +39,15 @@ module.exports = {
         return queryInterface.addColumn('user', 'group_id', {
           type: Sequelize.INTEGER,
           references: { model: TABLE_NAME, key: 'id' },
-          onDelete: 'NO ACTION',
-          allowNull: true
+          onDelete: 'NO ACTION'
         }, { transaction });
       });
     });
   },
   down: queryInterface => {
     return queryInterface.sequelize.transaction(transaction => {
-      const migrations = [
-        queryInterface.removeColumn('user', 'group_id', { transaction }),
-        queryInterface.dropTable(TABLE_NAME, { transaction })
-      ];
-      return Promise.each(migrations, migration => migration);
+      return queryInterface.removeColumn('user', 'group_id', { transaction })
+      .then(() => queryInterface.dropTable(TABLE_NAME, { transaction }));
     });
   }
 };

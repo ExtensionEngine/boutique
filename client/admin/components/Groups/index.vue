@@ -27,20 +27,20 @@
           </v-flex>
         </v-layout>
         <v-data-table
+          must-sort
           :headers="headers"
           :items="groups"
           :total-items="totalItems"
           :pagination.sync="dataTable"
-          :must-sort="true"
           class="group-table">
-          <template slot="items" slot-scope="props">
-            <tr :key="props.item.id">
-              <td>{{ props.item.name }}</td>
-              <td>{{ props.item.description }}</td>
-              <td class="no-wrap">{{ props.item.createdAt | formatDate }}</td>
+          <template slot="items" slot-scope="{ item }">
+            <tr :key="item.id">
+              <td>{{ item.name }}</td>
+              <td>{{ item.description }}</td>
+              <td class="no-wrap">{{ item.createdAt | formatDate }}</td>
               <td class="no-wrap text-xs-center">
                 <v-btn
-                  @click="showGroupDialog(props.item)"
+                  @click="showGroupDialog(item)"
                   color="grey darken-2"
                   small
                   flat
@@ -48,14 +48,13 @@
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
                 <v-btn
-                  @click="archiveOrRestore(props.item)"
-
+                  @click="archiveOrRestore(item)"
                   color="grey darken-2"
                   small
                   flat
                   icon>
                   <v-icon>
-                    mdi-{{ props.item.deletedAt ? 'restore' : 'delete' }}
+                    mdi-{{ item.deletedAt ? 'restore' : 'delete' }}
                   </v-icon>
                 </v-btn>
               </td>
@@ -82,7 +81,6 @@ import api from '@/admin/api/group';
 import ConfirmationDialog from '../common/ConfirmationDialog';
 import GroupDialog from './GroupDialog';
 import humanize from 'humanize-string';
-// import { mapState } from 'vuex';
 import throttle from 'lodash/throttle';
 
 const defaultPage = () => ({ sortBy: 'updatedAt', descending: true, page: 1 });
@@ -101,11 +99,7 @@ export default {
   name: 'group-list',
   data() {
     return {
-      groups: [
-        { id: 1, name: 'extensionengine', description: 'The online learning dev company', createdAt: '2018-11-12 14:06:18.417' },
-        { id: 2, name: 'fitch', description: 'Potential platform client', createdAt: '2018-11-12 14:06:18.417', deletedAt: '2019-06-07 14:55:03.475' },
-        { id: 3, name: 'December 2019', description: 'December 2019 student sitting', createdAt: '2018-11-12 14:06:18.417' }
-      ],
+      groups: [],
       filter: null,
       dataTable: defaultPage(),
       totalItems: 0,
@@ -116,7 +110,6 @@ export default {
     };
   },
   computed: {
-    // ...mapState('auth', ['user']),
     headers,
     defaultPage
   },
@@ -125,13 +118,14 @@ export default {
       this.editedGroup = group;
       this.groupDialog = true;
     },
-    fetch: throttle(async function (opts) {
-      Object.assign(this.dataTable, opts);
-      const { items, total } = await api.fetch({
+    fetch: throttle(async function (opts = {}) {
+      const data = {
         ...this.dataTable,
+        ...opts,
         filter: this.filter,
         archived: this.showArchived
-      });
+      };
+      const { items, total } = await api.fetch(data);
       this.groups = items;
       this.totalItems = total;
     }, 400),

@@ -49,21 +49,23 @@ import filter from 'lodash/filter';
 import { mapState } from 'vuex';
 import ProgramModal from '../Program/CreateDialog';
 
-const sidebarLinks = () => [
-  { name: 'Users', route: 'users', icon: 'mdi-contacts' },
-  { name: 'Groups', route: 'groups', icon: 'mdi-account-multiple' }
-];
-
 export default {
   props: {
     drawer: { type: Boolean, default: true }
+  },
+  data() {
+    return {
+      sidebarLinks: [
+        { name: 'Users', route: 'users', icon: 'mdi-contacts' },
+        { name: 'Groups', route: 'groups', icon: 'mdi-account-multiple' }
+      ]
+    };
   },
   computed: {
     ...mapState('programs', { programs: 'items' }),
     persistedPrograms() {
       return filter(this.programs, 'id');
-    },
-    sidebarLinks
+    }
   },
   components: { ProgramModal }
 };
