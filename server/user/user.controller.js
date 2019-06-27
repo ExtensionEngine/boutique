@@ -46,7 +46,7 @@ function create(req, res) {
 }
 
 function patch({ params, body }, res) {
-  return User.findById(params.id, { paranoid: false })
+  return User.findByPk(params.id, { paranoid: false })
     .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
     .then(user => user.update(pick(body, inputAttrs)))
     .then(user => res.jsend.success(user.profile));
@@ -54,7 +54,7 @@ function patch({ params, body }, res) {
 
 function destroy({ params }, res) {
   sequelize.transaction(async transaction => {
-    const user = await User.findById(params.id, { transaction });
+    const user = await User.findByPk(params.id, { transaction });
     if (!user) createError(NOT_FOUND);
     await Enrollment.destroy({ where: { studentId: user.id }, transaction });
     await user.destroy({ transaction });
@@ -71,7 +71,7 @@ function login({ user }, res) {
 }
 
 function invite({ params, origin }, res) {
-  return User.findById(params.id, { paranoid: false })
+  return User.findByPk(params.id, { paranoid: false })
     .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
     .then(user => User.invite(user, { origin }))
     .then(() => res.status(ACCEPTED).end());
@@ -79,7 +79,7 @@ function invite({ params, origin }, res) {
 
 function forgotPassword({ origin, body }, res) {
   const { email } = body;
-  return User.find({ where: { email } })
+  return User.findOne({ where: { email } })
     .then(user => user || createError(NOT_FOUND, 'User not found!'))
     .then(user => user.sendResetToken({ origin }))
     .then(() => res.end());
@@ -87,7 +87,7 @@ function forgotPassword({ origin, body }, res) {
 
 function resetPassword({ body }, res) {
   const { password, token } = body;
-  return User.find({ where: { token } })
+  return User.findOne({ where: { token } })
     .then(user => user || createError(NOT_FOUND, 'Invalid token!'))
     .then(user => {
       user.password = password;
