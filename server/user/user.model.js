@@ -63,7 +63,7 @@ class User extends Model {
         type: DataTypes.VIRTUAL,
         get() {
           return pick(this,
-            ['id', 'firstName', 'lastName', 'email', 'role', 'createdAt']);
+            ['id', 'firstName', 'lastName', 'email', 'role', 'createdAt', 'deletedAt']);
         }
       }
     };
@@ -141,7 +141,7 @@ class User extends Model {
       const { message = 'Failed to import user.' } = result.reason();
       errors.push({ ...users[i], message });
     }, { concurrency });
-    return errors.length && errors;
+    return errors;
   }
 
   static async restoreOrBuild(users, { concurrency = 16 } = {}) {
@@ -155,7 +155,7 @@ class User extends Model {
         throw new UniqueConstraintError({ message });
       }
       if (user) {
-        user.setDataValue('deleteAt', null);
+        user.setDataValue('deletedAt', null);
         return user;
       }
       return this.build(userData);

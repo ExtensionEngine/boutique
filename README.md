@@ -5,7 +5,7 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/ExtensionEngine/boutique/develop/badge.svg)](https://snyk.io/test/github/ExtensionEngine/boutique)
 [![GitHub license](https://badgen.net/github/license/ExtensionEngine/boutique)](https://github.com/ExtensionEngine/boutique/blob/develop/LICENSE)
 [![js semistandard style](https://badgen.net/badge/code%20style/semistandard/pink)](https://github.com/Flet/semistandard)
-[![Open Source Love](https://badges.frapsoft.com/os/v2/open-source.svg?v=102)](https://github.com/ellerbrock/open-source-badge/)
+[![Open Source Love](https://badgen.net/badge/Open%20Source/%E2%9D%A4/3eaf8e)](https://github.com/ellerbrock/open-source-badges)
 
 > Under construction :construction:
 

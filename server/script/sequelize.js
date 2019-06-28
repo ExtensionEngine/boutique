@@ -20,6 +20,9 @@ if (!config) {
   process.exit(1);
 }
 
+// Disable query logging.
+setLogging(config, false);
+
 const argv = minimist(process.argv.slice(2));
 process.argv.length = 2;
 
@@ -33,6 +36,12 @@ process.argv.push(...dargs(options));
 
 // Make it rain!
 require('sequelize-cli/lib/sequelize');
+
+function setLogging({ config: configPath }, state) {
+  const config = require(configPath);
+  config.logging = state;
+  return config;
+}
 
 function getArgs(argv) {
   let [cmd, ...args] = argv._;
