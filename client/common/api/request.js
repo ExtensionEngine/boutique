@@ -1,4 +1,5 @@
 import axios from 'axios';
+import JSendInterceptor from 'jsend-axios';
 import store from '@/student/store';
 
 const config = {
@@ -26,7 +27,9 @@ client.interceptors.request.use(config => {
   return config;
 });
 
-client.interceptors.response.use(res => res, err => {
+JSendInterceptor(client);
+
+client.interceptors.response.use(res => reassignData(res), err => {
   if (err.response.status === 401) {
     store.commit('auth/logout');
     window.localStorage.removeItem('LMS_USER');
@@ -36,5 +39,11 @@ client.interceptors.response.use(res => res, err => {
     throw err;
   }
 });
+
+function reassignData(response) {
+  const { data } = response.data;
+  if (response.jsend) return response;
+  return Object.assign(response, { data });
+}
 
 export default client;

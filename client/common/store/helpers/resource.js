@@ -90,7 +90,7 @@ export default class Resource {
    */
   getById(id) {
     return this.get(id).then(response => {
-      let item = response.data.data;
+      let item = response.data;
       this.setCid(item);
       return item;
     });
@@ -107,9 +107,9 @@ export default class Resource {
       const action = model.id ? 'patch' : 'post';
       const url = this.url(model.id ? model.id.toString() : '');
       return axios[action](url, this.clean(model)).then(response => {
-        if (!model.id) this.map(model._cid, response.data.data.id);
+        if (!model.id) this.map(model._cid, response.data.id);
         model = cloneDeep(model);
-        return assign(model, response.data.data);
+        return assign(model, response.data);
       });
     });
   }
@@ -122,7 +122,7 @@ export default class Resource {
   update(cid, changes) {
     const key = this.getKey(cid);
     return this.patch(key, changes).then(response => {
-      const updated = response.data.data;
+      const updated = response.data;
       updated._cid = cid;
       return updated;
     });
@@ -147,7 +147,7 @@ export default class Resource {
   fetch(params) {
     return this.get('', params).then(response => {
       let result = {};
-      response.data.data.forEach(it => {
+      response.data.forEach(it => {
         this.setCid(it);
         result[it._cid] = it;
       });

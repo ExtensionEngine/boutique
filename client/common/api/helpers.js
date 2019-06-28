@@ -1,7 +1,7 @@
 import get from 'lodash/get';
 
 export function extractData(res) {
-  return res.data.data;
+  return res.data;
 }
 
 export function processParams(opts) {
