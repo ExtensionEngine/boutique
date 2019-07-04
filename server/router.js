@@ -6,7 +6,7 @@ const enrollment = require('./enrollment');
 const express = require('express');
 const get = require('lodash/get');
 const program = require('./program');
-const { Sequelize } = require('./common/database');
+const { Sequelize, User } = require('./common/database');
 const user = require('./user');
 const group = require('./group');
 
@@ -24,11 +24,14 @@ module.exports = router;
 
 function parseOptions(req, _, next) {
   let sortBy = get(req.query, 'sortBy', 'id');
+  let order = sortBy === 'groupId'
+    ? [[User.associations.group, 'name', req.query.sortOrder]]
+    : [[sortBy, req.query.sortOrder || 'ASC']];
   if (sortBy.includes('.')) sortBy = Sequelize.literal(sortBy);
   req.options = {
     limit: parseInt(req.query.limit, 10) || 100,
     offset: parseInt(req.query.offset, 10) || 0,
-    order: [[sortBy, req.query.sortOrder || 'ASC']]
+    order
   };
   next();
 }

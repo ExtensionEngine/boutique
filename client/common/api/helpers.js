@@ -14,6 +14,7 @@ export function processParams(opts) {
     limit: limit === -1 ? null : limit
   };
   if (opts.filter) params.filter = opts.filter;
+  if (opts.groupFilter) params.groupFilter = opts.groupFilter;
   if (opts.archived) params.archived = opts.archived;
   return Object.assign(params, opts.params);
 }

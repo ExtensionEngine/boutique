@@ -47,6 +47,15 @@
             label="Last Name"
             data-vv-name="lastName"
             class="mb-3"/>
+          <v-select
+            v-model="user.groupName"
+            @focus="focusTrap.pause()"
+            @blur="focusTrap.unpause()"
+            :items="groupNames"
+            :error-messages="vErrors.collect('group')"
+            label="Group"
+            data-vv-name="group"
+            class="mb-3"/>
         </v-card-text>
         <v-card-actions>
           <v-spacer/>
@@ -61,9 +70,12 @@
 <script>
 import api from '@/admin/api/user';
 import cloneDeep from 'lodash/cloneDeep';
+import find from 'lodash/find';
+import groupApi from '@/admin/api/group';
 import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
+import pick from 'lodash/pick';
 import { role } from '@/../common/config';
 import { withFocusTrap } from '@/common/focustrap';
 import { withValidation } from '@/common/validation';
@@ -74,7 +86,9 @@ const resetUser = () => {
     firstName: '',
     lastName: '',
     email: '',
-    role: null
+    role: null,
+    groupName: null,
+    groupId: null
   };
 };
 
@@ -88,7 +102,8 @@ export default {
   data() {
     return {
       user: resetUser(),
-      isLoading: false
+      isLoading: false,
+      groups: []
     };
   },
   computed: {
@@ -105,6 +120,9 @@ export default {
     },
     isNewUser() {
       return !this.user.id;
+    },
+    groupNames() {
+      return map(this.groups, 'name');
     }
   },
   methods: {
@@ -116,6 +134,11 @@ export default {
       this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
         const action = this.isNewUser ? 'create' : 'update';
+        if (this.user.groupName) {
+          this.user.groupId = find(this.groups, group => {
+            return group.name === this.user.groupName;
+          })['id'];
+        }
         api[action](this.user).then(() => this.$emit(`${action}d`));
         this.close();
       });
@@ -123,6 +146,10 @@ export default {
     invite() {
       this.isLoading = true;
       api.invite(this.user).finally(() => (this.isLoading = false));
+    },
+    async getGroups() {
+      let { items } = await groupApi.fetch();
+      this.groups = map(items, item => pick(item, ['id', 'name']));
     }
   },
   watch: {
@@ -134,6 +161,7 @@ export default {
     }
   },
   mounted() {
+    this.getGroups();
     if (this.$validator.rules['unique-email']) return;
     this.$validator.extend('unique-email', {
       getMessage: field => `The ${field} is not unique.`,

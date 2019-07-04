@@ -39,7 +39,7 @@ module.exports = {
         return queryInterface.addColumn('user', 'group_id', {
           type: Sequelize.INTEGER,
           references: { model: TABLE_NAME, key: 'id' },
-          onDelete: 'NO ACTION'
+          onDelete: 'CASCADE'
         }, { transaction });
       });
     });

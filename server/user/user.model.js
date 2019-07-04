@@ -83,7 +83,7 @@ class User extends Model {
       foreignKey: { name: 'studentId', field: 'student_id' }
     });
     this.belongsTo(Group, {
-      foreignKey: { name: 'groupId', field: 'group_id' }
+      foreignKey: { name: 'groupId', field: 'group_id', onDelete: 'cascade' }
     });
   }
 

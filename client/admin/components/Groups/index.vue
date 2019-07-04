@@ -38,6 +38,7 @@
               <td>{{ item.name }}</td>
               <td>{{ item.description }}</td>
               <td class="no-wrap">{{ item.createdAt | formatDate }}</td>
+              <td class="no-wrap">{{ item.users.length }}</td>
               <td class="no-wrap text-xs-center">
                 <v-btn
                   @click="showGroupDialog(item)"
@@ -88,6 +89,7 @@ const headers = () => [
   { text: 'Group Name', value: 'name' },
   { text: 'Group Description', value: 'description' },
   { text: 'Date Created', value: 'createdAt' },
+  { text: 'Users', value: '' },
   { text: 'Actions', value: 'name', align: 'center', sortable: false }
 ];
 const actions = group => ({

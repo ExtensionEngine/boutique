@@ -11,15 +11,26 @@
       </v-toolbar>
       <div class="elevation-1 ml-2 mr-4">
         <v-layout column align-end class="px-4 table-toolbar">
-          <v-flex lg4>
-            <v-text-field
-              v-model="filter"
-              append-icon="mdi-magnify"
-              label="Search"
-              single-line
-              hide-details
-              clearable/>
-          </v-flex>
+          <v-layout>
+            <div class="mr-2">
+              <v-text-field
+                v-model="groupFilter"
+                append-icon="mdi-magnify"
+                label="Search Groups"
+                single-line
+                hide-details
+                clearable/>
+            </div>
+            <div>
+              <v-text-field
+                v-model="filter"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+                clearable/>
+            </div>
+          </v-layout>
           <v-flex lg4 class="my-1">
             <v-checkbox
               v-model="showArchived"
@@ -46,6 +57,7 @@
               <td>{{ props.item.role }}</td>
               <td>{{ props.item.firstName }}</td>
               <td>{{ props.item.lastName }}</td>
+              <td>{{ props.item.groupName }}</td>
               <td class="no-wrap">{{ props.item.createdAt | formatDate }}</td>
               <td class="no-wrap text-xs-center">
                 <v-btn
@@ -102,6 +114,7 @@ const headers = () => [
   { text: 'Role', value: 'role' },
   { text: 'First Name', value: 'firstName' },
   { text: 'Last Name', value: 'lastName' },
+  { text: 'Group', value: 'groupId' },
   { text: 'Date Created', value: 'createdAt' },
   { text: 'Actions', value: 'email', align: 'center', sortable: false }
 ];
@@ -117,6 +130,7 @@ export default {
       users: [],
       selectedUsers: [],
       filter: null,
+      groupFilter: null,
       dataTable: defaultPage(),
       totalItems: 0,
       userDialog: false,
@@ -140,6 +154,7 @@ export default {
       const { items, total } = await api.fetch({
         ...this.dataTable,
         filter: this.filter,
+        groupFilter: this.groupFilter,
         archived: this.showArchived
       });
       this.users = items;
@@ -160,6 +175,9 @@ export default {
       this.fetch();
     },
     filter() {
+      this.fetch();
+    },
+    groupFilter() {
       this.fetch();
     },
     showArchived() {

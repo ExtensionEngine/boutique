@@ -1,7 +1,7 @@
 'use strict';
 
 const { createError } = require('../common/errors');
-const { Enrollment, Sequelize, sequelize, User } = require('../common/database');
+const { Enrollment, Sequelize, sequelize, User, Group } = require('../common/database');
 const Audience = require('../common/auth/audience');
 const Datasheet = require('./datasheet');
 const { generate } = require('./helpers');
@@ -19,20 +19,31 @@ const columns = {
   lastName: { header: 'Last Name', width: 30 },
   role: { header: 'Role', width: 30 }
 };
-const inputAttrs = ['email', 'role', 'firstName', 'lastName'];
+const inputAttrs = ['email', 'role', 'firstName', 'lastName', 'groupId'];
 
 const createFilter = q => map(['email', 'firstName', 'lastName'],
   it => ({ [it]: { [Op.iLike]: `%${q}%` } }));
 
-function list({ query: { email, role, filter, archived }, options }, res) {
+function list({ query: { email, role, filter, groupFilter, archived }, options }, res) {
   const where = { [Op.and]: [] };
   if (filter) where[Op.or] = createFilter(filter);
+  if (groupFilter) where[Op.and].push({ '$group.name$': { [Op.iLike]: `%${groupFilter}%` } });
   if (email) where[Op.and].push({ email });
   if (role) where[Op.and].push({ role });
-  return User.findAndCountAll({ where, ...options, paranoid: !archived })
-    .then(({ rows, count }) => {
-      return res.jsend.success({ items: map(rows, 'profile'), total: count });
-    });
+  return User.findAndCountAll({
+    where,
+    ...options,
+    paranoid: !archived,
+    include: [{ model: Group, attributes: ['name'] }]
+  })
+  .then(({ rows, count }) => {
+    return res.jsend.success({ items: map(rows, addGroupNameToProfile), total: count });
+  });
+}
+
+function addGroupNameToProfile({ profile, group = false }) {
+  if (group) profile['groupName'] = group.name;
+  return profile;
 }
 
 function create(req, res) {

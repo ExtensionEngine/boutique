@@ -1,6 +1,8 @@
 'use strict';
 
-const { Model } = require('sequelize');
+const { Model, UniqueConstraintError } = require('sequelize');
+const find = require('lodash/find');
+const Promise = require('bluebird');
 
 class Group extends Model {
   static fields(DataTypes) {
@@ -44,6 +46,23 @@ class Group extends Model {
       paranoid: true,
       freezeTableName: true
     };
+  }
+
+  static async restoreOrBuild({ name }) {
+    const where = { name };
+    const found = await Group.findAll({ where, paranoid: false });
+    return new Promise((resolve, reject) => {
+      const group = find(found, { name });
+      if (group && !group.deletedAt) {
+        const message = this.attributes.name.unique.msg;
+        reject(new UniqueConstraintError({ message }));
+      }
+      if (group) {
+        group.setDataValue('deletedAt', null);
+        group.save().then(() => resolve(group));
+      }
+      resolve(this.build(group));
+    });
   }
 }
 
