@@ -52,7 +52,7 @@ const el = vm => vm.$children[0].$refs.dialog;
 
 export default {
   name: 'bulk-enrollment-dialog',
-  mixins: [withValidation(), withFocusTrap({ el })],
+  mixins: [withValidation(), withFocusTrap({ el, watch: 'visible' })],
   props: {
     disabled: { type: Boolean, default: true },
     users: { type: Array, default: () => ([]) }

@@ -38,7 +38,7 @@ const validator = actions => {
 
 export default {
   name: 'multiple-choice-dialog',
-  mixins: [withFocusTrap({ el })],
+  mixins: [withFocusTrap({ el, watch: 'show' })],
   props: {
     visible: { type: Boolean, default: false },
     heading: { type: String, default: '' },
