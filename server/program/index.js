@@ -21,7 +21,7 @@ router
   .use('/:id/content', contentRouter.router);
 
 function getProgram(req, _, next) {
-  return Program.findById(req.params.id, { paranoid: false })
+  return Program.findByPk(req.params.id, { paranoid: false })
     .then(program => program || createError(NOT_FOUND, 'Not found!'))
     .then(program => {
       req.program = program;

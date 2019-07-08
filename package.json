@@ -119,7 +119,7 @@
     "sass-web-fonts": "^2.1.0",
     "save-as": "^0.1.8",
     "semver": "^6.1.1",
-    "sequelize": "^4.42.0",
+    "sequelize": "^5.8.12",
     "tailor-teaching-elements": "^1.3.0",
     "truncate": "^2.1.0",
     "umzug": "^2.2.0",
