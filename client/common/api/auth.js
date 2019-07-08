@@ -10,13 +10,13 @@ function login(credentials) {
   return request.base.post(url.login, credentials)
     .then(res => res.data.data)
     .then(({ token, user }) => {
-      window.localStorage.setItem('LMS_TOKEN', token);
+      request.auth.token = token;
       return user;
     });
 }
 
 function logout() {
-  window.localStorage.removeItem('LMS_TOKEN');
+  request.auth.token = null;
   // TODO: Add server side invalidation
   return Promise.resolve(true);
 }

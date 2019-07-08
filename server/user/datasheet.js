@@ -7,6 +7,7 @@ const Worksheet = require('exceljs/dist/es5/doc/worksheet');
 
 const isCsv = file => file.mimetype === 'text/csv';
 const isString = arg => typeof arg === 'string';
+const parseCell = cell => cell.isHyperlink ? cell.value.text : cell.value;
 
 Object.assign(Workbook.prototype, {
   addSheet(sheet) {
@@ -74,7 +75,7 @@ class Datasheet extends Worksheet {
   toJSON(options) {
     const headers = this.getHeaders(options);
     return this.mapRows(row => headers.reduce((acc, { key, index }) => {
-      return Object.assign(acc, { [key]: row.getCell(index).value });
+      return Object.assign(acc, { [key]: parseCell(row.getCell(index)) });
     }, {}));
   }
 
