@@ -1,8 +1,18 @@
 <template>
   <div>
-    <div v-if="message">
+    <div v-if="submitted">
       <div class="notification is-warning">
-        {{ message }}
+        <template v-if="!error">
+          Email with password reset link sent.
+          Please check your email and follow instructions to reset your password.
+        </template>
+        <template v-else-if="invalidEmail">
+          We couldn't find account associated with
+          <span class="email">{{ email }}</span>
+        </template>
+        <template v-else>
+          Oops! Something went wrong.
+        </template>
       </div>
       <div class="options">
         <a @click="$router.go(-1)">Back</a>
@@ -21,27 +31,33 @@
 </template>
 
 <script>
-import { delay } from 'bluebird';
 import { mapActions } from 'vuex';
 import VInput from '@/common/components/form/VInput';
+
+const delay = timeout => new Promise(resolve => setTimeout(resolve, timeout));
 
 export default {
   data() {
     return {
       email: '',
-      message: null
+      error: null,
+      submitted: false
     };
+  },
+  computed: {
+    invalidEmail() {
+      return this.error && this.error.response.status === 404;
+    }
   },
   methods: {
     ...mapActions('auth', ['forgotPassword']),
     submit() {
+      this.submitted = false;
       this.forgotPassword({ email: this.email })
-        .then(() => {
-          this.message = 'Reset email sent';
-          return delay(2000);
-        })
+        .finally(() => (this.submitted = true))
+        .then(() => delay(5000))
         .then(() => this.$router.push('/'))
-        .catch(() => (this.message = 'Oops! Something went wrong.'));
+        .catch(err => (this.error = err));
     }
   },
   components: { VInput }
@@ -51,6 +67,10 @@ export default {
 <style lang="scss" scoped>
 .well {
   font-size: 16px;
+}
+
+.notification .email {
+  font-weight: bold;
 }
 
 .button {

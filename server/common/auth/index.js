@@ -3,16 +3,31 @@
 const { auth: config = {} } = require('../../config');
 const { ExtractJwt, Strategy } = require('passport-jwt');
 const { User } = require('../database');
+const Audience = require('./audience');
+const LocalStrategy = require('passport-local');
 const passport = require('passport');
+
+const options = {
+  usernameField: 'email',
+  session: false
+};
+
+passport.use(new LocalStrategy(options, (email, password, done) => {
+  return User.findOne({ where: { email } })
+    .then(user => user && user.authenticate(password))
+    .then(user => done(null, user || false))
+    .error(err => done(err, false));
+}));
 
 const jwtOptions = {
   ...config,
   jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme(config.scheme),
-  secretOrKey: config.secret
+  secretOrKey: config.secret,
+  audience: Audience.Scope.Access
 };
 
 passport.use(new Strategy(jwtOptions, (payload, done) => {
-  return User.findById(payload.id)
+  return User.findByPk(payload.id)
     .then(user => done(null, user || false))
     .error(err => done(err, false));
 }));

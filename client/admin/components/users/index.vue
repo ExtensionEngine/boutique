@@ -10,14 +10,22 @@
         </v-btn>
       </v-toolbar>
       <div class="elevation-1 ml-2 mr-4">
-        <v-layout class="px-4 py-3 table-toolbar">
-          <v-flex lg3 offset-lg9>
+        <v-layout column align-end class="px-4 table-toolbar">
+          <v-flex lg4>
             <v-text-field
               v-model="filter"
               append-icon="mdi-magnify"
               label="Search"
               single-line
+              hide-details
               clearable/>
+          </v-flex>
+          <v-flex lg4 class="my-1">
+            <v-checkbox
+              v-model="showArchived"
+              label="Show archived"
+              class="archived-checkbox"
+              hide-details/>
           </v-flex>
         </v-layout>
         <v-data-table
@@ -30,7 +38,7 @@
           class="user-table"
           select-all>
           <template slot="items" slot-scope="props">
-            <tr>
+            <tr :key="props.item.id">
               <td>
                 <v-checkbox v-model="props.selected" primary hide-details/>
               </td>
@@ -38,30 +46,42 @@
               <td>{{ props.item.role }}</td>
               <td>{{ props.item.firstName }}</td>
               <td>{{ props.item.lastName }}</td>
-              <td>{{ props.item.createdAt | formatDate }}</td>
-              <td class="text-xs-center">
-                <v-icon @click="showUserDialog(props.item)" small>
-                  mdi-pencil
-                </v-icon>
-                <v-icon @click="removeUser(props.item)" small class="ml-3">
-                  mdi-delete
-                </v-icon>
+              <td class="no-wrap">{{ props.item.createdAt | formatDate }}</td>
+              <td class="no-wrap text-xs-center">
+                <v-btn
+                  @click="showUserDialog(props.item)"
+                  color="grey darken-2"
+                  small
+                  flat
+                  icon>
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+                <v-btn
+                  @click="archiveOrRestore(props.item)"
+                  :disabled="user.id === props.item.id"
+                  color="grey darken-2"
+                  small
+                  flat
+                  icon>
+                  <v-icon>
+                    mdi-account-{{ props.item.deletedAt ? 'convert' : 'off' }}
+                  </v-icon>
+                </v-btn>
               </td>
             </tr>
           </template>
         </v-data-table>
       </div>
       <user-dialog
-        :visible.sync="userDialog"
-        :userData="editedUser"
         @updated="fetch(defaultPage)"
-        @created="fetch(defaultPage)"/>
+        @created="fetch(defaultPage)"
+        :visible.sync="userDialog"
+        :userData="editedUser"/>
       <confirmation-dialog
-        :visible.sync="confirmationDialog"
-        :action="confirmationAction"
+        @update:visible="confirmation = null"
         @confirmed="fetch()"
-        heading="Remove user"
-        message="Are you sure you want to remove user?"/>
+        v-bind="confirmation"
+        :visible="!!confirmation"/>
     </v-flex>
   </v-layout>
 </template>
@@ -70,17 +90,30 @@
 import api from '@/admin/api/user';
 import BulkEnrollmentDialog from './BulkEnrollmentDialog';
 import ConfirmationDialog from '../common/ConfirmationDialog';
+import humanize from 'humanize-string';
 import ImportDialog from './ImportDialog';
+import { mapState } from 'vuex';
 import throttle from 'lodash/throttle';
 import UserDialog from './UserDialog';
 
 const defaultPage = () => ({ sortBy: 'updatedAt', descending: true, page: 1 });
+const headers = () => [
+  { text: 'Email', value: 'email' },
+  { text: 'Role', value: 'role' },
+  { text: 'First Name', value: 'firstName' },
+  { text: 'Last Name', value: 'lastName' },
+  { text: 'Date Created', value: 'createdAt' },
+  { text: 'Actions', value: 'email', align: 'center', sortable: false }
+];
+const actions = user => ({
+  archive: () => api.remove(user),
+  restore: () => api.create(user)
+});
 
 export default {
   name: 'user-list',
   data() {
     return {
-      isLoading: false,
       users: [],
       selectedUsers: [],
       filter: null,
@@ -88,19 +121,13 @@ export default {
       totalItems: 0,
       userDialog: false,
       editedUser: null,
-      confirmationDialog: null,
-      confirmationAction: null
+      showArchived: false,
+      confirmation: null
     };
   },
   computed: {
-    headers: () => ([
-      { text: 'Email', value: 'email' },
-      { text: 'Role', value: 'role' },
-      { text: 'First Name', value: 'firstName' },
-      { text: 'Last Name', value: 'lastName' },
-      { text: 'Date Created', value: 'createdAt' },
-      { text: 'Actions', value: 'email', align: 'center', sortable: false }
-    ]),
+    ...mapState('auth', ['user']),
+    headers,
     defaultPage
   },
   methods: {
@@ -109,17 +136,23 @@ export default {
       this.userDialog = true;
     },
     fetch: throttle(async function (opts) {
-      this.isLoading = true;
       Object.assign(this.dataTable, opts);
-      const params = { ...this.dataTable, filter: this.filter };
-      const { items, total } = await api.fetch(params);
+      const { items, total } = await api.fetch({
+        ...this.dataTable,
+        filter: this.filter,
+        archived: this.showArchived
+      });
       this.users = items;
       this.totalItems = total;
-      this.isLoading = false;
     }, 400),
-    removeUser(user) {
-      this.confirmationAction = () => api.remove(user);
-      this.confirmationDialog = true;
+    archiveOrRestore(user) {
+      const action = user.deletedAt ? 'restore' : 'archive';
+      const name = user.firstName + ' ' + user.lastName;
+      this.confirmation = {
+        heading: `${humanize(action)} user`,
+        message: `Are you sure you want to ${action} user "${name}"?`,
+        action: actions(user)[action]
+      };
     }
   },
   watch: {
@@ -128,6 +161,9 @@ export default {
     },
     filter() {
       this.fetch();
+    },
+    showArchived() {
+      this.fetch();
     }
   },
   components: { BulkEnrollmentDialog, ConfirmationDialog, ImportDialog, UserDialog }
@@ -135,11 +171,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.table-toolbar {
-  background-color: #fff;
-}
-
 .user-table /deep/ .v-input--checkbox {
   justify-content: center;
+}
+
+.archived-checkbox /deep/ .v-input__slot {
+  flex-direction: row-reverse;
+
+  .v-input--selection-controls__input {
+    justify-content: center;
+    margin-right: 0;
+  }
+
+  .v-icon {
+    font-size: 18px;
+  }
+
+  label {
+    font-size: 14px;
+  }
 }
 </style>

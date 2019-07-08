@@ -7,7 +7,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn @click="close" flat>Cancel</v-btn>
-          <v-btn color="red" flat type="submit">Yes</v-btn>
+          <v-btn :disabled="isLoading" type="submit" color="red" flat>Yes</v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
@@ -28,6 +28,7 @@ export default {
     message: { type: String, default: 'Are you sure?' },
     action: { type: Function, default: () => true }
   },
+  data: () => ({ isLoading: false }),
   computed: {
     show: {
       get() {
@@ -43,10 +44,13 @@ export default {
       this.$emit('update:visible', false);
     },
     executeAction() {
-      return Promise.resolve(this.action()).then(() => {
-        this.close();
-        this.$emit('confirmed');
-      });
+      this.isLoading = true;
+      return Promise.resolve(this.action())
+        .then(() => {
+          this.close();
+          this.$emit('confirmed');
+        })
+        .finally(() => (this.isLoading = false));
     }
   }
 };

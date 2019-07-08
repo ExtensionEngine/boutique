@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-hotkey="{ esc: close }" v-model="visible" width="700">
+  <v-dialog v-model="visible" v-hotkey="{ esc: close }" width="700">
     <v-btn slot="activator" color="success" outline>Import Content</v-btn>
     <v-form @submit.prevent="importRepo">
       <v-card class="pa-3">
@@ -18,8 +18,15 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer/>
-          <v-btn @click="close">Cancel</v-btn>
-          <v-btn color="success" outline type="submit">Import</v-btn>
+          <v-btn @click="close" :disabled="isImporting">Cancel</v-btn>
+          <v-btn
+            :disabled="!sourceId"
+            :loading="isImporting"
+            color="success"
+            outline
+            type="submit">
+            Import
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
@@ -48,6 +55,7 @@ export default {
       visible: false,
       sourceId: null,
       catalog: [],
+      isImporting: false,
       isLoading: false
     };
   },
@@ -59,8 +67,12 @@ export default {
   methods: {
     ...mapActions('contentRepo', ['save']),
     importRepo() {
-      this.save(pick(this, ['sourceId', 'programId']));
-      this.close();
+      this.isImporting = true;
+      this.save(pick(this, ['sourceId', 'programId']))
+        .finally(() => {
+          this.isImporting = false;
+          this.close();
+        });
     },
     close() {
       this.visible = false;
@@ -72,10 +84,11 @@ export default {
     visible(val) {
       if (!val) return;
       this.isLoading = true;
-      return api.getCatalog().then(repos => {
-        this.isLoading = false;
-        this.catalog = map(repos, it => ({ text: it.name, sourceId: it.id }));
-      });
+      return api.getCatalog()
+        .then(repos => {
+          this.catalog = map(repos, it => ({ text: it.name, sourceId: it.id }));
+        })
+        .finally(() => (this.isLoading = false));
     }
   }
 };

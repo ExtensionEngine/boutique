@@ -1,9 +1,8 @@
 'use strict';
 
 const { email: config } = require('../config');
-const { parse: parseUrl } = require('url');
 const { promisify } = require('util');
-const { role } = require('../../common/config');
+const { URL } = require('url');
 const email = require('emailjs');
 const logger = require('./logger')('mailer');
 const pick = require('lodash/pick');
@@ -13,7 +12,8 @@ const server = email.server.connect(config);
 logger.info(getConfig(server), '📧  SMTP client created');
 
 const send = promisify(server.send.bind(server));
-const isAdmin = user => user.role && user.role === role.ADMIN;
+
+const resetUrl = (origin, user) => `${origin}/#/auth/reset-password/${user.token}`;
 
 module.exports = {
   send,
@@ -23,7 +23,7 @@ module.exports = {
 
 function invite(user, { origin }) {
   const href = resetUrl(origin, user);
-  const { hostname } = parseUrl(href);
+  const { hostname } = new URL(href);
   const recipient = user.email;
   const message = `
     An account has been created for you on ${hostname}.
@@ -52,11 +52,6 @@ function resetPassword(user, { origin }) {
     subject: 'Reset password',
     attachment: [{ data: `<html>${message}</html>`, alternative: true }]
   });
-}
-
-function resetUrl(origin, user) {
-  const baseUrl = origin + (isAdmin(user) ? '/admin' : '');
-  return `${baseUrl}/#/auth/reset-password/${user.token}`;
 }
 
 function getConfig(server) {

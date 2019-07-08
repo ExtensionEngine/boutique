@@ -1,7 +1,7 @@
 <template>
   <v-dialog
-    v-hotkey="{ esc: close }"
     v-model="showDialog"
+    v-hotkey="{ esc: close }"
     persistent
     no-click-animation
     width="700">
@@ -23,8 +23,8 @@
               readonly
               single-line/>
             <input
-              v-validate="inputValidation"
               ref="fileInput"
+              v-validate="inputValidation"
               @change="onFileSelected"
               id="userImportInput"
               name="file"
@@ -32,6 +32,9 @@
           </label>
         </v-card-text>
         <v-card-actions>
+          <v-btn @click="downloadTemplateFile" flat color="blue-grey">
+            Download Template
+          </v-btn>
           <v-spacer/>
           <v-fade-transition>
             <v-btn
@@ -106,16 +109,16 @@ export default {
     },
     save() {
       this.importing = true;
-      return api.bulkImport(this.form).then(response => {
+      return api.bulkImport(this.form).then(({ data, count }) => {
         this.importing = false;
-        if (response.data.size) {
-          this.$nextTick(() => this.$refs.fileName.focus());
-          this.vErrors.add({ field: 'file', msg: 'All users aren\'t imported' });
-          this.serverErrorsReport = response.data;
-          return;
-        }
-        this.$emit('imported');
-        this.close();
+        if (count) this.$emit('imported');
+        if (!data.size) return this.close();
+        this.$nextTick(() => this.$refs.fileName.focus());
+        this.vErrors.add({
+          field: 'file',
+          msg: `${count} users were successfully imported.`
+        });
+        this.serverErrorsReport = data;
       }).catch(err => {
         this.importing = false;
         this.vErrors.add({ field: 'file', msg: 'Importing users failed.' });
@@ -127,6 +130,12 @@ export default {
       const extension = inputFormats[this.serverErrorsReport.type];
       saveAs(this.serverErrorsReport, `Errors.${extension}`);
       this.$refs.fileName.focus();
+    },
+    downloadTemplateFile() {
+      return api.getImportTemplate().then(response => {
+        saveAs(response.data, 'Template.xlsx');
+        this.$refs.fileName.focus();
+      });
     },
     resetErrors() {
       this.serverErrorsReport = null;

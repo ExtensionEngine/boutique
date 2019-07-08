@@ -1,8 +1,10 @@
 'use strict';
 
 const { auth: config = {} } = require('../config');
-const { Model, UniqueConstraintError } = require('sequelize');
+const { Model, Sequelize, Op, UniqueConstraintError } = require('sequelize');
 const { role } = require('../../common/config');
+const { sql } = require('../common/database/helpers');
+const Audience = require('../common/auth/audience');
 const bcrypt = require('bcrypt');
 const castArray = require('lodash/castArray');
 const find = require('lodash/find');
@@ -61,10 +63,19 @@ class User extends Model {
         type: DataTypes.VIRTUAL,
         get() {
           return pick(this,
-            ['id', 'firstName', 'lastName', 'email', 'role', 'createdAt']);
+            ['id', 'firstName', 'lastName', 'email', 'role', 'createdAt', 'deletedAt']);
         }
       }
     };
+  }
+
+  static get text() {
+    return sql.concat(
+      Sequelize.col('email'),
+      Sequelize.col('first_name'),
+      Sequelize.col('last_name'),
+      { separator: ' ' }
+    );
   }
 
   static associate({ Enrollment }) {
@@ -98,8 +109,26 @@ class User extends Model {
     };
   }
 
+  static scopes() {
+    return {
+      searchByPattern(pattern) {
+        const cond = { [Op.iLike]: `%${pattern}%` };
+        const where = sql.where(this.text, cond, { scope: true });
+        return { where };
+      }
+    };
+  }
+
+  static match(pattern) {
+    if (!pattern) return User;
+    return User.scope({ method: ['searchByPattern', pattern] });
+  }
+
   static async invite(user, options) {
-    user.token = user.createToken({ expiresIn: '3 days' });
+    user.token = user.createToken({
+      audience: Audience.Scope.Setup,
+      expiresIn: '5 days'
+    });
     mail.invite(user, options).catch(err =>
       logger.error('Error: Sending invite email failed:', err.message));
     return user.save({ paranoid: false });
@@ -112,7 +141,7 @@ class User extends Model {
       const { message = 'Failed to import user.' } = result.reason();
       errors.push({ ...users[i], message });
     }, { concurrency });
-    return errors.length && errors;
+    return errors;
   }
 
   static async restoreOrBuild(users, { concurrency = 16 } = {}) {
@@ -122,11 +151,11 @@ class User extends Model {
     return Promise.map(users, userData => Promise.try(() => {
       const user = find(found, { email: userData.email });
       if (user && !user.deletedAt) {
-        const message = this.attributes.email.unique.msg;
+        const message = this.rawAttributes.email.unique.msg;
         throw new UniqueConstraintError({ message });
       }
       if (user) {
-        user.setDataValue('deleteAt', null);
+        user.setDataValue('deletedAt', null);
         return user;
       }
       return this.build(userData);
@@ -145,7 +174,10 @@ class User extends Model {
   }
 
   sendResetToken(options) {
-    this.token = this.createToken({ expiresIn: '5 days' });
+    this.token = this.createToken({
+      audience: Audience.Scope.Setup,
+      expiresIn: '5 days'
+    });
     mail.resetPassword(this, options).catch(err =>
       logger.error('Error: Sending reset password email failed:', err.message));
     return this.save();

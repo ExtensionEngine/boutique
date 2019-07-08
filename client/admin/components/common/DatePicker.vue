@@ -6,8 +6,8 @@
     offset-y
     transition="scale-transition">
     <v-text-field
-      v-validate="processedValidation"
       slot="activator"
+      v-validate="processedValidation"
       :name="name"
       :value="normalizedValue"
       :label="label"
@@ -16,7 +16,7 @@
       :data-vv-as="label"
       append-icon="mdi-calendar"
       readonly/>
-    <v-date-picker :value="normalizedValue" @input="save($event)" no-title/>
+    <v-date-picker @input="save($event)" :value="normalizedValue" no-title/>
   </v-menu>
 </template>
 

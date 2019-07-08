@@ -10,8 +10,8 @@
       <v-flex xs12 sm6 md4>
         <form @submit.prevent="saveProgram">
           <v-text-field
-            v-validate="{ required: true, min: 2, max: 255 }"
-            v-model="programData.name"
+            v-model.trim="programData.name"
+            v-validate="{ required: true, min: 2, max: 255, 'unique-program-name': program }"
             :error-messages="vErrors.collect('name')"
             :disabled="!isEditing"
             name="name"
@@ -42,8 +42,8 @@
     <confirmation-dialog
       :visible.sync="confirmationDialog"
       :action="removeProgram"
-      heading="Delete program"
-      message="Are you sure you want to delete program?"/>
+      :message="confirmationMessage"
+      heading="Delete program"/>
   </div>
 </template>
 
@@ -71,7 +71,10 @@ export default {
     };
   },
   computed: {
-    dateFormat: () => DST_FORMAT
+    dateFormat: () => DST_FORMAT,
+    confirmationMessage() {
+      return `Are you sure you want to delete "${this.program.name}"?`;
+    }
   },
   methods: {
     ...mapActions('programs', ['save', 'remove']),
