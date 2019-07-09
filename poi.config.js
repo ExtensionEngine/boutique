@@ -47,7 +47,8 @@ module.exports = {
     sourceMap: !isProduction
   },
   envs: {
-    API_PATH: process.env.API_PATH
+    API_PATH: process.env.API_PATH,
+    AUTH_JWT_SCHEME: process.env.AUTH_JWT_SCHEME
   },
   chainWebpack(config) {
     config.resolve.alias.merge(aliases);
