@@ -21,7 +21,8 @@ function list({ query: { filter, name, archived }, options }, res) {
     paranoid: !archived,
     include: [{
       model: User, attributes: ['id']
-    }]
+    }],
+    distinct: true
   })
   .then(({ rows, count }) => {
     return res.jsend.success({ items: rows, total: count });
