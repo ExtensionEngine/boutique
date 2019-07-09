@@ -33,9 +33,6 @@
         color: #067df7;
         text-decoration: none;
       }
-      .icon {
-        vertical-align: text-bottom;
-      }
     </mj-style>
   </mj-head>
   <mj-body>
