@@ -3,8 +3,8 @@
 const { paramCase } = require('change-case');
 const cheerio = require('cheerio');
 const fs = require('fs');
-const mapKeys = require('lodash/mapKeys');
 const map = require('lodash/map');
+const mapKeys = require('lodash/mapKeys');
 const mjml2html = require('mjml');
 const pupa = require('pupa');
 

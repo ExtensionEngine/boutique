@@ -7,8 +7,8 @@ const { renderHtml, renderText } = require('./render');
 const { URL } = require('url');
 const email = require('emailjs');
 const logger = createLogger('mailer', { level: Level.DEBUG });
-const pick = require('lodash/pick');
 const path = require('path');
+const pick = require('lodash/pick');
 
 const from = `${config.sender.name} <${config.sender.address}>`;
 const server = email.server.connect(config);
