@@ -41,9 +41,7 @@
   <mj-body>
     <mj-section mj-class="title">
       <mj-column>
-        <mj-text mj-class="title">
-          <img class="icon" src="./assets/shopping.png" /> Boutique LMS
-        </mj-text>
+        <mj-text mj-class="title">Boutique LMS</mj-text>
       </mj-column>
     </mj-section>
     <mj-section mj-class="content">

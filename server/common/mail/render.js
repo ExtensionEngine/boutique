@@ -2,14 +2,10 @@
 
 const { paramCase } = require('change-case');
 const cheerio = require('cheerio');
-const createDataUri = require('create-data-uri');
-const fileType = require('file-type');
 const fs = require('fs');
-const logger = require('../logger')('mailer');
 const mapKeys = require('lodash/mapKeys');
 const map = require('lodash/map');
 const mjml2html = require('mjml');
-const path = require('path');
 const pupa = require('pupa');
 
 module.exports = {
@@ -22,12 +18,6 @@ function renderHtml(templatePath, data, style) {
   const $ = cheerio.load(template, { xmlMode: true });
   const $style = $('mj-attributes');
   $style.append(getAttributes($, style));
-  logger.debug({ style: dump($, $style) }, 'Style email using `mj-attributes`:');
-  $('img[src]').each((_, el) => {
-    const $image = $(el);
-    const imagePath = $image.attr('src');
-    $image.attr('src', getDataUri(imagePath));
-  });
   const output = pupa($.html(), data);
   return mjml2html(output, { minify: true }).html;
 }
@@ -42,17 +32,4 @@ function getAttributes($, style = {}) {
     name,
     ...mapKeys(declarations, (_, key) => paramCase(key))
   }));
-}
-
-function getDataUri(imagePath) {
-  const buf = fs.readFileSync(path.join(__dirname, './templates/', imagePath));
-  const { mime } = fileType(buf) || {};
-  return createDataUri(mime, buf.toString('base64'));
-}
-
-function dump($, $style) {
-  return $style.find('mj-class').get().reduce((acc, el) => {
-    const { name, ...attrs } = $(el).attr();
-    return Object.assign(acc, { [name]: attrs });
-  }, {});
 }
