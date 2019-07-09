@@ -18,8 +18,9 @@ function renderHtml(templatePath, data, style) {
   const $ = cheerio.load(template, { xmlMode: true });
   const $style = $('mj-attributes');
   $style.append(getAttributes($, style));
-  const output = pupa($.html(), data);
-  return mjml2html(output, { minify: true }).html;
+  const opts = { filePath: templatePath, minify: true };
+  const output = mjml2html($.html(), opts).html;
+  return pupa(output, data);
 }
 
 function renderText(templatePath, data) {
