@@ -26,7 +26,8 @@
         <v-list-tile
           v-for="program in persistedPrograms"
           :key="program.id"
-          :to="{ name: 'enrollments', params: { programId: program.id } }">
+          :to="{ name: 'enrollments', params: { programId: program.id } }"
+          active-class="grey lighten-2">
           <v-list-tile-content>
             <v-list-tile-title class="grey--text">
               {{ program.name }}
