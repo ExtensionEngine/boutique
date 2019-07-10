@@ -50,7 +50,8 @@ module.exports = {
   },
   envs: {
     API_PATH: process.env.API_PATH,
-    HISTORY_API_FALLBACK: yn(process.env.HISTORY_API_FALLBACK)
+    HISTORY_API_FALLBACK: yn(process.env.HISTORY_API_FALLBACK),
+    AUTH_JWT_SCHEME: process.env.AUTH_JWT_SCHEME
   },
   chainWebpack(config) {
     config.resolve.alias.merge(aliases);

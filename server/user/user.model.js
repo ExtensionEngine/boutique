@@ -63,7 +63,7 @@ class User extends Model {
         type: DataTypes.VIRTUAL,
         get() {
           return pick(this,
-            ['id', 'firstName', 'lastName', 'email', 'role', 'createdAt']);
+            ['id', 'firstName', 'lastName', 'email', 'role', 'createdAt', 'deletedAt']);
         }
       }
     };
@@ -141,7 +141,7 @@ class User extends Model {
       const { message = 'Failed to import user.' } = result.reason();
       errors.push({ ...users[i], message });
     }, { concurrency });
-    return errors.length && errors;
+    return errors;
   }
 
   static async restoreOrBuild(users, { concurrency = 16 } = {}) {
@@ -151,7 +151,7 @@ class User extends Model {
     return Promise.map(users, userData => Promise.try(() => {
       const user = find(found, { email: userData.email });
       if (user && !user.deletedAt) {
-        const message = this.attributes.email.unique.msg;
+        const message = this.rawAttributes.email.unique.msg;
         throw new UniqueConstraintError({ message });
       }
       if (user) {

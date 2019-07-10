@@ -74,8 +74,8 @@ class ContentRepo extends Model {
   static createOrUpdate(id, data) {
     return !id
       ? ContentRepo.create(data)
-      : ContentRepo.update(data, { where: { id }, returning: true })
-          .then(([_, rows]) => rows[0]);
+      : ContentRepo.update(data, { where: { id }, returning: true, paranoid: false })
+          .then(([_, rows]) => rows[0].restore());
   }
 }
 
