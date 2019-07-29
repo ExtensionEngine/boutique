@@ -2,7 +2,10 @@
 
 const getStream = require('get-stream');
 const path = require('path');
+const Promise = require('bluebird');
 const safeRequire = require('safe-require');
+
+const eos = Promise.promisify(require('end-of-stream'));
 
 const isFunction = arg => typeof arg === 'function';
 
@@ -30,6 +33,12 @@ class Storage {
         return Promise.reject(new NotFoundError(key, { cause: err }));
       })
       .then(str => JSON.parse(str));
+  }
+
+  saveItem(key, data) {
+    const stream = this.store.createWriteStream({ key });
+    stream.end(JSON.stringify(data));
+    return eos(stream);
   }
 
   fileExists(key) {

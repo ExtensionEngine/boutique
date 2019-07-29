@@ -7,7 +7,7 @@ const router = require('express').Router();
 router
   .options('/', cors())
   .post('/', cors(), ctrl.createPreview)
-  .get('/:containerId', ctrl.fetchPreview);
+  .get('/:activityId', ctrl.fetchPreview);
 
 module.exports = {
   path: '/preview',

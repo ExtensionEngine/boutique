@@ -46,6 +46,6 @@ module.exports = {
     provider: process.env.STORAGE_PROVIDER,
     sourcePath: process.env.PUBLISHED_CONTENT,
     importPath: process.env.IMPORTED_CONTENT,
-    previewPath: process.env.PREVIEW_CONTENT
+    previewPath: process.env.PREVIEW_CONTENT || 'preview'
   }
 };
