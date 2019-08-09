@@ -12,6 +12,9 @@ module.exports = {
       ignoreFunctions: ['findColorInvert']
     }],
     'selector-list-comma-newline-after': 'never-multi-line',
+    'selector-pseudo-element-no-unknown': [true, {
+      ignorePseudoElements: ['v-deep']
+    }],
     'function-comma-space-after': null,
     'order/properties-order': [
       'content',
