@@ -5,7 +5,7 @@ const HttpStatus = require('http-status');
 const map = require('lodash/map');
 const omit = require('lodash/omit');
 const pick = require('lodash/pick');
-const Storage = require('./content-storage');
+const { delivery: storage } = require('./content-storage');
 
 const { NOT_FOUND } = HttpStatus;
 const excludeCorrect = data => map(data, it => omit(it, 'data.correct'));
@@ -24,14 +24,14 @@ function get({ repo }, res) {
 }
 
 function getContainer({ program, params, repo }, res) {
-  return Storage.getContainer(repo.sourceId, params.containerId, program.id)
+  return storage.getContainer(repo.sourceId, params.containerId, program.id)
     .catch(() => createError(NOT_FOUND, 'Not found!'))
     .then(processContainer)
     .then(container => res.jsend.success(container));
 }
 
 function getExam({ program, params, repo }, res) {
-  return Storage.getExam(repo.sourceId, params.examId, program.id)
+  return storage.getExam(repo.sourceId, params.examId, program.id)
     .catch(() => createError(NOT_FOUND, 'Not found!'))
     .then(exam => {
       return res.jsend.success({
@@ -47,7 +47,7 @@ function getExam({ program, params, repo }, res) {
 }
 
 function getAssessments({ program, params, repo }, res) {
-  return Storage.getAssessments(repo.sourceId, params.assessmentsId, program.id)
+  return storage.getAssessments(repo.sourceId, params.assessmentsId, program.id)
     .catch(() => createError(NOT_FOUND, 'Not found!'))
     .then(assessments => {
       return res.jsend.success(excludeCorrect(assessments));
@@ -55,7 +55,7 @@ function getAssessments({ program, params, repo }, res) {
 }
 
 function processContainer(container) {
-  return Storage.resolveElements(container.elements).then(elements => {
+  return storage.resolveElements(container.elements).then(elements => {
     container.elements = elements;
     return container;
   });
