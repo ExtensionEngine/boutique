@@ -9,7 +9,7 @@ module.exports = {
   // https://github.com/Flet/eslint-config-semistandard
   extends: ['semistandard', 'plugin:vue/recommended'],
   // required to lint *.vue files
-  plugins: ['vue'],
+  plugins: ['vue', 'vuetify'],
   rules: {
     indent: ['error', 2, {
       SwitchCase: 1,
@@ -33,6 +33,8 @@ module.exports = {
     'vue/attribute-hyphenation': 'off',
     'vue/max-attributes-per-line': ['error', { singleline: 5 }],
     'vue/name-property-casing': ['error', 'kebab-case'],
+    // Vuetify rules
+    'vuetify/no-deprecated-classes': 'error',
     // TODO: Add order for custom directives once supported
     'vue/attributes-order': ['error', {
       order: [
