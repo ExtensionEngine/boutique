@@ -10,7 +10,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn @click="close" flat>Cancel</v-btn>
+          <v-btn @click="close" text>Cancel</v-btn>
           <v-btn
             v-for="(action, index) in actions"
             :key="index"
@@ -18,7 +18,7 @@
             :disabled="isLoading"
             type="submit"
             color="red"
-            flat>
+            text>
             {{ action.label }}
           </v-btn>
         </v-card-actions>

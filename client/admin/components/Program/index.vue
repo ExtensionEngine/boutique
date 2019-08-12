@@ -2,7 +2,7 @@
   <v-layout :key="programId" column>
     <v-breadcrumbs v-if="program" :items="breadcrumbs" class="py-1"/>
     <v-flex xs12>
-      <v-tabs color="#f5f5f5">
+      <v-tabs background-color="#f5f5f5">
         <v-tab
           v-for="({ name, label }) in tabs"
           :key="name"
@@ -48,3 +48,13 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.v-tab {
+  margin-left: 0 !important;
+}
+
+.v-breadcrumbs {
+  padding-left: 18px;
+}
+</style>

@@ -1,6 +1,8 @@
 <template>
   <v-dialog v-model="visible" v-hotkey="{ esc: close }" width="500">
-    <v-btn slot="activator" color="success" outline>Enroll learner</v-btn>
+    <template v-slot:activator="{ on }">
+      <v-btn v-on="on" color="success" outlined>Enroll learner</v-btn>
+    </template>
     <v-form @submit.prevent="enroll">
       <v-card class="pa-3">
         <v-card-title class="headline">Enroll learner</v-card-title>
@@ -26,7 +28,7 @@
         <v-card-actions>
           <v-spacer/>
           <v-btn @click="close">Cancel</v-btn>
-          <v-btn color="success" outline type="submit">Enroll</v-btn>
+          <v-btn color="success" outlined type="submit">Enroll</v-btn>
         </v-card-actions>
       </v-card>
     </v-form>

@@ -5,7 +5,7 @@
         <v-spacer/>
         <import-dialog @imported="fetch(defaultPage)"/>
         <bulk-enrollment-dialog :disabled="!selectedUsers.length" :users="selectedUsers"/>
-        <v-btn @click.stop="showUserDialog()" color="success" outline>
+        <v-btn @click.stop="showUserDialog()" color="success" outlined class="ml-4">
           Add user
         </v-btn>
       </v-toolbar>
@@ -32,27 +32,27 @@
           v-model="selectedUsers"
           :headers="headers"
           :items="users"
-          :total-items="totalItems"
-          :pagination.sync="dataTable"
+          :server-items-length="totalItems"
+          :options.sync="dataTable"
           :must-sort="true"
           class="user-table"
-          select-all>
-          <template slot="items" slot-scope="props">
+          show-select>
+          <template slot="item" slot-scope="props">
             <tr :key="props.item.id">
               <td>
-                <v-checkbox v-model="props.selected" primary hide-details/>
+                <v-checkbox v-model="props.isSelected" hide-details/>
               </td>
               <td>{{ props.item.email }}</td>
               <td>{{ props.item.role }}</td>
               <td>{{ props.item.firstName }}</td>
               <td>{{ props.item.lastName }}</td>
-              <td class="no-wrap">{{ props.item.createdAt | formatDate }}</td>
-              <td class="no-wrap text-xs-center">
+              <td class="text-no-wrap">{{ props.item.createdAt | formatDate }}</td>
+              <td class="text-no-wrap text-center">
                 <v-btn
                   @click="showUserDialog(props.item)"
                   color="grey darken-2"
                   small
-                  flat
+                  text
                   icon>
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
@@ -61,7 +61,7 @@
                   :disabled="user.id === props.item.id"
                   color="grey darken-2"
                   small
-                  flat
+                  text
                   icon>
                   <v-icon>
                     mdi-account-{{ props.item.deletedAt ? 'convert' : 'off' }}
@@ -96,7 +96,7 @@ import { mapState } from 'vuex';
 import throttle from 'lodash/throttle';
 import UserDialog from './UserDialog';
 
-const defaultPage = () => ({ sortBy: 'updatedAt', descending: true, page: 1 });
+const defaultPage = () => ({ sortBy: ['updatedAt'], sortDesc: [true], page: 1 });
 const headers = () => [
   { text: 'Email', value: 'email' },
   { text: 'Role', value: 'role' },
@@ -171,11 +171,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.user-table /deep/ .v-input--checkbox {
+.user-table ::v-deep .v-input--checkbox {
   justify-content: center;
+  margin-top: 0;
 }
 
-.archived-checkbox /deep/ .v-input__slot {
+.archived-checkbox ::v-deep .v-input__slot {
   flex-direction: row-reverse;
 
   .v-input--selection-controls__input {

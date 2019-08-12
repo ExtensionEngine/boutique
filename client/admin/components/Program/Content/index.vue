@@ -29,8 +29,8 @@
         :items="filteredRepos"
         :no-data-text="noContentMessage"
         item-key="_cid"
-        hide-actions>
-        <template slot="items" slot-scope="{ item }">
+        hide-default-footer>
+        <template slot="item" slot-scope="{ item }">
           <tr
             v-show="!item.deletedAt || showArchived"
             :key="item.sourceId"
@@ -38,11 +38,11 @@
             <td>{{ item.name }}</td>
             <td class="text-no-wrap">{{ item.repoVersion | formatDate }}</td>
             <td class="text-no-wrap">{{ item.publishedAt | formatDate }}</td>
-            <td class="text-no-wrap text-xs-center actions">
+            <td class="text-no-wrap text-center actions">
               <v-btn
                 v-if="item.repoVersion > item.publishedAt"
                 @click="save(item)"
-                flat
+                text
                 small>
                 Sync
               </v-btn>
@@ -53,14 +53,15 @@
                 v-if="!item.deletedAt"
                 @click="showConfirmationDialog(item)"
                 icon
-                flat>
+                small
+                text>
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
               <v-btn
                 v-else
                 @click="showRestoreDialog(item)"
                 icon
-                flat>
+                text>
                 <v-icon>mdi-restore</v-icon>
               </v-btn>
             </td>
@@ -167,7 +168,7 @@ export default {
   width: 250px;
 }
 
-.archived-checkbox /deep/ .v-input__slot {
+.archived-checkbox ::v-deep .v-input__slot {
   flex-direction: row-reverse;
 
   .v-input--selection-controls__input {

@@ -6,10 +6,10 @@ export function extractData(res) {
 
 export function processParams(opts) {
   const page = get(opts, 'page', 1);
-  const limit = get(opts, 'rowsPerPage', 100);
+  const limit = get(opts, 'itemsPerPage', 100);
   const params = {
-    sortBy: opts.sortBy || 'id',
-    sortOrder: opts.descending ? 'DESC' : 'ASC',
+    sortBy: (opts.sortBy && opts.sortBy[0]) || 'id',
+    sortOrder: (opts.sortDesc && opts.sortDesc[0]) ? 'DESC' : 'ASC',
     offset: (page - 1) * limit,
     limit: limit === -1 ? null : limit
   };

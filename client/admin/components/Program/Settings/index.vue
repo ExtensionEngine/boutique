@@ -2,7 +2,7 @@
   <div v-if="program" class="mt-3">
     <v-toolbar color="#f5f5f5" flat>
       <v-spacer/>
-      <v-btn @click="confirmationDialog = true" color="error" outline>
+      <v-btn @click="confirmationDialog = true" color="error" outlined>
         Delete Program
       </v-btn>
     </v-toolbar>
@@ -31,10 +31,10 @@
           <v-layout>
             <v-spacer/>
             <template v-if="isEditing">
-              <v-btn @click="cancel" outline>Cancel</v-btn>
+              <v-btn @click="cancel" outlined>Cancel</v-btn>
               <v-btn type="submit" color="success">Save</v-btn>
             </template>
-            <v-btn v-else @click="isEditing = true" outline>Edit</v-btn>
+            <v-btn v-else @click="isEditing = true" outlined>Edit</v-btn>
           </v-layout>
         </form>
       </v-flex>

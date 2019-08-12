@@ -5,9 +5,11 @@
     :disabled="disabled"
     width="700"
     class="bulk-enrollment">
-    <v-btn slot="activator" :disabled="disabled" color="success" outline>
-      Enroll
-    </v-btn>
+    <template v-slot:activator="{ on }">
+      <v-btn v-on="on" :disabled="disabled" color="success" outlined class="ml-4">
+        Enroll
+      </v-btn>
+    </template>
     <v-form @submit.prevent="submit">
       <v-card class="pa-3">
         <v-card-title class="headline">Enroll users to Program</v-card-title>

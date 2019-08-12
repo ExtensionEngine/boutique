@@ -1,6 +1,8 @@
 <template>
   <v-dialog v-model="visible" v-hotkey="{ esc: close }" width="600">
-    <v-btn slot="activator" small flat>Create</v-btn>
+    <template v-slot:activator="{ on }">
+      <v-btn v-on="on" small text class="ma-2">Create</v-btn>
+    </template>
     <v-form @submit.prevent="save">
       <v-card class="pa-3">
         <v-card-title class="headline">New Program</v-card-title>
@@ -15,7 +17,7 @@
         <v-card-actions>
           <v-spacer/>
           <v-btn @click="close">Cancel</v-btn>
-          <v-btn color="success" outline type="submit">Save</v-btn>
+          <v-btn color="success" outlined type="submit">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-form>

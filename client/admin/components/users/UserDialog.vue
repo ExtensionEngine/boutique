@@ -2,7 +2,7 @@
   <v-dialog v-model="show" v-hotkey="{ esc: close }" width="700">
     <v-form @submit.prevent="save">
       <v-card class="pa-3">
-        <v-card-title class="headline pr-0">
+        <v-card-title class="headline">
           <span>{{ userData ? 'Edit' : 'Create' }} User</span>
           <v-spacer/>
           <v-btn
@@ -10,7 +10,7 @@
             @click="invite"
             :disabled="isLoading"
             :loading="isLoading"
-            :outline="true"
+            :outlined="true"
             color="blue-grey">
             Reinvite
           </v-btn>

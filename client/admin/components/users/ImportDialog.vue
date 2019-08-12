@@ -5,9 +5,11 @@
     persistent
     no-click-animation
     width="700">
-    <v-btn slot="activator" color="blue-grey" outline>
-      <v-icon>mdi-cloud-upload</v-icon>Import
-    </v-btn>
+    <template v-slot:activator="{ on }">
+      <v-btn v-on="on" color="blue-grey" outlined>
+        <v-icon>mdi-cloud-upload</v-icon>Import
+      </v-btn>
+    </template>
     <v-form @submit.prevent="save">
       <v-card class="pa-3">
         <v-card-title class="headline">Import Users</v-card-title>
@@ -32,7 +34,7 @@
           </label>
         </v-card-text>
         <v-card-actions>
-          <v-btn @click="downloadTemplateFile" flat color="blue-grey">
+          <v-btn @click="downloadTemplateFile" text color="blue-grey">
             Download Template
           </v-btn>
           <v-spacer/>
@@ -160,7 +162,7 @@ export default {
 }
 
 .v-text-field {
-  /deep/ .v-text-field__slot {
+  ::v-deep .v-text-field__slot {
     cursor: pointer;
 
     input {
@@ -168,8 +170,10 @@ export default {
     }
   }
 
-  /deep/ .mdi {
-    transform: rotate(-90deg);
+  ::v-deep {
+    .mdi {
+      transform: rotate(-90deg);
+    }
   }
 }
 
