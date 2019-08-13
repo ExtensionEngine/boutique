@@ -4,7 +4,7 @@ const { ContentRepo } = require('../common/database');
 const forEach = require('lodash/forEach');
 const keyBy = require('lodash/keyBy');
 const pick = require('lodash/pick');
-const { import: storage } = require('./content-storage');
+const { import: contentProcessor } = require('./processor');
 
 const outputAttributes = [
   'id', 'sourceId', 'programId', 'name', 'publishedAt', 'deletedAt'
@@ -17,7 +17,7 @@ async function list({ query: { programId, srcVersion = false, archived } }, res)
     paranoid: !archived
   });
   if (srcVersion) {
-    const reposById = keyBy(await storage.getCatalog(), 'id');
+    const reposById = keyBy(await contentProcessor.getCatalog(), 'id');
     forEach(repos, it => {
       it.setDataValue('repoVersion', reposById[it.sourceId].publishedAt);
     });
@@ -26,12 +26,12 @@ async function list({ query: { programId, srcVersion = false, archived } }, res)
 }
 
 function getCatalog(req, res) {
-  return storage.getCatalog().then(data => res.jsend.success(data));
+  return contentProcessor.getCatalog().then(data => res.jsend.success(data));
 }
 
 async function upsert({ body }, res) {
   const data = pick(body, ['id', 'sourceId', 'programId']);
-  const srcRepo = await storage.importRepo(data.programId, data.sourceId);
+  const srcRepo = await contentProcessor.importRepo(data.programId, data.sourceId);
   const dstRepo = await ContentRepo.createOrUpdate(data.id, {
     ...data,
     ...pick(srcRepo, [
