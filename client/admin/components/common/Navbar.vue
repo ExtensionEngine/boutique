@@ -9,16 +9,16 @@
     <v-spacer></v-spacer>
     <v-menu min-width="220px" transition="slide-y-transition" offset-y>
       <template v-slot:activator="{ on: menu }">
-        <v-btn v-on="on" icon large class="mr-2">
-          <v-tooltip left>
-            <template v-slot:activator="{ on: tooltip }">
+        <v-tooltip left>
+          <template v-slot:activator="{ on: tooltip }">
+            <v-btn icon large class="mr-2">
               <v-avatar v-on="{ ...tooltip, ...menu }" size="42px" color="#eaeaea">
                 <span class="grey--text headline">{{ user.firstName[0] }}</span>
               </v-avatar>
-            </template>
-            <span>{{ fullName }}</span>
-          </v-tooltip>
-        </v-btn>
+            </v-btn>
+          </template>
+          <span>{{ fullName }}</span>
+        </v-tooltip>
       </template>
       <v-list>
         <v-list-item @click="logout">
