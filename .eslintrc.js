@@ -35,6 +35,7 @@ module.exports = {
     'vue/name-property-casing': ['error', 'kebab-case'],
     // Vuetify rules
     'vuetify/no-deprecated-classes': 'error',
+    'vuetify/no-legacy-grid': 'error',
     // TODO: Add order for custom directives once supported
     'vue/attributes-order': ['error', {
       order: [

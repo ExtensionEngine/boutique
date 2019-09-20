@@ -1,6 +1,6 @@
 <template>
-  <v-layout justify-center>
-    <v-flex class="mt-5">
+  <v-row justify="center">
+    <v-col class="mt-5">
       <v-toolbar color="#f5f5f5" flat>
         <v-spacer/>
         <import-dialog @imported="fetch(defaultPage)"/>
@@ -10,8 +10,8 @@
         </v-btn>
       </v-toolbar>
       <div class="elevation-1 ml-2 mr-4">
-        <v-layout column align-end class="px-4 table-toolbar">
-          <v-flex lg4>
+        <v-row justify="end" no-gutters class="px-4 table-toolbar">
+          <v-col lg="4">
             <v-text-field
               v-model="filter"
               append-icon="mdi-magnify"
@@ -19,15 +19,13 @@
               single-line
               hide-details
               clearable/>
-          </v-flex>
-          <v-flex lg4 class="my-1">
             <v-checkbox
               v-model="showArchived"
               label="Show archived"
-              class="archived-checkbox"
+              class="my-2 archived-checkbox"
               hide-details/>
-          </v-flex>
-        </v-layout>
+          </v-col>
+        </v-row>
         <v-data-table
           v-model="selectedUsers"
           :headers="headers"
@@ -82,8 +80,8 @@
         @confirmed="fetch()"
         v-bind="confirmation"
         :visible="!!confirmation"/>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -176,20 +174,26 @@ export default {
   margin-top: 0;
 }
 
-.archived-checkbox ::v-deep .v-input__slot {
-  flex-direction: row-reverse;
-
-  .v-input--selection-controls__input {
-    justify-content: center;
-    margin-right: 0;
+::v-deep .archived-checkbox {
+  &.v-input--checkbox {
+    justify-content: flex-end;
   }
 
-  .v-icon {
-    font-size: 18px;
-  }
+  .v-input__slot {
+    flex-direction: row-reverse;
 
-  label {
-    font-size: 14px;
+    .v-input--selection-controls__input {
+      justify-content: center;
+      margin-right: 0;
+    }
+
+    .v-icon {
+      font-size: 18px;
+    }
+
+    label {
+      font-size: 14px;
+    }
   }
 }
 </style>

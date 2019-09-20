@@ -15,14 +15,14 @@
           </v-list-item-content>
         </v-list-item>
         <v-divider dark class="my-3"/>
-        <v-layout align-center>
-          <v-flex xs6>
+        <v-row align="center" no-gutters>
+          <v-col cols="6">
             <v-subheader class="subtitle-2 ml-2">Programs</v-subheader>
-          </v-flex>
-          <v-flex xs6 class="text-right">
+          </v-col>
+          <v-col cols="6" class="text-right">
             <program-modal/>
-          </v-flex>
-        </v-layout>
+          </v-col>
+        </v-row>
         <v-list-item
           v-for="program in persistedPrograms"
           :key="program.id"

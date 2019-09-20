@@ -5,16 +5,16 @@
       <enrollment-dialog @enrolled="fetch(defaultPage)" :programId="programId"/>
     </v-toolbar>
     <div class="elevation-1 ml-2 mr-4">
-      <v-layout class="px-4 py-3 table-toolbar">
-        <v-flex lg3 offset-lg9>
+      <v-row class="px-4 py-3 table-toolbar" no-gutters>
+        <v-col lg="3" offset-lg="9">
           <v-text-field
             v-model.trim="filter"
             append-icon="mdi-magnify"
             label="Search"
             single-line
             clearable/>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
       <v-data-table
         :headers="headers"
         :items="enrollments"
@@ -29,7 +29,9 @@
             <td>{{ get(item.student, 'lastName') }}</td>
             <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
             <td class="text-center">
-              <v-icon @click="unenroll(item)" small>mdi-delete</v-icon>
+              <v-btn @click="unenroll(item)" icon text small>
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
             </td>
           </tr>
         </template>

@@ -1,19 +1,20 @@
 <template>
-  <v-layout :key="programId" column>
+  <v-row :key="programId" no-gutters class="mt-4">
     <v-breadcrumbs v-if="program" :items="breadcrumbs" class="py-1"/>
-    <v-flex xs12>
-      <v-tabs background-color="#f5f5f5">
+    <v-col cols="12">
+      <v-tabs background-color="#f5f5f5" class="ml-2 mr-4">
         <v-tab
           v-for="({ name, label }) in tabs"
           :key="name"
           :to="{ name, params: { programId } }"
+          exact
           ripple>
           {{ label }}
         </v-tab>
       </v-tabs>
       <router-view v-if="program" :program="program"/>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

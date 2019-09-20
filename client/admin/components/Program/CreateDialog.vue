@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="visible" v-hotkey="{ esc: close }" width="600">
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on" small text class="ma-2">Create</v-btn>
+      <v-btn v-on="on" small text>Create</v-btn>
     </template>
     <v-form @submit.prevent="save">
       <v-card class="pa-3">
