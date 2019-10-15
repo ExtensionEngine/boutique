@@ -8,14 +8,12 @@
         v-model="password"
         type="password"
         name="password"
-        validate="required|alphanumerical|min:6">
-      </v-input>
+        validate="required|alphanumerical|min:6" />
       <v-input
         v-model="passwordConfirmation"
         :validate="{ rules: { required: true, is: password } }"
         type="password"
-        name="passwordConfirmation">
-      </v-input>
+        name="passwordConfirmation" />
       <button class="button" type="submit">
         Change password
       </button>

@@ -5,7 +5,7 @@
         <v-card-title class="headline">{{ heading }}</v-card-title>
         <v-card-text>{{ message }}</v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn @click="close" flat>Cancel</v-btn>
           <v-btn :disabled="isLoading" type="submit" color="red" flat>Yes</v-btn>
         </v-card-actions>
