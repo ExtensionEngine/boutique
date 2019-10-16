@@ -1,7 +1,7 @@
 <template>
   <div v-if="program" class="mt-3">
     <v-toolbar color="#f5f5f5" flat>
-      <v-spacer/>
+      <v-spacer />
       <v-btn @click="confirmationDialog = true" color="error" outline>
         Delete Program
       </v-btn>
@@ -16,20 +16,20 @@
             :disabled="!isEditing"
             name="name"
             label="Program name"
-            append-icon="mdi-pencil"/>
+            append-icon="mdi-pencil" />
           <date-picker
             v-model="programData.startDate"
             :disabled="!isEditing"
             name="startDate"
-            label="Start Date"/>
+            label="Start Date" />
           <date-picker
             v-model="programData.endDate"
             :validate="{ after: programData.startDate }"
             :disabled="!isEditing"
             name="endDate"
-            label="End Date"/>
+            label="End Date" />
           <v-layout>
-            <v-spacer/>
+            <v-spacer />
             <template v-if="isEditing">
               <v-btn @click="cancel" outline>Cancel</v-btn>
               <v-btn type="submit" color="success">Save</v-btn>
@@ -43,7 +43,7 @@
       :visible.sync="confirmationDialog"
       :action="removeProgram"
       :message="confirmationMessage"
-      heading="Delete program"/>
+      heading="Delete program" />
   </div>
 </template>
 

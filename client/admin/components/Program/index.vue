@@ -1,6 +1,6 @@
 <template>
   <v-layout :key="programId" column>
-    <v-breadcrumbs v-if="program" :items="breadcrumbs" class="py-1"/>
+    <v-breadcrumbs v-if="program" :items="breadcrumbs" class="py-1" />
     <v-flex xs12>
       <v-tabs color="#f5f5f5">
         <v-tab
@@ -11,7 +11,7 @@
           {{ label }}
         </v-tab>
       </v-tabs>
-      <router-view v-if="program" :program="program"/>
+      <router-view v-if="program" :program="program" />
     </v-flex>
   </v-layout>
 </template>

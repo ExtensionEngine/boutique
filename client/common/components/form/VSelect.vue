@@ -11,8 +11,7 @@
         :value="resolvedValue"
         :name="name"
         v-bind="options"
-        data-vv-delay="1000">
-      </multiselect>
+        data-vv-delay="1000" />
     </div>
     <p v-visible="showError" class="help is-danger">
       {{ vErrors.first(name) || '&nbsp;' }}
