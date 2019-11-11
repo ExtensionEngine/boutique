@@ -1,3 +1,5 @@
+'use strict';
+
 const { ContentRepo } = require('../common/database');
 const { createError } = require('../common/errors');
 const ctrl = require('./content-delivery.controller');
