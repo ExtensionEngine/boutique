@@ -19,7 +19,6 @@ const sql = {
 module.exports = {
   sql,
   getValidator,
-  setLogging,
   wrapAsyncMethods
 };
 
@@ -40,12 +39,6 @@ function getValidator(Model, attribute) {
     return inRange(input.length, min, max) ||
       `"${attribute}" must be between ${min} and ${max} characters long`;
   };
-}
-
-function setLogging(Model, state) {
-  const { options } = Model.sequelize;
-  options.logging = state;
-  return options.logging;
 }
 
 function concat(...args) {

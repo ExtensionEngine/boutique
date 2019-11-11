@@ -14,19 +14,20 @@
             <v-list-tile-title class="grey--text">Users</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-divider dark class="my-3"/>
+        <v-divider dark class="my-3" />
         <v-layout row align-center>
           <v-flex xs6>
             <v-subheader>Programs</v-subheader>
           </v-flex>
           <v-flex xs6 class="text-xs-right">
-            <program-modal/>
+            <program-modal />
           </v-flex>
         </v-layout>
         <v-list-tile
           v-for="program in persistedPrograms"
           :key="program.id"
-          :to="{ name: 'enrollments', params: { programId: program.id } }">
+          :to="{ name: 'enrollments', params: { programId: program.id } }"
+          active-class="grey lighten-2">
           <v-list-tile-content>
             <v-list-tile-title class="grey--text">
               {{ program.name }}

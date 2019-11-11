@@ -1,9 +1,9 @@
 <template>
   <div>
     <div v-if="isLoading" class="loader-container">
-      <circular-progress :height="50" :width="50"/>
+      <circular-progress :height="50" :width="50" />
     </div>
-    <router-view v-else/>
+    <router-view v-else />
   </div>
 </template>
 

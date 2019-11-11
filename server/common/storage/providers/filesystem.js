@@ -1,3 +1,5 @@
+'use strict';
+
 const fileType = require('file-type');
 const FsBlobStore = require('fs-blob-store');
 const getStream = require('get-stream');

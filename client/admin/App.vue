@@ -1,11 +1,11 @@
 <template>
   <router-host>
     <v-app id="app">
-      <sidebar :drawer.sync="drawer"/>
-      <navbar :drawer.sync="drawer"/>
+      <sidebar :drawer.sync="drawer" />
+      <navbar :drawer.sync="drawer" />
       <v-content>
         <v-container fluid fill-height class="grey lighten-4">
-          <router-view/>
+          <router-view />
         </v-container>
       </v-content>
     </v-app>

@@ -8,15 +8,13 @@
         v-model="email"
         autocomplete="email"
         name="email"
-        validate="required|email">
-      </v-input>
+        validate="required|email" />
       <v-input
         v-model="password"
         autocomplete="current-password"
         name="password"
         type="password"
-        validate="required">
-      </v-input>
+        validate="required" />
       <div class="options">
         <router-link :to="{ name: 'forgot-password' }">
           Forgot password ?

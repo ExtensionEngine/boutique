@@ -1,7 +1,7 @@
 <template>
   <router-host>
     <div id="app" class="system-font-stack">
-      <router-view/>
+      <router-view />
     </div>
   </router-host>
 </template>
