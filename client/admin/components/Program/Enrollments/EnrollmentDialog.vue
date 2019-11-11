@@ -23,10 +23,10 @@
             placeholder="Start typing to Search"
             prepend-icon="mdi-magnify"
             clearable
-            name="learner"/>
+            name="learner" />
         </v-card-text>
         <v-card-actions>
-          <v-spacer/>
+          <v-spacer />
           <v-btn @click="close">Cancel</v-btn>
           <v-btn color="success" outlined type="submit">Enroll</v-btn>
         </v-card-actions>
@@ -102,7 +102,7 @@ export default {
   mounted() {
     if (this.$validator.rules['unique-enrollment']) return;
     this.$validator.extend('unique-enrollment', {
-      getMessage: field => `Learner is already enrolled!`,
+      getMessage: field => 'Learner is already enrolled!',
       validate: (option, params) => {
         return enrollmentApi.fetch({ params }).then(res => !res.total);
       }

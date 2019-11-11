@@ -74,7 +74,7 @@
         @updated="fetch(defaultPage)"
         @created="fetch(defaultPage)"
         :visible.sync="userDialog"
-        :userData="editedUser"/>
+        :user-data="editedUser" />
       <confirmation-dialog
         @update:visible="confirmation = null"
         @confirmed="fetch()"

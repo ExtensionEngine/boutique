@@ -18,10 +18,10 @@
             prepend-icon="mdi-magnify"
             label="Repository"
             placeholder="Start typing to Search"
-            hide-selected/>
+            hide-selected />
         </v-card-text>
         <v-card-actions>
-          <v-spacer/>
+          <v-spacer />
           <v-btn @click="close" :disabled="isImporting">Cancel</v-btn>
           <v-btn
             :disabled="!sourceId"

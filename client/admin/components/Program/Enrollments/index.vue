@@ -1,8 +1,8 @@
 <template>
   <div class="mt-3">
     <v-toolbar color="#f5f5f5" flat>
-      <v-spacer/>
-      <enrollment-dialog @enrolled="fetch(defaultPage)" :programId="programId"/>
+      <v-spacer />
+      <enrollment-dialog @enrolled="fetch(defaultPage)" :program-id="programId" />
     </v-toolbar>
     <div class="elevation-1 ml-2 mr-4">
       <v-row class="px-4 py-3 table-toolbar" no-gutters>
@@ -42,7 +42,7 @@
       :visible.sync="confirmation.dialog"
       :action="confirmation.action"
       :message="confirmation.message"
-      heading="Unenroll"/>
+      heading="Unenroll" />
   </div>
 </template>
 

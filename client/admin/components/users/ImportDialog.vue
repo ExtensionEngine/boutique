@@ -23,7 +23,7 @@
               prepend-icon="mdi-attachment"
               label="Upload .xlsx or .csv file"
               readonly
-              single-line/>
+              single-line />
             <input
               ref="fileInput"
               v-validate="inputValidation"
@@ -37,7 +37,7 @@
           <v-btn @click="downloadTemplateFile" text color="blue-grey">
             Download Template
           </v-btn>
-          <v-spacer/>
+          <v-spacer />
           <v-fade-transition>
             <v-btn
               v-show="serverErrorsReport"

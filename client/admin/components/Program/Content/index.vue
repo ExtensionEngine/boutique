@@ -1,8 +1,8 @@
 <template>
   <div class="mt-3">
     <v-toolbar color="#f5f5f5" flat>
-      <v-spacer/>
-      <content-dialog :programId="programId" :importedRepos="importedRepos"/>
+      <v-spacer />
+      <content-dialog :program-id="programId" :imported-repos="importedRepos" />
     </v-toolbar>
     <div class="elevation-1 ml-2 mr-4">
       <v-row justify="end" no-gutters class="px-4 table-toolbar">
@@ -70,11 +70,11 @@
       <confirmation-dialog
         @update:visible="confirmation = null"
         @confirmed="fetchProgramRepos()"
-        v-bind="confirmation"/>
+        v-bind="confirmation" />
       <multiple-choice-dialog
         @closed="restoreOptions = null"
         @completed="fetchProgramRepos()"
-        v-bind="restoreOptions"/>
+        v-bind="restoreOptions" />
     </div>
   </div>
 </template>

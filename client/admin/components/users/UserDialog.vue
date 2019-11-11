@@ -4,7 +4,7 @@
       <v-card class="pa-3">
         <v-card-title class="headline">
           <span>{{ userData ? 'Edit' : 'Create' }} User</span>
-          <v-spacer/>
+          <v-spacer />
           <v-btn
             v-if="!isNewUser"
             @click="invite"
@@ -22,7 +22,7 @@
             :error-messages="vErrors.collect('email')"
             label="E-mail"
             data-vv-name="email"
-            class="mb-3"/>
+            class="mb-3" />
           <v-select
             v-model="user.role"
             v-validate="'required'"
@@ -32,24 +32,24 @@
             :error-messages="vErrors.collect('role')"
             label="Role"
             data-vv-name="role"
-            class="mb-3"/>
+            class="mb-3" />
           <v-text-field
             v-model="user.firstName"
             v-validate="'required|alpha|min:2|max:50'"
             :error-messages="vErrors.collect('firstName')"
             label="First Name"
             data-vv-name="firstName"
-            class="mb-3"/>
+            class="mb-3" />
           <v-text-field
             v-model="user.lastName"
             v-validate="'required|alpha|min:2|max:50'"
             :error-messages="vErrors.collect('lastName')"
             label="Last Name"
             data-vv-name="lastName"
-            class="mb-3"/>
+            class="mb-3" />
         </v-card-text>
         <v-card-actions>
-          <v-spacer/>
+          <v-spacer />
           <v-btn @click="close">Cancel</v-btn>
           <v-btn color="success" type="submit">Save</v-btn>
         </v-card-actions>

@@ -25,10 +25,10 @@
             label="Program"
             placeholder="Start typing to Search"
             prepend-icon="mdi-magnify"
-            clearable/>
+            clearable />
         </v-card-text>
         <v-card-actions>
-          <v-spacer/>
+          <v-spacer />
           <v-btn @click="close" :disabled="enrolling">Cancel</v-btn>
           <v-btn
             :disabled="enrollDisabled"

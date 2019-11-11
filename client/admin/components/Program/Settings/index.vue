@@ -16,12 +16,12 @@
             :disabled="!isEditing"
             name="name"
             label="Program name"
-            append-icon="mdi-pencil"/>
+            append-icon="mdi-pencil" />
           <date-picker
             v-model="programData.startDate"
             :disabled="!isEditing"
             name="startDate"
-            label="Start Date"/>
+            label="Start Date" />
           <date-picker
             v-model="programData.endDate"
             :validate="{ after: programData.startDate }"
@@ -43,7 +43,7 @@
       :visible.sync="confirmationDialog"
       :action="removeProgram"
       :message="confirmationMessage"
-      heading="Delete program"/>
+      heading="Delete program" />
   </div>
 </template>
 

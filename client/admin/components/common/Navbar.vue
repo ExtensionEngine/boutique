@@ -6,7 +6,7 @@
       Boutique
       <span class="font-weight-light">LMS</span>
     </span>
-    <v-spacer></v-spacer>
+    <v-spacer />
     <v-menu min-width="220px" transition="slide-y-transition" offset-y>
       <template v-slot:activator="{ on: menu }">
         <v-tooltip left>

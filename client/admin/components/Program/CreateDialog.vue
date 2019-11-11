@@ -12,10 +12,10 @@
             v-validate="{ required: true, min: 2, max: 255, 'unique-program-name': null }"
             :error-messages="vErrors.collect('name')"
             label="Name"
-            data-vv-name="name"/>
+            data-vv-name="name" />
         </v-card-text>
         <v-card-actions>
-          <v-spacer/>
+          <v-spacer />
           <v-btn @click="close">Cancel</v-btn>
           <v-btn color="success" outlined type="submit">Save</v-btn>
         </v-card-actions>
