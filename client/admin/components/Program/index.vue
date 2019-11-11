@@ -1,18 +1,17 @@
 <template>
-  <v-layout :key="programId">
-    <v-flex>
-      <v-tabs color="#f5f5f5" class="mt-2">
-        <v-tab :to="{ name: 'enrollments', params: { programId } }" ripple>
-          Enrollments
-        </v-tab>
-        <v-tab :to="{ name: 'importedContent', params: { programId } }" ripple>
-          Content
-        </v-tab>
-        <v-tab :to="{ name: 'programSettings', params: { programId } }" ripple>
-          Settings
+  <v-layout :key="programId" column>
+    <v-breadcrumbs v-if="program" :items="breadcrumbs" class="py-1" />
+    <v-flex xs12>
+      <v-tabs color="#f5f5f5">
+        <v-tab
+          v-for="({ name, label }) in tabs"
+          :key="name"
+          :to="{ name, params: { programId } }"
+          ripple>
+          {{ label }}
         </v-tab>
       </v-tabs>
-      <router-view v-if="program" :program="program"/>
+      <router-view v-if="program" :program="program" />
     </v-flex>
   </v-layout>
 </template>
@@ -28,6 +27,19 @@ export default {
     ...mapState('programs', { programs: 'items' }),
     program() {
       return find(this.programs, { id: this.programId });
+    },
+    breadcrumbs() {
+      return [
+        { text: 'Programs', disabled: true },
+        { text: this.program.name, disabled: true }
+      ];
+    },
+    tabs() {
+      return [
+        { name: 'enrollments', label: 'Enrollments' },
+        { name: 'importedContent', label: 'Content' },
+        { name: 'programSettings', label: 'Settings' }
+      ];
     }
   },
   methods: mapActions('programs', ['get']),

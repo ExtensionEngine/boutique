@@ -1,11 +1,11 @@
 <template>
   <div>
-    <navbar/>
+    <navbar />
     <div class="container">
       <div v-if="isLoading" class="loader-container">
-        <circular-progress :width="50" :height="50"/>
+        <circular-progress :width="50" :height="50" />
       </div>
-      <router-view v-else/>
+      <router-view v-else />
     </div>
   </div>
 </template>

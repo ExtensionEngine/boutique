@@ -1,10 +1,13 @@
 'use strict';
 
-const { email: config } = require('../config');
+const { createLogger, Level } = require('../logger');
+const { email: config } = require('../../config');
 const { promisify } = require('util');
+const { renderHtml, renderText } = require('./render');
 const { URL } = require('url');
 const email = require('emailjs');
-const logger = require('./logger')('mailer');
+const logger = createLogger('mailer', { level: Level.DEBUG });
+const path = require('path');
 const pick = require('lodash/pick');
 
 const from = `${config.sender.name} <${config.sender.address}>`;
@@ -12,6 +15,7 @@ const server = email.server.connect(config);
 logger.info(getConfig(server), '📧  SMTP client created');
 
 const send = promisify(server.send.bind(server));
+const templatesDir = path.join(__dirname, './templates/');
 
 const resetUrl = (origin, user) => `${origin}/#/auth/reset-password/${user.token}`;
 
@@ -25,32 +29,34 @@ function invite(user, { origin }) {
   const href = resetUrl(origin, user);
   const { hostname } = new URL(href);
   const recipient = user.email;
-  const message = `
-    An account has been created for you on ${hostname}.
-    Please click <a href="${href}">here</a> to complete your registration.`;
-
+  const recipientName = user.firstName;
+  const data = { href, origin, hostname, recipientName };
+  const html = renderHtml(path.join(templatesDir, 'welcome.mjml'), data);
+  const text = renderText(path.join(templatesDir, 'welcome.txt'), data);
   logger.info({ recipient, sender: from }, '📧  Sending invite email to:', recipient);
   return send({
     from,
     to: recipient,
     subject: 'Invite',
-    attachment: [{ data: `<html>${message}</html>`, alternative: true }]
+    text,
+    attachment: [{ data: html, alternative: true }]
   });
 }
 
 function resetPassword(user, { origin }) {
   const href = resetUrl(origin, user);
   const recipient = user.email;
-  const message = `
-    You requested password reset.
-    Please click <a href="${href}">here</a> to complete the reset process.`;
-
+  const recipientName = user.firstName;
+  const data = { href, recipientName };
+  const html = renderHtml(path.join(templatesDir, 'reset.mjml'), data);
+  const text = renderText(path.join(templatesDir, 'reset.txt'), data);
   logger.info({ recipient, sender: from }, '📧  Sending reset password email to:', recipient);
   return send({
     from,
     to: recipient,
     subject: 'Reset password',
-    attachment: [{ data: `<html>${message}</html>`, alternative: true }]
+    text,
+    attachment: [{ data: html, alternative: true }]
   });
 }
 

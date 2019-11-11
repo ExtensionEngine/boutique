@@ -20,7 +20,7 @@
     </div>
     <div v-else>
       <form @submit.prevent="submit">
-        <v-input v-model="email" name="email" validate="required|email"></v-input>
+        <v-input v-model="email" name="email" validate="required|email" />
         <button type="submit" class="button">Send reset email</button>
         <div class="options">
           <a @click="$router.go(-1)">Back</a>

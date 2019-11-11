@@ -2,9 +2,9 @@
   <v-layout justify-center>
     <v-flex class="mt-5">
       <v-toolbar color="#f5f5f5" flat>
-        <v-spacer/>
-        <import-dialog @imported="fetch(defaultPage)"/>
-        <bulk-enrollment-dialog :disabled="!selectedUsers.length" :users="selectedUsers"/>
+        <v-spacer />
+        <import-dialog @imported="fetch(defaultPage)" />
+        <bulk-enrollment-dialog :disabled="!selectedUsers.length" :users="selectedUsers" />
         <v-btn @click.stop="showUserDialog()" color="success" outline>
           Add user
         </v-btn>
@@ -18,14 +18,14 @@
               label="Search"
               single-line
               hide-details
-              clearable/>
+              clearable />
           </v-flex>
           <v-flex lg4 class="my-1">
             <v-checkbox
               v-model="showArchived"
               label="Show archived"
               class="archived-checkbox"
-              hide-details/>
+              hide-details />
           </v-flex>
         </v-layout>
         <v-data-table
@@ -52,16 +52,25 @@
               <td>{{ props.item.lastName }}</td>
               <td class="no-wrap">{{ props.item.createdAt | formatDate }}</td>
               <td class="no-wrap text-xs-center">
-                <v-icon @click="showUserDialog(props.item)" small>
-                  mdi-pencil
-                </v-icon>
-                <v-icon
-                  @click="archiveOrRestore(props.item)"
-                  :class="{ 'red--text': props.item.deletedAt }"
+                <v-btn
+                  @click="showUserDialog(props.item)"
+                  color="grey darken-2"
                   small
-                  class="ml-2">
-                  mdi-account-{{ props.item.deletedAt ? 'convert' : 'off' }}
-                </v-icon>
+                  flat
+                  icon>
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+                <v-btn
+                  @click="archiveOrRestore(props.item)"
+                  :disabled="user.id === props.item.id"
+                  color="grey darken-2"
+                  small
+                  flat
+                  icon>
+                  <v-icon>
+                    mdi-account-{{ props.item.deletedAt ? 'convert' : 'off' }}
+                  </v-icon>
+                </v-btn>
               </td>
             </tr>
           </template>
@@ -71,12 +80,12 @@
         @updated="fetch(defaultPage)"
         @created="fetch(defaultPage)"
         :visible.sync="userDialog"
-        :userData="editedUser"/>
+        :user-data="editedUser" />
       <confirmation-dialog
         @update:visible="confirmation = null"
         @confirmed="fetch()"
         v-bind="confirmation"
-        :visible="!!confirmation"/>
+        :visible="!!confirmation" />
     </v-flex>
   </v-layout>
 </template>
@@ -91,6 +100,7 @@ import humanize from 'humanize-string';
 import ImportDialog from './ImportDialog';
 import last from 'lodash/last';
 import map from 'lodash/map';
+import { mapState } from 'vuex';
 import remove from 'lodash/remove';
 import slice from 'lodash/slice';
 import throttle from 'lodash/throttle';
@@ -131,6 +141,7 @@ export default {
     };
   },
   computed: {
+    ...mapState('auth', ['user']),
     headers,
     defaultPage
   },

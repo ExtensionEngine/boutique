@@ -17,7 +17,8 @@ router
   .patch('/:id', ctrl.patch)
   .delete('/:id', ctrl.destroy)
   .post('/:id/invite', ctrl.invite)
-  .post('/import', upload.single('file'), ctrl.bulkImport);
+  .post('/import', upload.single('file'), ctrl.bulkImport)
+  .get('/import/template', ctrl.getImportTemplate);
 
 module.exports = {
   path: '/users',
