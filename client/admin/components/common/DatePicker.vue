@@ -47,7 +47,7 @@ export default {
       if (!get(validate, 'before') && !get(validate, 'after')) {
         return omit(validate, ['before', 'after']);
       }
-      const tmp = { ...validate, date_format: 'yyyy-MM-dd' };
+      const tmp = { ...validate, date_format: DATE_FORMAT };
       ['before', 'after'].forEach(k => {
         tmp[k] && (tmp[k] = this.normalize(tmp[k], inputFormat, DATE_FORMAT));
       });
