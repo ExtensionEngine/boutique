@@ -20,8 +20,8 @@
         <activity-card
           v-for="it in filteredCourseware"
           :key="it.id"
-          :programId="programId"
-          :activity="it"/>
+          :program-id="programId"
+          :activity="it" />
       </transition-group>
     </div>
   </div>

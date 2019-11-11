@@ -28,5 +28,5 @@ module.exports = {
       field: 'deleted_at'
     }
   }),
-  down: (queryInterface) => queryInterface.dropTable(TABLE_NAME)
+  down: queryInterface => queryInterface.dropTable(TABLE_NAME)
 };
