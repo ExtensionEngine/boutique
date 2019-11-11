@@ -21,11 +21,12 @@
 </template>
 
 <script>
-import fecha from 'fecha';
+import format from 'date-fns/format';
 import get from 'lodash/get';
 import omit from 'lodash/omit';
+import parse from 'date-fns/parse';
 
-const DATE_FORMAT = 'YYYY-MM-DD';
+const DATE_FORMAT = 'yyyy-MM-dd';
 
 export default {
   inject: ['$validator'],
@@ -59,8 +60,8 @@ export default {
     },
     normalize(value, inputFormat, outputFormat) {
       if (!value) return;
-      const date = fecha.parse(value, inputFormat);
-      return fecha.format(date, outputFormat);
+      const date = parse(value, inputFormat, new Date());
+      return format(date, outputFormat);
     }
   }
 };
