@@ -151,7 +151,7 @@ class User extends Model {
     return Promise.map(users, userData => Promise.try(() => {
       const user = find(found, { email: userData.email });
       if (user && !user.deletedAt) {
-        const message = this.attributes.email.unique.msg;
+        const message = this.rawAttributes.email.unique.msg;
         throw new UniqueConstraintError({ message });
       }
       if (user) {

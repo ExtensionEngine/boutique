@@ -14,7 +14,7 @@
           v-show="$route.name === 'courseware' && courseware.length"
           class="navbar-start search-container">
           <div class="navbar-item">
-            <search/>
+            <search />
           </div>
         </div>
       </transition>

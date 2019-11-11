@@ -1,3 +1,5 @@
+'use strict';
+
 const { ContentRepo } = require('../common/database');
 const { createError } = require('../common/errors');
 const ctrl = require('./content-delivery.controller');
@@ -25,7 +27,7 @@ function hasAccess({ program, user }, res, next) {
 }
 
 function getRepo(req, res, next) {
-  return ContentRepo.findById(req.params.repositoryId)
+  return ContentRepo.findByPk(req.params.repositoryId)
     .then(repo => {
       if (!repo || repo.programId !== req.program.id) {
         return createError(NOT_FOUND, 'Not found!');

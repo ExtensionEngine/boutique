@@ -18,9 +18,9 @@
     </nav>
     <content-container
       :key="containerId"
-      :programId="programId"
-      :repositoryId="repositoryId"
-      :containerId="containerId"/>
+      :program-id="programId"
+      :repository-id="repositoryId"
+      :container-id="containerId" />
   </div>
 </template>
 

@@ -1,8 +1,8 @@
 <template>
   <div class="mt-3">
     <v-toolbar color="#f5f5f5" flat>
-      <v-spacer/>
-      <content-dialog :programId="programId" :importedRepos="importedRepos"/>
+      <v-spacer />
+      <content-dialog :program-id="programId" :imported-repos="importedRepos" />
     </v-toolbar>
     <div class="elevation-1 ml-2 mr-4">
       <v-layout column align-end class="px-4 table-toolbar">
@@ -14,14 +14,14 @@
             label="Search"
             hide-details
             single-line
-            clearable/>
+            clearable />
         </v-flex>
         <v-flex lg4>
           <v-checkbox
             v-model="showArchived"
             label="Show archived"
             class="my-2 archived-checkbox"
-            hide-details/>
+            hide-details />
         </v-flex>
       </v-layout>
       <v-data-table
@@ -70,11 +70,11 @@
       <confirmation-dialog
         @update:visible="confirmation = null"
         @confirmed="fetchProgramRepos()"
-        v-bind="confirmation"/>
+        v-bind="confirmation" />
       <multiple-choice-dialog
         @closed="restoreOptions = null"
         @completed="fetchProgramRepos()"
-        v-bind="restoreOptions"/>
+        v-bind="restoreOptions" />
     </div>
   </div>
 </template>

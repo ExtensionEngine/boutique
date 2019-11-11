@@ -23,6 +23,16 @@
             <div>Or drag and drop file here</div>
             <v-chip v-if="filename" @input="removeFile" close>{{ filename }}</v-chip>
             <div class="errors-list">{{ vErrors.collect('file')[0] }}</div>
+          <label for="userImportInput">
+            <v-text-field
+              ref="fileName"
+              v-model="filename"
+              :error-messages="vErrors.collect('file')"
+              :disabled="importing"
+              prepend-icon="mdi-attachment"
+              label="Upload .xlsx or .csv file"
+              readonly
+              single-line />
             <input
               v-show="isDragged"
               ref="dropZone"
@@ -39,7 +49,10 @@
           </div>
         </v-card-text>
         <v-card-actions>
-          <v-spacer/>
+          <v-btn @click="downloadTemplateFile" flat color="blue-grey">
+            Download Template
+          </v-btn>
+          <v-spacer />
           <v-fade-transition>
             <v-btn
               v-show="serverErrorsReport"
