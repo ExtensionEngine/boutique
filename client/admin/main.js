@@ -1,5 +1,6 @@
 import App from './App';
 import format from 'date-fns/format';
+import parseISO from 'date-fns/parseISO';
 import router from './router';
 import store from './store';
 import VeeValidate from '@/common/validation';
@@ -18,8 +19,8 @@ Vue.use(VueHotkey);
 Vue.use(VueVisible);
 Vue.use(Vuetify, { iconfont: 'mdi' });
 
-Vue.filter('formatDate', (value, dateFormat = 'MM/DD/YY HH:mm') => {
-  return value && format(value, dateFormat);
+Vue.filter('formatDate', (value, dateFormat = 'MM/dd/yy HH:mm') => {
+  return value && format(parseISO(value), dateFormat);
 });
 
 // eslint-disable-next-line no-new

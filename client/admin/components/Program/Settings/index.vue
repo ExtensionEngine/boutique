@@ -51,13 +51,14 @@
 import cloneDeep from 'lodash/cloneDeep';
 import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
 import DatePicker from '@/admin/components/common/DatePicker';
-import fecha from 'fecha';
+import format from 'date-fns/format';
 import { mapActions } from 'vuex';
+import parse from 'date-fns/parse';
 import { withValidation } from '@/common/validation';
 
-const SRC_FORMAT = 'YYYY-MM-DD';
-const DST_FORMAT = 'YYYY-MM-DD';
-const formatDate = d => d && fecha.format(fecha.parse(d, SRC_FORMAT), DST_FORMAT);
+const SRC_FORMAT = 'yyyy-MM-dd';
+const DST_FORMAT = 'yyyy-MM-dd';
+const formatDate = d => d && format(parse(d, SRC_FORMAT, new Date()), DST_FORMAT);
 
 export default {
   name: 'program-settings',
