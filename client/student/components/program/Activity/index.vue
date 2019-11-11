@@ -18,7 +18,7 @@
     </nav>
     <content-container
       :key="containerId"
-      :getContainer="getContainer"/>
+      :getContainer="getContainer" />
   </div>
 </template>
 

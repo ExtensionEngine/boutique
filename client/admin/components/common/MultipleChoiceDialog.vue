@@ -9,7 +9,7 @@
           {{ warning }}
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn @click="close" flat>Cancel</v-btn>
           <v-btn
             v-for="(action, index) in actions"
