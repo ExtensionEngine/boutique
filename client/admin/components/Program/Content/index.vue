@@ -14,12 +14,12 @@
             label="Search"
             hide-details
             single-line
-            clearable/>
+            clearable />
           <v-checkbox
             v-model="showArchived"
             label="Show archived"
             class="my-2 archived-checkbox"
-            hide-details/>
+            hide-details />
         </v-col>
       </v-row>
       <v-data-table

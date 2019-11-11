@@ -1,7 +1,7 @@
 <template>
   <div v-if="program" class="mt-3 ml-2 mr-4">
     <v-toolbar color="#f5f5f5" flat>
-      <v-spacer/>
+      <v-spacer />
       <v-btn @click="confirmationDialog = true" color="error" outlined>
         Delete Program
       </v-btn>
@@ -27,9 +27,9 @@
             :validate="{ after: programData.startDate }"
             :disabled="!isEditing"
             name="endDate"
-            label="End Date"/>
+            label="End Date" />
           <v-row no-gutters>
-            <v-spacer/>
+            <v-spacer />
             <template v-if="isEditing">
               <v-btn @click="cancel" outlined>Cancel</v-btn>
               <v-btn type="submit" class="ml-4" color="success">Save</v-btn>

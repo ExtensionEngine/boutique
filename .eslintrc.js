@@ -2,5 +2,6 @@
 
 module.exports = {
   root: true,
-  extends: '@extensionengine'
+  extends: '@extensionengine',
+  plugins: ['vuetify']
 };

@@ -1,6 +1,6 @@
 <template>
   <v-app-bar color="amber" app fixed clipped-left>
-    <v-app-bar-nav-icon @click.native="$emit('update:drawer', !drawer)"/>
+    <v-app-bar-nav-icon @click.native="$emit('update:drawer', !drawer)" />
     <span class="title ml-3 mr-5">
       <v-icon class="mr-2">mdi-shopping</v-icon>
       Boutique

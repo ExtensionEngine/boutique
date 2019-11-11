@@ -14,13 +14,13 @@
             <v-list-item-title class="grey--text">Users</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-divider dark class="my-3"/>
+        <v-divider dark class="my-3" />
         <v-row align="center" no-gutters>
           <v-col cols="6">
             <v-subheader class="subtitle-2 ml-2">Programs</v-subheader>
           </v-col>
           <v-col cols="6" class="text-right">
-            <program-modal/>
+            <program-modal />
           </v-col>
         </v-row>
         <v-list-item

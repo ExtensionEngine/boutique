@@ -1,6 +1,6 @@
 <template>
   <v-row :key="programId" no-gutters class="mt-4">
-    <v-breadcrumbs v-if="program" :items="breadcrumbs" class="py-1"/>
+    <v-breadcrumbs v-if="program" :items="breadcrumbs" class="py-1" />
     <v-col cols="12">
       <v-tabs background-color="#f5f5f5" class="ml-2 mr-4">
         <v-tab
@@ -12,7 +12,7 @@
           {{ label }}
         </v-tab>
       </v-tabs>
-      <router-view v-if="program" :program="program"/>
+      <router-view v-if="program" :program="program" />
     </v-col>
   </v-row>
 </template>

@@ -12,7 +12,7 @@
             append-icon="mdi-magnify"
             label="Search"
             single-line
-            clearable/>
+            clearable />
         </v-col>
       </v-row>
       <v-data-table

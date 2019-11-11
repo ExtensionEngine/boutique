@@ -2,9 +2,9 @@
   <v-row justify="center">
     <v-col class="mt-5">
       <v-toolbar color="#f5f5f5" flat>
-        <v-spacer/>
-        <import-dialog @imported="fetch(defaultPage)"/>
-        <bulk-enrollment-dialog :disabled="!selectedUsers.length" :users="selectedUsers"/>
+        <v-spacer />
+        <import-dialog @imported="fetch(defaultPage)" />
+        <bulk-enrollment-dialog :disabled="!selectedUsers.length" :users="selectedUsers" />
         <v-btn @click.stop="showUserDialog()" color="success" outlined class="ml-4">
           Add user
         </v-btn>
@@ -18,12 +18,12 @@
               label="Search"
               single-line
               hide-details
-              clearable/>
+              clearable />
             <v-checkbox
               v-model="showArchived"
               label="Show archived"
               class="my-2 archived-checkbox"
-              hide-details/>
+              hide-details />
           </v-col>
         </v-row>
         <v-data-table
@@ -38,7 +38,7 @@
           <template slot="item" slot-scope="props">
             <tr :key="props.item.id">
               <td>
-                <v-checkbox v-model="props.isSelected" hide-details/>
+                <v-checkbox v-model="props.isSelected" hide-details />
               </td>
               <td>{{ props.item.email }}</td>
               <td>{{ props.item.role }}</td>
@@ -79,7 +79,7 @@
         @update:visible="confirmation = null"
         @confirmed="fetch()"
         v-bind="confirmation"
-        :visible="!!confirmation"/>
+        :visible="!!confirmation" />
     </v-col>
   </v-row>
 </template>

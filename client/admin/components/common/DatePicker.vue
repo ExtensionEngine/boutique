@@ -16,9 +16,9 @@
         :error-messages="vErrors.collect(name)"
         :data-vv-as="label"
         append-icon="mdi-calendar"
-        readonly/>
+        readonly />
     </template>
-    <v-date-picker @input="save($event)" :value="normalizedValue" no-title/>
+    <v-date-picker @input="save($event)" :value="normalizedValue" no-title />
   </v-menu>
 </template>
 
