@@ -9,7 +9,7 @@
         </h1>
       </div>
       <div class="auth-body">
-        <router-view/>
+        <router-view />
       </div>
     </div>
   </div>
