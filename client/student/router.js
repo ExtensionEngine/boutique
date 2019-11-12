@@ -1,7 +1,5 @@
 import Activity from '@/student/components/program/Activity';
-import api from '@/student/api/preview';
 import Auth from '@/student/components/auth';
-import ContentContainer from '@/student/components/program/Activity/ContentContainer';
 import Courseware from '@/student/components/program/Courseware';
 import ForgotPassword from '@/student/components/auth/ForgotPassword';
 import get from 'lodash/get';
@@ -9,6 +7,7 @@ import Home from '@/student/components';
 import Login from '@/student/components/auth/Login';
 import { navigateTo } from '@/common/navigation';
 import NotFound from '@/admin/components/common/NotFound';
+import Preview from '@/student/components/preview';
 import Program from '@/student/components/program';
 import ProgramSelection from '@/student/components/ProgramSelection';
 import ResetPassword from '@/student/components/auth/ResetPassword';
@@ -23,9 +22,6 @@ Vue.use(Router);
 const parseParams = ({ params }) => {
   return transform(params, (acc, val, key) => (acc[key] = parseInt(val, 10)), {});
 };
-
-const getPreviewContainer = ({ params }) => api.getPreview(params.containerId);
-
 // Handle 404
 const fallbackRoute = { path: '*', component: NotFound };
 
@@ -73,10 +69,10 @@ const router = new Router({
     }]
   },
   {
-    path: '/preview/:containerId',
+    path: '/preview/:contentPreviewId',
     name: 'preview',
-    component: ContentContainer,
-    props: { getContainer: getPreviewContainer }
+    component: Preview,
+    props: true
   },
   fallbackRoute]
 });

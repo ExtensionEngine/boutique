@@ -1,25 +1,19 @@
 'use strict';
 
-const createStorage = require('../common/storage');
-const path = require('path');
-const { storage: storageOpts } = require('../config');
+const { Preview } = require('../common/database');
 
-const storage = createStorage(storageOpts);
-const { previewPath } = storageOpts;
-
-async function createPreview({ body }, res) {
-  const filePath = path.join(previewPath, `${body.uid}.json`);
-  await storage.saveItem(filePath, body);
-  return res.json({ url: `/#/preview/${body.uid}` });
+async function getPreviewUrl({ body }, res) {
+  const { id } = await Preview.create({ content: { ...body } });
+  res.json({ url: `/#/preview/${id}` });
 }
 
-async function fetchPreview({ params }, res) {
-  const filePath = path.join(previewPath, `${params.activityId}.json`);
-  const data = await storage.getItem(filePath);
-  return res.jsend.success(data);
+async function getActivity({ params }, res) {
+  const { id } = params;
+  const { content } = await Preview.findByPk(id);
+  res.jsend.success(content);
 }
 
 module.exports = {
-  createPreview,
-  fetchPreview
+  getPreviewUrl,
+  getActivity
 };
