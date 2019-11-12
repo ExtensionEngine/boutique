@@ -7,33 +7,33 @@
       clipped
       app
       class="grey lighten-4">
-      <v-list dense class="grey lighten-4 pt-4">
-        <v-list-tile :to="{ name: 'users' }">
-          <v-list-tile-action><v-icon>mdi-contacts</v-icon></v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title class="grey--text">Users</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+      <v-list flat dense class="grey lighten-4 pt-4">
+        <v-list-item :to="{ name: 'users' }">
+          <v-list-item-action><v-icon>mdi-contacts</v-icon></v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title class="grey--text">Users</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-divider dark class="my-3" />
-        <v-layout row align-center>
-          <v-flex xs6>
-            <v-subheader>Programs</v-subheader>
-          </v-flex>
-          <v-flex xs6 class="text-xs-right">
+        <v-row align="center" no-gutters>
+          <v-col cols="6">
+            <v-subheader class="subtitle-2 ml-2">Programs</v-subheader>
+          </v-col>
+          <v-col cols="6" class="text-right">
             <program-modal />
-          </v-flex>
-        </v-layout>
-        <v-list-tile
+          </v-col>
+        </v-row>
+        <v-list-item
           v-for="program in persistedPrograms"
           :key="program.id"
           :to="{ name: 'enrollments', params: { programId: program.id } }"
           active-class="grey lighten-2">
-          <v-list-tile-content>
-            <v-list-tile-title class="grey--text">
+          <v-list-item-content>
+            <v-list-item-title class="grey--text">
               {{ program.name }}
-            </v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
   </div>

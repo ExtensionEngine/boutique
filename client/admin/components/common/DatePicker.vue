@@ -5,17 +5,19 @@
     min-width="290px"
     offset-y
     transition="scale-transition">
-    <v-text-field
-      slot="activator"
-      v-validate="processedValidation"
-      :name="name"
-      :value="normalizedValue"
-      :label="label"
-      :disabled="disabled"
-      :error-messages="vErrors.collect(name)"
-      :data-vv-as="label"
-      append-icon="mdi-calendar"
-      readonly />
+    <template v-slot:activator="{ on }">
+      <v-text-field
+        v-validate="processedValidation"
+        v-on="on"
+        :name="name"
+        :value="normalizedValue"
+        :label="label"
+        :disabled="disabled"
+        :error-messages="vErrors.collect(name)"
+        :data-vv-as="label"
+        append-icon="mdi-calendar"
+        readonly />
+    </template>
     <v-date-picker @input="save($event)" :value="normalizedValue" no-title />
   </v-menu>
 </template>

@@ -1,6 +1,8 @@
 <template>
   <v-dialog v-model="visible" v-hotkey="{ esc: close }" width="700">
-    <v-btn slot="activator" color="success" outline>Import Content</v-btn>
+    <template v-slot:activator="{ on }">
+      <v-btn v-on="on" color="success" outlined>Import Content</v-btn>
+    </template>
     <v-form @submit.prevent="importRepo">
       <v-card class="pa-3">
         <v-card-title class="headline">Import Content</v-card-title>
@@ -25,7 +27,7 @@
             :disabled="!sourceId"
             :loading="isImporting"
             color="success"
-            outline
+            outlined
             type="submit">
             Import
           </v-btn>

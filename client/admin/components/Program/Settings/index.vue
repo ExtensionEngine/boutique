@@ -1,13 +1,13 @@
 <template>
-  <div v-if="program" class="mt-3">
+  <div v-if="program" class="mt-3 ml-2 mr-4">
     <v-toolbar color="#f5f5f5" flat>
       <v-spacer />
-      <v-btn @click="confirmationDialog = true" color="error" outline>
+      <v-btn @click="confirmationDialog = true" color="error" outlined>
         Delete Program
       </v-btn>
     </v-toolbar>
-    <v-layout>
-      <v-flex xs12 sm6 md4>
+    <v-row no-gutters>
+      <v-col cols="12" sm="6" md="4">
         <form @submit.prevent="saveProgram">
           <v-text-field
             v-model.trim="programData.name"
@@ -28,17 +28,17 @@
             :disabled="!isEditing"
             name="endDate"
             label="End Date" />
-          <v-layout>
+          <v-row no-gutters>
             <v-spacer />
             <template v-if="isEditing">
-              <v-btn @click="cancel" outline>Cancel</v-btn>
-              <v-btn type="submit" color="success">Save</v-btn>
+              <v-btn @click="cancel" outlined>Cancel</v-btn>
+              <v-btn type="submit" class="ml-4" color="success">Save</v-btn>
             </template>
-            <v-btn v-else @click="isEditing = true" outline>Edit</v-btn>
-          </v-layout>
+            <v-btn v-else @click="isEditing = true" outlined>Edit</v-btn>
+          </v-row>
         </form>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
     <confirmation-dialog
       :visible.sync="confirmationDialog"
       :action="removeProgram"
