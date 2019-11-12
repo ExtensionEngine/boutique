@@ -5,6 +5,7 @@ import ForgotPassword from '@/student/components/auth/ForgotPassword';
 import get from 'lodash/get';
 import Home from '@/student/components';
 import Login from '@/student/components/auth/Login';
+import { navigateTo } from '@/common/navigation';
 import NotFound from '@/admin/components/common/NotFound';
 import Program from '@/student/components/program';
 import ProgramSelection from '@/student/components/ProgramSelection';
@@ -69,13 +70,13 @@ const router = new Router({
   }, fallbackRoute]
 });
 
+const isAdmin = user => user && user.role === role.ADMIN;
+const requiresAuth = route => route.matched.some(it => it.meta.auth);
+
 router.beforeEach((to, from, next) => {
   const user = get(store.state, 'auth.user');
-  const isNotAuthenticated = to.matched.some(it => it.meta.auth) && !user;
-  if (isNotAuthenticated) return next({ name: 'login' });
-  if (user && user.role === role.ADMIN) {
-    document.location.replace(`${document.location.origin}/admin`);
-  }
+  if (requiresAuth(to) && !user) return next({ name: 'login' });
+  if (isAdmin(user)) return navigateTo('/admin');
   return next();
 });
 

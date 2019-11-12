@@ -27,6 +27,7 @@
 
 <script>
 import { mapActions } from 'vuex';
+import { navigateTo } from '@/common/navigation';
 import pick from 'lodash/pick';
 import role from '@/../common/config/role';
 import VInput from '@/common/components/form/VInput';
@@ -52,8 +53,8 @@ export default {
         if (!isValid) return;
         this.login(pick(this, ['email', 'password']))
           .then(user => {
-            if (user.role !== role.ADMIN) return this.$router.push('/');
-            document.location.replace(`${document.location.origin}/admin`);
+            if (user.role === role.ADMIN) return navigateTo('/admin');
+            this.$router.push('/');
           })
           .catch(() => (this.message = LOGIN_ERR_MESSAGE));
       });
