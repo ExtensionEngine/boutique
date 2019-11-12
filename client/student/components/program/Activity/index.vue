@@ -53,7 +53,6 @@ export default {
   },
   components: { ContentContainer }
 };
-
 </script>
 
 <style lang="scss" scoped>
