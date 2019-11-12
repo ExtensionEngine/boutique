@@ -22,7 +22,7 @@
         :server-items-length="totalItems"
         :must-sort="true"
         :no-data-text="noEnrollmentsMessage">
-        <template slot="item" slot-scope="{ item }">
+        <template v-slot:item="{ item }">
           <tr>
             <td>{{ get(item.student, 'email') }}</td>
             <td>{{ get(item.student, 'firstName') }}</td>

@@ -35,7 +35,7 @@
           :must-sort="true"
           class="user-table"
           show-select>
-          <template slot="item" slot-scope="props">
+          <template v-slot:item="props">
             <tr :key="props.item.id">
               <td>
                 <v-checkbox v-model="props.isSelected" hide-details />

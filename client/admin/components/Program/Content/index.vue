@@ -28,7 +28,7 @@
         :no-data-text="noContentMessage"
         item-key="_cid"
         hide-default-footer>
-        <template slot="item" slot-scope="{ item }">
+        <template v-slot:item="{ item }">
           <tr
             v-show="!item.deletedAt || showArchived"
             :key="item.sourceId"

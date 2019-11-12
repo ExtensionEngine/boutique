@@ -10,7 +10,7 @@
             @click="invite"
             :disabled="isLoading"
             :loading="isLoading"
-            :outlined="true"
+            outlined
             color="blue-grey">
             Reinvite
           </v-btn>
