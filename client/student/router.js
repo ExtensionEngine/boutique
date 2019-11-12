@@ -24,9 +24,7 @@ const parseParams = ({ params }) => {
   return transform(params, (acc, val, key) => (acc[key] = parseInt(val, 10)), {});
 };
 
-const getContainer = ({ params }) => {
-  return { getContainer: () => api.getPreview(params.containerId) };
-};
+const getPreviewContainer = ({ params }) => api.getPreview(params.containerId);
 
 // Handle 404
 const fallbackRoute = { path: '*', component: NotFound };
@@ -75,10 +73,10 @@ const router = new Router({
     }]
   },
   {
-    path: '/previewComponent/:containerId',
+    path: '/preview/:containerId',
     name: 'preview',
     component: ContentContainer,
-    props: getContainer
+    props: { getContainer: getPreviewContainer }
   },
   fallbackRoute]
 });
