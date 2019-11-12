@@ -1,6 +1,6 @@
-const clone = require('lodash/cloneDeep');
-const get = require('lodash/get');
-const set = require('lodash/set');
+import clone from 'lodash/cloneDeep';
+import get from 'lodash/get';
+import set from 'lodash/set';
 
 export const auth = ({ actions, path, storageKey, storage }) => store => {
   storageKey = storageKey || 'USER';

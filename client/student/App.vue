@@ -1,12 +1,17 @@
 <template>
-  <div id="app" class="system-font-stack">
-    <router-view />
-  </div>
+  <router-host>
+    <div id="app" class="system-font-stack">
+      <router-view />
+    </div>
+  </router-host>
 </template>
 
 <script>
+import RouterHost from '@/common/components/RouterHost';
+
 export default {
-  name: 'app'
+  name: 'app',
+  components: { RouterHost }
 };
 </script>
 
