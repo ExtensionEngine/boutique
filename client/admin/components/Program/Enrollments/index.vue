@@ -5,31 +5,35 @@
       <enrollment-dialog @enrolled="fetch(defaultPage)" :program-id="programId" />
     </v-toolbar>
     <div class="elevation-1 ml-2 mr-4">
-      <v-layout class="px-4 py-3 table-toolbar">
-        <v-flex lg3 offset-lg9>
+      <v-row class="px-4 py-3 table-toolbar" no-gutters>
+        <v-col lg="3" offset-lg="9">
           <v-text-field
             v-model.trim="filter"
             append-icon="mdi-magnify"
             label="Search"
             single-line
             clearable />
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
       <v-data-table
         :headers="headers"
         :items="enrollments"
-        :pagination.sync="dataTable"
-        :total-items="totalItems"
+        :options.sync="dataTable"
+        :server-items-length="totalItems"
         :must-sort="true"
         :no-data-text="noEnrollmentsMessage">
-        <template slot="items" slot-scope="{ item }">
-          <td>{{ get(item.student, 'email') }}</td>
-          <td>{{ get(item.student, 'firstName') }}</td>
-          <td>{{ get(item.student, 'lastName') }}</td>
-          <td class="no-wrap">{{ item.createdAt | formatDate }}</td>
-          <td class="text-xs-center">
-            <v-icon @click="unenroll(item)" small>mdi-delete</v-icon>
-          </td>
+        <template v-slot:item="{ item }">
+          <tr>
+            <td>{{ get(item.student, 'email') }}</td>
+            <td>{{ get(item.student, 'firstName') }}</td>
+            <td>{{ get(item.student, 'lastName') }}</td>
+            <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
+            <td class="text-center">
+              <v-btn @click="unenroll(item)" icon text small>
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </td>
+          </tr>
         </template>
       </v-data-table>
     </div>
@@ -50,7 +54,7 @@ import get from 'lodash/get';
 import pick from 'lodash/pick';
 import throttle from 'lodash/throttle';
 
-const defaultPage = () => ({ sortBy: 'updatedAt', descending: true, page: 1 });
+const defaultPage = () => ({ sortBy: ['updatedAt'], sortDesc: [true], page: 1 });
 const fullName = student => `${student.firstName} ${student.lastName}`;
 const headers = () => [
   { text: 'Email', value: 'student.email', align: 'left' },

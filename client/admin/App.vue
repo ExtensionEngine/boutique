@@ -4,7 +4,7 @@
       <sidebar :drawer.sync="drawer" />
       <navbar :drawer.sync="drawer" />
       <v-content>
-        <v-container fluid fill-height class="grey lighten-4">
+        <v-container fluid fill-height class="align-start grey lighten-4">
           <router-view />
         </v-container>
       </v-content>
