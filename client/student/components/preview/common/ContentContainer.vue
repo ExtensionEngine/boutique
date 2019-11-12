@@ -2,10 +2,10 @@
   <div class="content-container">
     <div class="columns is-multiline">
       <tailor-teaching-elements
-        v-for="it in container.elements"
-        :key="it.id"
-        :element="it"
-        :class="['column', it.data.width === 6 ? 'is-6' : 'is-12']" />
+        v-for="element in container.elements"
+        :key="element.id"
+        :element="element"
+        :class="['column', element.data.width === 6 ? 'is-6' : 'is-12']" />
     </div>
   </div>
 </template>

@@ -2,10 +2,10 @@
   <div>
     <navbar />
     <div class="container">
-      <activity v-if="activity" :activity="activity" />
       <div v-if="isLoading" class="loader-container">
         <circular-progress :height="50" :width="50" />
       </div>
+      <activity v-else :activity="activity" />
     </div>
   </div>
 </template>
