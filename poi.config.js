@@ -41,7 +41,7 @@ module.exports = {
     },
     student: {
       filename: 'index.html',
-      entry: './client/student/main.js'
+      entry: './client/main/main.js'
     }
   },
   output: {
