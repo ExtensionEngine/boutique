@@ -20,16 +20,14 @@ const changeTypeEnum = (queryInterface, newValues) => replaceEnum({
 
 module.exports = {
   up: async queryInterface => {
-    const { sequelize } = queryInterface;
     await changeTypeEnum(queryInterface, Object.values(ROLES));
-    await updateType(sequelize, ['LEARNER', 'STUDENT']);
+    await updateType(queryInterface.sequelize, ['LEARNER', 'STUDENT']);
     await changeTypeEnum(queryInterface, Object.values(NEW_ROLES));
   },
 
   down: async queryInterface => {
-    const { sequelize } = queryInterface;
     await changeTypeEnum(queryInterface, Object.values(ROLES));
-    await updateType(sequelize, ['STUDENT', 'LEARNER']);
+    await updateType(queryInterface.sequelize, ['STUDENT', 'LEARNER']);
     await changeTypeEnum(queryInterface, Object.values(OLD_ROLES));
   }
 };
