@@ -26,7 +26,8 @@ export default {
       return this.$router.push({ name: 'program-selection' });
     }
     this.setCoursewareFilter();
-    this.fetchSyllabus(this.programId).finally(() => (this.isLoading = false));
+    return this.fetchSyllabus(this.programId)
+      .finally(() => { this.isLoading = false; });
   },
   components: { CircularProgressBar }
 };

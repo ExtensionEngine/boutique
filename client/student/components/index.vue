@@ -17,20 +17,20 @@ import Navbar from '@/student/components/common/Navbar';
 
 export default {
   name: 'home',
-  data() {
-    return { isLoading: true };
-  },
+  data: () => ({ isLoading: true }),
   methods: mapMutations('learner', ['setPrograms']),
   created() {
     const { setPrograms, $route, $router } = this;
-    api.fetchPrograms()
+    return api.fetchPrograms()
       .then(programs => {
         setPrograms(programs);
         if (programs.length !== 1 || $route.name === 'activity') return;
         const programId = head(programs).id;
         $router.push({ name: 'courseware', params: { programId } });
       })
-      .finally(() => (this.isLoading = false));
+      .finally(() => {
+        this.isLoading = false;
+      });
   },
   components: { Navbar, CircularProgressBar }
 };

@@ -61,7 +61,7 @@ const router = new Router({
         component: Courseware,
         props: parseParams
       }, {
-        path: 'repository/:repositoryId/activity/:activityId/:containerId',
+        path: 'repository/:repositoryId/activity/:activityId',
         name: 'activity',
         component: Activity,
         props: parseParams

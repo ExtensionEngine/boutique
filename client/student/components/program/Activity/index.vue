@@ -2,21 +2,22 @@
   <div>
     <nav class="navbar is-light" role="navigation">
       <router-link
-        v-for="item in navigationItems"
+        v-for="item in activities"
         :key="item.id"
         :to="{
           name: 'activity',
           params: {
             repositoryId,
-            activityId: item.id,
-            containerId: item.contentContainers[0].id
+            activityId: item.id
           }
         }"
         class="navbar-item">
         {{ item.name | truncate(25) }}
       </router-link>
     </nav>
-    <content-container :key="containerId" :get-container="getContainer" />
+    <template v-for="container in contentContainers">
+      <content-container :key="container.id" :get-container="getContainer(container.id)" />
+    </template>
   </div>
 </template>
 
@@ -31,22 +32,24 @@ export default {
   props: {
     programId: { type: Number, required: true },
     repositoryId: { type: Number, required: true },
-    activityId: { type: Number, required: true },
-    containerId: { type: Number, required: true }
+    activityId: { type: Number, required: true }
   },
   computed: {
     ...mapGetters('learner', ['courseware', 'isCoursewareFlat']),
-    navigationItems() {
+    activities() {
       const { activityId: id, courseware, isCoursewareFlat } = this;
       return isCoursewareFlat
         ? courseware
         : find(courseware, { subActivities: [{ id }] }).subActivities;
+    },
+    contentContainers() {
+      return find(this.activities, { id: this.activityId }).contentContainers;
     }
   },
   methods: {
-    getContainer() {
-      const { programId, repositoryId, containerId } = this;
-      return api.getContainer(programId, repositoryId, containerId);
+    getContainer(containerId) {
+      const { programId, repositoryId } = this;
+      return () => api.getContainer(programId, repositoryId, containerId);
     }
   },
   components: { ContentContainer }
