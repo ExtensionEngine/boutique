@@ -12,7 +12,7 @@ import get from 'lodash/get';
 import orderBy from 'lodash/orderBy';
 
 export default {
-  name: 'activity-preview',
+  name: 'preview-activity',
   props: {
     activity: { type: Object, required: true }
   },

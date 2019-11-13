@@ -4,19 +4,19 @@
     <div class="container">
       <circular-progress-bar v-if="isLoading" :height="50" :width="50" />
       <span v-else-if="error">{{ error }}</span>
-      <activity v-else :activity="activity" />
+      <preview-activity v-else :activity="activity" />
     </div>
   </div>
 </template>
 
 <script>
-import Activity from './Activity';
 import api from '@/student/api/content';
 import CircularProgressBar from '@/student/components/common/CircularProgressBar';
 import Navbar from '@/student/components/common/Navbar';
+import PreviewActivity from './Activity';
 
 export default {
-  name: 'preview',
+  name: 'content-preview',
   props: {
     previewId: { type: Number, required: true }
   },
@@ -36,7 +36,7 @@ export default {
       });
   },
   components: {
-    Activity,
+    PreviewActivity,
     CircularProgressBar,
     Navbar
   }
