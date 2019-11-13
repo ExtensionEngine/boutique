@@ -12,7 +12,7 @@ module.exports = {
     },
     learnerId: {
       type: Sequelize.INTEGER,
-      field: 'student_id',
+      field: 'learner_id',
       references: { model: 'user', key: 'id' },
       onDelete: 'NO ACTION',
       allowNull: false

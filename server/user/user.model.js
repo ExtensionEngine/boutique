@@ -80,7 +80,7 @@ class User extends Model {
 
   static associate({ Enrollment }) {
     this.hasMany(Enrollment, {
-      foreignKey: { name: 'learnerId', field: 'student_id' }
+      foreignKey: { name: 'learnerId', field: 'learner_id' }
     });
   }
 
