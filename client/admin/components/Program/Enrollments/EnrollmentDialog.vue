@@ -8,10 +8,10 @@
         <v-card-title class="headline">Enroll learner</v-card-title>
         <v-card-text>
           <v-autocomplete
-            v-model="studentId"
+            v-model="learnerId"
             v-validate="{
               required: true,
-              'unique-enrollment': { studentId, programId }
+              'unique-enrollment': { learnerId, programId }
             }"
             @focus="focusTrap.pause()"
             @blur="focusTrap.unpause()"
@@ -55,7 +55,7 @@ export default {
     return {
       visible: false,
       email: null,
-      studentId: null,
+      learnerId: null,
       students: [],
       isLoading: false
     };
@@ -64,7 +64,7 @@ export default {
     enroll() {
       this.$validator.validateAll().then(isValid => {
         if (!isValid) return;
-        enrollmentApi.create(pick(this, ['studentId', 'programId'])).then(() => {
+        enrollmentApi.create(pick(this, ['learnerId', 'programId'])).then(() => {
           this.close();
           this.$emit('enrolled');
         });
@@ -72,10 +72,10 @@ export default {
     },
     close() {
       this.visible = false;
-      this.studentId = null;
+      this.learnerId = null;
     },
     fetch(email) {
-      if (this.studentId) return;
+      if (this.learnerId) return;
       this.isLoading = true;
       const params = { emailLike: email, role: 'STUDENT', limit: 30 };
       return userApi.fetch({ params })

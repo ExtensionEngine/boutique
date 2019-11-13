@@ -10,7 +10,7 @@ module.exports = {
       autoIncrement: true,
       allowNull: false
     },
-    studentId: {
+    learnerId: {
       type: Sequelize.INTEGER,
       field: 'student_id',
       references: { model: 'user', key: 'id' },

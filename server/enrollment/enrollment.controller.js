@@ -10,11 +10,11 @@ const Op = Sequelize.Op;
 
 const processOutput = model => ({ ...model.toJSON(), student: model.student.profile });
 
-function list({ query: { programId, studentId, filter }, options }, res) {
+function list({ query: { programId, learnerId, filter }, options }, res) {
   const cond = [];
   const include = [{ model: User.match(filter), as: 'student' }];
   if (programId) cond.push({ programId });
-  if (studentId) cond.push({ studentId });
+  if (learnerId) cond.push({ learnerId });
   const opts = { where: { [Op.and]: cond }, include, ...options };
   return Enrollment.findAndCountAll(opts).then(({ rows, count }) => {
     res.jsend.success({ items: map(rows, processOutput), total: count });
@@ -22,17 +22,17 @@ function list({ query: { programId, studentId, filter }, options }, res) {
 }
 
 async function create({ body }, res) {
-  const { studentId, programId } = body;
-  if (!Array.isArray(studentId)) {
-    const [result] = await Enrollment.restoreOrCreate(studentId, programId);
+  const { learnerId, programId } = body;
+  if (!Array.isArray(learnerId)) {
+    const [result] = await Enrollment.restoreOrCreate(learnerId, programId);
     if (result.isRejected()) return createError(CONFLICT);
     const enrollment = await result.value().reload({ include: ['student'] });
     return res.jsend.success(enrollment);
   }
-  const [students, enrollments] = await bulkCreate(studentId, programId);
+  const [students, enrollments] = await bulkCreate(learnerId, programId);
   const failed = students.map(it => ({
     programId,
-    studentId: it.id,
+    learnerId: it.id,
     student: it.profile
   }));
   const created = map(enrollments, processOutput);
