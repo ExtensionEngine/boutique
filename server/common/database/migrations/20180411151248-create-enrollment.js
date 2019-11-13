@@ -10,9 +10,9 @@ module.exports = {
       autoIncrement: true,
       allowNull: false
     },
-    learnerId: {
+    studentId: {
       type: Sequelize.INTEGER,
-      field: 'learner_id',
+      field: 'student_id',
       references: { model: 'user', key: 'id' },
       onDelete: 'NO ACTION',
       allowNull: false
