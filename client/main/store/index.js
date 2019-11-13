@@ -1,6 +1,6 @@
 import auth from '@/common/store/modules/auth';
 import { auth as authPlugin } from '@/common/store/plugins';
-import learner from '@/student/store/modules/learner';
+import learner from '@/main/store/modules/learner';
 import request from '@/common/api/request';
 import Vue from 'vue';
 import Vuex from 'vuex';

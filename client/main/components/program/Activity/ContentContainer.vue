@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import api from '@/student/api/content';
-import CircularProgress from '@/student/components/common/CircularProgress';
+import api from '@/main/api/content';
+import CircularProgress from '@/main/components/common/CircularProgress';
 import TailorTeachingElements from 'tailor-teaching-elements';
 
 export default {
