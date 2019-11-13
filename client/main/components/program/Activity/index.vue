@@ -2,30 +2,28 @@
   <div>
     <nav class="navbar is-light" role="navigation">
       <router-link
-        v-for="it in navigationItems"
-        :key="it.id"
+        v-for="item in activities"
+        :key="item.id"
         :to="{
           name: 'activity',
           params: {
             repositoryId,
-            activityId: it.id,
-            containerId: it.contentContainers[0].id
+            activityId: item.id
           }
         }"
         class="navbar-item">
-        {{ it.name | truncate(25) }}
+        {{ item.name | truncate(25) }}
       </router-link>
     </nav>
-    <content-container
-      :key="containerId"
-      :program-id="programId"
-      :repository-id="repositoryId"
-      :container-id="containerId" />
+    <template v-for="container in contentContainers">
+      <content-container :key="container.id" :get-container="getContainer(container.id)" />
+    </template>
   </div>
 </template>
 
 <script>
-import ContentContainer from './ContentContainer';
+import api from '@/main/api/content';
+import ContentContainer from '@/main/components/common/ContentContainer';
 import find from 'lodash/find';
 import { mapGetters } from 'vuex';
 
@@ -34,20 +32,29 @@ export default {
   props: {
     programId: { type: Number, required: true },
     repositoryId: { type: Number, required: true },
-    activityId: { type: Number, required: true },
-    containerId: { type: Number, required: true }
+    activityId: { type: Number, required: true }
   },
   computed: {
     ...mapGetters('learner', ['courseware', 'isCoursewareFlat']),
-    navigationItems() {
+    activities() {
       const { activityId: id, courseware, isCoursewareFlat } = this;
       return isCoursewareFlat
         ? courseware
         : find(courseware, { subActivities: [{ id }] }).subActivities;
+    },
+    contentContainers() {
+      return find(this.activities, { id: this.activityId }).contentContainers;
+    }
+  },
+  methods: {
+    getContainer(containerId) {
+      const { programId, repositoryId } = this;
+      return () => api.getContainer(programId, repositoryId, containerId);
     }
   },
   components: { ContentContainer }
 };
+
 </script>
 
 <style lang="scss" scoped>

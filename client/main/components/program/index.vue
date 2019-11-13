@@ -1,15 +1,13 @@
 <template>
   <div>
-    <div v-if="isLoading" class="loader-container">
-      <circular-progress :height="50" :width="50" />
-    </div>
+    <circular-progress-bar v-if="isLoading" :height="50" :width="50" />
     <router-view v-else />
   </div>
 </template>
 
 <script>
 import { mapActions, mapMutations, mapState } from 'vuex';
-import CircularProgress from '@/main/components/common/CircularProgress';
+import CircularProgressBar from '@/main/components/common/CircularProgressBar';
 import find from 'lodash/find';
 
 export default {
@@ -17,9 +15,7 @@ export default {
   props: {
     programId: { type: Number, required: true }
   },
-  data() {
-    return { isLoading: true };
-  },
+  data: () => ({ isLoading: true }),
   computed: mapState('learner', ['programs']),
   methods: {
     ...mapActions('learner', ['fetchSyllabus']),
@@ -30,15 +26,9 @@ export default {
       return this.$router.push({ name: 'program-selection' });
     }
     this.setCoursewareFilter();
-    this.fetchSyllabus(this.programId).finally(() => (this.isLoading = false));
+    return this.fetchSyllabus(this.programId)
+      .finally(() => { this.isLoading = false; });
   },
-  components: { CircularProgress }
+  components: { CircularProgressBar }
 };
 </script>
-
-<style lang="scss" scoped>
-.loader-container {
-  display: flex;
-  justify-content: center;
-}
-</style>

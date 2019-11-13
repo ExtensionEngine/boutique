@@ -2,9 +2,7 @@
   <div>
     <navbar />
     <div class="container">
-      <div v-if="isLoading" class="loader-container">
-        <circular-progress :width="50" :height="50" />
-      </div>
+      <circular-progress-bar v-if="isLoading" :width="50" :height="50" />
       <router-view v-else />
     </div>
   </div>
@@ -12,39 +10,32 @@
 
 <script>
 import api from '@/main/api/learner';
-import CircularProgress from '@/main/components/common/CircularProgress';
+import CircularProgressBar from '@/main/components/common/CircularProgressBar';
 import head from 'lodash/head';
 import { mapMutations } from 'vuex';
 import Navbar from '@/main/components/common/Navbar';
 
 export default {
   name: 'home',
-  data() {
-    return { isLoading: true };
-  },
+  data: () => ({ isLoading: true }),
   methods: mapMutations('learner', ['setPrograms']),
   created() {
     const { setPrograms, $route, $router } = this;
-    api.fetchPrograms()
+    return api.fetchPrograms()
       .then(programs => {
         setPrograms(programs);
         if (programs.length !== 1 || $route.name === 'activity') return;
         const programId = head(programs).id;
         $router.push({ name: 'courseware', params: { programId } });
       })
-      .finally(() => (this.isLoading = false));
+      .finally(() => { this.isLoading = false; });
   },
-  components: { Navbar, CircularProgress }
+  components: { Navbar, CircularProgressBar }
 };
 </script>
 
 <style lang="scss" scoped>
 .container {
   padding: 50px 0;
-}
-
-.loader-container {
-  display: flex;
-  justify-content: center;
 }
 </style>
