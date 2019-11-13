@@ -21,10 +21,10 @@ const users = [{
 times(10, i => {
   const suffix = i || '';
   users.push({
-    first_name: `Student ${suffix}`,
+    first_name: `Learner ${suffix}`,
     last_name: 'Example',
-    email: `student${suffix}@example.org`,
-    password: 'student123',
+    email: `learner${suffix}@example.org`,
+    password: 'learner123',
     role: role.LEARNER,
     created_at: now,
     updated_at: now

@@ -43,11 +43,11 @@ class Enrollment extends Model {
     };
   }
 
-  static async restoreOrCreate(studentIds, programId, { concurrency = 16 } = {}) {
-    studentIds = castArray(studentIds);
-    const where = { learnerId: studentIds, programId };
+  static async restoreOrCreate(learnerIds, programId, { concurrency = 16 } = {}) {
+    learnerIds = castArray(learnerIds);
+    const where = { learnerId: learnerIds, programId };
     const found = await this.findAll({ where, paranoid: false });
-    return Promise.map(studentIds, learnerId => Promise.try(() => {
+    return Promise.map(learnerIds, learnerId => Promise.try(() => {
       const enrollment = find(found, { learnerId });
       if (enrollment && !enrollment.deletedAt) {
         const message = 'Enrollment already exists!';

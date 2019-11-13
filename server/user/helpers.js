@@ -13,9 +13,9 @@ function generate() {
   times(10, i => {
     const suffix = i || '';
     users.push({
-      firstName: `Student ${suffix}`,
+      firstName: `Learner ${suffix}`,
       lastName: 'Example',
-      email: `student${suffix}@example.org`,
+      email: `learner${suffix}@example.org`,
       role: role.LEARNER
     });
   });

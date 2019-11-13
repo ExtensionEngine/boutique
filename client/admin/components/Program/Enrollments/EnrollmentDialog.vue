@@ -15,7 +15,7 @@
             }"
             @focus="focusTrap.pause()"
             @blur="focusTrap.unpause()"
-            :items="students"
+            :items="learners"
             :search-input.sync="email"
             :error-messages="vErrors.collect('learner')"
             :loading="isLoading"
@@ -56,7 +56,7 @@ export default {
       visible: false,
       email: null,
       learnerId: null,
-      students: [],
+      learners: [],
       isLoading: false
     };
   },
@@ -79,8 +79,8 @@ export default {
       this.isLoading = true;
       const params = { emailLike: email, role: 'LEARNER', limit: 30 };
       return userApi.fetch({ params })
-        .then(({ items: students }) => {
-          this.students = map(students, it => ({
+        .then(({ items: learners }) => {
+          this.learners = map(learners, it => ({
             text: `${it.email} - ${it.firstName} ${it.lastName}`,
             value: it.id
           }));
