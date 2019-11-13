@@ -77,7 +77,7 @@ export default {
     fetch(email) {
       if (this.learnerId) return;
       this.isLoading = true;
-      const params = { emailLike: email, role: 'STUDENT', limit: 30 };
+      const params = { emailLike: email, role: 'LEARNER', limit: 30 };
       return userApi.fetch({ params })
         .then(({ items: students }) => {
           this.students = map(students, it => ({

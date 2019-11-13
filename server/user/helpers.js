@@ -16,7 +16,7 @@ function generate() {
       firstName: `Student ${suffix}`,
       lastName: 'Example',
       email: `student${suffix}@example.org`,
-      role: role.STUDENT
+      role: role.LEARNER
     });
   });
   return users;

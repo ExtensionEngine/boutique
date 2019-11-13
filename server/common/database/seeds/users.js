@@ -25,7 +25,7 @@ times(10, i => {
     last_name: 'Example',
     email: `student${suffix}@example.org`,
     password: 'student123',
-    role: role.STUDENT,
+    role: role.LEARNER,
     created_at: now,
     updated_at: now
   });

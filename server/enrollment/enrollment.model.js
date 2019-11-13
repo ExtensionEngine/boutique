@@ -29,7 +29,7 @@ class Enrollment extends Model {
       foreignKey: { name: 'programId', field: 'program_id' }
     });
     this.belongsTo(User, {
-      as: 'student',
+      as: 'learner',
       foreignKey: { name: 'learnerId', field: 'learner_id' }
     });
   }

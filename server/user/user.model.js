@@ -33,7 +33,7 @@ class User extends Model {
       role: {
         type: DataTypes.ENUM(values(role)),
         allowNull: false,
-        defaultValue: role.STUDENT
+        defaultValue: role.LEARNER
       },
       token: {
         type: DataTypes.STRING,
