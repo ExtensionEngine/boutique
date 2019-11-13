@@ -28,9 +28,7 @@ export default {
         const programId = head(programs).id;
         $router.push({ name: 'courseware', params: { programId } });
       })
-      .finally(() => {
-        this.isLoading = false;
-      });
+      .finally(() => { this.isLoading = false; });
   },
   components: { Navbar, CircularProgressBar }
 };
