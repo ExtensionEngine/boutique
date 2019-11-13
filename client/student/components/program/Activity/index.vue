@@ -2,29 +2,27 @@
   <div>
     <nav class="navbar is-light" role="navigation">
       <router-link
-        v-for="it in navigationItems"
-        :key="it.id"
+        v-for="item in navigationItems"
+        :key="item.id"
         :to="{
           name: 'activity',
           params: {
             repositoryId,
-            activityId: it.id,
-            containerId: it.contentContainers[0].id
+            activityId: item.id,
+            containerId: item.contentContainers[0].id
           }
         }"
         class="navbar-item">
-        {{ it.name | truncate(25) }}
+        {{ item.name | truncate(25) }}
       </router-link>
     </nav>
-    <content-container
-      :key="containerId"
-      :get-container="getContainer" />
+    <content-container :key="containerId" :get-container="getContainer" />
   </div>
 </template>
 
 <script>
 import api from '@/student/api/content';
-import ContentContainer from './ContentContainer';
+import ContentContainer from '@/student/components/common/ContentContainer';
 import find from 'lodash/find';
 import { mapGetters } from 'vuex';
 
@@ -53,6 +51,7 @@ export default {
   },
   components: { ContentContainer }
 };
+
 </script>
 
 <style lang="scss" scoped>

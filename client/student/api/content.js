@@ -2,9 +2,7 @@ import { extractData } from '@/common/api/helpers';
 import request from '@/common/api/request';
 
 const url = {
-  preview: id => {
-    return `preview/${id}`;
-  },
+  preview: id => `preview/${id}`,
   root: programId => `/programs/${programId}/content`,
   syllabus: programId => `${url.root(programId)}`,
   contentContainer: (programId, repositoryId, id) => {

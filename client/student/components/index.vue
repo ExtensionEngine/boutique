@@ -2,9 +2,7 @@
   <div>
     <navbar />
     <div class="container">
-      <div v-if="isLoading" class="loader-container">
-        <circular-progress :width="50" :height="50" />
-      </div>
+      <circular-progress-bar v-if="isLoading" :width="50" :height="50" />
       <router-view v-else />
     </div>
   </div>
@@ -12,7 +10,7 @@
 
 <script>
 import api from '@/student/api/learner';
-import CircularProgress from '@/student/components/common/CircularProgress';
+import CircularProgressBar from '@/student/components/common/CircularProgressBar';
 import head from 'lodash/head';
 import { mapMutations } from 'vuex';
 import Navbar from '@/student/components/common/Navbar';
@@ -34,17 +32,12 @@ export default {
       })
       .finally(() => (this.isLoading = false));
   },
-  components: { Navbar, CircularProgress }
+  components: { Navbar, CircularProgressBar }
 };
 </script>
 
 <style lang="scss" scoped>
 .container {
   padding: 50px 0;
-}
-
-.loader-container {
-  display: flex;
-  justify-content: center;
 }
 </style>

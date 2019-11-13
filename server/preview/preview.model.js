@@ -28,9 +28,7 @@ class Preview extends Model {
   static options() {
     return {
       tableName: 'preview',
-      modelName: 'preview',
-      timestamps: true,
-      freezesTableName: true
+      timestamps: true
     };
   }
 }

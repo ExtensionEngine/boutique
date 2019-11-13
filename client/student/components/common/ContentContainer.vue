@@ -3,10 +3,10 @@
     <circular-progress v-if="isLoading" :height="50" :width="50" />
     <div v-else class="columns is-multiline">
       <tailor-teaching-elements
-        v-for="it in container.elements"
-        :key="it.id"
-        :element="it"
-        :class="['column', it.data.width === 6 ? 'is-6' : 'is-12']" />
+        v-for="element in container.elements"
+        :key="element.id"
+        :element="element"
+        :class="['column', element.data.width === 6 ? 'is-6' : 'is-12']" />
     </div>
   </div>
 </template>
@@ -27,7 +27,7 @@ export default {
     };
   },
   created() {
-    this.getContainer()
+    return this.getContainer()
       .then(container => (this.container = container))
       .finally(() => (this.isLoading = false));
   },
@@ -43,6 +43,10 @@ export default {
 
   .columns {
     flex: 1;
+  }
+
+  .te-container {
+    padding: 10px 0;
   }
 }
 </style>

@@ -1,25 +1,31 @@
 <template>
   <div>
     <template v-for="container in contentContainers">
-      <content-container :key="container.id" :container="container" />
+      <content-container :key="container.id" :get-container="getContainer(container)" />
     </template>
   </div>
 </template>
 
 <script>
-import ContentContainer from './common/ContentContainer';
+import ContentContainer from '@/student/components/common/ContentContainer';
 import get from 'lodash/get';
 import orderBy from 'lodash/orderBy';
 
 export default {
+  name: 'activity-preview',
   props: {
     activity: { type: Object, required: true }
   },
   computed: {
     contentContainers() {
       const contentContainers = get(this.activity, 'containers', []);
-      const rules = [['type', 'position'], ['desc', 'asc']];
+      const rules = [['position'], ['desc', 'asc']];
       return orderBy(contentContainers, ...rules);
+    }
+  },
+  methods: {
+    getContainer(container) {
+      return () => Promise.resolve(container);
     }
   },
   components: {

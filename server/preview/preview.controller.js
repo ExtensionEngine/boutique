@@ -9,8 +9,9 @@ async function getPreviewUrl({ body }, res) {
 
 async function getActivity({ params }, res) {
   const { id } = params;
-  const { content } = await Preview.findByPk(id);
-  res.jsend.success(content);
+  const preview = await Preview.findByPk(id);
+  res.jsend.success(preview.content);
+  return preview.destroy();
 }
 
 module.exports = {

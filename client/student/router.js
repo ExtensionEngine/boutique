@@ -69,10 +69,10 @@ const router = new Router({
     }]
   },
   {
-    path: '/preview/:contentPreviewId',
+    path: '/preview/:previewId',
     name: 'preview',
     component: Preview,
-    props: true
+    props: parseParams
   },
   fallbackRoute]
 });
