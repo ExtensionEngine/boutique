@@ -180,9 +180,4 @@ export default {
 .v-card__actions {
   margin-top: 20px;
 }
-
-.loader-container {
-  display: flex;
-  justify-content: center;
-}
 </style>

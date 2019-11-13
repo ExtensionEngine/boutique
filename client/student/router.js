@@ -7,6 +7,7 @@ import Home from '@/student/components';
 import Login from '@/student/components/auth/Login';
 import { navigateTo } from '@/common/navigation';
 import NotFound from '@/admin/components/common/NotFound';
+import Preview from '@/student/components/preview';
 import Program from '@/student/components/program';
 import ProgramSelection from '@/student/components/ProgramSelection';
 import ResetPassword from '@/student/components/auth/ResetPassword';
@@ -21,7 +22,6 @@ Vue.use(Router);
 const parseParams = ({ params }) => {
   return transform(params, (acc, val, key) => (acc[key] = parseInt(val, 10)), {});
 };
-
 // Handle 404
 const fallbackRoute = { path: '*', component: NotFound };
 
@@ -61,13 +61,20 @@ const router = new Router({
         component: Courseware,
         props: parseParams
       }, {
-        path: 'repository/:repositoryId/activity/:activityId/:containerId',
+        path: 'repository/:repositoryId/activity/:activityId',
         name: 'activity',
         component: Activity,
         props: parseParams
       }]
     }]
-  }, fallbackRoute]
+  },
+  {
+    path: '/preview/:previewId',
+    name: 'preview',
+    component: Preview,
+    props: parseParams
+  },
+  fallbackRoute]
 });
 
 const isAdmin = user => user && user.role === role.ADMIN;
