@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import CircularProgress from '@/student/components/common/CircularProgress';
+import CircularProgress from '@/main/components/common/CircularProgress';
 import TailorTeachingElements from 'tailor-teaching-elements';
 
 export default {

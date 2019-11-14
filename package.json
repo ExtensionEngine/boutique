@@ -124,6 +124,7 @@
     "save-as": "^0.1.8",
     "semver": "^6.3.0",
     "sequelize": "^5.21.2",
+    "sequelize-replace-enum-postgres": "^1.5.0",
     "tailor-teaching-elements": "^1.4.0",
     "truncate": "^2.1.0",
     "umzug": "^2.2.0",

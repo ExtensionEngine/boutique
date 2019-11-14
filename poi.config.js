@@ -21,7 +21,7 @@ const devServer = {
   },
   // Override using: `npm run dev:client -- --port <number>`
   port: 8081,
-  hotEntries: ['admin', 'student']
+  hotEntries: ['admin', 'main']
 };
 
 module.exports = {
@@ -39,9 +39,9 @@ module.exports = {
       filename: 'admin/index.html',
       entry: './client/admin/main.js'
     },
-    student: {
+    main: {
       filename: 'index.html',
-      entry: './client/student/main.js'
+      entry: './client/main/main.js'
     }
   },
   output: {

@@ -79,7 +79,7 @@ export default {
     submit() {
       this.enrolling = true;
       const userIds = map(this.users, 'id');
-      return api.create({ studentId: userIds, programId: this.programId })
+      return api.create({ learnerId: userIds, programId: this.programId })
         .then(({ failed = [] }) => {
           if (failed.length <= 0) return this.close();
           const msg = `Enrolling failed for ${failed.length} users`;

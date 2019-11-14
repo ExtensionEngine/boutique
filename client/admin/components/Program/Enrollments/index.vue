@@ -24,9 +24,9 @@
         :no-data-text="noEnrollmentsMessage">
         <template v-slot:item="{ item }">
           <tr>
-            <td>{{ get(item.student, 'email') }}</td>
-            <td>{{ get(item.student, 'firstName') }}</td>
-            <td>{{ get(item.student, 'lastName') }}</td>
+            <td>{{ get(item.learner, 'email') }}</td>
+            <td>{{ get(item.learner, 'firstName') }}</td>
+            <td>{{ get(item.learner, 'lastName') }}</td>
             <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
             <td class="text-center">
               <v-btn @click="unenroll(item)" icon text small>
@@ -55,11 +55,11 @@ import pick from 'lodash/pick';
 import throttle from 'lodash/throttle';
 
 const defaultPage = () => ({ sortBy: ['updatedAt'], sortDesc: [true], page: 1 });
-const fullName = student => `${student.firstName} ${student.lastName}`;
+const fullName = learner => `${learner.firstName} ${learner.lastName}`;
 const headers = () => [
-  { text: 'Email', value: 'student.email', align: 'left' },
-  { text: 'First Name', value: 'student.first_name' },
-  { text: 'Last Name', value: 'student.last_name' },
+  { text: 'Email', value: 'learner.email', align: 'left' },
+  { text: 'First Name', value: 'learner.first_name' },
+  { text: 'Last Name', value: 'learner.last_name' },
   { text: 'Created At', value: 'createdAt' },
   { text: 'Actions', value: 'id', sortable: false, align: 'center' }
 ];
@@ -95,9 +95,9 @@ export default {
       this.totalItems = total;
     }, 400),
     unenroll(enrollment) {
-      const { student } = enrollment;
+      const { learner } = enrollment;
       Object.assign(this.confirmation, {
-        message: `Are you sure you want to unenroll "${fullName(student)}"?`,
+        message: `Are you sure you want to unenroll "${fullName(learner)}"?`,
         action: () => api.remove(enrollment),
         dialog: true
       });

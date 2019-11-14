@@ -7,7 +7,7 @@
 
 <script>
 import { mapActions, mapMutations, mapState } from 'vuex';
-import CircularProgressBar from '@/student/components/common/CircularProgressBar';
+import CircularProgressBar from '@/main/components/common/CircularProgressBar';
 import find from 'lodash/find';
 
 export default {

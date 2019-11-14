@@ -8,13 +8,13 @@ const map = require('lodash/map');
 const { CONFLICT } = HttpStatus;
 const Op = Sequelize.Op;
 
-const processOutput = model => ({ ...model.toJSON(), student: model.student.profile });
+const processOutput = model => ({ ...model.toJSON(), learner: model.learner.profile });
 
-function list({ query: { programId, studentId, filter }, options }, res) {
+function list({ query: { programId, learnerId, filter }, options }, res) {
   const cond = [];
-  const include = [{ model: User.match(filter), as: 'student' }];
+  const include = [{ model: User.match(filter), as: 'learner' }];
   if (programId) cond.push({ programId });
-  if (studentId) cond.push({ studentId });
+  if (learnerId) cond.push({ learnerId });
   const opts = { where: { [Op.and]: cond }, include, ...options };
   return Enrollment.findAndCountAll(opts).then(({ rows, count }) => {
     res.jsend.success({ items: map(rows, processOutput), total: count });
@@ -22,18 +22,18 @@ function list({ query: { programId, studentId, filter }, options }, res) {
 }
 
 async function create({ body }, res) {
-  const { studentId, programId } = body;
-  if (!Array.isArray(studentId)) {
-    const [result] = await Enrollment.restoreOrCreate(studentId, programId);
+  const { learnerId, programId } = body;
+  if (!Array.isArray(learnerId)) {
+    const [result] = await Enrollment.restoreOrCreate(learnerId, programId);
     if (result.isRejected()) return createError(CONFLICT);
-    const enrollment = await result.value().reload({ include: ['student'] });
+    const enrollment = await result.value().reload({ include: ['learner'] });
     return res.jsend.success(enrollment);
   }
-  const [students, enrollments] = await bulkCreate(studentId, programId);
-  const failed = students.map(it => ({
+  const [learners, enrollments] = await bulkCreate(learnerId, programId);
+  const failed = learners.map(it => ({
     programId,
-    studentId: it.id,
-    student: it.profile
+    learnerId: it.id,
+    learner: it.profile
   }));
   const created = map(enrollments, processOutput);
   res.jsend.success({ failed, created });
@@ -50,16 +50,16 @@ module.exports = {
   destroy
 };
 
-async function bulkCreate(studentIds, programId, options = {}) {
+async function bulkCreate(learnerIds, programId, options = {}) {
   const enrollmentIds = [];
-  const failedStudentIds = [];
-  const results = await Enrollment.restoreOrCreate(studentIds, programId, options);
+  const failedLearnerIds = [];
+  const results = await Enrollment.restoreOrCreate(learnerIds, programId, options);
   results.forEach((it, index) => {
-    if (it.isRejected()) return failedStudentIds.push(studentIds[index]);
+    if (it.isRejected()) return failedLearnerIds.push(learnerIds[index]);
     enrollmentIds.push(it.value().id);
   });
   return Promise.all([
-    User.findAll({ where: { id: failedStudentIds } }),
-    Enrollment.findAll({ where: { id: enrollmentIds }, include: ['student'] })
+    User.findAll({ where: { id: failedLearnerIds } }),
+    Enrollment.findAll({ where: { id: enrollmentIds }, include: ['learner'] })
   ]);
 }

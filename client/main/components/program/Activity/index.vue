@@ -22,8 +22,8 @@
 </template>
 
 <script>
-import api from '@/student/api/content';
-import ContentContainer from '@/student/components/common/ContentContainer';
+import api from '@/main/api/content';
+import ContentContainer from '@/main/components/common/ContentContainer';
 import find from 'lodash/find';
 import { mapGetters } from 'vuex';
 

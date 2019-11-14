@@ -9,11 +9,11 @@
 </template>
 
 <script>
-import api from '@/student/api/learner';
-import CircularProgressBar from '@/student/components/common/CircularProgressBar';
+import api from '@/main/api/learner';
+import CircularProgressBar from '@/main/components/common/CircularProgressBar';
 import head from 'lodash/head';
 import { mapMutations } from 'vuex';
-import Navbar from '@/student/components/common/Navbar';
+import Navbar from '@/main/components/common/Navbar';
 
 export default {
   name: 'home',

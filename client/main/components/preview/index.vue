@@ -10,9 +10,9 @@
 </template>
 
 <script>
-import api from '@/student/api/content';
-import CircularProgressBar from '@/student/components/common/CircularProgressBar';
-import Navbar from '@/student/components/common/Navbar';
+import api from '@/main/api/content';
+import CircularProgressBar from '@/main/components/common/CircularProgressBar';
+import Navbar from '@/main/components/common/Navbar';
 import PreviewActivity from './Activity';
 
 export default {

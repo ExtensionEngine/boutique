@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import ContentContainer from '@/student/components/common/ContentContainer';
+import ContentContainer from '@/main/components/common/ContentContainer';
 import get from 'lodash/get';
 import orderBy from 'lodash/orderBy';
 
