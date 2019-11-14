@@ -1,12 +1,12 @@
 'use strict';
 
-const { role: NEW_ROLES } = require('../../../../common/config');
 const { default: replaceEnum } = require('sequelize-replace-enum-postgres');
 
 const TABLE_NAME = 'user';
 const COLUMN_NAME = 'role';
 const ENUM_NAME = `enum_${TABLE_NAME}_${COLUMN_NAME}`;
 
+const NEW_ROLES = { ADMIN: 'ADMIN', LEARNER: 'LEARNER' };
 const OLD_ROLES = { ADMIN: 'ADMIN', STUDENT: 'STUDENT' };
 const ROLES = { ...OLD_ROLES, ...NEW_ROLES };
 
