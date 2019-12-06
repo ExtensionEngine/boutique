@@ -14,8 +14,8 @@ LMS
 
 ## :page_with_curl: Dependencies
 
-- Node.js (>= 8.11.0)
-- npm (>= 5.8.0)
+- Node.js (>= 10.17.0)
+- npm (>= 6.11.0)
 - PostgreSQL (>= 9.4)
 
 Check `engines` field in [`package.json`](package.json)
