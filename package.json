@@ -58,7 +58,7 @@
     "inquirer": "^7.0.0",
     "is-email-like": "^1.0.0",
     "minimist": "^1.2.0",
-    "node-sass": "^4.13.0",
+    "node-sass": "^4.13.1",
     "nodemon": "^1.19.4",
     "poi": "^12.7.3",
     "read-pkg-up": "^7.0.1",
