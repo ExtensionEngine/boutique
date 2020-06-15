@@ -59,7 +59,7 @@
     "is-email-like": "^1.0.0",
     "minimist": "^1.2.0",
     "node-sass": "^4.13.0",
-    "nodemon": "^1.19.4",
+    "nodemon": "^2.0.3",
     "poi": "^12.7.3",
     "read-pkg-up": "^7.0.1",
     "readme-filename": "^1.0.0",
