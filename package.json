@@ -133,7 +133,7 @@
     "umzug": "^2.2.0",
     "url-join": "^4.0.1",
     "v-hotkey": "^0.7.1",
-    "vee-validate": "^2.2.9",
+    "vee-validate": "^3.3.7",
     "vue": "^2.6.10",
     "vue-multiselect": "^2.1.6",
     "vue-router": "^3.1.3",
