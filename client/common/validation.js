@@ -7,6 +7,12 @@ import programApi from '@/admin/api/program';
 import snakeCase from 'lodash/snakeCase';
 import userApi from '@/admin/api/user';
 
+const after = {
+  params: ['after'],
+  validate: (value, { after }) => new Date(value) >= new Date(after),
+  message: (name, { after }) => `${name} must be after ${after}`
+};
+
 const alphanumerical = {
   validate: value => (/\d/.test(value) && /[a-zA-Z]/.test(value)),
   message: 'The {_field_} field must contain at least 1 letter and 1 numeric value.'
@@ -25,14 +31,14 @@ const uniqueEnrollment = {
   params: ['learnerId', 'programId'],
   validate: (_, { learnerId, programId }) => {
     const params = { learnerId, programId };
-    return enrollmentApi.fetch({ params }).then(res => !res.total);
+    return enrollmentApi.fetch({ params }).then(({ total }) => !total);
   },
   message: 'Learner is already enrolled.'
 };
 
 const uniqueProgramName = {
   params: ['program'],
-  validate: (name, program) => {
+  validate: (name, { program }) => {
     const { name: programName } = program;
     if (programName && programName.toLowerCase() === name.toLowerCase()) return true;
     return programApi.fetch({ params: { name, deleted: true } })
@@ -42,6 +48,7 @@ const uniqueProgramName = {
 };
 
 const rules = {
+  after,
   alpha,
   alphanumerical,
   email,
