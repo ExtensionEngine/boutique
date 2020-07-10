@@ -8,27 +8,36 @@
     </v-toolbar>
     <v-row no-gutters>
       <v-col cols="12" sm="6" md="4">
-        <validation-observer v-slot="{ handleSubmit }" slim>
+        <validation-observer ref="validationObserver" v-slot="{ handleSubmit }" slim>
           <form @submit.prevent="handleSubmit(saveProgram)">
-            <v-text-field
-              v-model.trim="programData.name"
-              v-validate="{ required: true, min: 2, max: 255, unique_program_name: program }"
-              :error-messages="vErrors.collect('name')"
-              :disabled="!isEditing"
-              name="name"
-              label="Program name"
-              append-icon="mdi-pencil" />
+            <validation-provider
+              v-slot="{ errors }"
+              name="Program name"
+              :rules="{ required: true, min: 2, max: 255, unique_program_name: program }">
+              <v-text-field
+                v-model.trim="programData.name"
+                :error-messages="errors"
+                :disabled="!isEditing"
+                name="name"
+                label="Program name"
+                append-icon="mdi-pencil" />
+            </validation-provider>
             <date-picker
               v-model="programData.startDate"
               :disabled="!isEditing"
               name="startDate"
               label="Start Date" />
-            <date-picker
-              v-model="programData.endDate"
-              :validate="{ after: programData.startDate }"
-              :disabled="!isEditing"
-              name="endDate"
-              label="End Date" />
+            <validation-provider
+              v-slot="{ errors }"
+              name="End Date"
+              :rules="{ after: programData.startDate }">
+              <date-picker
+                v-model="programData.endDate"
+                :disabled="!isEditing"
+                :error-messages="errors"
+                name="endDate"
+                label="End Date" />
+            </validation-provider>
             <v-row no-gutters>
               <v-spacer />
               <template v-if="isEditing">
@@ -78,11 +87,8 @@ export default {
   methods: {
     ...mapActions('programs', ['save', 'remove']),
     saveProgram() {
-      this.$validator.validateAll().then(isValid => {
-        if (!isValid) return;
-        this.save(this.programData);
-        this.isEditing = false;
-      });
+      this.save(this.programData);
+      this.isEditing = false;
     },
     removeProgram() {
       this.remove(this.program)
@@ -97,7 +103,7 @@ export default {
       });
     },
     cancel() {
-      this.vErrors.clear();
+      this.$refs.validationObserver.reset();
       this.cloneProgram();
       this.isEditing = false;
     }

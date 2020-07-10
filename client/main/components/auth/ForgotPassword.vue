@@ -19,13 +19,24 @@
       </div>
     </div>
     <div v-else>
-      <form @submit.prevent="submit">
-        <v-input v-model="email" name="email" validate="required|email" />
-        <button type="submit" class="button">Send reset email</button>
-        <div class="options">
-          <a @click="$router.go(-1)">Back</a>
-        </div>
-      </form>
+      <validation-observer v-slot="{ handleSubmit }" slim>
+        <form @submit.prevent="handleSubmit(submit)">
+          <validation-provider
+            v-slot="{ errors }"
+            name="Email"
+            rules="required|email">
+            <v-input
+              v-model="email"
+              :error="errors[0]"
+              autocomplete="email"
+              name="email" />
+          </validation-provider>
+          <button type="submit" class="button">Send reset email</button>
+          <div class="options">
+            <a @click="$router.go(-1)">Back</a>
+          </div>
+        </form>
+      </validation-observer>
     </div>
   </div>
 </template>
