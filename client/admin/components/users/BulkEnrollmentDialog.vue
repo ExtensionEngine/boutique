@@ -10,36 +10,42 @@
         Enroll
       </v-btn>
     </template>
-    <v-form @submit.prevent="submit">
-      <v-card class="pa-3">
-        <v-card-title class="headline">Enroll users to Program</v-card-title>
-        <v-card-text>
-          <v-autocomplete
-            v-model="programId"
-            @focus="focusTrap.pause()"
-            @blur="focusTrap.unpause()"
-            :items="programOptions"
-            :disabled="enrolling"
-            :error-messages="vErrors.collect('program')"
-            name="program"
-            label="Program"
-            placeholder="Start typing to Search"
-            prepend-icon="mdi-magnify"
-            clearable />
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn @click="close" :disabled="enrolling">Cancel</v-btn>
-          <v-btn
-            :disabled="enrollDisabled"
-            :loading="enrolling"
-            color="success"
-            type="submit">
-            Enroll
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-form>
+    <validation-observer ref="validationObserver" v-slot="{ handleSubmit }" slim>
+      <form @submit.prevent="handleSubmit(submit)">
+        <v-card class="pa-3">
+          <v-card-title class="headline">Enroll users to Program</v-card-title>
+          <v-card-text>
+            <validation-provider
+              v-slot="{ errors }"
+              name="program">
+              <v-autocomplete
+                v-model="programId"
+                @focus="focusTrap.pause()"
+                @blur="focusTrap.unpause()"
+                :items="programOptions"
+                :disabled="enrolling"
+                :error-messages="errors"
+                name="program"
+                label="Program"
+                placeholder="Start typing to Search"
+                prepend-icon="mdi-magnify"
+                clearable />
+            </validation-provider>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn @click="close" :disabled="enrolling">Cancel</v-btn>
+            <v-btn
+              :disabled="enrollDisabled"
+              :loading="enrolling"
+              color="success"
+              type="submit">
+              Enroll
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </form>
+    </validation-observer>
   </v-dialog>
 </template>
 
@@ -48,13 +54,12 @@ import api from '@/admin/api/enrollment';
 import map from 'lodash/map';
 import { mapState } from 'vuex';
 import { withFocusTrap } from '@/common/focustrap';
-import { withValidation } from '@/common/validation';
 
 const el = vm => vm.$children[0].$refs.dialog;
 
 export default {
   name: 'bulk-enrollment-dialog',
-  mixins: [withValidation(), withFocusTrap({ el })],
+  mixins: [withFocusTrap({ el })],
   props: {
     disabled: { type: Boolean, default: true },
     users: { type: Array, default: () => ([]) }
@@ -83,11 +88,11 @@ export default {
         .then(({ failed = [] }) => {
           if (failed.length <= 0) return this.close();
           const msg = `Enrolling failed for ${failed.length} users`;
-          this.vErrors.add({ field: 'program', msg });
+          this.$refs.validationObserver.setErrors({ program: [msg] });
         })
         .catch(error => {
           const msg = 'Error! Unable to enroll Users!';
-          this.vErrors.add({ field: 'program', msg });
+          this.$refs.validationObserver.setErrors({ program: [msg] });
           return Promise.reject(error);
         })
         .finally(() => (this.enrolling = false));
@@ -95,7 +100,7 @@ export default {
     close() {
       this.visible = false;
       this.programId = null;
-      this.vErrors.clear();
+      this.$refs.validationObserver.reset();
     }
   }
 };

@@ -1,60 +1,74 @@
 <template>
   <v-dialog v-model="show" v-hotkey="{ esc: close }" width="700">
-    <v-form @submit.prevent="save">
-      <v-card class="pa-3">
-        <v-card-title class="headline">
-          <span>{{ userData ? 'Edit' : 'Create' }} User</span>
-          <v-spacer />
-          <v-btn
-            v-if="!isNewUser"
-            @click="invite"
-            :disabled="isLoading"
-            :loading="isLoading"
-            outlined
-            color="blue-grey">
-            Reinvite
-          </v-btn>
-        </v-card-title>
-        <v-card-text>
-          <v-text-field
-            v-model="user.email"
-            v-validate="{ required: true, email: true, 'unique-email': userData }"
-            :error-messages="vErrors.collect('email')"
-            label="E-mail"
-            data-vv-name="email"
-            class="mb-3" />
-          <v-select
-            v-model="user.role"
-            v-validate="'required'"
-            @focus="focusTrap.pause()"
-            @blur="focusTrap.unpause()"
-            :items="roles"
-            :error-messages="vErrors.collect('role')"
-            label="Role"
-            data-vv-name="role"
-            class="mb-3" />
-          <v-text-field
-            v-model="user.firstName"
-            v-validate="'required|alpha|min:2|max:50'"
-            :error-messages="vErrors.collect('firstName')"
-            label="First Name"
-            data-vv-name="firstName"
-            class="mb-3" />
-          <v-text-field
-            v-model="user.lastName"
-            v-validate="'required|alpha|min:2|max:50'"
-            :error-messages="vErrors.collect('lastName')"
-            label="Last Name"
-            data-vv-name="lastName"
-            class="mb-3" />
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn @click="close">Cancel</v-btn>
-          <v-btn color="success" type="submit">Save</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-form>
+    <validation-observer v-if="show" v-slot="{ handleSubmit }" slim>
+      <form @submit.prevent="handleSubmit(save)">
+        <v-card class="pa-3">
+          <v-card-title class="headline">
+            <span>{{ userData ? 'Edit' : 'Create' }} User</span>
+            <v-spacer />
+            <v-btn
+              v-if="!isNewUser"
+              @click="invite"
+              :disabled="isLoading"
+              :loading="isLoading"
+              outlined
+              color="blue-grey">
+              Reinvite
+            </v-btn>
+          </v-card-title>
+          <v-card-text>
+            <validation-provider
+              v-slot="{ errors }"
+              name="E-mail"
+              :rules="{ required: true, email: true, unique_email: userData }">
+              <v-text-field
+                v-model="user.email"
+                :error-messages="errors"
+                label="E-mail"
+                class="mb-3" />
+            </validation-provider>
+            <validation-provider
+              v-slot="{ errors }"
+              name="Role"
+              rules="required">
+              <v-select
+                v-model="user.role"
+                @focus="focusTrap.pause()"
+                @blur="focusTrap.unpause()"
+                :items="roles"
+                :error-messages="errors"
+                label="Role"
+                class="mb-3" />
+            </validation-provider>
+            <validation-provider
+              v-slot="{ errors }"
+              name="First Name"
+              rules="required|alpha|min:2|max:50">
+              <v-text-field
+                v-model="user.firstName"
+                :error-messages="errors"
+                label="First Name"
+                class="mb-3" />
+            </validation-provider>
+            <validation-provider
+              v-slot="{ errors }"
+              name="Last Name"
+              rules="required|alpha|min:2|max:50">
+              <v-text-field
+                v-model="user.lastName"
+                :error-messages="errors"
+                label="Last Name"
+                class="mb-3" />
+            </validation-provider>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn @click="close">Cancel</v-btn>
+            <v-btn color="success" type="submit">Save</v-btn>
+          </v-card-actions>
+        </v-card>
+      </form>
+    </validation-observer>
   </v-dialog>
 </template>
 
@@ -66,7 +80,6 @@ import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
 import { role } from '@/../common/config';
 import { withFocusTrap } from '@/common/focustrap';
-import { withValidation } from '@/common/validation';
 
 const el = vm => vm.$children[0].$refs.dialog;
 const resetUser = () => {
@@ -80,7 +93,7 @@ const resetUser = () => {
 
 export default {
   name: 'user-dialog',
-  mixins: [withValidation(), withFocusTrap({ el })],
+  mixins: [withFocusTrap({ el })],
   props: {
     visible: { type: Boolean, default: false },
     userData: { type: Object, default: () => ({}) }
@@ -113,12 +126,9 @@ export default {
       this.$emit('update:visible', false);
     },
     save() {
-      this.$validator.validateAll().then(isValid => {
-        if (!isValid) return;
-        const action = this.isNewUser ? 'create' : 'update';
-        api[action](this.user).then(() => this.$emit(`${action}d`));
-        this.close();
-      });
+      const action = this.isNewUser ? 'create' : 'update';
+      api[action](this.user).then(() => this.$emit(`${action}d`));
+      this.close();
     },
     invite() {
       this.isLoading = true;
@@ -129,20 +139,8 @@ export default {
     show(val) {
       this.$nextTick(() => this.focusTrap.toggle(val));
       if (!val) return;
-      this.vErrors.clear();
       if (!isEmpty(this.userData)) this.user = cloneDeep(this.userData);
     }
-  },
-  mounted() {
-    if (this.$validator.rules['unique-email']) return;
-    this.$validator.extend('unique-email', {
-      getMessage: field => `The ${field} is not unique.`,
-      validate: (email, userData) => {
-        if (userData && email === userData.email) return true;
-        return api.fetch({ params: { email } })
-          .then(({ total }) => ({ valid: !total }));
-      }
-    });
   }
 };
 </script>

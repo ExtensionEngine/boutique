@@ -8,35 +8,37 @@
     </v-toolbar>
     <v-row no-gutters>
       <v-col cols="12" sm="6" md="4">
-        <form @submit.prevent="saveProgram">
-          <v-text-field
-            v-model.trim="programData.name"
-            v-validate="{ required: true, min: 2, max: 255, 'unique-program-name': program }"
-            :error-messages="vErrors.collect('name')"
-            :disabled="!isEditing"
-            name="name"
-            label="Program name"
-            append-icon="mdi-pencil" />
-          <date-picker
-            v-model="programData.startDate"
-            :disabled="!isEditing"
-            name="startDate"
-            label="Start Date" />
-          <date-picker
-            v-model="programData.endDate"
-            :validate="{ after: programData.startDate }"
-            :disabled="!isEditing"
-            name="endDate"
-            label="End Date" />
-          <v-row no-gutters>
-            <v-spacer />
-            <template v-if="isEditing">
-              <v-btn @click="cancel" outlined>Cancel</v-btn>
-              <v-btn type="submit" class="ml-4" color="success">Save</v-btn>
-            </template>
-            <v-btn v-else @click="isEditing = true" outlined>Edit</v-btn>
-          </v-row>
-        </form>
+        <validation-observer v-slot="{ handleSubmit }" slim>
+          <form @submit.prevent="handleSubmit(saveProgram)">
+            <v-text-field
+              v-model.trim="programData.name"
+              v-validate="{ required: true, min: 2, max: 255, unique_program_name: program }"
+              :error-messages="vErrors.collect('name')"
+              :disabled="!isEditing"
+              name="name"
+              label="Program name"
+              append-icon="mdi-pencil" />
+            <date-picker
+              v-model="programData.startDate"
+              :disabled="!isEditing"
+              name="startDate"
+              label="Start Date" />
+            <date-picker
+              v-model="programData.endDate"
+              :validate="{ after: programData.startDate }"
+              :disabled="!isEditing"
+              name="endDate"
+              label="End Date" />
+            <v-row no-gutters>
+              <v-spacer />
+              <template v-if="isEditing">
+                <v-btn @click="cancel" outlined>Cancel</v-btn>
+                <v-btn type="submit" class="ml-4" color="success">Save</v-btn>
+              </template>
+              <v-btn v-else @click="isEditing = true" outlined>Edit</v-btn>
+            </v-row>
+          </form>
+        </validation-observer>
       </v-col>
     </v-row>
     <confirmation-dialog
@@ -53,14 +55,12 @@ import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
 import DatePicker from '@/admin/components/common/DatePicker';
 import format from 'date-fns/format';
 import { mapActions } from 'vuex';
-import { withValidation } from '@/common/validation';
 
 const DST_FORMAT = 'yyyy-MM-dd';
 const formatDate = d => d && format(new Date(d), DST_FORMAT);
 
 export default {
   name: 'program-settings',
-  mixins: [withValidation()],
   props: { program: { type: Object, default: null } },
   data() {
     return {
