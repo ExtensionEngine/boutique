@@ -3,7 +3,7 @@
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" color="success" outlined>Enroll learner</v-btn>
     </template>
-    <validation-observer v-if="visible" v-slot="{ handleSubmit }" slim>
+    <validation-observer v-if="visible" v-slot="{ handleSubmit, invalid }" slim>
       <form @submit.prevent="handleSubmit(enroll)">
         <v-card class="pa-3">
           <v-card-title class="headline">Enroll learner</v-card-title>
@@ -30,7 +30,7 @@
           <v-card-actions>
             <v-spacer />
             <v-btn @click="close">Cancel</v-btn>
-            <v-btn color="success" outlined type="submit">Enroll</v-btn>
+            <v-btn :disabled="invalid" color="success" type="submit" outlined>Enroll</v-btn>
           </v-card-actions>
         </v-card>
       </form>
