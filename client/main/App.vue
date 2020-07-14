@@ -1,8 +1,12 @@
 <template>
   <router-host>
-    <div id="app" class="system-font-stack">
-      <router-view />
-    </div>
+    <v-app id="app">
+      <v-content>
+        <v-container fluid fill-height class="grey lighten-4">
+          <router-view />
+        </v-container>
+      </v-content>
+    </v-app>
   </router-host>
 </template>
 
@@ -27,7 +31,6 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #f5f5f5;
   overflow: hidden;
 }
 
@@ -36,5 +39,9 @@ html, body {
   overflow-y: scroll;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.v-content {
+  background-color: #f5f5f5;
 }
 </style>
