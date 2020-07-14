@@ -9,25 +9,27 @@
           v-slot="{ errors }"
           name="Password"
           rules="required|alphanumerical|min:6">
-          <v-input
+          <v-text-field
             v-model="password"
-            :error="errors[0]"
+            :error-messages="errors"
             type="password"
-            name="password" />
+            label="Password"
+            outlined />
         </validation-provider>
         <validation-provider
           v-slot="{ errors }"
           name="Password Confirmation"
           :rules="{ required: true, is: password }">
-          <v-input
+          <v-text-field
             v-model="passwordConfirmation"
-            :error="errors[0]"
+            :error-messages="errors"
             type="password"
-            name="passwordConfirmation" />
+            label="Confirm Password"
+            outlined />
         </validation-provider>
-        <button class="button" type="submit">
+        <v-btn type="submit" outlined>
           Change password
-        </button>
+        </v-btn>
       </form>
     </validation-observer>
   </div>
@@ -35,7 +37,6 @@
 
 <script>
 import { mapActions } from 'vuex';
-import VInput from '@/common/components/form/VInput';
 
 export default {
   data() {
@@ -53,7 +54,6 @@ export default {
         .then(() => this.$router.push('/'))
         .catch(() => (this.error = 'An error has occurred!'));
     }
-  },
-  components: { VInput }
+  }
 };
 </script>

@@ -1,20 +1,20 @@
 <template>
   <div>
     <div v-if="submitted">
-      <div class="notification is-warning">
+      <v-alert color="#fddd57" class="text-center">
         <template v-if="!error">
           Email with password reset link sent.
           Please check your email and follow instructions to reset your password.
         </template>
         <template v-else-if="invalidEmail">
           We couldn't find account associated with
-          <span class="email">{{ email }}</span>
+          <span class="font-weight-bold">{{ email }}</span>
         </template>
         <template v-else>
           Oops! Something went wrong.
         </template>
-      </div>
-      <div class="options">
+      </v-alert>
+      <div class="options pt-10">
         <a @click="$router.go(-1)">Back</a>
       </div>
     </div>
@@ -25,15 +25,16 @@
             v-slot="{ errors }"
             name="Email"
             rules="required|email">
-            <v-input
+            <v-text-field
               v-model="email"
-              :error="errors[0]"
+              :error-messages="errors"
               autocomplete="email"
-              name="email" />
+              label="Email"
+              outlined />
           </validation-provider>
-          <button type="submit" class="button">Send reset email</button>
           <div class="options">
             <a @click="$router.go(-1)">Back</a>
+            <v-btn type="submit" outlined>Send reset email</v-btn>
           </div>
         </form>
       </validation-observer>
@@ -43,7 +44,6 @@
 
 <script>
 import { mapActions } from 'vuex';
-import VInput from '@/common/components/form/VInput';
 
 const delay = timeout => new Promise(resolve => setTimeout(resolve, timeout));
 
@@ -70,26 +70,15 @@ export default {
         .then(() => this.$router.push('/'))
         .catch(err => (this.error = err));
     }
-  },
-  components: { VInput }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
-.well {
-  font-size: 16px;
-}
-
-.notification .email {
-  font-weight: bold;
-}
-
-.button {
-  margin-top: 5px;
-}
-
 .options {
-  padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   a {
     display: inline-block;

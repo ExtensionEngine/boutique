@@ -1,36 +1,36 @@
 <template>
   <div>
-    <div class="message">
-      <span v-if="message">{{ message }}</span>
-    </div>
+    <div v-if="message" class="message">{{ message }}</div>
     <validation-observer v-slot="{ handleSubmit }" slim>
       <form @submit.prevent="handleSubmit(submit)">
         <validation-provider
           v-slot="{ errors }"
           name="Email"
           rules="required|email">
-          <v-input
+          <v-text-field
             v-model="email"
-            :error="errors[0]"
+            :error-messages="errors"
             autocomplete="email"
-            name="email" />
+            label="Email"
+            outlined />
         </validation-provider>
         <validation-provider
           v-slot="{ errors }"
           name="Password"
           rules="required">
-          <v-input
+          <v-text-field
             v-model="password"
-            :error="errors[0]"
+            :error-messages="errors"
             autocomplete="current-password"
-            name="password"
-            type="password" />
+            type="password"
+            label="Password"
+            outlined />
         </validation-provider>
         <div class="options">
           <router-link :to="{ name: 'forgot-password' }">
             Forgot password ?
           </router-link>
-          <button class="button" type="submit">Login</button>
+          <v-btn type="submit" outlined>Login</v-btn>
         </div>
       </form>
     </validation-observer>
@@ -42,7 +42,6 @@ import { mapActions } from 'vuex';
 import { navigateTo } from '@/common/navigation';
 import pick from 'lodash/pick';
 import role from '@/../common/config/role';
-import VInput from '@/common/components/form/VInput';
 
 const LOGIN_ERR_MESSAGE = 'User email and password do not match';
 
@@ -66,8 +65,7 @@ export default {
         })
         .catch(() => (this.message = LOGIN_ERR_MESSAGE));
     }
-  },
-  components: { VInput }
+  }
 };
 </script>
 
@@ -80,6 +78,15 @@ export default {
     display: inline-block;
     padding: 6px 20px;
     color: #444;
+    text-decoration: none;
   }
+}
+
+.message {
+  min-height: 16px;
+  margin-bottom: 20px;
+  color: #444;
+  font-size: 16px;
+  line-height: 16px;
 }
 </style>
