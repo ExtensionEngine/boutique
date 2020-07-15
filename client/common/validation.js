@@ -2,6 +2,7 @@ import { alpha, email, is, max, mimes, min, required } from 'vee-validate/dist/r
 import enrollmentApi from '@/admin/api/enrollment';
 import { extend } from 'vee-validate';
 import forEach from 'lodash/forEach';
+import get from 'lodash/get';
 import { messages } from 'vee-validate/dist/locale/en.json';
 import programApi from '@/admin/api/program';
 import snakeCase from 'lodash/snakeCase';
@@ -39,7 +40,7 @@ const uniqueEnrollment = {
 const uniqueProgramName = {
   params: ['program'],
   validate: (name, { program }) => {
-    const { name: programName } = program;
+    const programName = get(program, 'name');
     if (programName && programName.toLowerCase() === name.toLowerCase()) return true;
     return programApi.fetch({ params: { name, deleted: true } })
       .then(([fetchedProgram]) => !fetchedProgram);
