@@ -1,11 +1,11 @@
 <template>
   <router-host>
     <v-app id="app">
-      <v-content>
-        <v-container fluid fill-height class="grey lighten-4">
+      <v-main>
+        <v-container>
           <router-view />
         </v-container>
-      </v-content>
+      </v-main>
     </v-app>
   </router-host>
 </template>
@@ -36,12 +36,11 @@ html, body {
 
 #app {
   height: 100%;
-  overflow-y: scroll;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.v-content {
+.v-main {
   background-color: #f5f5f5;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
-  <div class="mx-auto">
-    <v-card width="500">
+  <div>
+    <v-card width="500" class="mx-auto">
       <div class="auth-header text-center py-10 px-2">
         <h1>
           <v-icon size="34" class="mr-1">mdi-shopping</v-icon>
