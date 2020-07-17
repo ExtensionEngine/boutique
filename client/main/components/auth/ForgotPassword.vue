@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="submitted">
-      <v-alert color="#fddd57" class="text-center">
+      <v-alert color="warning" class="text-center">
         <template v-if="!error">
           Email with password reset link sent.
           Please check your email and follow instructions to reset your password.
