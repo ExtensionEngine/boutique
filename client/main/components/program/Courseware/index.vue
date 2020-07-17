@@ -1,27 +1,26 @@
 <template>
   <div>
-    <div v-if="!courseware.length" class="container">
-      <div class="notification is-warning has-text-centered">
-        This Program doesn't have any courseware!
-      </div>
+    <div v-if="!courseware.length" class="text-center">
+      This Program doesn't have any courseware!
     </div>
     <div v-else>
       <transition name="slide-fade">
-        <div v-show="!filteredCourseware.length" class="container">
-          <div class="notification is-warning has-text-centered">
-            No courseware found!
-          </div>
-        </div>
+        <v-alert v-if="!filteredCourseware.length" color="warning" class="text-center">
+          No courseware found!
+        </v-alert>
       </transition>
       <transition-group
         name="slide-list"
-        class="columns is-multiline"
+        class="row"
         tag="div">
-        <activity-card
+        <v-col
           v-for="it in filteredCourseware"
           :key="it.id"
-          :program-id="programId"
-          :activity="it" />
+          cols="4">
+          <activity-card
+            :program-id="programId"
+            :activity="it" />
+        </v-col>
       </transition-group>
     </div>
   </div>
@@ -54,15 +53,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container {
-  display: flex;
-  justify-content: center;
-
-  .notification {
-    margin-top: 0.6rem;
-  }
-}
-
 .slide-fade-enter-active, .slide-fade-leave-active {
   transition: all 0.1s;
 }

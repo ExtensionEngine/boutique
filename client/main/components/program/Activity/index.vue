@@ -1,7 +1,7 @@
 <template>
   <div>
     <nav class="navbar is-light" role="navigation">
-      <router-link
+      <v-btn
         v-for="item in activities"
         :key="item.id"
         :to="{
@@ -11,9 +11,10 @@
             activityId: item.id
           }
         }"
-        class="navbar-item">
+        class="mr-1"
+        text>
         {{ item.name | truncate(25) }}
-      </router-link>
+      </v-btn>
     </nav>
     <template v-for="container in contentContainers">
       <content-container :key="container.id" :get-container="getContainer(container.id)" />
@@ -56,9 +57,3 @@ export default {
 };
 
 </script>
-
-<style lang="scss" scoped>
-.router-link-exact-active {
-  color: #3273dc;
-}
-</style>
