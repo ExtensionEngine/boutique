@@ -34,14 +34,11 @@
 
 <script>
 import { mapActions } from 'vuex';
-import { withFocusTrap } from '@/common/focustrap';
 
-const el = vm => vm.$children[0].$refs.dialog;
 const getDefaultData = () => ({ name: '' });
 
 export default {
   name: 'program-dialog',
-  mixins: [withFocusTrap({ el })],
   data: () => ({
     visible: false,
     program: getDefaultData()
@@ -58,7 +55,6 @@ export default {
   },
   watch: {
     visible(val) {
-      this.$nextTick(() => this.focusTrap.toggle(val));
       if (!val) return;
       this.program = getDefaultData();
     }

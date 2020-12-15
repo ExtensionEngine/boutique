@@ -9,8 +9,6 @@
         <v-card-text>
           <v-autocomplete
             v-model="sourceId"
-            @focus="focusTrap.pause()"
-            @blur="focusTrap.unpause()"
             :items="availableRepos"
             :loading="isLoading"
             item-value="sourceId"
@@ -43,30 +41,22 @@ import differenceBy from 'lodash/differenceBy';
 import map from 'lodash/map';
 import { mapActions } from 'vuex';
 import pick from 'lodash/pick';
-import { withFocusTrap } from '@/common/focustrap';
-
-const el = vm => vm.$children[0].$refs.dialog;
 
 export default {
   name: 'content-import-dialog',
-  mixins: [withFocusTrap({ el })],
   props: {
     programId: { type: Number, required: true },
     importedRepos: { type: Array, default: () => ([]) }
   },
-  data() {
-    return {
-      visible: false,
-      sourceId: null,
-      catalog: [],
-      isImporting: false,
-      isLoading: false
-    };
-  },
+  data: () => ({
+    visible: false,
+    sourceId: null,
+    catalog: [],
+    isImporting: false,
+    isLoading: false
+  }),
   computed: {
-    availableRepos() {
-      return differenceBy(this.catalog, this.importedRepos, 'sourceId');
-    }
+    availableRepos: vm => differenceBy(vm.catalog, vm.importedRepos, 'sourceId')
   },
   methods: {
     ...mapActions('contentRepo', ['save']),
@@ -86,7 +76,6 @@ export default {
   },
   watch: {
     visible(val) {
-      this.$nextTick(() => this.focusTrap.toggle(val));
       if (!val) return;
       this.isLoading = true;
       return api.getCatalog()
