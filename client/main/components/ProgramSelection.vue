@@ -6,11 +6,11 @@
     <div v-else>
       <h1 class="title">Select your program</h1>
       <v-btn
-        v-for="it in programs"
-        :key="it.id"
-        :to="{ name: 'courseware', params: { programId: it.id } }"
+        v-for="{ id, name } in programs"
+        :key="id"
+        :to="{ name: 'courseware', params: { programId: id } }"
         class="d-flex mb-5">
-        {{ it.name | truncate(25) }}
+        {{ name | truncate(25) }}
       </v-btn>
     </div>
   </div>

@@ -5,8 +5,8 @@
     <v-card-text>
       <ul class="pl-0">
         <li
-          v-for="it in activity.subActivities"
-          :key="it.id"
+          v-for="{ id } in activity.subActivities"
+          :key="id"
           class="d-inline-block pr-2">
           <a @click.prevent.stop="navigateTo(it)" class="status"></a>
         </li>

@@ -9,17 +9,9 @@
           No courseware found!
         </v-alert>
       </transition>
-      <transition-group
-        name="slide-list"
-        class="row"
-        tag="div">
-        <v-col
-          v-for="it in filteredCourseware"
-          :key="it.id"
-          cols="4">
-          <activity-card
-            :program-id="programId"
-            :activity="it" />
+      <transition-group name="slide-list" tag="div" class="row">
+        <v-col v-for="activity in filteredCourseware" :key="activity.id" cols="4">
+          <activity-card v-bind="{ programId, activity }" />
         </v-col>
       </transition-group>
     </div>

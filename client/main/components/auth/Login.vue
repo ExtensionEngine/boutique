@@ -70,23 +70,25 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$font-color: #444;
+
 .options {
-  padding: 5px 0 10px 0;
+  padding: 0.3125rem 0 0.625rem 0;
   text-align: right;
 
   a {
     display: inline-block;
-    padding: 6px 20px;
-    color: #444;
+    padding: 0.375rem 1.25rem;
+    color: $font-color;
     text-decoration: none;
   }
 }
 
 .message {
-  min-height: 16px;
-  margin-bottom: 20px;
-  color: #444;
-  font-size: 16px;
-  line-height: 16px;
+  min-height: 1rem;
+  margin-bottom: 1.25rem;
+  color: $font-color;
+  font-size: 1rem;
+  line-height: 1rem;
 }
 </style>

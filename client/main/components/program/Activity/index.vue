@@ -2,22 +2,18 @@
   <div>
     <nav class="navbar is-light" role="navigation">
       <v-btn
-        v-for="item in activities"
-        :key="item.id"
-        :to="{
-          name: 'activity',
-          params: {
-            repositoryId,
-            activityId: item.id
-          }
-        }"
+        v-for="{ id, name } in activities"
+        :key="id"
+        :to="{ name: 'activity', params: { repositoryId, activityId: id } }"
         class="mr-1"
         text>
-        {{ item.name | truncate(25) }}
+        {{ name | truncate(25) }}
       </v-btn>
     </nav>
     <template v-for="container in contentContainers">
-      <content-container :key="container.id" :get-container="getContainer(container.id)" />
+      <content-container
+        :key="container.id"
+        :get-container="getContainer(container.id)" />
     </template>
   </div>
 </template>
@@ -44,7 +40,8 @@ export default {
         : find(courseware, { subActivities: [{ id }] }).subActivities;
     },
     contentContainers() {
-      return find(this.activities, { id: this.activityId }).contentContainers;
+      const { activityId, activities } = this;
+      return find(activities, { id: activityId }).contentContainers;
     }
   },
   methods: {

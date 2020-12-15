@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card width="500" class="mx-auto">
-      <div class="auth-header text-center py-10 px-2">
+      <div class="auth-header">
         <h1>
           <v-icon size="34" class="mr-1">mdi-shopping</v-icon>
           Boutique LMS
@@ -16,6 +16,8 @@
 
 <style lang="scss" scoped>
 .auth-header {
+  padding: 2.5rem 0.5rem;
+  text-align: center;
   background: #ffc107;
 
   h1 {

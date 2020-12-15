@@ -13,10 +13,7 @@
       :value="coursewareFilter"
       placeholder="Search..."
       prepend-inner-icon="mdi-magnify"
-      hide-details
-      clearable
-      filled
-      dense />
+      hide-details clearable filled dense />
     <v-spacer />
     <v-menu>
       <template v-slot:activator="{ on }">
@@ -47,9 +44,7 @@ export default {
     ...mapState('auth', ['user']),
     ...mapState('learner', ['coursewareFilter']),
     ...mapGetters('learner', ['courseware']),
-    programId() {
-      return this.$route.params.programId;
-    },
+    programId: vm => vm.$route.params.programId,
     rootRoute() {
       const { programId } = this;
       return programId
