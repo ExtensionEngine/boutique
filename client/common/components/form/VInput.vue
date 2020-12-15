@@ -32,9 +32,7 @@ export default {
     error: { type: String, default: null }
   },
   computed: {
-    label() {
-      return humanize(this.name);
-    }
+    label: vm => humanize(vm.name)
   }
 };
 </script>

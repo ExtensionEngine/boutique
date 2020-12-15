@@ -36,9 +36,7 @@ export default {
     label: { type: String, default: null }
   },
   computed: {
-    normalizedValue() {
-      return this.normalize(this.value, this.format, DATE_FORMAT);
-    }
+    normalizedValue: vm => vm.normalize(vm.value, vm.format, DATE_FORMAT)
   },
   methods: {
     save(value) {

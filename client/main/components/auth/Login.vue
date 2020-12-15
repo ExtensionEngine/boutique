@@ -3,36 +3,38 @@
     <div class="message">
       <span v-if="message">{{ message }}</span>
     </div>
-    <validation-observer v-slot="{ handleSubmit }" slim>
-      <form @submit.prevent="handleSubmit(submit)">
-        <validation-provider
-          v-slot="{ errors }"
-          name="Email"
-          rules="required|email">
-          <v-input
-            v-model="email"
-            :error="errors[0]"
-            autocomplete="email"
-            name="email" />
-        </validation-provider>
-        <validation-provider
-          v-slot="{ errors }"
-          name="Password"
-          rules="required">
-          <v-input
-            v-model="password"
-            :error="errors[0]"
-            autocomplete="current-password"
-            name="password"
-            type="password" />
-        </validation-provider>
-        <div class="options">
-          <router-link :to="{ name: 'forgot-password' }">
-            Forgot password ?
-          </router-link>
-          <button class="button" type="submit">Login</button>
-        </div>
-      </form>
+    <validation-observer
+      ref="form"
+      @submit.prevent="$refs.form.handleSubmit(submit)"
+      tag="form"
+      novalidate>
+      <validation-provider
+        v-slot="{ errors }"
+        name="Email"
+        rules="required|email">
+        <v-input
+          v-model="email"
+          :error="errors[0]"
+          autocomplete="email"
+          name="email" />
+      </validation-provider>
+      <validation-provider
+        v-slot="{ errors }"
+        name="Password"
+        rules="required">
+        <v-input
+          v-model="password"
+          :error="errors[0]"
+          autocomplete="current-password"
+          name="password"
+          type="password" />
+      </validation-provider>
+      <div class="options">
+        <router-link :to="{ name: 'forgot-password' }">
+          Forgot password ?
+        </router-link>
+        <button class="button" type="submit">Login</button>
+      </div>
     </validation-observer>
   </div>
 </template>
@@ -48,13 +50,11 @@ const LOGIN_ERR_MESSAGE = 'User email and password do not match';
 
 export default {
   name: 'login',
-  data() {
-    return {
-      email: '',
-      password: '',
-      message: ''
-    };
-  },
+  data: () => ({
+    email: '',
+    password: '',
+    message: ''
+  }),
   methods: {
     ...mapActions('auth', ['login']),
     submit() {

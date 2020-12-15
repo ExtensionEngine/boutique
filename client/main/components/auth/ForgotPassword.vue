@@ -19,23 +19,25 @@
       </div>
     </div>
     <div v-else>
-      <validation-observer v-slot="{ handleSubmit }" slim>
-        <form @submit.prevent="handleSubmit(submit)">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Email"
-            rules="required|email">
-            <v-input
-              v-model="email"
-              :error="errors[0]"
-              autocomplete="email"
-              name="email" />
-          </validation-provider>
-          <button type="submit" class="button">Send reset email</button>
-          <div class="options">
-            <a @click="$router.go(-1)">Back</a>
-          </div>
-        </form>
+      <validation-observer
+        ref="form"
+        @submit.prevent="$refs.form.handleSubmit(submit)"
+        tag="form"
+        novalidate>
+        <validation-provider
+          v-slot="{ errors }"
+          name="Email"
+          rules="required|email">
+          <v-input
+            v-model="email"
+            :error="errors[0]"
+            autocomplete="email"
+            name="email" />
+        </validation-provider>
+        <button type="submit" class="button">Send reset email</button>
+        <div class="options">
+          <a @click="$router.go(-1)">Back</a>
+        </div>
       </validation-observer>
     </div>
   </div>
@@ -48,17 +50,13 @@ import VInput from '@/common/components/form/VInput';
 const delay = timeout => new Promise(resolve => setTimeout(resolve, timeout));
 
 export default {
-  data() {
-    return {
-      email: '',
-      error: null,
-      submitted: false
-    };
-  },
+  data: () => ({
+    email: '',
+    error: null,
+    submitted: false
+  }),
   computed: {
-    invalidEmail() {
-      return this.error && this.error.response.status === 404;
-    }
+    invalidEmail: vm => vm.error && vm.error.response.status === 404
   },
   methods: {
     ...mapActions('auth', ['forgotPassword']),

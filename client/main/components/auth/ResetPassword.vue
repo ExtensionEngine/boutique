@@ -3,32 +3,34 @@
     <div v-if="error" class="notification is-error">
       <span>{{ error }}</span>
     </div>
-    <validation-observer v-slot="{ handleSubmit }" slim>
-      <form @submit.prevent="handleSubmit(submit)">
-        <validation-provider
-          v-slot="{ errors }"
-          name="Password"
-          rules="required|alphanumerical|min:6">
-          <v-input
-            v-model="password"
-            :error="errors[0]"
-            type="password"
-            name="password" />
-        </validation-provider>
-        <validation-provider
-          v-slot="{ errors }"
-          name="Password Confirmation"
-          :rules="{ required: true, is: password }">
-          <v-input
-            v-model="passwordConfirmation"
-            :error="errors[0]"
-            type="password"
-            name="passwordConfirmation" />
-        </validation-provider>
-        <button class="button" type="submit">
-          Change password
-        </button>
-      </form>
+    <validation-observer
+      ref="form"
+      @submit.prevent="$refs.form.handleSubmit(submit)"
+      tag="form"
+      novalidate>
+      <validation-provider
+        v-slot="{ errors }"
+        name="Password"
+        rules="required|alphanumerical|min:6">
+        <v-input
+          v-model="password"
+          :error="errors[0]"
+          type="password"
+          name="password" />
+      </validation-provider>
+      <validation-provider
+        v-slot="{ errors }"
+        name="Password Confirmation"
+        :rules="{ required: true, is: password }">
+        <v-input
+          v-model="passwordConfirmation"
+          :error="errors[0]"
+          type="password"
+          name="passwordConfirmation" />
+      </validation-provider>
+      <button class="button" type="submit">
+        Change password
+      </button>
     </validation-observer>
   </div>
 </template>
@@ -38,13 +40,11 @@ import { mapActions } from 'vuex';
 import VInput from '@/common/components/form/VInput';
 
 export default {
-  data() {
-    return {
-      error: null,
-      password: '',
-      passwordConfirmation: ''
-    };
-  },
+  data: () => ({
+    error: null,
+    password: '',
+    passwordConfirmation: ''
+  }),
   methods: {
     ...mapActions('auth', ['resetPassword']),
     submit() {

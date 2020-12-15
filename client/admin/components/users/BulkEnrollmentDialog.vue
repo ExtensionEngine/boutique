@@ -10,41 +10,43 @@
         Enroll
       </v-btn>
     </template>
-    <validation-observer ref="validationObserver" v-slot="{ handleSubmit }" slim>
-      <form @submit.prevent="handleSubmit(submit)">
-        <v-card class="pa-3">
-          <v-card-title class="headline">Enroll users to Program</v-card-title>
-          <v-card-text>
-            <validation-provider
-              v-slot="{ errors }"
-              name="program">
-              <v-autocomplete
-                v-model="programId"
-                @focus="focusTrap.pause()"
-                @blur="focusTrap.unpause()"
-                :items="programOptions"
-                :disabled="enrolling"
-                :error-messages="errors"
-                name="program"
-                label="Program"
-                placeholder="Start typing to Search"
-                prepend-icon="mdi-magnify"
-                clearable />
-            </validation-provider>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn @click="close" :disabled="enrolling">Cancel</v-btn>
-            <v-btn
-              :disabled="enrollDisabled"
-              :loading="enrolling"
-              color="success"
-              type="submit">
-              Enroll
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </form>
+    <validation-observer
+      ref="form"
+      @submit.prevent="$refs.form.handleSubmit(submit)"
+      tag="form"
+      novalidate>
+      <v-card class="pa-3">
+        <v-card-title class="headline">Enroll users to Program</v-card-title>
+        <v-card-text>
+          <validation-provider
+            v-slot="{ errors }"
+            name="program">
+            <v-autocomplete
+              v-model="programId"
+              @focus="focusTrap.pause()"
+              @blur="focusTrap.unpause()"
+              :items="programOptions"
+              :disabled="enrolling"
+              :error-messages="errors"
+              name="program"
+              label="Program"
+              placeholder="Start typing to Search"
+              prepend-icon="mdi-magnify"
+              clearable />
+          </validation-provider>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn @click="close" :disabled="enrolling">Cancel</v-btn>
+          <v-btn
+            :disabled="enrollDisabled"
+            :loading="enrolling"
+            color="success"
+            type="submit">
+            Enroll
+          </v-btn>
+        </v-card-actions>
+      </v-card>
     </validation-observer>
   </v-dialog>
 </template>
@@ -64,21 +66,17 @@ export default {
     disabled: { type: Boolean, default: true },
     users: { type: Array, default: () => ([]) }
   },
-  data() {
-    return {
-      visible: false,
-      programId: null,
-      enrolling: false
-    };
-  },
+  data: () => ({
+    visible: false,
+    programId: null,
+    enrolling: false
+  }),
   computed: {
     ...mapState('programs', { programs: 'items' }),
     programOptions() {
       return map(this.programs, it => ({ text: `${it.name}`, value: it.id }));
     },
-    enrollDisabled() {
-      return !this.programId || this.enrolling;
-    }
+    enrollDisabled: vm => !vm.programId || vm.enrolling
   },
   methods: {
     submit() {
@@ -88,11 +86,11 @@ export default {
         .then(({ failed = [] }) => {
           if (failed.length <= 0) return this.close();
           const msg = `Enrolling failed for ${failed.length} users`;
-          this.$refs.validationObserver.setErrors({ program: [msg] });
+          this.$refs.form.setErrors({ program: [msg] });
         })
         .catch(error => {
           const msg = 'Error! Unable to enroll Users!';
-          this.$refs.validationObserver.setErrors({ program: [msg] });
+          this.$refs.form.setErrors({ program: [msg] });
           return Promise.reject(error);
         })
         .finally(() => (this.enrolling = false));
@@ -100,7 +98,7 @@ export default {
     close() {
       this.visible = false;
       this.programId = null;
-      this.$refs.validationObserver.reset();
+      this.$refs.form.reset();
     }
   }
 };

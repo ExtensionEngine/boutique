@@ -63,4 +63,7 @@ const rules = {
   uniqueProgramName
 };
 
-forEach(rules, (rule, name) => extend(snakeCase(name), { message: messages[name], ...rule }));
+forEach(rules, (rule, name) => extend(snakeCase(name), {
+  message: messages[name],
+  ...rule
+}));

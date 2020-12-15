@@ -3,37 +3,41 @@
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" color="success" outlined>Enroll learner</v-btn>
     </template>
-    <validation-observer v-if="visible" v-slot="{ handleSubmit, invalid }" slim>
-      <form @submit.prevent="handleSubmit(enroll)">
-        <v-card class="pa-3">
-          <v-card-title class="headline">Enroll learner</v-card-title>
-          <v-card-text>
-            <validation-provider
-              v-slot="{ errors }"
-              name="Name"
-              :rules="{ required: true, unique_enrollment: { learnerId, programId } }">
-              <v-autocomplete
-                v-model="learnerId"
-                @focus="focusTrap.pause()"
-                @blur="focusTrap.unpause()"
-                :items="learners"
-                :search-input.sync="email"
-                :error-messages="errors"
-                :loading="isLoading"
-                label="Learner"
-                placeholder="Start typing to Search"
-                prepend-icon="mdi-magnify"
-                clearable
-                name="learner" />
-            </validation-provider>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn @click="close">Cancel</v-btn>
-            <v-btn :disabled="invalid" color="success" type="submit" outlined>Enroll</v-btn>
-          </v-card-actions>
-        </v-card>
-      </form>
+    <validation-observer
+      v-if="visible"
+      ref="form"
+      v-slot="{ invalid }"
+      @submit.prevent="$refs.form.handleSubmit(enroll)"
+      tag="form"
+      novalidate>
+      <v-card class="pa-3">
+        <v-card-title class="headline">Enroll learner</v-card-title>
+        <v-card-text>
+          <validation-provider
+            v-slot="{ errors }"
+            name="Name"
+            :rules="{ required: true, unique_enrollment: { learnerId, programId } }">
+            <v-autocomplete
+              v-model="learnerId"
+              @focus="focusTrap.pause()"
+              @blur="focusTrap.unpause()"
+              :items="learners"
+              :search-input.sync="email"
+              :error-messages="errors"
+              :loading="isLoading"
+              label="Learner"
+              placeholder="Start typing to Search"
+              prepend-icon="mdi-magnify"
+              clearable
+              name="learner" />
+          </validation-provider>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn @click="close">Cancel</v-btn>
+          <v-btn :disabled="invalid" color="success" type="submit" outlined>Enroll</v-btn>
+        </v-card-actions>
+      </v-card>
     </validation-observer>
   </v-dialog>
 </template>
