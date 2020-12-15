@@ -8,45 +8,47 @@
     </v-toolbar>
     <v-row no-gutters>
       <v-col cols="12" sm="6" md="4">
-        <validation-observer ref="validationObserver" v-slot="{ handleSubmit }" slim>
-          <form @submit.prevent="handleSubmit(saveProgram)">
-            <validation-provider
-              v-slot="{ errors }"
-              name="Program name"
-              :rules="{ required: true, min: 2, max: 255, unique_program_name: program }">
-              <v-text-field
-                v-model.trim="programData.name"
-                :error-messages="errors"
-                :disabled="!isEditing"
-                name="name"
-                label="Program name"
-                append-icon="mdi-pencil" />
-            </validation-provider>
-            <date-picker
-              v-model="programData.startDate"
+        <validation-observer
+          ref="form"
+          @submit.prevent="$refs.form.handleSubmit(saveProgram)"
+          tag="form"
+          novalidate>
+          <validation-provider
+            v-slot="{ errors }"
+            name="Program name"
+            :rules="{ required: true, min: 2, max: 255, unique_program_name: program }">
+            <v-text-field
+              v-model.trim="programData.name"
+              :error-messages="errors"
               :disabled="!isEditing"
-              name="startDate"
-              label="Start Date" />
-            <validation-provider
-              v-slot="{ errors }"
-              name="End Date"
-              :rules="{ after: programData.startDate }">
-              <date-picker
-                v-model="programData.endDate"
-                :disabled="!isEditing"
-                :error-messages="errors"
-                name="endDate"
-                label="End Date" />
-            </validation-provider>
-            <v-row no-gutters>
-              <v-spacer />
-              <template v-if="isEditing">
-                <v-btn @click="cancel" outlined>Cancel</v-btn>
-                <v-btn type="submit" class="ml-4" color="success">Save</v-btn>
-              </template>
-              <v-btn v-else @click="isEditing = true" outlined>Edit</v-btn>
-            </v-row>
-          </form>
+              name="name"
+              label="Program name"
+              append-icon="mdi-pencil" />
+          </validation-provider>
+          <date-picker
+            v-model="programData.startDate"
+            :disabled="!isEditing"
+            name="startDate"
+            label="Start Date" />
+          <validation-provider
+            v-slot="{ errors }"
+            name="End Date"
+            :rules="{ after: programData.startDate }">
+            <date-picker
+              v-model="programData.endDate"
+              :disabled="!isEditing"
+              :error-messages="errors"
+              name="endDate"
+              label="End Date" />
+          </validation-provider>
+          <v-row no-gutters>
+            <v-spacer />
+            <template v-if="isEditing">
+              <v-btn @click="cancel" outlined>Cancel</v-btn>
+              <v-btn type="submit" class="ml-4" color="success">Save</v-btn>
+            </template>
+            <v-btn v-else @click="isEditing = true" outlined>Edit</v-btn>
+          </v-row>
         </validation-observer>
       </v-col>
     </v-row>
@@ -103,7 +105,7 @@ export default {
       });
     },
     cancel() {
-      this.$refs.validationObserver.reset();
+      this.$refs.form.reset();
       this.cloneProgram();
       this.isEditing = false;
     }

@@ -1,38 +1,40 @@
 <template>
   <div>
     <div v-if="message" class="message">{{ message }}</div>
-    <validation-observer v-slot="{ handleSubmit }" slim>
-      <form @submit.prevent="handleSubmit(submit)">
-        <validation-provider
-          v-slot="{ errors }"
-          name="Email"
-          rules="required|email">
-          <v-text-field
-            v-model="email"
-            :error-messages="errors"
-            autocomplete="email"
-            label="Email"
-            outlined />
-        </validation-provider>
-        <validation-provider
-          v-slot="{ errors }"
-          name="Password"
-          rules="required">
-          <v-text-field
-            v-model="password"
-            :error-messages="errors"
-            autocomplete="current-password"
-            type="password"
-            label="Password"
-            outlined />
-        </validation-provider>
-        <div class="options">
-          <router-link :to="{ name: 'forgot-password' }">
-            Forgot password ?
-          </router-link>
-          <v-btn type="submit" outlined>Login</v-btn>
-        </div>
-      </form>
+    <validation-observer
+      ref="form"
+      @submit.prevent="$refs.form.handleSubmit(submit)"
+      tag="form"
+      novalidate>
+      <validation-provider
+        v-slot="{ errors }"
+        name="Email"
+        rules="required|email">
+        <v-text-field
+          v-model="email"
+          :error-messages="errors"
+          autocomplete="email"
+          label="Email"
+          outlined />
+      </validation-provider>
+      <validation-provider
+        v-slot="{ errors }"
+        name="Password"
+        rules="required">
+        <v-text-field
+          v-model="password"
+          :error-messages="errors"
+          autocomplete="current-password"
+          type="password"
+          label="Password"
+          outlined />
+      </validation-provider>
+      <div class="options">
+        <router-link :to="{ name: 'forgot-password' }">
+          Forgot password ?
+        </router-link>
+        <v-btn type="submit" outlined>Login</v-btn>
+      </div>
     </validation-observer>
   </div>
 </template>
@@ -47,13 +49,11 @@ const LOGIN_ERR_MESSAGE = 'User email and password do not match';
 
 export default {
   name: 'login',
-  data() {
-    return {
-      email: '',
-      password: '',
-      message: ''
-    };
-  },
+  data: () => ({
+    email: '',
+    password: '',
+    message: ''
+  }),
   methods: {
     ...mapActions('auth', ['login']),
     submit() {

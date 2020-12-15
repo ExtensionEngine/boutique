@@ -10,46 +10,50 @@
         <v-icon>mdi-cloud-upload</v-icon>Import
       </v-btn>
     </template>
-    <validation-observer v-if="visible" v-slot="{ handleSubmit, invalid }" slim>
-      <form @submit.prevent="handleSubmit(submit)">
-        <v-card class="pa-3">
-          <v-card-title class="headline">Import Users</v-card-title>
-          <v-card-text>
-            <validation-provider
-              v-slot="{ errors }"
-              :rules="inputValidation"
-              name="File"
-              slim>
-              <v-file-input
-                v-model="file"
-                :accept="acceptedFiles"
-                :error-messages="errors"
-                :disabled="importing"
-                prepend-icon="mdi-attachment"
-                label="Upload .xlsx or .csv file" />
-            </validation-provider>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn @click="downloadTemplateFile" text color="blue-grey">
-              Download Template
+    <validation-observer
+      v-if="visible"
+      ref="form"
+      v-slot="{ invalid }"
+      @submit.prevent="$refs.form.handleSubmit(submit)"
+      tag="form"
+      novalidate>
+      <v-card class="pa-3">
+        <v-card-title class="headline">Import Users</v-card-title>
+        <v-card-text>
+          <validation-provider
+            v-slot="{ errors }"
+            :rules="inputValidation"
+            name="File"
+            slim>
+            <v-file-input
+              v-model="file"
+              :accept="acceptedFiles"
+              :error-messages="errors"
+              :disabled="importing"
+              prepend-icon="mdi-attachment"
+              label="Upload .xlsx or .csv file" />
+          </validation-provider>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="downloadTemplateFile" text color="blue-grey">
+            Download Template
+          </v-btn>
+          <v-spacer />
+          <v-fade-transition>
+            <v-btn
+              v-show="serverErrorsReport"
+              @click="downloadErrorsFile"
+              color="error">
+              <v-icon>mdi-cloud-download</v-icon>Errors
             </v-btn>
-            <v-spacer />
-            <v-fade-transition>
-              <v-btn
-                v-show="serverErrorsReport"
-                @click="downloadErrorsFile"
-                color="error">
-                <v-icon>mdi-cloud-download</v-icon>Errors
-              </v-btn>
-            </v-fade-transition>
-            <v-btn @click="close">Cancel</v-btn>
-            <v-btn :disabled="importing || invalid" color="success" type="submit">
-              <span v-if="!importing">Import</span>
-              <v-icon v-else>mdi-loading mdi-spin</v-icon>
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </form>
+          </v-fade-transition>
+          <v-btn @click="close">Cancel</v-btn>
+          <v-btn :disabled="importing || invalid" color="success" type="submit">
+            <span v-if="!importing">Import</span>
+            <v-icon v-else>mdi-loading mdi-spin</v-icon>
+          </v-btn>
+        </v-card-actions>
+      </v-card>
     </validation-observer>
   </v-dialog>
 </template>
@@ -65,15 +69,13 @@ const inputFormats = {
 
 export default {
   name: 'import-dialog',
-  data() {
-    return {
-      visible: false,
-      importing: false,
-      file: null,
-      form: null,
-      serverErrorsReport: null
-    };
-  },
+  data: () => ({
+    visible: false,
+    importing: false,
+    file: null,
+    form: null,
+    serverErrorsReport: null
+  }),
   computed: {
     inputValidation: () => ({ required: true, mimes: Object.keys(inputFormats) }),
     acceptedFiles: () => Object.keys(inputFormats)

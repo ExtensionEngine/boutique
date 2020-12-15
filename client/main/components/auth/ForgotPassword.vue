@@ -19,24 +19,26 @@
       </div>
     </div>
     <div v-else>
-      <validation-observer v-slot="{ handleSubmit }" slim>
-        <form @submit.prevent="handleSubmit(submit)">
-          <validation-provider
-            v-slot="{ errors }"
-            name="Email"
-            rules="required|email">
-            <v-text-field
-              v-model="email"
-              :error-messages="errors"
-              autocomplete="email"
-              label="Email"
-              outlined />
-          </validation-provider>
-          <div class="options">
-            <a @click="$router.go(-1)">Back</a>
-            <v-btn type="submit" outlined>Send reset email</v-btn>
-          </div>
-        </form>
+      <validation-observer
+        ref="form"
+        @submit.prevent="$refs.form.handleSubmit(submit)"
+        tag="form"
+        novalidate>
+        <validation-provider
+          v-slot="{ errors }"
+          name="Email"
+          rules="required|email">
+          <v-text-field
+            v-model="email"
+            :error-messages="errors"
+            autocomplete="email"
+            label="Email"
+            outlined />
+        </validation-provider>
+        <div class="options">
+          <a @click="$router.go(-1)">Back</a>
+          <v-btn type="submit" outlined>Send reset email</v-btn>
+        </div>
       </validation-observer>
     </div>
   </div>
@@ -48,17 +50,13 @@ import { mapActions } from 'vuex';
 const delay = timeout => new Promise(resolve => setTimeout(resolve, timeout));
 
 export default {
-  data() {
-    return {
-      email: '',
-      error: null,
-      submitted: false
-    };
-  },
+  data: () => ({
+    email: '',
+    error: null,
+    submitted: false
+  }),
   computed: {
-    invalidEmail() {
-      return this.error && this.error.response.status === 404;
-    }
+    invalidEmail: vm => vm.error && vm.error.response.status === 404
   },
   methods: {
     ...mapActions('auth', ['forgotPassword']),
