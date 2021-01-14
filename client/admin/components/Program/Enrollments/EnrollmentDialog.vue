@@ -15,7 +15,7 @@
         <v-card-text>
           <validation-provider
             v-slot="{ errors }"
-            name="Name"
+            name="name"
             :rules="{ required: true, unique_enrollment: { learnerId, programId } }">
             <v-autocomplete
               v-model="learnerId"
@@ -25,11 +25,11 @@
               :search-input.sync="email"
               :error-messages="errors"
               :loading="isLoading"
+              name="learner"
               label="Learner"
               placeholder="Start typing to Search"
               prepend-icon="mdi-magnify"
-              clearable
-              name="learner" />
+              clearable />
           </validation-provider>
         </v-card-text>
         <v-card-actions>

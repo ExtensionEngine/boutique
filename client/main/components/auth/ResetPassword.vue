@@ -10,7 +10,7 @@
       novalidate>
       <validation-provider
         v-slot="{ errors }"
-        name="Password"
+        name="password"
         rules="required|alphanumerical|min:6">
         <v-input
           v-model="password"
@@ -20,7 +20,7 @@
       </validation-provider>
       <validation-provider
         v-slot="{ errors }"
-        name="Password Confirmation"
+        name="password confirmation"
         :rules="{ required: true, is: password }">
         <v-input
           v-model="passwordConfirmation"

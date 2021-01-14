@@ -23,17 +23,18 @@
         <v-card-text>
           <validation-provider
             v-slot="{ errors }"
-            name="E-mail"
-            :rules="{ required: true, email: true, unique_email: userData }">
+            :rules="{ required: true, email: true, unique_email: userData }"
+            name="email">
             <v-text-field
               v-model="user.email"
               :error-messages="errors"
-              label="E-mail"
+              name="email"
+              label="Email"
               class="mb-3" />
           </validation-provider>
           <validation-provider
             v-slot="{ errors }"
-            name="Role"
+            name="role"
             rules="required">
             <v-select
               v-model="user.role"
@@ -41,12 +42,13 @@
               @blur="focusTrap.unpause()"
               :items="roles"
               :error-messages="errors"
+              name="role"
               label="Role"
               class="mb-3" />
           </validation-provider>
           <validation-provider
             v-slot="{ errors }"
-            name="First Name"
+            name="first name"
             rules="required|alpha|min:2|max:50">
             <v-text-field
               v-model="user.firstName"
@@ -56,7 +58,7 @@
           </validation-provider>
           <validation-provider
             v-slot="{ errors }"
-            name="Last Name"
+            name="last name"
             rules="required|alpha|min:2|max:50">
             <v-text-field
               v-model="user.lastName"

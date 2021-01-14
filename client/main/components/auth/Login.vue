@@ -10,24 +10,24 @@
       novalidate>
       <validation-provider
         v-slot="{ errors }"
-        name="Email"
+        name="email"
         rules="required|email">
         <v-input
           v-model="email"
           :error="errors[0]"
-          autocomplete="email"
-          name="email" />
+          name="email"
+          autocomplete="email" />
       </validation-provider>
       <validation-provider
         v-slot="{ errors }"
-        name="Password"
+        name="password"
         rules="required">
         <v-input
           v-model="password"
           :error="errors[0]"
-          autocomplete="current-password"
           name="password"
-          type="password" />
+          type="password"
+          autocomplete="current-password" />
       </validation-provider>
       <div class="options">
         <router-link :to="{ name: 'forgot-password' }">

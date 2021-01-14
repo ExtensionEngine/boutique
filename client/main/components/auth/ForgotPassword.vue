@@ -26,13 +26,13 @@
         novalidate>
         <validation-provider
           v-slot="{ errors }"
-          name="Email"
+          name="email"
           rules="required|email">
           <v-input
             v-model="email"
             :error="errors[0]"
-            autocomplete="email"
-            name="email" />
+            name="email"
+            autocomplete="email" />
         </validation-provider>
         <button type="submit" class="button">Send reset email</button>
         <div class="options">
