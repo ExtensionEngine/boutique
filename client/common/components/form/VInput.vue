@@ -3,7 +3,6 @@
     <label class="label">{{ label }}</label>
     <div class="control">
       <input
-        v-validate="validate"
         @input="$emit('input', $event.target.value)"
         :value="value"
         :type="type"
@@ -14,8 +13,8 @@
         data-vv-delay="1000"
         class="input">
     </div>
-    <p v-visible="showError" class="help is-danger">
-      {{ vErrors.first(name) || '&nbsp;' }}
+    <p v-visible="error" class="help is-danger">
+      {{ error || '&nbsp;' }}
     </p>
   </div>
 </template>
@@ -30,19 +29,10 @@ export default {
     type: { type: String, default: 'text' },
     name: { type: String, required: true },
     value: { type: String, required: true },
-    validate: { type: [String, Object], default: null }
+    error: { type: String, default: null }
   },
   computed: {
-    label() {
-      return humanize(this.name);
-    },
-    showError() {
-      return this.vErrors.has(this.name);
-    }
-  },
-  inject: ['$validator'],
-  beforeDestroy() {
-    this.$validator.pause();
+    label: vm => humanize(vm.name)
   }
 };
 </script>

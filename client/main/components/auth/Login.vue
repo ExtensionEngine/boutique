@@ -3,25 +3,39 @@
     <div class="message">
       <span v-if="message">{{ message }}</span>
     </div>
-    <form @submit.prevent="submit">
-      <v-input
-        v-model="email"
-        autocomplete="email"
+    <validation-observer
+      ref="form"
+      @submit.prevent="$refs.form.handleSubmit(submit)"
+      tag="form"
+      novalidate>
+      <validation-provider
+        v-slot="{ errors }"
         name="email"
-        validate="required|email" />
-      <v-input
-        v-model="password"
-        autocomplete="current-password"
+        rules="required|email">
+        <v-input
+          v-model="email"
+          :error="errors[0]"
+          name="email"
+          autocomplete="email" />
+      </validation-provider>
+      <validation-provider
+        v-slot="{ errors }"
         name="password"
-        type="password"
-        validate="required" />
+        rules="required">
+        <v-input
+          v-model="password"
+          :error="errors[0]"
+          name="password"
+          type="password"
+          autocomplete="current-password" />
+      </validation-provider>
       <div class="options">
         <router-link :to="{ name: 'forgot-password' }">
           Forgot password ?
         </router-link>
         <button class="button" type="submit">Login</button>
       </div>
-    </form>
+    </validation-observer>
   </div>
 </template>
 
@@ -31,33 +45,26 @@ import { navigateTo } from '@/common/navigation';
 import pick from 'lodash/pick';
 import role from '@/../common/config/role';
 import VInput from '@/common/components/form/VInput';
-import { withValidation } from '@/common/validation';
 
 const LOGIN_ERR_MESSAGE = 'User email and password do not match';
 
 export default {
   name: 'login',
-  mixins: [withValidation()],
-  data() {
-    return {
-      email: '',
-      password: '',
-      message: ''
-    };
-  },
+  data: () => ({
+    email: '',
+    password: '',
+    message: ''
+  }),
   methods: {
     ...mapActions('auth', ['login']),
     submit() {
       this.message = '';
-      this.$validator.validateAll().then(isValid => {
-        if (!isValid) return;
-        this.login(pick(this, ['email', 'password']))
-          .then(user => {
-            if (user.role === role.ADMIN) return navigateTo('/admin');
-            this.$router.push('/');
-          })
-          .catch(() => (this.message = LOGIN_ERR_MESSAGE));
-      });
+      this.login(pick(this, ['email', 'password']))
+        .then(user => {
+          if (user.role === role.ADMIN) return navigateTo('/admin');
+          this.$router.push('/');
+        })
+        .catch(() => (this.message = LOGIN_ERR_MESSAGE));
     }
   },
   components: { VInput }

@@ -8,26 +8,39 @@
     </v-toolbar>
     <v-row no-gutters>
       <v-col cols="12" sm="6" md="4">
-        <form @submit.prevent="saveProgram">
-          <v-text-field
-            v-model.trim="programData.name"
-            v-validate="{ required: true, min: 2, max: 255, 'unique-program-name': program }"
-            :error-messages="vErrors.collect('name')"
-            :disabled="!isEditing"
-            name="name"
-            label="Program name"
-            append-icon="mdi-pencil" />
+        <validation-observer
+          ref="form"
+          @submit.prevent="$refs.form.handleSubmit(saveProgram)"
+          tag="form"
+          novalidate>
+          <validation-provider
+            v-slot="{ errors }"
+            :rules="{ required: true, min: 2, max: 255, unique_program_name: program }"
+            name="program name">
+            <v-text-field
+              v-model.trim="programData.name"
+              :error-messages="errors"
+              :disabled="!isEditing"
+              name="name"
+              label="Program name"
+              append-icon="mdi-pencil" />
+          </validation-provider>
           <date-picker
             v-model="programData.startDate"
             :disabled="!isEditing"
             name="startDate"
             label="Start Date" />
-          <date-picker
-            v-model="programData.endDate"
-            :validate="{ after: programData.startDate }"
-            :disabled="!isEditing"
-            name="endDate"
-            label="End Date" />
+          <validation-provider
+            v-slot="{ errors }"
+            :rules="{ after: programData.startDate }"
+            name="end date">
+            <date-picker
+              v-model="programData.endDate"
+              :disabled="!isEditing"
+              :error-messages="errors"
+              name="endDate"
+              label="End Date" />
+          </validation-provider>
           <v-row no-gutters>
             <v-spacer />
             <template v-if="isEditing">
@@ -36,7 +49,7 @@
             </template>
             <v-btn v-else @click="isEditing = true" outlined>Edit</v-btn>
           </v-row>
-        </form>
+        </validation-observer>
       </v-col>
     </v-row>
     <confirmation-dialog
@@ -53,14 +66,12 @@ import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
 import DatePicker from '@/admin/components/common/DatePicker';
 import format from 'date-fns/format';
 import { mapActions } from 'vuex';
-import { withValidation } from '@/common/validation';
 
 const DST_FORMAT = 'yyyy-MM-dd';
 const formatDate = d => d && format(new Date(d), DST_FORMAT);
 
 export default {
   name: 'program-settings',
-  mixins: [withValidation()],
   props: { program: { type: Object, default: null } },
   data() {
     return {
@@ -78,11 +89,8 @@ export default {
   methods: {
     ...mapActions('programs', ['save', 'remove']),
     saveProgram() {
-      this.$validator.validateAll().then(isValid => {
-        if (!isValid) return;
-        this.save(this.programData);
-        this.isEditing = false;
-      });
+      this.save(this.programData);
+      this.isEditing = false;
     },
     removeProgram() {
       this.remove(this.program)
@@ -97,7 +105,7 @@ export default {
       });
     },
     cancel() {
-      this.vErrors.clear();
+      this.$refs.form.reset();
       this.cloneProgram();
       this.isEditing = false;
     }

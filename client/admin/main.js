@@ -1,19 +1,17 @@
+import '@/common/validation';
+
+import { ValidationObserver, ValidationProvider } from 'vee-validate';
 import App from './App';
 import format from 'date-fns/format';
 import router from './router';
 import store from './store';
-import VeeValidate from '@/common/validation';
 import Vue from 'vue';
 import VueHotkey from 'v-hotkey';
 import vuetify from '@/plugins/vuetify';
 import VueVisible from 'vue-visible';
 
-Vue.use(VeeValidate, {
-  delay: 700,
-  fieldsBagName: 'vFields',
-  errorBagName: 'vErrors',
-  inject: false
-});
+Vue.component('ValidationProvider', ValidationProvider);
+Vue.component('ValidationObserver', ValidationObserver);
 Vue.use(VueHotkey);
 Vue.use(VueVisible);
 
