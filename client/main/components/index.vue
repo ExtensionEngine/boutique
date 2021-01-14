@@ -1,7 +1,7 @@
 <template>
   <div>
     <navbar />
-    <div class="container">
+    <div class="py-12">
       <circular-progress-bar v-if="isLoading" :width="50" :height="50" />
       <router-view v-else />
     </div>
@@ -33,9 +33,3 @@ export default {
   components: { Navbar, CircularProgressBar }
 };
 </script>
-
-<style lang="scss" scoped>
-.container {
-  padding: 50px 0;
-}
-</style>

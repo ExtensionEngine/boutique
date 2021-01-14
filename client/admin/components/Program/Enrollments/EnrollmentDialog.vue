@@ -3,35 +3,40 @@
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" color="success" outlined>Enroll learner</v-btn>
     </template>
-    <v-form @submit.prevent="enroll">
+    <validation-observer
+      v-if="visible"
+      ref="form"
+      v-slot="{ invalid }"
+      @submit.prevent="$refs.form.handleSubmit(enroll)"
+      tag="form"
+      novalidate>
       <v-card class="pa-3">
         <v-card-title class="headline">Enroll learner</v-card-title>
         <v-card-text>
-          <v-autocomplete
-            v-model="learnerId"
-            v-validate="{
-              required: true,
-              'unique-enrollment': { learnerId, programId }
-            }"
-            @focus="focusTrap.pause()"
-            @blur="focusTrap.unpause()"
-            :items="learners"
-            :search-input.sync="email"
-            :error-messages="vErrors.collect('learner')"
-            :loading="isLoading"
-            label="Learner"
-            placeholder="Start typing to Search"
-            prepend-icon="mdi-magnify"
-            clearable
-            name="learner" />
+          <validation-provider
+            v-slot="{ errors }"
+            name="name"
+            :rules="{ required: true, unique_enrollment: { learnerId, programId } }">
+            <v-autocomplete
+              v-model="learnerId"
+              :items="learners"
+              :search-input.sync="email"
+              :error-messages="errors"
+              :loading="isLoading"
+              name="learner"
+              label="Learner"
+              placeholder="Start typing to Search"
+              prepend-icon="mdi-magnify"
+              clearable />
+          </validation-provider>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
           <v-btn @click="close">Cancel</v-btn>
-          <v-btn color="success" outlined type="submit">Enroll</v-btn>
+          <v-btn :disabled="invalid" color="success" type="submit" outlined>Enroll</v-btn>
         </v-card-actions>
       </v-card>
-    </v-form>
+    </validation-observer>
   </v-dialog>
 </template>
 
@@ -40,34 +45,24 @@ import enrollmentApi from '@/admin/api/enrollment';
 import map from 'lodash/map';
 import pick from 'lodash/pick';
 import userApi from '@/admin/api/user';
-import { withFocusTrap } from '@/common/focustrap';
-import { withValidation } from '@/common/validation';
-
-const el = vm => vm.$children[0].$refs.dialog;
 
 export default {
   name: 'enrollment-dialog',
-  mixins: [withValidation(), withFocusTrap({ el })],
   props: {
     programId: { type: Number, required: true }
   },
-  data() {
-    return {
-      visible: false,
-      email: null,
-      learnerId: null,
-      learners: [],
-      isLoading: false
-    };
-  },
+  data: () => ({
+    visible: false,
+    email: null,
+    learnerId: null,
+    learners: [],
+    isLoading: false
+  }),
   methods: {
     enroll() {
-      this.$validator.validateAll().then(isValid => {
-        if (!isValid) return;
-        enrollmentApi.create(pick(this, ['learnerId', 'programId'])).then(() => {
-          this.close();
-          this.$emit('enrolled');
-        });
+      enrollmentApi.create(pick(this, ['learnerId', 'programId'])).then(() => {
+        this.close();
+        this.$emit('enrolled');
       });
     },
     close() {
@@ -93,20 +88,9 @@ export default {
       if (val) this.fetch(val);
     },
     visible(val) {
-      this.$nextTick(() => this.focusTrap.toggle(val));
       if (!val) return;
-      this.vErrors.clear();
       this.fetch();
     }
-  },
-  mounted() {
-    if (this.$validator.rules['unique-enrollment']) return;
-    this.$validator.extend('unique-enrollment', {
-      getMessage: field => 'Learner is already enrolled!',
-      validate: (option, params) => {
-        return enrollmentApi.fetch({ params }).then(res => !res.total);
-      }
-    });
   }
 };
 </script>
