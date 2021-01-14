@@ -1,10 +1,9 @@
 <template>
   <v-menu
     :disabled="disabled"
-    full-width
-    min-width="290px"
-    offset-y
-    transition="scale-transition">
+    min-width="290"
+    transition="scale-transition"
+    offset-y>
     <template v-slot:activator="{ on }">
       <v-text-field
         v-on="on"

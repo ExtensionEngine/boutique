@@ -23,8 +23,6 @@
             name="program">
             <v-autocomplete
               v-model="programId"
-              @focus="focusTrap.pause()"
-              @blur="focusTrap.unpause()"
               :items="programOptions"
               :disabled="enrolling"
               :error-messages="errors"
@@ -55,13 +53,9 @@
 import api from '@/admin/api/enrollment';
 import map from 'lodash/map';
 import { mapState } from 'vuex';
-import { withFocusTrap } from '@/common/focustrap';
-
-const el = vm => vm.$children[0].$refs.dialog;
 
 export default {
   name: 'bulk-enrollment-dialog',
-  mixins: [withFocusTrap({ el })],
   props: {
     disabled: { type: Boolean, default: true },
     users: { type: Array, default: () => ([]) }

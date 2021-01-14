@@ -19,8 +19,6 @@
             :rules="{ required: true, unique_enrollment: { learnerId, programId } }">
             <v-autocomplete
               v-model="learnerId"
-              @focus="focusTrap.pause()"
-              @blur="focusTrap.unpause()"
               :items="learners"
               :search-input.sync="email"
               :error-messages="errors"
@@ -47,25 +45,19 @@ import enrollmentApi from '@/admin/api/enrollment';
 import map from 'lodash/map';
 import pick from 'lodash/pick';
 import userApi from '@/admin/api/user';
-import { withFocusTrap } from '@/common/focustrap';
-
-const el = vm => vm.$children[0].$refs.dialog;
 
 export default {
   name: 'enrollment-dialog',
-  mixins: [withFocusTrap({ el })],
   props: {
     programId: { type: Number, required: true }
   },
-  data() {
-    return {
-      visible: false,
-      email: null,
-      learnerId: null,
-      learners: [],
-      isLoading: false
-    };
-  },
+  data: () => ({
+    visible: false,
+    email: null,
+    learnerId: null,
+    learners: [],
+    isLoading: false
+  }),
   methods: {
     enroll() {
       enrollmentApi.create(pick(this, ['learnerId', 'programId'])).then(() => {
@@ -96,7 +88,6 @@ export default {
       if (val) this.fetch(val);
     },
     visible(val) {
-      this.$nextTick(() => this.focusTrap.toggle(val));
       if (!val) return;
       this.fetch();
     }

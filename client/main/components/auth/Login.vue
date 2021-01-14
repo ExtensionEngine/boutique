@@ -1,8 +1,6 @@
 <template>
   <div>
-    <div class="message">
-      <span v-if="message">{{ message }}</span>
-    </div>
+    <div v-if="message" class="message">{{ message }}</div>
     <validation-observer
       ref="form"
       @submit.prevent="$refs.form.handleSubmit(submit)"
@@ -12,28 +10,32 @@
         v-slot="{ errors }"
         name="email"
         rules="required|email">
-        <v-input
+        <v-text-field
           v-model="email"
-          :error="errors[0]"
+          :error-messages="errors"
           name="email"
-          autocomplete="email" />
+          label="Email"
+          autocomplete="email"
+          outlined />
       </validation-provider>
       <validation-provider
         v-slot="{ errors }"
         name="password"
         rules="required">
-        <v-input
+        <v-text-field
           v-model="password"
-          :error="errors[0]"
-          name="password"
+          :error-messages="errors"
           type="password"
-          autocomplete="current-password" />
+          name="password"
+          label="Password"
+          autocomplete="current-password"
+          outlined />
       </validation-provider>
       <div class="options">
         <router-link :to="{ name: 'forgot-password' }">
           Forgot password ?
         </router-link>
-        <button class="button" type="submit">Login</button>
+        <v-btn type="submit" outlined>Login</v-btn>
       </div>
     </validation-observer>
   </div>
@@ -44,7 +46,6 @@ import { mapActions } from 'vuex';
 import { navigateTo } from '@/common/navigation';
 import pick from 'lodash/pick';
 import role from '@/../common/config/role';
-import VInput from '@/common/components/form/VInput';
 
 const LOGIN_ERR_MESSAGE = 'User email and password do not match';
 
@@ -66,20 +67,30 @@ export default {
         })
         .catch(() => (this.message = LOGIN_ERR_MESSAGE));
     }
-  },
-  components: { VInput }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
+$font-color: #444;
+
 .options {
-  padding: 5px 0 10px 0;
+  padding: 0.3125rem 0 0.625rem 0;
   text-align: right;
 
   a {
     display: inline-block;
-    padding: 6px 20px;
-    color: #444;
+    padding: 0.375rem 1.25rem;
+    color: $font-color;
+    text-decoration: none;
   }
+}
+
+.message {
+  min-height: 1rem;
+  margin-bottom: 1.25rem;
+  color: $font-color;
+  font-size: 1rem;
+  line-height: 1rem;
 }
 </style>

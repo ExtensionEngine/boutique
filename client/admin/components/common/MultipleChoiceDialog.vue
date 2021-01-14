@@ -28,9 +28,6 @@
 </template>
 
 <script>
-import { withFocusTrap } from '@/common/focustrap';
-
-const el = vm => vm.$children[0].$refs.dialog;
 const validator = actions => {
   if (!(actions instanceof Array)) return false;
   return actions.every(el => el.label && el.callback);
@@ -38,7 +35,6 @@ const validator = actions => {
 
 export default {
   name: 'multiple-choice-dialog',
-  mixins: [withFocusTrap({ el })],
   props: {
     visible: { type: Boolean, default: false },
     heading: { type: String, default: '' },
@@ -49,9 +45,7 @@ export default {
   data: () => ({ isLoading: false }),
   computed: {
     show: {
-      get() {
-        return this.visible;
-      },
+      get: vm => vm.visible,
       set(value) {
         if (!value) this.close();
       }
@@ -69,11 +63,6 @@ export default {
           this.$emit('completed');
         })
         .finally(() => (this.isLoading = false));
-    }
-  },
-  watch: {
-    show(val) {
-      this.$nextTick(() => this.focusTrap.toggle(val));
     }
   }
 };

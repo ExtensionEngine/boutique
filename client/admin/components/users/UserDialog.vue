@@ -38,8 +38,6 @@
             rules="required">
             <v-select
               v-model="user.role"
-              @focus="focusTrap.pause()"
-              @blur="focusTrap.unpause()"
               :items="roles"
               :error-messages="errors"
               name="role"
@@ -84,9 +82,7 @@ import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
 import { role } from '@/../common/config';
-import { withFocusTrap } from '@/common/focustrap';
 
-const el = vm => vm.$children[0].$refs.dialog;
 const resetUser = () => ({
   firstName: '',
   lastName: '',
@@ -96,7 +92,6 @@ const resetUser = () => ({
 
 export default {
   name: 'user-dialog',
-  mixins: [withFocusTrap({ el })],
   props: {
     visible: { type: Boolean, default: false },
     userData: { type: Object, default: () => ({}) }
@@ -132,7 +127,6 @@ export default {
   },
   watch: {
     show(val) {
-      this.$nextTick(() => this.focusTrap.toggle(val));
       if (!val) return;
       if (!isEmpty(this.userData)) this.user = cloneDeep(this.userData);
     }
