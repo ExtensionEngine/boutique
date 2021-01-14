@@ -26,13 +26,14 @@
         novalidate>
         <validation-provider
           v-slot="{ errors }"
-          name="Email"
+          name="email"
           rules="required|email">
           <v-text-field
             v-model="email"
             :error-messages="errors"
-            autocomplete="email"
+            name="email"
             label="Email"
+            autocomplete="email"
             outlined />
         </validation-provider>
         <div class="options">

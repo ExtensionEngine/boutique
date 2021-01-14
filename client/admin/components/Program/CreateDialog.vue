@@ -14,11 +14,12 @@
         <v-card-text>
           <validation-provider
             v-slot="{ errors }"
-            name="Name"
-            :rules="{ required: true, min: 2, max: 255, unique_program_name: null }">
+            :rules="{ required: true, min: 2, max: 255, unique_program_name: null }"
+            name="name">
             <v-text-field
               v-model.trim="program.name"
               :error-messages="errors"
+              name="name"
               label="Name" />
           </validation-provider>
         </v-card-text>

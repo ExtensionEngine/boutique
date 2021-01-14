@@ -15,8 +15,8 @@
           novalidate>
           <validation-provider
             v-slot="{ errors }"
-            name="Program name"
-            :rules="{ required: true, min: 2, max: 255, unique_program_name: program }">
+            :rules="{ required: true, min: 2, max: 255, unique_program_name: program }"
+            name="program name">
             <v-text-field
               v-model.trim="programData.name"
               :error-messages="errors"
@@ -32,8 +32,8 @@
             label="Start Date" />
           <validation-provider
             v-slot="{ errors }"
-            name="End Date"
-            :rules="{ after: programData.startDate }">
+            :rules="{ after: programData.startDate }"
+            name="end date">
             <date-picker
               v-model="programData.endDate"
               :disabled="!isEditing"

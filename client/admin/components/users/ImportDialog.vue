@@ -23,7 +23,7 @@
           <validation-provider
             v-slot="{ errors }"
             :rules="inputValidation"
-            name="File"
+            name="file"
             slim>
             <v-file-input
               v-model="file"
