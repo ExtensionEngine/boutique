@@ -1,6 +1,6 @@
 'use strict';
 
-const { Enrollment, Program, sequelize } = require('../common/database');
+const { Enrollment, Program, Sequelize, sequelize } = require('../common/database');
 const pick = require('lodash/pick');
 
 const { Op } = Sequelize;
@@ -38,7 +38,7 @@ function destroy({ program }, res) {
 }
 
 function getEnrolledPrograms({ user }, res) {
-  const include = [{ model: Enrollment, where: { studentId: user.id } }];
+  const include = [{ model: Enrollment, where: { learnerId: user.id } }];
   return Program.active().findAll({ include })
     .then(programs => res.jsend.success(programs));
 }

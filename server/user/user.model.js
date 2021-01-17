@@ -1,67 +1,68 @@
 'use strict';
 
-const { auth: config = {} } = require('../config');
-const { Model, Sequelize, Op } = require('sequelize');
+const { Model, Op, Sequelize } = require('sequelize');
 const { restoreOrBuild, restoreOrBuildAll } = require('../common/database/restore');
-const { role } = require('../../common/config');
-const { sql } = require('../common/database/helpers');
+const Audience = require('../common/auth/audience');
 const bcrypt = require('bcrypt');
+const { auth: config = {} } = require('../config');
 const jwt = require('jsonwebtoken');
-const logger = require('../common/logger')();
 const mail = require('../common/mail');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
 const Promise = require('bluebird');
 const Role = require('../../common/config/role');
+const { role } = require('../../common/config');
+const { sql } = require('../common/database/helpers');
+const logger = require('../common/logger')();
 const values = require('lodash/values');
 
 class User extends Model {
-  static fields(DataTypes) {
+  static fields({ DATE, ENUM, STRING, VIRTUAL }) {
     return {
       email: {
-        type: DataTypes.STRING,
+        type: STRING,
         allowNull: false,
         validate: { isEmail: true, notEmpty: true },
         unique: { msg: 'This email address is already in use.' }
       },
       password: {
-        type: DataTypes.STRING,
+        type: STRING,
         validate: { notEmpty: true, len: [5, 255] }
       },
       role: {
-        type: DataTypes.ENUM(values(role)),
+        type: ENUM(values(role)),
         allowNull: false,
-        defaultValue: role.STUDENT
+        defaultValue: role.LEARNER
       },
       token: {
-        type: DataTypes.STRING,
+        type: STRING,
         validate: { notEmpty: true, len: [10, 500] }
       },
       firstName: {
-        type: DataTypes.STRING,
+        type: STRING,
         field: 'first_name'
       },
       lastName: {
-        type: DataTypes.STRING,
+        type: STRING,
         field: 'last_name'
       },
       createdAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         field: 'created_at'
       },
       updatedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         field: 'updated_at'
       },
       deletedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         field: 'deleted_at'
       },
       profile: {
-        type: DataTypes.VIRTUAL,
+        type: VIRTUAL,
         get() {
           return pick(this,
-            ['id', 'firstName', 'lastName', 'email', 'role', 'createdAt']);
+            ['id', 'firstName', 'lastName', 'email', 'role', 'createdAt', 'deletedAt']);
         }
       }
     };
@@ -78,7 +79,7 @@ class User extends Model {
 
   static associate({ Enrollment }) {
     this.hasMany(Enrollment, {
-      foreignKey: { name: 'studentId', field: 'student_id' }
+      foreignKey: { name: 'learnerId', field: 'learner_id' }
     });
   }
 
@@ -123,7 +124,10 @@ class User extends Model {
   }
 
   static async invite(user, options) {
-    user.token = user.createToken({ expiresIn: '3 days' });
+    user.token = user.createToken({
+      audience: Audience.Scope.Setup,
+      expiresIn: '5 days'
+    });
     mail.invite(user, options).catch(err =>
       logger.error('Error: Sending invite email failed:', err.message));
     return user.save({ paranoid: false });
@@ -150,7 +154,10 @@ class User extends Model {
   }
 
   sendResetToken(options) {
-    this.token = this.createToken({ expiresIn: '5 days' });
+    this.token = this.createToken({
+      audience: Audience.Scope.Setup,
+      expiresIn: '5 days'
+    });
     mail.resetPassword(this, options).catch(err =>
       logger.error('Error: Sending reset password email failed:', err.message));
     return this.save();

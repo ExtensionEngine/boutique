@@ -5,6 +5,7 @@ const contentRepo = require('./content-repo');
 const enrollment = require('./enrollment');
 const express = require('express');
 const get = require('lodash/get');
+const preview = require('./preview');
 const program = require('./program');
 const { Sequelize } = require('./common/database');
 const user = require('./user');
@@ -17,6 +18,7 @@ router.use(user.path, user.router);
 router.use(contentRepo.path, auth, contentRepo.router);
 router.use(program.path, auth, program.router);
 router.use(enrollment.path, auth, enrollment.router);
+router.use(preview.path, preview.router);
 
 module.exports = router;
 

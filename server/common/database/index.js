@@ -1,27 +1,29 @@
 'use strict';
 
-const { migrationsPath } = require('../../../sequelize.config');
-const { wrapAsyncMethods } = require('./helpers');
 const config = require('./config');
 const forEach = require('lodash/forEach');
 const invoke = require('lodash/invoke');
-const logger = require('../logger')('db');
+const { migrationsPath } = require('../../../sequelize.config');
 const pick = require('lodash/pick');
 const pkg = require('../../../package.json');
 const semver = require('semver');
 const Sequelize = require('sequelize');
 const Umzug = require('umzug');
+const { wrapAsyncMethods } = require('./helpers');
+const logger = require('../logger')('db');
 
 // Require models.
+/* eslint-disable require-sort/require-sort */
 const User = require('../../user/user.model');
+const Preview = require('../../preview/preview.model');
 const Program = require('../../program/program.model');
 const Enrollment = require('../../enrollment/enrollment.model');
 const ContentRepo = require('../../content-repo/content-repo.model');
+/* eslint-enable */
 
 const isProduction = process.env.NODE_ENV === 'production';
 const sequelize = createConnection(config);
 const { Sequelize: { DataTypes } } = sequelize;
-logger.info(getConfig(sequelize), '🗄️  Connected to database');
 
 const defineModel = Model => {
   const fields = invoke(Model, 'fields', DataTypes, sequelize) || {};
@@ -58,7 +60,9 @@ function initialize() {
   umzug.on('reverting', migration => logger.info({ migration }, '⬇️  Reverting:', migration));
   umzug.on('reverted', migration => logger.info({ migration }, '⬇️  Reverted:', migration));
 
-  return checkPostgreVersion(sequelize)
+  return sequelize.authenticate()
+    .then(() => logger.info(getConfig(sequelize), '🗄️  Connected to database'))
+    .then(() => checkPostgreVersion(sequelize))
     .then(() => !isProduction && umzug.up())
     .then(() => umzug.executed())
     .then(migrations => {
@@ -70,6 +74,7 @@ function initialize() {
 
 const models = {
   User: defineModel(User),
+  Preview: defineModel(Preview),
   Program: defineModel(Program),
   Enrollment: defineModel(Enrollment),
   ContentRepo: defineModel(ContentRepo)

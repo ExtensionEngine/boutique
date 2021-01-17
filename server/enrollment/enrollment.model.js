@@ -1,8 +1,8 @@
 'use strict';
 
-const { Model } = require('sequelize');
 const { restoreOrCreate, restoreOrCreateAll } = require('../common/database/restore');
 const map = require('lodash/map');
+const { Model } = require('sequelize');
 
 class Enrollment extends Model {
   static fields(DataTypes) {
@@ -28,8 +28,8 @@ class Enrollment extends Model {
       foreignKey: { name: 'programId', field: 'program_id' }
     });
     this.belongsTo(User, {
-      as: 'student',
-      foreignKey: { name: 'studentId', field: 'student_id' }
+      as: 'learner',
+      foreignKey: { name: 'learnerId', field: 'learner_id' }
     });
   }
 
@@ -47,7 +47,7 @@ class Enrollment extends Model {
   }
 
   static async restoreOrCreateAll(enrollments, options) {
-    const where = { studentId: map(enrollments, 'studentId') };
+    const where = { learnerId: map(enrollments, 'learnerId') };
     return restoreOrCreateAll(this, enrollments, { where }, options);
   }
 }

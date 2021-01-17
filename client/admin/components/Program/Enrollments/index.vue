@@ -1,44 +1,48 @@
 <template>
   <div class="mt-3">
     <v-toolbar color="#f5f5f5" flat>
-      <v-spacer/>
-      <enrollment-dialog :programId="programId" @enrolled="fetch(defaultPage)"/>
+      <v-spacer />
+      <enrollment-dialog @enrolled="fetch(defaultPage)" :program-id="programId" />
     </v-toolbar>
     <div class="elevation-1 ml-2 mr-4">
-      <v-layout class="px-4 py-3 table-toolbar">
-        <v-flex lg3 offset-lg9>
+      <v-row class="px-4 py-3 table-toolbar" no-gutters>
+        <v-col lg="3" offset-lg="9">
           <v-text-field
             v-model.trim="filter"
             append-icon="mdi-magnify"
             label="Search"
             single-line
-            clearable/>
-        </v-flex>
-      </v-layout>
+            clearable />
+        </v-col>
+      </v-row>
       <v-data-table
         :headers="headers"
         :items="enrollments"
-        :pagination.sync="dataTable"
-        :total-items="totalItems"
+        :options.sync="dataTable"
+        :server-items-length="totalItems"
         :must-sort="true"
         :no-data-text="noEnrollmentsMessage">
-        <template slot="items" slot-scope="{ item }">
-          <td>{{ get(item.student, 'email') }}</td>
-          <td>{{ get(item.student, 'firstName') }}</td>
-          <td>{{ get(item.student, 'lastName') }}</td>
-          <td>{{ item.createdAt | formatDate }}</td>
-          <td class="text-md-center">
-            <v-icon @click="unenroll(item)" small>mdi-delete</v-icon>
-          </td>
+        <template v-slot:item="{ item }">
+          <tr>
+            <td>{{ get(item.learner, 'email') }}</td>
+            <td>{{ get(item.learner, 'firstName') }}</td>
+            <td>{{ get(item.learner, 'lastName') }}</td>
+            <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
+            <td class="text-center">
+              <v-btn @click="unenroll(item)" icon text small>
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </td>
+          </tr>
         </template>
       </v-data-table>
     </div>
     <confirmation-dialog
+      @confirmed="fetch()"
       :visible.sync="confirmation.dialog"
       :action="confirmation.action"
       :message="confirmation.message"
-      @confirmed="fetch()"
-      heading="Unenroll"/>
+      heading="Unenroll" />
   </div>
 </template>
 
@@ -50,8 +54,15 @@ import get from 'lodash/get';
 import pick from 'lodash/pick';
 import throttle from 'lodash/throttle';
 
-const defaultPage = () => ({ sortBy: 'updatedAt', descending: true, page: 1 });
-const fullName = student => `${student.firstName} ${student.lastName}`;
+const defaultPage = () => ({ sortBy: ['updatedAt'], sortDesc: [true], page: 1 });
+const fullName = learner => `${learner.firstName} ${learner.lastName}`;
+const headers = () => [
+  { text: 'Email', value: 'learner.email', align: 'left' },
+  { text: 'First Name', value: 'learner.first_name' },
+  { text: 'Last Name', value: 'learner.last_name' },
+  { text: 'Created At', value: 'createdAt' },
+  { text: 'Actions', value: 'id', sortable: false, align: 'center' }
+];
 
 export default {
   name: 'enrollments',
@@ -66,13 +77,7 @@ export default {
     };
   },
   computed: {
-    headers: () => ([
-      { text: 'Email', value: 'student.email', align: 'left' },
-      { text: 'First Name', value: 'student.first_name' },
-      { text: 'Last Name', value: 'student.last_name' },
-      { text: 'Created At', value: 'createdAt' },
-      { text: 'Actions', value: 'id', sortable: false, align: 'center' }
-    ]),
+    headers,
     defaultPage,
     noEnrollmentsMessage() {
       return this.filter
@@ -90,9 +95,9 @@ export default {
       this.totalItems = total;
     }, 400),
     unenroll(enrollment) {
-      const { student } = enrollment;
+      const { learner } = enrollment;
       Object.assign(this.confirmation, {
-        message: `Are you sure you want to unenroll "${fullName(student)}"?`,
+        message: `Are you sure you want to unenroll "${fullName(learner)}"?`,
         action: () => api.remove(enrollment),
         dialog: true
       });
@@ -109,9 +114,3 @@ export default {
   components: { ConfirmationDialog, EnrollmentDialog }
 };
 </script>
-
-<style lang="scss" scoped>
-.table-toolbar {
-  background: #fff;
-}
-</style>

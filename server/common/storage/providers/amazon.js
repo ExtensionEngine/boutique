@@ -1,3 +1,5 @@
+'use strict';
+
 const Joi = require('joi');
 const path = require('path');
 const Promise = require('bluebird');
@@ -56,6 +58,7 @@ class S3Store extends S3BlobStore {
 
 function createStore(config) {
   const client = new S3({
+    signatureVersion: 'v4',
     accessKeyId: config.key,
     secretAccessKey: config.secret,
     region: config.region,

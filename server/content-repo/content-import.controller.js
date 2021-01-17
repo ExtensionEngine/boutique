@@ -6,11 +6,16 @@ const keyBy = require('lodash/keyBy');
 const pick = require('lodash/pick');
 const Storage = require('./content-storage');
 
-const outputAttributes = ['id', 'sourceId', 'programId', 'name', 'publishedAt'];
+const outputAttributes = [
+  'id', 'sourceId', 'programId', 'name', 'publishedAt', 'deletedAt'
+];
 
-async function list({ query: { programId, srcVersion = false } }, res) {
-  const opts = { where: { programId }, attributes: outputAttributes };
-  const repos = await ContentRepo.findAll(opts);
+async function list({ query: { programId, srcVersion = false, archived } }, res) {
+  const repos = await ContentRepo.findAll({
+    where: { programId },
+    attributes: outputAttributes,
+    paranoid: !archived
+  });
   if (srcVersion) {
     const reposById = keyBy(await Storage.getCatalog(), 'id');
     forEach(repos, it => {
@@ -38,8 +43,20 @@ async function upsert({ body }, res) {
   });
 }
 
+function destroy({ params }, res) {
+  return ContentRepo.destroy({ where: { id: params.id } })
+    .then(() => res.end());
+}
+
+function restore({ params }, res) {
+  return ContentRepo.restore({ where: { id: params.id } })
+    .then(() => res.end());
+}
+
 module.exports = {
   list,
   getCatalog,
-  upsert
+  upsert,
+  destroy,
+  restore
 };

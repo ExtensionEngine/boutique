@@ -1,49 +1,62 @@
 <template>
-  <div v-if="program" class="mt-3">
+  <div v-if="program" class="mt-3 ml-2 mr-4">
     <v-toolbar color="#f5f5f5" flat>
-      <v-spacer/>
-      <v-btn @click="confirmationDialog = true" color="error" outline>
+      <v-spacer />
+      <v-btn @click="confirmationDialog = true" color="error" outlined>
         Delete Program
       </v-btn>
     </v-toolbar>
-    <v-layout>
-      <v-flex xs12 sm6 md4>
-        <form @submit.prevent="saveProgram">
-          <v-text-field
-            v-validate="{ required: true, min: 2, max: 255, 'unique-program-name': program }"
-            v-model.trim="programData.name"
-            :error-messages="vErrors.collect('name')"
-            :disabled="!isEditing"
-            name="name"
-            label="Program name"
-            append-icon="mdi-pencil"/>
+    <v-row no-gutters>
+      <v-col cols="12" sm="6" md="4">
+        <validation-observer
+          ref="form"
+          @submit.prevent="$refs.form.handleSubmit(saveProgram)"
+          tag="form"
+          novalidate>
+          <validation-provider
+            v-slot="{ errors }"
+            :rules="{ required: true, min: 2, max: 255, unique_program_name: program }"
+            name="program name">
+            <v-text-field
+              v-model.trim="programData.name"
+              :error-messages="errors"
+              :disabled="!isEditing"
+              name="name"
+              label="Program name"
+              append-icon="mdi-pencil" />
+          </validation-provider>
           <date-picker
             v-model="programData.startDate"
             :disabled="!isEditing"
             name="startDate"
-            label="Start Date"/>
-          <date-picker
-            v-model="programData.endDate"
-            :validate="{ after: programData.startDate }"
-            :disabled="!isEditing"
-            name="endDate"
-            label="End Date"/>
-          <v-layout>
-            <v-spacer/>
+            label="Start Date" />
+          <validation-provider
+            v-slot="{ errors }"
+            :rules="{ after: programData.startDate }"
+            name="end date">
+            <date-picker
+              v-model="programData.endDate"
+              :disabled="!isEditing"
+              :error-messages="errors"
+              name="endDate"
+              label="End Date" />
+          </validation-provider>
+          <v-row no-gutters>
+            <v-spacer />
             <template v-if="isEditing">
-              <v-btn @click="cancel" outline>Cancel</v-btn>
-              <v-btn type="submit" color="success">Save</v-btn>
+              <v-btn @click="cancel" outlined>Cancel</v-btn>
+              <v-btn type="submit" class="ml-4" color="success">Save</v-btn>
             </template>
-            <v-btn v-else @click="isEditing = true" outline>Edit</v-btn>
-          </v-layout>
-        </form>
-      </v-flex>
-    </v-layout>
+            <v-btn v-else @click="isEditing = true" outlined>Edit</v-btn>
+          </v-row>
+        </validation-observer>
+      </v-col>
+    </v-row>
     <confirmation-dialog
       :visible.sync="confirmationDialog"
       :action="removeProgram"
       :message="confirmationMessage"
-      heading="Delete program"/>
+      heading="Delete program" />
   </div>
 </template>
 
@@ -51,17 +64,14 @@
 import cloneDeep from 'lodash/cloneDeep';
 import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
 import DatePicker from '@/admin/components/common/DatePicker';
-import fecha from 'fecha';
+import format from 'date-fns/format';
 import { mapActions } from 'vuex';
-import { withValidation } from '@/common/validation';
 
-const SRC_FORMAT = 'YYYY-MM-DD';
-const DST_FORMAT = 'YYYY-MM-DD';
-const formatDate = d => d && fecha.format(fecha.parse(d, SRC_FORMAT), DST_FORMAT);
+const DST_FORMAT = 'yyyy-MM-dd';
+const formatDate = d => d && format(new Date(d), DST_FORMAT);
 
 export default {
   name: 'program-settings',
-  mixins: [withValidation()],
   props: { program: { type: Object, default: null } },
   data() {
     return {
@@ -79,11 +89,8 @@ export default {
   methods: {
     ...mapActions('programs', ['save', 'remove']),
     saveProgram() {
-      this.$validator.validateAll().then(isValid => {
-        if (!isValid) return;
-        this.save(this.programData);
-        this.isEditing = false;
-      });
+      this.save(this.programData);
+      this.isEditing = false;
     },
     removeProgram() {
       this.remove(this.program)
@@ -98,7 +105,7 @@ export default {
       });
     },
     cancel() {
-      this.vErrors.clear();
+      this.$refs.form.reset();
       this.cloneProgram();
       this.isEditing = false;
     }

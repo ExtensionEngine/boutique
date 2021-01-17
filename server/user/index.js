@@ -1,6 +1,6 @@
 'use strict';
 
-const auth = require('../common/auth').authenticate('jwt');
+const auth = require('../common/auth');
 const ctrl = require('./user.controller');
 const multer = require('multer');
 const router = require('express').Router();
@@ -8,16 +8,17 @@ const router = require('express').Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
 router
-  .post('/login', ctrl.login)
-  .use(auth)
+  .post('/login', auth.authenticate('local'), ctrl.login)
+  .post('/forgotPassword', ctrl.forgotPassword)
+  .post('/resetPassword', ctrl.resetPassword)
+  .use(auth.authenticate('jwt'))
   .get('/', ctrl.list)
   .post('/', ctrl.create)
   .patch('/:id', ctrl.patch)
   .delete('/:id', ctrl.destroy)
   .post('/:id/invite', ctrl.invite)
-  .post('/forgotPassword', ctrl.forgotPassword)
-  .post('/resetPassword', ctrl.resetPassword)
-  .post('/import', upload.single('file'), ctrl.bulkImport);
+  .post('/import', upload.single('file'), ctrl.bulkImport)
+  .get('/import/template', ctrl.getImportTemplate);
 
 module.exports = {
   path: '/users',

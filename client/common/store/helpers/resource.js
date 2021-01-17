@@ -90,7 +90,7 @@ export default class Resource {
    */
   getById(id) {
     return this.get(id).then(response => {
-      let item = response.data.data;
+      const item = response.data.data;
       this.setCid(item);
       return item;
     });
@@ -146,7 +146,7 @@ export default class Resource {
    */
   fetch(params) {
     return this.get('', params).then(response => {
-      let result = {};
+      const result = {};
       response.data.data.forEach(it => {
         this.setCid(it);
         result[it._cid] = it;
