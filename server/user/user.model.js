@@ -16,6 +16,10 @@ const { sql } = require('../common/database/helpers');
 const logger = require('../common/logger')();
 const values = require('lodash/values');
 
+const PROFILE_ATTRS = [
+  'id', 'firstName', 'lastName', 'email', 'role', 'createdAt', 'deletedAt'
+];
+
 class User extends Model {
   static fields({ DATE, ENUM, STRING, VIRTUAL }) {
     return {
@@ -61,8 +65,7 @@ class User extends Model {
       profile: {
         type: VIRTUAL,
         get() {
-          return pick(this,
-            ['id', 'firstName', 'lastName', 'email', 'role', 'createdAt', 'deletedAt']);
+          return pick(this, PROFILE_ATTRS);
         }
       }
     };
