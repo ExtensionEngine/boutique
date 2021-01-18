@@ -1,7 +1,7 @@
 'use strict';
 
+const { Enrollment, Sequelize, User } = require('../common/database');
 const { createError } = require('../common/errors');
-const { Enrollment, User, Sequelize } = require('../common/database');
 const HttpStatus = require('http-status');
 const map = require('lodash/map');
 
@@ -40,9 +40,10 @@ async function create({ body }, res) {
   res.jsend.success({ failed, created });
 }
 
-function destroy({ params }, res) {
-  return Enrollment.destroy({ where: { id: params.id } })
-    .then(() => res.sendStatus(NO_CONTENT));
+async function destroy({ params }, res) {
+  const where = { id: params.id };
+  await Enrollment.destroy({ where });
+  res.sendStatus(NO_CONTENT);
 }
 
 module.exports = {

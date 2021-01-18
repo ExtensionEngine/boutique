@@ -5,18 +5,18 @@ const map = require('lodash/map');
 const { Model } = require('sequelize');
 
 class Enrollment extends Model {
-  static fields(DataTypes) {
+  static fields({ DATE }) {
     return {
       createdAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         field: 'created_at'
       },
       updatedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         field: 'updated_at'
       },
       deletedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         field: 'deleted_at'
       }
     };

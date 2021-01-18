@@ -9,6 +9,7 @@ const Storage = require('./content-storage');
 
 const { NotFoundError } = Storage;
 const { NOT_FOUND } = HttpStatus;
+
 const excludeCorrect = data => map(data, it => omit(it, 'data.correct'));
 
 function list({ program, query: { includeStructure } }, res) {
@@ -19,9 +20,8 @@ function list({ program, query: { includeStructure } }, res) {
 }
 
 function get({ repo }, res) {
-  const attributes = [
-    'id', 'schema', 'name', 'description', 'structure', 'publishedAt'];
-  return res.jsend.success(pick(repo, attributes));
+  const attrs = ['id', 'schema', 'name', 'description', 'structure', 'publishedAt'];
+  return res.jsend.success(pick(repo, attrs));
 }
 
 function getContainer({ program, params, repo }, res) {
@@ -35,31 +35,24 @@ function getExam({ program, params, repo }, res) {
   return Storage.getExam(repo.sourceId, params.examId, program.id)
     .catch(NotFoundError, () => createError(NOT_FOUND, 'Not found!'))
     .then(exam => {
-      return res.jsend.success({
-        ...exam,
-        groups: map(exam.groups, group => {
-          return {
-            ...group,
-            assessments: excludeCorrect(group.assessments)
-          };
-        })
-      });
+      const groups = map(exam.groups, group => ({
+        ...group,
+        assessments: excludeCorrect(group.assessments)
+      }));
+      return res.jsend.success({ ...exam, groups });
     });
 }
 
 function getAssessments({ program, params, repo }, res) {
   return Storage.getAssessments(repo.sourceId, params.assessmentsId, program.id)
     .catch(NotFoundError, () => createError(NOT_FOUND, 'Not found!'))
-    .then(assessments => {
-      return res.jsend.success(excludeCorrect(assessments));
-    });
+    .then(assessments => res.jsend.success(excludeCorrect(assessments)));
 }
 
-function processContainer(container) {
-  return Storage.resolveElements(container.elements).then(elements => {
-    container.elements = elements;
-    return container;
-  });
+async function processContainer(container) {
+  const elements = await Storage.resolveElements(container.elements);
+  container.elements = elements;
+  return container;
 }
 
 module.exports = {

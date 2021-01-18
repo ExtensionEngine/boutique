@@ -1,9 +1,9 @@
 'use strict';
 
-const { UniqueConstraintError } = require('sequelize');
-const capitalize = require('change-case').upperCaseFirst;
 const find = require('lodash/find');
 const Promise = require('bluebird');
+const { UniqueConstraintError } = require('sequelize');
+const capitalize = require('change-case').upperCaseFirst;
 
 const name = Model => Model.rawAttributes.modelName || Model.name;
 const pTuple = fn => Promise.try(fn).then(result => [null, result], err => [err]);
