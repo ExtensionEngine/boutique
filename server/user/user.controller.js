@@ -35,8 +35,7 @@ function list({ query: { email, role, filter, archived }, options }, res) {
     });
 }
 
-async function create(req, res) {
-  const { body, origin } = req;
+async function create({ body, origin }, res) {
   const [err, user] = await User.restoreOrBuild(pick(body, inputAttrs));
   if (err) return createError(CONFLICT, 'User exists!');
   await User.invite(user, { origin });
