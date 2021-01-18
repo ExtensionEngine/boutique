@@ -14,9 +14,11 @@ LMS
 
 ## :page_with_curl: Dependencies
 
-- Node.js (>= 8.11.0)
-- npm (>= 5.8.0)
-- PostgreSQL (>= 9.4)
+<!-- ENGINES-LIST:START - Do NOT remove or modify this section -->
+- **node** (>= 10.17.0)
+- **npm** (>= 6.11.0)
+- **postgres** (>= 9.4)
+<!-- ENGINES-LIST:END -->
 
 Check `engines` field in [`package.json`](package.json)
 
@@ -35,7 +37,7 @@ Check `engines` field in [`package.json`](package.json)
 - App is configured via environment variables contained in a file named `.env`.
   Use the `.env.example` file as a template: `cp .env.example .env` and enter configuration details.
 - Run `npm run db:seed`, if any error run `npm run db:reset` and then `npm run db:seed`.
-- You can create admin/student user by running `npm run user:add`
+- You can create admin/learner user by running `npm run user:add`
 - For other scripts run `npm run`
 
 ## :rocket: Launch

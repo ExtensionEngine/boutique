@@ -2,6 +2,7 @@
 
 const getStream = require('get-stream');
 const path = require('path');
+const Promise = require('bluebird');
 const safeRequire = require('safe-require');
 
 const isFunction = arg => typeof arg === 'function';

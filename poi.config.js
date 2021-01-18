@@ -22,7 +22,7 @@ const devServer = {
   },
   // Override using: `npm run dev:client -- --port <number>`
   port: 8081,
-  hotEntries: ['admin', 'student'],
+  hotEntries: ['admin', 'main'],
   historyApiFallback: config.historyApiFallbackOptions
 };
 
@@ -32,7 +32,9 @@ module.exports = {
     '@poi/bundle-report',
     {
       resolve: require.resolve('./build/plugins/clean-out-dir'),
-      options: { exclude: '.gitkeep' }
+      options: {
+        cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep']
+      }
     },
     require.resolve('./build/plugins/html-version-spec')
   ],
@@ -41,9 +43,9 @@ module.exports = {
       filename: 'admin/index.html',
       entry: './client/admin/main.js'
     },
-    student: {
+    main: {
       filename: 'index.html',
-      entry: './client/student/main.js'
+      entry: './client/main/main.js'
     }
   },
   output: {

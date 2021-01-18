@@ -22,7 +22,11 @@ const router = require('./router');
 
 const app = express();
 app.use(helmet());
-app.use(cors({ origin: config.cors.allowedOrigins, credentials: true }));
+app.use(cors({
+  origin: config.cors.allowedOrigins,
+  credentials: true,
+  preflightContinue: true
+}));
 app.use(bodyParser.json({ limit: config.uploadLimit }));
 app.use(auth.initialize());
 app.use(origin());

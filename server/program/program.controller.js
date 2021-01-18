@@ -39,7 +39,7 @@ function destroy({ program }, res) {
 function getEnrolledPrograms({ user }, res) {
   const currentDate = new Date();
   const Op = Sequelize.Op;
-  const include = [{ model: Enrollment, where: { studentId: user.id } }];
+  const include = [{ model: Enrollment, where: { learnerId: user.id } }];
   const startDate = { [Op.or]: { [Op.lt]: currentDate, [Op.eq]: null } };
   const endDate = { [Op.or]: { [Op.gt]: currentDate, [Op.eq]: null } };
 

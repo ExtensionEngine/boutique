@@ -19,7 +19,7 @@ router
 
 function hasAccess({ program, user }, res, next) {
   if (user.isAdmin()) return next();
-  return program.getEnrollment({ where: { studentId: user.id } })
+  return program.getEnrollment({ where: { learnerId: user.id } })
     .then(enrollment => {
       if (!enrollment) return createError(FORBIDDEN, 'Access denied');
       return next();
