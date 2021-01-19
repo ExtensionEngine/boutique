@@ -3,23 +3,23 @@
 const { Model } = require('sequelize');
 
 class Preview extends Model {
-  static fields(DataTypes) {
+  static fields({ DATE, INTEGER, JSONB }) {
     return {
       id: {
-        type: DataTypes.INTEGER,
+        type: INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
       content: {
-        type: DataTypes.JSONB,
+        type: JSONB,
         allowNull: false
       },
       createdAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         field: 'created_at'
       },
       updatedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         field: 'updated_at'
       }
     };
