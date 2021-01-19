@@ -36,14 +36,12 @@ export default {
     close() {
       this.$emit('update:visible', false);
     },
-    executeAction() {
+    async executeAction() {
       this.isLoading = true;
-      return Promise.resolve(this.action())
-        .then(() => {
-          this.close();
-          this.$emit('confirmed');
-        })
-        .finally(() => (this.isLoading = false));
+      await Promise.resolve(this.action());
+      this.close();
+      this.$emit('confirmed');
+      this.isLoading = false;
     }
   }
 };

@@ -20,9 +20,7 @@ import Sidebar from '@/admin/components/common/Sidebar';
 
 export default {
   name: 'admin-app',
-  data() {
-    return { drawer: true };
-  },
+  data: () => ({ drawer: true }),
   methods: mapActions('programs', ['fetch']),
   created() {
     this.fetch();

@@ -55,14 +55,12 @@ export default {
     close() {
       this.$emit('closed', false);
     },
-    execute(action) {
+    async execute(action) {
       this.isLoading = true;
-      return Promise.resolve(action())
-        .then(() => {
-          this.close();
-          this.$emit('completed');
-        })
-        .finally(() => (this.isLoading = false));
+      await Promise.resolve(action());
+      this.close();
+      this.$emit('completed');
+      this.isLoading = false;
     }
   }
 };

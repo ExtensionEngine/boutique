@@ -12,9 +12,7 @@
             :disabled="importedRepos.length <= 0"
             append-icon="mdi-magnify"
             label="Search"
-            hide-details
-            single-line
-            clearable />
+            hide-details single-line clearable />
           <v-checkbox
             v-model="showArchived"
             label="Show archived"
@@ -40,8 +38,7 @@
               <v-btn
                 v-if="item.repoVersion > item.publishedAt"
                 @click="save(item)"
-                text
-                small>
+                text small>
                 Sync
               </v-btn>
               <span v-else-if="item.repoVersion">Synced</span>
@@ -50,17 +47,10 @@
               <v-btn
                 v-if="!item.deletedAt"
                 @click="showConfirmationDialog(item)"
-                icon
-                small
-                text>
+                icon small text>
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
-              <v-btn
-                v-else
-                @click="showRestoreDialog(item)"
-                icon
-                small
-                text>
+              <v-btn v-else @click="showRestoreDialog(item)" icon small text>
                 <v-icon>mdi-restore</v-icon>
               </v-btn>
             </td>
@@ -101,7 +91,9 @@ const headers = () => [
 
 export default {
   name: 'imported-content',
-  props: { programId: { type: Number, required: true } },
+  props: {
+    programId: { type: Number, required: true }
+  },
   data: () => ({
     filter: null,
     confirmation: null,
