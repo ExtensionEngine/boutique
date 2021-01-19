@@ -2,7 +2,7 @@
   <div>
     <navbar />
     <div class="container">
-      <circular-progress-bar v-if="isLoading" :height="50" :width="50" />
+      <v-progress-circular v-if="isLoading" size="50" indeterminate />
       <span v-else-if="error">{{ error }}</span>
       <preview-activity v-else :activity="activity" />
     </div>
@@ -11,7 +11,6 @@
 
 <script>
 import api from '@/main/api/content';
-import CircularProgressBar from '@/main/components/common/CircularProgressBar';
 import Navbar from '@/main/components/common/Navbar';
 import PreviewActivity from './Activity';
 
@@ -26,7 +25,7 @@ export default {
     error: null
   }),
   created() {
-    api.getPreview(this.previewId)
+    return api.getPreview(this.previewId)
       .then(activity => {
         this.activity = activity;
         this.isLoading = false;
@@ -35,16 +34,12 @@ export default {
         this.isLoading = false;
       });
   },
-  components: {
-    PreviewActivity,
-    CircularProgressBar,
-    Navbar
-  }
+  components: { PreviewActivity, Navbar }
 };
 </script>
 
 <style lang="scss" scoped>
 .container {
-  padding: 50px 0;
+  padding: 3.125rem 0;
 }
 </style>

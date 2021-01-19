@@ -21,9 +21,9 @@
   background: #ffc107;
 
   h1 {
-    margin: 5px 0 3px 0;
+    margin: 0.3125rem 0 0.1875rem 0;
     color: #444;
-    font-size: 26px;
+    font-size: 1.625rem;
     font-weight: 300;
 
     .mdi {
