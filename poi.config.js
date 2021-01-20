@@ -3,7 +3,6 @@
 require('dotenv').config();
 const config = require('./server/config');
 const path = require('path');
-const yn = require('yn');
 
 const isProduction = process.env.NODE_ENV === 'production';
 const extensions = ['.vue'];
@@ -53,9 +52,9 @@ module.exports = {
     sourceMap: !isProduction
   },
   envs: {
-    API_PATH: process.env.API_PATH,
-    HISTORY_API_FALLBACK: yn(process.env.HISTORY_API_FALLBACK),
-    AUTH_JWT_SCHEME: process.env.AUTH_JWT_SCHEME
+    API_PATH: config.apiPath,
+    AUTH_JWT_SCHEME: config.auth.scheme,
+    HISTORY_API_FALLBACK: config.useHistoryApiFallback
   },
   chainWebpack(config) {
     config.resolve.alias.merge(aliases);
