@@ -20,13 +20,13 @@ export default {
     ...mapActions('learner', ['fetchSyllabus']),
     ...mapMutations('learner', ['setCoursewareFilter'])
   },
-  async created() {
+  created() {
     const { programs, programId } = this;
     const program = find(programs, { id: programId });
     if (!program) return this.$router.push({ name: 'program-selection' });
     this.setCoursewareFilter();
-    await this.fetchSyllabus(programId);
-    this.isLoading = false;
+    return this.fetchSyllabus(programId)
+      .then(() => (this.isLoading = false));
   }
 };
 </script>

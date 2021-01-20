@@ -18,15 +18,18 @@ export default {
   name: 'home',
   data: () => ({ isLoading: true }),
   methods: mapMutations('learner', ['setPrograms']),
-  async created() {
+  created() {
     const { setPrograms, $route, $router } = this;
-    const programs = await api.fetchPrograms();
-    setPrograms(programs);
-    if (programs.length !== 1 || $route.name === 'activity') return;
-    const programId = head(programs).id;
-    const isSameRoute = parseInt($route.params.programId, 10) === programId;
-    if (!isSameRoute) $router.push({ name: 'courseware', params: { programId } });
-    this.isLoading = false;
+    return api.fetchPrograms()
+      .then(programs => {
+        setPrograms(programs);
+        if (programs.length !== 1 || $route.name === 'activity') return;
+        const programId = head(programs).id;
+        const isSameRoute = parseInt($route.params.programId, 10) === programId;
+        if (isSameRoute) return;
+        $router.push({ name: 'courseware', params: { programId } });
+      })
+      .finally(() => (this.isLoading = false));
   },
   components: { Navbar }
 };

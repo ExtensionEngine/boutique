@@ -71,16 +71,19 @@ export default {
       this.visible = false;
       this.learnerId = null;
     },
-    async fetch(email) {
-      if (this.learnerId) return;
-      this.isLoading = true;
-      const params = { emailLike: email, role: 'LEARNER', limit: 30 };
-      const { items: learners } = await userApi.fetch({ params });
+    processLearners({ items: learners }) {
       this.learners = map(learners, ({ id, email, firstName, lastName }) => ({
         value: id,
         text: `${email} - ${firstName} ${lastName}`
       }));
-      this.isLoading = false;
+    },
+    async fetch(email) {
+      if (this.learnerId) return;
+      this.isLoading = true;
+      const params = { emailLike: email, role: 'LEARNER', limit: 30 };
+      return userApi.fetch({ params })
+        .then(this.processLearners)
+        .finally(() => (this.isLoading = false));
     }
   },
   watch: {

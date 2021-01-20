@@ -68,6 +68,9 @@ export default {
           this.close();
         });
     },
+    processCatalog(repos) {
+      this.catalog = map(repos, it => ({ text: it.name, sourceId: it.id }));
+    },
     close() {
       this.visible = false;
       this.sourceId = null;
@@ -78,9 +81,9 @@ export default {
     async visible(val) {
       if (!val) return;
       this.isLoading = true;
-      const repos = await api.getCatalog();
-      this.catalog = map(repos, it => ({ text: it.name, sourceId: it.id }));
-      this.isLoading = false;
+      return api.getCatalog()
+        .then(this.processCatalog)
+        .finally(() => (this.isLoading = false));
     }
   }
 };

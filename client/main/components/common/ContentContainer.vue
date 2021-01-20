@@ -23,10 +23,10 @@ export default {
     container: null,
     isLoading: true
   }),
-  async created() {
-    const container = await this.getContainer();
-    this.container = container;
-    this.isLoading = false;
+  created() {
+    return this.getContainer()
+      .then(container => (this.container = container))
+      .finally(() => (this.isLoading = false));
   },
   components: { TailorTeachingElements }
 };
