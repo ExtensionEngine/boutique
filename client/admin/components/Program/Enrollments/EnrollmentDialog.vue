@@ -71,7 +71,7 @@ export default {
       this.visible = false;
       this.learnerId = null;
     },
-    processLearners({ items: learners }) {
+    setLearners({ items: learners }) {
       this.learners = map(learners, ({ id, email, firstName, lastName }) => ({
         value: id,
         text: `${email} - ${firstName} ${lastName}`
@@ -82,7 +82,7 @@ export default {
       this.isLoading = true;
       const params = { emailLike: email, role: 'LEARNER', limit: 30 };
       return userApi.fetch({ params })
-        .then(this.processLearners)
+        .then(this.setLearners)
         .finally(() => (this.isLoading = false));
     }
   },
@@ -91,7 +91,7 @@ export default {
       if (val) this.fetch(val);
     },
     visible(val) {
-      if (val) return;
+      if (!val) return;
       this.fetch();
     }
   }

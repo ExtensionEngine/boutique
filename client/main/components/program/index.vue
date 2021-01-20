@@ -26,7 +26,7 @@ export default {
     if (!program) return this.$router.push({ name: 'program-selection' });
     this.setCoursewareFilter();
     return this.fetchSyllabus(programId)
-      .then(() => (this.isLoading = false));
+      .finally(() => (this.isLoading = false));
   }
 };
 </script>

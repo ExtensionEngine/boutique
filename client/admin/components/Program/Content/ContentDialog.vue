@@ -68,7 +68,7 @@ export default {
           this.close();
         });
     },
-    processCatalog(repos) {
+    setCatalog(repos) {
       this.catalog = map(repos, it => ({ text: it.name, sourceId: it.id }));
     },
     close() {
@@ -82,7 +82,7 @@ export default {
       if (!val) return;
       this.isLoading = true;
       return api.getCatalog()
-        .then(this.processCatalog)
+        .then(this.setCatalog)
         .finally(() => (this.isLoading = false));
     }
   }
