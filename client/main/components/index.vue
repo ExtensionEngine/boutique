@@ -1,11 +1,11 @@
 <template>
-  <v-container fluid fill-height class="ma-0 pa-0">
+  <div>
     <navbar />
     <v-container fill-height class="d-flex justify-center align-start">
       <v-progress-circular v-if="isLoading" size="50" indeterminate />
       <router-view v-else />
     </v-container>
-  </v-container>
+  </div>
 </template>
 
 <script>

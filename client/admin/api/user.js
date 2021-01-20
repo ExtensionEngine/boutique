@@ -8,7 +8,7 @@ const urls = {
   resource: id => path.join(urls.root, String(id)),
   invite: id => path.join(urls.resource(id), 'invite'),
   import: () => path.join(urls.root, 'import'),
-  getImportTemplate: () => path.join(urls.root, 'import', 'template')
+  getImportTemplate: () => path.join(urls.import(), 'template')
 };
 
 function fetch(params = {}) {
