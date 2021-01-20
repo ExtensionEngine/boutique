@@ -78,7 +78,7 @@ export default {
     }
   },
   watch: {
-    async visible(val) {
+    visible(val) {
       if (!val) return;
       this.isLoading = true;
       return api.getCatalog()

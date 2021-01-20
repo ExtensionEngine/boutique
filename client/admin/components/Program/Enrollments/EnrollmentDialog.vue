@@ -77,7 +77,7 @@ export default {
         text: `${email} - ${firstName} ${lastName}`
       }));
     },
-    async fetch(email) {
+    fetch(email) {
       if (this.learnerId) return;
       this.isLoading = true;
       const params = { emailLike: email, role: 'LEARNER', limit: 30 };
@@ -91,7 +91,7 @@ export default {
       if (val) this.fetch(val);
     },
     visible(val) {
-      if (!val) return;
+      if (val) return;
       this.fetch();
     }
   }
