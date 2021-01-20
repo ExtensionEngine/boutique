@@ -1,17 +1,17 @@
 'use strict';
 
-const { createError } = require('../common/errors');
 const { Enrollment, Sequelize, sequelize, User } = require('../common/database');
 const Audience = require('../common/auth/audience');
+const { createError } = require('../common/errors');
 const Datasheet = require('./datasheet');
 const { generate } = require('./helpers');
 const HttpStatus = require('http-status');
-const mime = require('mime');
 const map = require('lodash/map');
+const mime = require('mime');
 const pick = require('lodash/pick');
 
-const { ACCEPTED, CONFLICT, NOT_FOUND } = HttpStatus;
-const { Op } = Sequelize;
+const { ACCEPTED, CONFLICT, NO_CONTENT, NOT_FOUND } = HttpStatus;
+const { EmptyResultError, Op } = Sequelize;
 
 const columns = {
   email: { header: 'Email', width: 30 },
@@ -35,31 +35,28 @@ function list({ query: { email, role, filter, archived }, options }, res) {
     });
 }
 
-function create(req, res) {
-  const { body, origin } = req;
-  return User.restoreOrBuild(pick(body, inputAttrs))
-    .then(([result]) => {
-      if (result.isRejected()) return createError(CONFLICT);
-      return User.invite(result.value(), { origin });
-    })
-    .then(user => res.jsend.success(user.profile));
+async function create({ body, origin }, res) {
+  const [err, user] = await User.restoreOrBuild(pick(body, inputAttrs));
+  if (err) return createError(CONFLICT, 'User exists!');
+  await User.invite(user, { origin });
+  res.jsend.success(user.profile);
 }
 
 function patch({ params, body }, res) {
-  return User.findByPk(params.id, { paranoid: false })
-    .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
+  return User.findByPk(params.id, { paranoid: false, rejectOnEmpty: true })
+    .catch(EmptyResultError, () => createError(NOT_FOUND, 'User does not exist!'))
     .then(user => user.update(pick(body, inputAttrs)))
     .then(user => res.jsend.success(user.profile));
 }
 
 function destroy({ params }, res) {
-  sequelize.transaction(async transaction => {
-    const user = await User.findByPk(params.id, { transaction });
-    if (!user) createError(NOT_FOUND);
+  return sequelize.transaction(async transaction => {
+    const user = await User.findByPk(params.id, { transaction, rejectOnEmpty: true });
     await Enrollment.destroy({ where: { learnerId: user.id }, transaction });
-    await user.destroy({ transaction });
-    res.end();
-  });
+    return user.destroy({ transaction });
+  })
+  .catch(EmptyResultError, () => createError(NOT_FOUND))
+  .then(() => res.sendStatus(NO_CONTENT));
 }
 
 function login({ user }, res) {
@@ -79,16 +76,16 @@ function invite({ params, origin }, res) {
 
 function forgotPassword({ origin, body }, res) {
   const { email } = body;
-  return User.findOne({ where: { email } })
-    .then(user => user || createError(NOT_FOUND, 'User not found!'))
+  return User.findOne({ where: { email }, rejectOnEmpty: true })
+    .catch(EmptyResultError, () => createError(NOT_FOUND, 'User not found!'))
     .then(user => user.sendResetToken({ origin }))
     .then(() => res.end());
 }
 
 function resetPassword({ body }, res) {
   const { password, token } = body;
-  return User.findOne({ where: { token } })
-    .then(user => user || createError(NOT_FOUND, 'Invalid token!'))
+  return User.findOne({ where: { token }, rejectOnEmpty: true })
+    .catch(EmptyResultError, () => createError(NOT_FOUND, 'Invalid token!'))
     .then(user => {
       user.password = password;
       return user.save();
@@ -98,9 +95,8 @@ function resetPassword({ body }, res) {
 
 async function bulkImport({ body, file, origin }, res) {
   const users = (await Datasheet.load(file)).toJSON({ include: inputAttrs });
-  const errors = await User.import(users, { origin: origin });
-  res.set('data-imported-count', users.length - errors.length);
-  if (!errors.length) return res.end();
+  const errors = await bulkCreate(users, { origin });
+  if (!errors) return res.end();
   const creator = 'Boutique';
   columns.message = { header: 'Error', width: 30 };
   const report = (new Datasheet({ columns, data: errors })).toWorkbook({ creator });
@@ -108,7 +104,7 @@ async function bulkImport({ body, file, origin }, res) {
   return report.send(res, { format });
 }
 
-function getImportTemplate(req, res) {
+function getImportTemplate(_req, res) {
   const creator = 'Boutique';
   const data = generate();
   const report = (new Datasheet({ columns, data })).toWorkbook({ creator });
@@ -127,3 +123,14 @@ module.exports = {
   resetPassword,
   getImportTemplate
 };
+
+async function bulkCreate(users, { concurrency = 16, ...options } = {}) {
+  const errors = [];
+  await User.restoreOrBuildAll(users, { concurrency })
+    .map(([err, user], index) => {
+      if (!err && user) return User.invite(user, options);
+      const { message = 'Failed to import user.' } = err;
+      errors.push({ ...users[index], message });
+    }, { concurrency });
+  return errors.length && errors;
+}

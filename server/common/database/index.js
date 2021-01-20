@@ -1,23 +1,26 @@
 'use strict';
 
-const { migrationsPath } = require('../../../sequelize.config');
-const { wrapAsyncMethods } = require('./helpers');
 const config = require('./config');
 const forEach = require('lodash/forEach');
 const invoke = require('lodash/invoke');
+const { migrationsPath } = require('../../../sequelize.config');
 const logger = require('../logger')('db');
 const pick = require('lodash/pick');
 const pkg = require('../../../package.json');
+const Promise = require('bluebird');
 const semver = require('semver');
 const Sequelize = require('sequelize');
 const Umzug = require('umzug');
+const { wrapMethods } = require('./helpers');
 
 // Require models.
+/* eslint-disable require-sort/require-sort */
 const User = require('../../user/user.model');
 const Preview = require('../../preview/preview.model');
 const Program = require('../../program/program.model');
 const Enrollment = require('../../enrollment/enrollment.model');
 const ContentRepo = require('../../content-repo/content-repo.model');
+/* eslint-enable */
 
 const isProduction = process.env.NODE_ENV === 'production';
 const sequelize = createConnection(config);
@@ -28,7 +31,7 @@ const defineModel = Model => {
   const hooks = invoke(Model, 'hooks') || {};
   const scopes = invoke(Model, 'scopes', sequelize) || {};
   const options = invoke(Model, 'options') || {};
-  wrapAsyncMethods(Model);
+  wrapMethods(Model, Promise);
   return Model.init(fields, { sequelize, hooks, scopes, ...options });
 };
 
@@ -90,6 +93,7 @@ const db = {
   ...models
 };
 
+wrapMethods(Sequelize.Model, Promise);
 // Patch Sequelize#method to support getting models by class name.
 sequelize.model = name => sequelize.models[name] || db[name];
 
