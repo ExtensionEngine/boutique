@@ -1,9 +1,9 @@
 <template>
-  <div>
-    <div v-if="!courseware.length" class="text-center">
+  <v-row no-gutters>
+    <v-alert v-if="!courseware.length" color="warning" class="col py-4 text-center">
       This Program doesn't have any courseware!
-    </div>
-    <div v-else>
+    </v-alert>
+    <v-col v-else>
       <transition name="slide-fade">
         <v-alert v-if="!filteredCourseware.length" color="warning" class="text-center">
           No courseware found!
@@ -14,8 +14,8 @@
           <activity-card v-bind="{ programId, activity }" />
         </v-col>
       </transition-group>
-    </div>
-  </div>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
