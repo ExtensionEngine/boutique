@@ -1,15 +1,23 @@
 <template>
   <v-dialog
     ref="dialog"
-    v-model="showDialog"
+    v-model="visible"
     v-hotkey="{ esc: close }"
     persistent
     no-click-animation
     width="700">
-    <v-btn slot="activator" color="blue-grey" outline>
-      <v-icon>mdi-cloud-upload</v-icon>Import
-    </v-btn>
-    <v-form @submit.prevent="save">
+    <template v-slot:activator="{ on }">
+      <v-btn v-on="on" color="blue-grey" outlined>
+        <v-icon>mdi-cloud-upload</v-icon>Import
+      </v-btn>
+    </template>
+    <validation-observer
+      v-if="visible"
+      ref="form"
+      v-slot="{ invalid }"
+      @submit.prevent="$refs.form.handleSubmit(submit)"
+      tag="form"
+      novalidate>
       <v-card class="pa-3">
         <v-card-title class="headline">Import Users</v-card-title>
         <v-card-text>
@@ -23,33 +31,34 @@
             <div>Or drag and drop file here</div>
             <v-chip v-if="filename" @input="removeFile" close>{{ filename }}</v-chip>
             <div class="errors-list">{{ vErrors.collect('file')[0] }}</div>
-          <label for="userImportInput">
-            <v-text-field
-              ref="fileName"
-              v-model="filename"
-              :error-messages="vErrors.collect('file')"
-              :disabled="importing"
-              prepend-icon="mdi-attachment"
-              label="Upload .xlsx or .csv file"
-              readonly
-              single-line />
-            <input
-              v-show="isDragged"
-              ref="dropZone"
-              v-validate="inputValidation"
-              @change="onFileSelected"
-              @dragend="hideDropZone"
-              @dragover="showDropZone"
-              @dragenter="showDropZone"
-              @dragleave="hideDropZone"
-              @drop="hideDropZone"
-              class="drop-zone"
-              name="file"
-              type="file" />
+            <label for="userImportInput">
+              <v-text-field
+                ref="fileName"
+                v-model="filename"
+                :error-messages="vErrors.collect('file')"
+                :disabled="importing"
+                prepend-icon="mdi-attachment"
+                label="Upload .xlsx or .csv file"
+                readonly
+                single-line />
+              <input
+                v-show="isDragged"
+                ref="dropZone"
+                v-validate="inputValidation"
+                @change="onFileSelected"
+                @dragend="hideDropZone"
+                @dragover="showDropZone"
+                @dragenter="showDropZone"
+                @dragleave="hideDropZone"
+                @drop="hideDropZone"
+                class="drop-zone"
+                name="file"
+                type="file">
+            </label>
           </div>
         </v-card-text>
         <v-card-actions>
-          <v-btn @click="downloadTemplateFile" flat color="blue-grey">
+          <v-btn @click="downloadTemplateFile" text color="blue-grey">
             Download Template
           </v-btn>
           <v-spacer />
@@ -62,13 +71,13 @@
             </v-btn>
           </v-fade-transition>
           <v-btn @click="close">Cancel</v-btn>
-          <v-btn :disabled="importDisabled" color="success" type="submit">
+          <v-btn :disabled="importing || invalid" color="success" type="submit">
             <span v-if="!importing">Import</span>
             <v-icon v-else>mdi-loading mdi-spin</v-icon>
           </v-btn>
         </v-card-actions>
       </v-card>
-    </v-form>
+    </validation-observer>
   </v-dialog>
 </template>
 
@@ -87,25 +96,21 @@ const inputFormats = {
 export default {
   name: 'import-dialog',
   mixins: [withValidation(), withFocusTrap({ el })],
-  data() {
-    return {
-      showDialog: false,
-      importing: false,
-      filename: null,
-      form: null,
-      isDragged: false,
-      serverErrorsReport: null
-    };
-  },
+  data: () => ({
+    visible: false,
+    importing: false,
+    filename: null,
+    form: null,
+    isDragged: false,
+    serverErrorsReport: null
+  }),
   computed: {
-    importDisabled() {
-      return !this.filename || this.vErrors.any() || this.importing;
-    },
-    inputValidation: () => ({ required: true, mimes: Object.keys(inputFormats) })
+    inputValidation: () => ({ required: true, mimes: Object.keys(inputFormats) }),
+    acceptedFiles: () => Object.keys(inputFormats)
   },
   methods: {
     showDropZone() {
-      if (this.showDialog) {
+      if (this.visible) {
         this.$refs.dialog.overlay.style.backgroundColor = 'rgba(0,191,255, 0.5)';
         this.isDragged = true;
       }
@@ -144,46 +149,33 @@ export default {
       this.isDragged = false;
       this.$refs.dropZone.value = null;
       this.resetErrors();
-      this.showDialog = false;
+      this.visible = false;
     },
-    save() {
+    submit() {
       this.importing = true;
+      const { file } = this;
+      this.form = new FormData();
+      this.form.append('file', file, file.name);
       return api.bulkImport(this.form).then(({ data, count }) => {
         this.importing = false;
         if (count) this.$emit('imported');
         if (!data.size) return this.close();
-        this.$nextTick(() => this.$refs.fileName.focus());
-        this.vErrors.add({
-          field: 'file',
-          msg: `${count} users were successfully imported.`
-        });
+        this.$refs.validationObserver.setErrors({ File: [`${count} users were successfully imported.`] });
         this.serverErrorsReport = data;
       }).catch(err => {
         this.importing = false;
-        this.vErrors.add({ field: 'file', msg: 'Importing users failed.' });
-        this.$nextTick(() => this.$refs.fileName.focus());
+        this.$refs.validationObserver.setErrors({ File: ['Importing users failed.'] });
         return Promise.reject(err);
       });
     },
     downloadErrorsFile() {
       const extension = inputFormats[this.serverErrorsReport.type];
       saveAs(this.serverErrorsReport, `Errors.${extension}`);
-      this.$refs.fileName.focus();
     },
     downloadTemplateFile() {
       return api.getImportTemplate().then(response => {
         saveAs(response.data, 'Template.xlsx');
-        this.$refs.fileName.focus();
       });
-    },
-    resetErrors() {
-      this.serverErrorsReport = null;
-      this.vErrors.clear();
-    }
-  },
-  watch: {
-    showDialog(val) {
-      this.$nextTick(() => this.focusTrap.toggle(val));
     }
   },
   mounted() {

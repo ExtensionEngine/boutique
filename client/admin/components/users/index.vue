@@ -1,17 +1,17 @@
 <template>
-  <v-layout justify-center>
-    <v-flex class="mt-5">
+  <v-row justify="center">
+    <v-col class="mt-5">
       <v-toolbar color="#f5f5f5" flat>
         <v-spacer />
         <import-dialog @imported="fetch(defaultPage)" />
         <bulk-enrollment-dialog :disabled="!selectedUsers.length" :users="selectedUsers" />
-        <v-btn @click.stop="showUserDialog()" color="success" outline>
+        <v-btn @click.stop="showUserDialog()" color="success" outlined class="ml-4">
           Add user
         </v-btn>
       </v-toolbar>
       <div class="elevation-1 ml-2 mr-4">
-        <v-layout column align-end class="px-4 table-toolbar">
-          <v-flex lg4>
+        <v-row justify="end" no-gutters class="px-4 table-toolbar">
+          <v-col lg="4">
             <v-text-field
               v-model="filter"
               append-icon="mdi-magnify"
@@ -19,40 +19,38 @@
               single-line
               hide-details
               clearable />
-          </v-flex>
-          <v-flex lg4 class="my-1">
             <v-checkbox
               v-model="showArchived"
               label="Show archived"
-              class="archived-checkbox"
+              class="my-2 archived-checkbox"
               hide-details />
-          </v-flex>
-        </v-layout>
+          </v-col>
+        </v-row>
         <v-data-table
           v-model="selectedUsers"
           :headers="headers"
           :items="users"
-          :total-items="totalItems"
-          :pagination.sync="dataTable"
+          :server-items-length="totalItems"
+          :options.sync="dataTable"
           :must-sort="true"
           class="user-table"
-          select-all>
-          <template slot="items" slot-scope="props">
+          show-select>
+          <template v-slot:item="props">
             <tr :key="props.item.id">
               <td>
-                <v-checkbox v-model="props.selected" primary hide-details />
+                <v-checkbox v-model="props.isSelected" hide-details />
               </td>
               <td>{{ props.item.email }}</td>
               <td>{{ props.item.role }}</td>
               <td>{{ props.item.firstName }}</td>
               <td>{{ props.item.lastName }}</td>
-              <td class="no-wrap">{{ props.item.createdAt | formatDate }}</td>
-              <td class="no-wrap text-xs-center">
+              <td class="text-no-wrap">{{ props.item.createdAt | formatDate }}</td>
+              <td class="text-no-wrap text-center">
                 <v-btn
                   @click="showUserDialog(props.item)"
                   color="grey darken-2"
                   small
-                  flat
+                  text
                   icon>
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
@@ -61,7 +59,7 @@
                   :disabled="user.id === props.item.id"
                   color="grey darken-2"
                   small
-                  flat
+                  text
                   icon>
                   <v-icon>
                     mdi-account-{{ props.item.deletedAt ? 'convert' : 'off' }}
@@ -82,8 +80,8 @@
         @confirmed="fetch()"
         v-bind="confirmation"
         :visible="!!confirmation" />
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -96,7 +94,7 @@ import { mapState } from 'vuex';
 import throttle from 'lodash/throttle';
 import UserDialog from './UserDialog';
 
-const defaultPage = () => ({ sortBy: 'updatedAt', descending: true, page: 1 });
+const defaultPage = () => ({ sortBy: ['updatedAt'], sortDesc: [true], page: 1 });
 const headers = () => [
   { text: 'Email', value: 'email' },
   { text: 'Role', value: 'role' },
@@ -171,24 +169,31 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.user-table /deep/ .v-input--checkbox {
+.user-table ::v-deep .v-input--checkbox {
   justify-content: center;
+  margin-top: 0;
 }
 
-.archived-checkbox /deep/ .v-input__slot {
-  flex-direction: row-reverse;
-
-  .v-input--selection-controls__input {
-    justify-content: center;
-    margin-right: 0;
+::v-deep .archived-checkbox {
+  &.v-input--checkbox {
+    justify-content: flex-end;
   }
 
-  .v-icon {
-    font-size: 18px;
-  }
+  .v-input__slot {
+    flex-direction: row-reverse;
 
-  label {
-    font-size: 14px;
+    .v-input--selection-controls__input {
+      justify-content: center;
+      margin-right: 0;
+    }
+
+    .v-icon {
+      font-size: 18px;
+    }
+
+    label {
+      font-size: 14px;
+    }
   }
 }
 </style>

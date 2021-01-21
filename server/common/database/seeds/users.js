@@ -17,15 +17,16 @@ const users = [{
   created_at: now,
   updated_at: now
 }];
+const LETTER_A_CHAR_CODE = 65;
 
 times(10, i => {
   const suffix = i || '';
   users.push({
-    first_name: `Student ${suffix}`,
+    first_name: `Learner ${String.fromCharCode(LETTER_A_CHAR_CODE + i)}`,
     last_name: 'Example',
-    email: `student${suffix}@example.org`,
-    password: 'student123',
-    role: role.STUDENT,
+    email: `learner${suffix}@example.org`,
+    password: 'learner123',
+    role: role.LEARNER,
     created_at: now,
     updated_at: now
   });
