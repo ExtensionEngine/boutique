@@ -84,10 +84,7 @@
 <script>
 import api from '@/admin/api/user';
 import saveAs from 'save-as';
-import { withFocusTrap } from '@/common/focustrap';
-import { withValidation } from '@/common/validation';
 
-const el = vm => vm.$children[0].$refs.dialog;
 const inputFormats = {
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
   'text/csv': 'csv'
@@ -95,7 +92,6 @@ const inputFormats = {
 
 export default {
   name: 'import-dialog',
-  mixins: [withValidation(), withFocusTrap({ el })],
   data: () => ({
     visible: false,
     importing: false,
