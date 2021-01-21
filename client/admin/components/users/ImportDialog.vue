@@ -3,9 +3,12 @@
     ref="dialog"
     v-model="visible"
     v-hotkey="{ esc: close }"
+    :hide-overlay="!isDragged"
+    overlay-opacity="0.5"
+    overlay-color="#00bfff"
+    width="700"
     persistent
-    no-click-animation
-    width="700">
+    no-click-animation>
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" color="blue-grey" outlined>
         <v-icon>mdi-cloud-upload</v-icon>Import
@@ -21,41 +24,40 @@
       <v-card class="pa-3">
         <v-card-title class="headline">Import Users</v-card-title>
         <v-card-text>
-          <div
-            :class="{ 'drop-file': isDragged }"
-            class="select-file">
-            <v-btn @click="launchFilePicker" color="info">
-              <v-icon>mdi-upload</v-icon>
-              Upload .xslx or .csv file
-            </v-btn>
-            <div>Or drag and drop file here</div>
-            <v-chip v-if="filename" @input="removeFile" close>{{ filename }}</v-chip>
-            <div class="errors-list">{{ vErrors.collect('file')[0] }}</div>
-            <label for="userImportInput">
-              <v-text-field
-                ref="fileName"
-                v-model="filename"
-                :error-messages="vErrors.collect('file')"
-                :disabled="importing"
-                prepend-icon="mdi-attachment"
-                label="Upload .xlsx or .csv file"
-                readonly
-                single-line />
-              <input
-                v-show="isDragged"
-                ref="dropZone"
-                v-validate="inputValidation"
-                @change="onFileSelected"
-                @dragend="hideDropZone"
-                @dragover="showDropZone"
-                @dragenter="showDropZone"
-                @dragleave="hideDropZone"
-                @drop="hideDropZone"
-                class="drop-zone"
-                name="file"
-                type="file">
-            </label>
-          </div>
+          <validation-provider v-slot="{ errors }" name="File" slim>
+            <div
+              :class="{ 'drop-file': isDragged }"
+              class="select-file">
+              <v-btn @click="launchFilePicker" color="info">
+                <v-icon>mdi-upload</v-icon>
+                Upload .xslx or .csv file
+              </v-btn>
+              <div class="my-3">Or drag and drop file here</div>
+              <v-chip
+                v-if="file"
+                @input="removeFile"
+                @click:close="removeFile"
+                close>
+                {{ file.name }}
+              </v-chip>
+              <div class="errors-list">{{ errors[0] }}</div>
+              <label for="userImportInput">
+                <input
+                  v-show="isDragged"
+                  ref="dropZone"
+                  @change="onFileSelected"
+                  @dragend="hideDropZone"
+                  @dragover="showDropZone"
+                  @dragenter="showDropZone"
+                  @dragleave="hideDropZone"
+                  @drop="hideDropZone"
+                  :accept="acceptedFiles"
+                  class="drop-zone"
+                  name="file"
+                  type="file">
+              </label>
+            </div>
+          </validation-provider>
         </v-card-text>
         <v-card-actions>
           <v-btn @click="downloadTemplateFile" text color="blue-grey">
@@ -84,6 +86,7 @@
 <script>
 import api from '@/admin/api/user';
 import saveAs from 'save-as';
+import { validate } from 'vee-validate';
 
 const inputFormats = {
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
@@ -95,7 +98,7 @@ export default {
   data: () => ({
     visible: false,
     importing: false,
-    filename: null,
+    file: null,
     form: null,
     isDragged: false,
     serverErrorsReport: null
@@ -107,16 +110,14 @@ export default {
   methods: {
     showDropZone() {
       if (this.visible) {
-        this.$refs.dialog.overlay.style.backgroundColor = 'rgba(0,191,255, 0.5)';
         this.isDragged = true;
       }
     },
     hideDropZone() {
-      this.$refs.dialog.overlay.style.backgroundColor = '';
       this.isDragged = false;
     },
     removeFile() {
-      this.filename = null;
+      this.file = null;
       this.form = null;
       this.$refs.dropZone.value = null;
       this.isDragged = false;
@@ -130,18 +131,22 @@ export default {
       this.resetErrors();
       const [file] = e.target.files;
       if (!file) {
-        this.filename = null;
+        this.file = null;
         return;
       }
-      this.filename = file.name;
-      return this.$validator.validateAll().then(isValid => {
-        if (!isValid) return;
-        this.form.append('file', file, file.name);
+      this.file = file;
+      return validate(file, this.inputValidation, { name: 'File' }).then(result => {
+        const { valid, errors } = result;
+        if (valid) {
+          this.form.append('file', file, file.name);
+          return;
+        }
+        this.$refs.form.setErrors({ File: errors });
       });
     },
     close() {
       if (this.importing) return;
-      this.filename = null;
+      this.file = null;
       this.isDragged = false;
       this.$refs.dropZone.value = null;
       this.resetErrors();
@@ -156,13 +161,16 @@ export default {
         this.importing = false;
         if (count) this.$emit('imported');
         if (!data.size) return this.close();
-        this.$refs.validationObserver.setErrors({ File: [`${count} users were successfully imported.`] });
+        this.$refs.form.setErrors({ File: [`${count} users were successfully imported.`] });
         this.serverErrorsReport = data;
       }).catch(err => {
         this.importing = false;
-        this.$refs.validationObserver.setErrors({ File: ['Importing users failed.'] });
+        this.$refs.form.setErrors({ File: ['Importing users failed.'] });
         return Promise.reject(err);
       });
+    },
+    resetErrors() {
+      this.$refs.form.reset();
     },
     downloadErrorsFile() {
       const extension = inputFormats[this.serverErrorsReport.type];
