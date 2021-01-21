@@ -14,8 +14,8 @@ require('express-async-errors');
 /* eslint-disable require-sort/require-sort */
 const {
   apiErrorHandler,
-  notFoundRouteHandler,
-  globalErrorHandler
+  globalErrorHandler,
+  notFoundRouteHandler
 } = require('./common/errors');
 const auth = require('./common/auth');
 const config = require('./config');
