@@ -1,6 +1,5 @@
 <template>
   <v-dialog
-    ref="dialog"
     v-model="visible"
     v-hotkey="{ esc: close }"
     :hide-overlay="!isDragged"
