@@ -3,22 +3,25 @@
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const express = require('express');
-const history = require('connect-history-api-fallback');
 const helmet = require('helmet');
+const history = require('connect-history-api-fallback');
 const jsend = require('jsend').middleware;
 const morgan = require('morgan');
 const nocache = require('nocache');
+// eslint-disable-next-line require-sort/require-sort
 require('express-async-errors');
 
-const auth = require('./common/auth');
-const config = require('./config');
+/* eslint-disable require-sort/require-sort */
 const {
   apiErrorHandler,
   notFoundRouteHandler,
   globalErrorHandler
 } = require('./common/errors');
+const auth = require('./common/auth');
+const config = require('./config');
 const origin = require('./common/origin');
 const router = require('./router');
+/* eslint-enable */
 
 const app = express();
 app.use(helmet());
@@ -39,11 +42,11 @@ app.use(jsend);
 const isSuccessful = res => res.statusCode >= 200 && res.statusCode < 300;
 const format = process.env.NODE_ENV === 'production' ? 'combined' : 'dev';
 app.use(morgan(format, {
-  skip: (req, res) => isSuccessful(res),
+  skip: (_req, res) => isSuccessful(res),
   stream: process.stderr
 }));
 app.use(morgan(format, {
-  skip: (req, res) => !isSuccessful(res),
+  skip: (_req, res) => !isSuccessful(res),
   stream: process.stdout
 }));
 
@@ -57,10 +60,7 @@ app.use(
 );
 
 if (config.useHistoryApiFallback) {
-  app.use(
-    history(config.historyApiFallbackOptions),
-    staticMiddleware
-  );
+  app.use(history(config.historyApiFallbackOptions), staticMiddleware);
 }
 
 app.use(globalErrorHandler);
