@@ -12,17 +12,17 @@
             :error-messages="vErrors.collect('name')"
             label="Group Name"
             data-vv-name="name"
-            class="mb-3"/>
+            class="mb-3" />
           <v-text-field
             v-model="group.description"
             v-validate="'max:255'"
             :error-messages="vErrors.collect('description')"
             label="Group Description"
             data-vv-name="description"
-            class="mb-3"/>
+            class="mb-3" />
         </v-card-text>
         <v-card-actions>
-          <v-spacer/>
+          <v-spacer />
           <v-btn @click="close">Cancel</v-btn>
           <v-btn color="success" type="submit">Save</v-btn>
         </v-card-actions>

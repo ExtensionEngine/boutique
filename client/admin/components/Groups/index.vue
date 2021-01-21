@@ -2,7 +2,7 @@
   <v-layout justify-center>
     <v-flex class="mt-5">
       <v-toolbar color="#f5f5f5" flat>
-        <v-spacer/>
+        <v-spacer />
         <v-btn @click.stop="showGroupDialog()" color="success" outline>
           Add group
         </v-btn>
@@ -16,14 +16,14 @@
               label="Search"
               single-line
               hide-details
-              clearable/>
+              clearable />
           </v-flex>
           <v-flex lg4 class="my-1">
             <v-checkbox
               v-model="showArchived"
               label="Show archived"
               class="archived-checkbox"
-              hide-details/>
+              hide-details />
           </v-flex>
         </v-layout>
         <v-data-table
@@ -37,9 +37,9 @@
             <tr :key="item.id">
               <td>{{ item.name }}</td>
               <td>{{ item.description }}</td>
-              <td class="no-wrap">{{ item.createdAt | formatDate }}</td>
-              <td class="no-wrap">{{ item.users.length }}</td>
-              <td class="no-wrap text-xs-center">
+              <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
+              <td class="text-no-wrap">{{ item.users.length }}</td>
+              <td class="text-no-wrap text-center">
                 <v-btn
                   @click="showGroupDialog(item)"
                   color="grey darken-2"
@@ -67,12 +67,12 @@
         @updated="fetch(defaultPage)"
         @created="fetch(defaultPage)"
         :visible.sync="groupDialog"
-        :groupData="editedGroup"/>
+        :group-data="editedGroup" />
       <confirmation-dialog
         @update:visible="confirmation = null"
         @confirmed="fetch()"
         v-bind="confirmation"
-        :visible="!!confirmation"/>
+        :visible="!!confirmation" />
     </v-flex>
   </v-layout>
 </template>
@@ -157,11 +157,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.group-table /deep/ .v-input--checkbox {
+.group-table ::v-deep .v-input--checkbox {
   justify-content: center;
 }
 
-.archived-checkbox /deep/ .v-input__slot {
+.archived-checkbox ::v-deep .v-input__slot {
   flex-direction: row-reverse;
 
   .v-input--selection-controls__input {
