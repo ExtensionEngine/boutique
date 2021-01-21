@@ -1,28 +1,32 @@
 <template>
-  <v-toolbar color="amber" app fixed clipped-left>
-    <v-toolbar-side-icon @click.native="$emit('update:drawer', !drawer)"/>
+  <v-app-bar color="amber" app fixed clipped-left>
+    <v-app-bar-nav-icon @click.native="$emit('update:drawer', !drawer)" />
     <span class="title ml-3 mr-5">
       <v-icon class="mr-2">mdi-shopping</v-icon>
       Boutique
       <span class="font-weight-light">LMS</span>
     </span>
-    <v-spacer></v-spacer>
+    <v-spacer />
     <v-menu min-width="220px" transition="slide-y-transition" offset-y>
-      <v-btn slot="activator" icon large class="mr-2">
+      <template v-slot:activator="{ on: menu }">
         <v-tooltip left>
-          <v-avatar slot="activator" size="42px" color="#eaeaea">
-            <span class="grey--text headline">{{ user.firstName[0] }}</span>
-          </v-avatar>
+          <template v-slot:activator="{ on: tooltip }">
+            <v-btn icon large class="mr-2">
+              <v-avatar v-on="{ ...tooltip, ...menu }" size="42px" color="#eaeaea">
+                <span class="grey--text headline">{{ user.firstName[0] }}</span>
+              </v-avatar>
+            </v-btn>
+          </template>
           <span>{{ fullName }}</span>
         </v-tooltip>
-      </v-btn>
+      </template>
       <v-list>
-        <v-list-tile @click="logout">
-          <v-list-tile-title>Logout</v-list-tile-title>
-        </v-list-tile>
+        <v-list-item @click="logout">
+          <v-list-item-title>Logout</v-list-item-title>
+        </v-list-item>
       </v-list>
     </v-menu>
-  </v-toolbar>
+  </v-app-bar>
 </template>
 
 <script>

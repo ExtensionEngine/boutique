@@ -1,14 +1,14 @@
 <template>
   <v-dialog v-model="visible" v-hotkey="{ esc: close }" width="700">
-    <v-btn slot="activator" color="success" outline>Import Content</v-btn>
+    <template v-slot:activator="{ on }">
+      <v-btn v-on="on" color="success" outlined>Import Content</v-btn>
+    </template>
     <v-form @submit.prevent="importRepo">
       <v-card class="pa-3">
         <v-card-title class="headline">Import Content</v-card-title>
         <v-card-text>
           <v-autocomplete
             v-model="sourceId"
-            @focus="focusTrap.pause()"
-            @blur="focusTrap.unpause()"
             :items="availableRepos"
             :loading="isLoading"
             item-value="sourceId"
@@ -16,16 +16,16 @@
             prepend-icon="mdi-magnify"
             label="Repository"
             placeholder="Start typing to Search"
-            hide-selected/>
+            hide-selected />
         </v-card-text>
         <v-card-actions>
-          <v-spacer/>
+          <v-spacer />
           <v-btn @click="close" :disabled="isImporting">Cancel</v-btn>
           <v-btn
             :disabled="!sourceId"
             :loading="isImporting"
             color="success"
-            outline
+            outlined
             type="submit">
             Import
           </v-btn>
@@ -41,30 +41,22 @@ import differenceBy from 'lodash/differenceBy';
 import map from 'lodash/map';
 import { mapActions } from 'vuex';
 import pick from 'lodash/pick';
-import { withFocusTrap } from '@/common/focustrap';
-
-const el = vm => vm.$children[0].$refs.dialog;
 
 export default {
   name: 'content-import-dialog',
-  mixins: [withFocusTrap({ el })],
   props: {
     programId: { type: Number, required: true },
     importedRepos: { type: Array, default: () => ([]) }
   },
-  data() {
-    return {
-      visible: false,
-      sourceId: null,
-      catalog: [],
-      isImporting: false,
-      isLoading: false
-    };
-  },
+  data: () => ({
+    visible: false,
+    sourceId: null,
+    catalog: [],
+    isImporting: false,
+    isLoading: false
+  }),
   computed: {
-    availableRepos() {
-      return differenceBy(this.catalog, this.importedRepos, 'sourceId');
-    }
+    availableRepos: vm => differenceBy(vm.catalog, vm.importedRepos, 'sourceId')
   },
   methods: {
     ...mapActions('contentRepo', ['save']),
@@ -84,7 +76,6 @@ export default {
   },
   watch: {
     visible(val) {
-      this.$nextTick(() => this.focusTrap.toggle(val));
       if (!val) return;
       this.isLoading = true;
       return api.getCatalog()

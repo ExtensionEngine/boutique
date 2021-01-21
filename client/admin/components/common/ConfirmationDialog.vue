@@ -5,9 +5,9 @@
         <v-card-title class="headline">{{ heading }}</v-card-title>
         <v-card-text>{{ message }}</v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn @click="close" flat>Cancel</v-btn>
-          <v-btn :disabled="isLoading" type="submit" color="red" flat>Yes</v-btn>
+          <v-spacer />
+          <v-btn @click="close" text>Cancel</v-btn>
+          <v-btn :disabled="isLoading" type="submit" color="red" text>Yes</v-btn>
         </v-card-actions>
       </v-card>
     </v-form>
@@ -15,13 +15,8 @@
 </template>
 
 <script>
-import { withFocusTrap } from '@/common/focustrap';
-
-const el = vm => vm.$children[0].$refs.dialog;
-
 export default {
   name: 'confirmation-dialog',
-  mixins: [withFocusTrap({ el })],
   props: {
     visible: { type: Boolean, default: false },
     heading: { type: String, default: '' },
@@ -31,9 +26,7 @@ export default {
   data: () => ({ isLoading: false }),
   computed: {
     show: {
-      get() {
-        return this.visible;
-      },
+      get: vm => vm.visible,
       set(value) {
         if (!value) this.close();
       }
@@ -51,11 +44,6 @@ export default {
           this.$emit('confirmed');
         })
         .finally(() => (this.isLoading = false));
-    }
-  },
-  watch: {
-    show(val) {
-      this.$nextTick(() => this.focusTrap.toggle(val));
     }
   }
 };

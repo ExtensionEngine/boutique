@@ -29,8 +29,8 @@ class Enrollment extends Model {
       foreignKey: { name: 'programId', field: 'program_id' }
     });
     this.belongsTo(User, {
-      as: 'student',
-      foreignKey: { name: 'studentId', field: 'student_id' }
+      as: 'learner',
+      foreignKey: { name: 'learnerId', field: 'learner_id' }
     });
   }
 
@@ -43,12 +43,12 @@ class Enrollment extends Model {
     };
   }
 
-  static async restoreOrCreate(studentIds, programId, { concurrency = 16 } = {}) {
-    studentIds = castArray(studentIds);
-    const where = { studentId: studentIds, programId };
+  static async restoreOrCreate(learnerIds, programId, { concurrency = 16 } = {}) {
+    learnerIds = castArray(learnerIds);
+    const where = { learnerId: learnerIds, programId };
     const found = await this.findAll({ where, paranoid: false });
-    return Promise.map(studentIds, studentId => Promise.try(() => {
-      const enrollment = find(found, { studentId });
+    return Promise.map(learnerIds, learnerId => Promise.try(() => {
+      const enrollment = find(found, { learnerId });
       if (enrollment && !enrollment.deletedAt) {
         const message = 'Enrollment already exists!';
         throw new UniqueConstraintError({ message });
@@ -57,7 +57,7 @@ class Enrollment extends Model {
         enrollment.setDataValue('deletedAt', null);
         return enrollment.save();
       }
-      return this.create({ studentId, programId });
+      return this.create({ learnerId, programId });
     }).reflect(), { concurrency });
   }
 }

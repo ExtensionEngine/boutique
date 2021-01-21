@@ -33,7 +33,7 @@ class User extends Model {
       role: {
         type: DataTypes.ENUM(values(role)),
         allowNull: false,
-        defaultValue: role.STUDENT
+        defaultValue: role.LEARNER
       },
       token: {
         type: DataTypes.STRING,
@@ -80,7 +80,7 @@ class User extends Model {
 
   static associate({ Enrollment, Group }) {
     this.hasMany(Enrollment, {
-      foreignKey: { name: 'studentId', field: 'student_id' }
+      foreignKey: { name: 'learnerId', field: 'learner_id' }
     });
     this.belongsTo(Group, {
       foreignKey: { name: 'groupId', field: 'group_id', onDelete: 'cascade' }

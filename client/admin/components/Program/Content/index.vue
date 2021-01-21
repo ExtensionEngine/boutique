@@ -1,12 +1,12 @@
 <template>
   <div class="mt-3">
     <v-toolbar color="#f5f5f5" flat>
-      <v-spacer/>
-      <content-dialog :programId="programId" :importedRepos="importedRepos"/>
+      <v-spacer />
+      <content-dialog :program-id="programId" :imported-repos="importedRepos" />
     </v-toolbar>
     <div class="elevation-1 ml-2 mr-4">
-      <v-layout column align-end class="px-4 table-toolbar">
-        <v-flex lg4>
+      <v-row justify="end" no-gutters class="px-4 table-toolbar">
+        <v-col lg="4">
           <v-text-field
             v-model.trim="filter"
             :disabled="importedRepos.length <= 0"
@@ -14,23 +14,21 @@
             label="Search"
             hide-details
             single-line
-            clearable/>
-        </v-flex>
-        <v-flex lg4>
+            clearable />
           <v-checkbox
             v-model="showArchived"
             label="Show archived"
             class="my-2 archived-checkbox"
-            hide-details/>
-        </v-flex>
-      </v-layout>
+            hide-details />
+        </v-col>
+      </v-row>
       <v-data-table
         :headers="headers"
         :items="filteredRepos"
         :no-data-text="noContentMessage"
         item-key="_cid"
-        hide-actions>
-        <template slot="items" slot-scope="{ item }">
+        hide-default-footer>
+        <template v-slot:item="{ item }">
           <tr
             v-show="!item.deletedAt || showArchived"
             :key="item.sourceId"
@@ -38,29 +36,31 @@
             <td>{{ item.name }}</td>
             <td class="text-no-wrap">{{ item.repoVersion | formatDate }}</td>
             <td class="text-no-wrap">{{ item.publishedAt | formatDate }}</td>
-            <td class="text-no-wrap text-xs-center actions">
+            <td class="text-no-wrap text-center actions">
               <v-btn
                 v-if="item.repoVersion > item.publishedAt"
                 @click="save(item)"
-                flat
+                text
                 small>
                 Sync
               </v-btn>
               <span v-else-if="item.repoVersion">Synced</span>
             </td>
-            <td>
+            <td class="text-no-wrap text-center">
               <v-btn
                 v-if="!item.deletedAt"
                 @click="showConfirmationDialog(item)"
                 icon
-                flat>
+                small
+                text>
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
               <v-btn
                 v-else
                 @click="showRestoreDialog(item)"
                 icon
-                flat>
+                small
+                text>
                 <v-icon>mdi-restore</v-icon>
               </v-btn>
             </td>
@@ -70,11 +70,11 @@
       <confirmation-dialog
         @update:visible="confirmation = null"
         @confirmed="fetchProgramRepos()"
-        v-bind="confirmation"/>
+        v-bind="confirmation" />
       <multiple-choice-dialog
         @closed="restoreOptions = null"
         @completed="fetchProgramRepos()"
-        v-bind="restoreOptions"/>
+        v-bind="restoreOptions" />
     </div>
   </div>
 </template>
@@ -167,20 +167,26 @@ export default {
   width: 250px;
 }
 
-.archived-checkbox /deep/ .v-input__slot {
-  flex-direction: row-reverse;
-
-  .v-input--selection-controls__input {
-    justify-content: center;
-    margin-right: 0;
+::v-deep .archived-checkbox {
+  &.v-input--checkbox {
+    justify-content: flex-end;
   }
 
-  .v-icon {
-    font-size: 18px;
-  }
+  .v-input__slot {
+    flex-direction: row-reverse;
 
-  label {
-    font-size: 14px;
+    .v-input--selection-controls__input {
+      justify-content: center;
+      margin-right: 0;
+    }
+
+    .v-icon {
+      font-size: 18px;
+    }
+
+    label {
+      font-size: 14px;
+    }
   }
 }
 </style>
