@@ -9,14 +9,13 @@
     persistent
     no-click-animation>
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on" color="blue-grey" outlined>
-        <v-icon>mdi-cloud-upload</v-icon>Import
+      <v-btn v-on="on" color="blue-grey" :disabled="disabled" outlined>
+        <v-icon>mdi-cloud-upload</v-icon>Import {{ label }}
       </v-btn>
     </template>
     <validation-observer
       v-if="visible"
       ref="form"
-      v-slot="{ invalid }"
       @submit.prevent="$refs.form.handleSubmit(submit)"
       tag="form"
       novalidate>
@@ -72,7 +71,7 @@
             </v-btn>
           </v-fade-transition>
           <v-btn @click="close">Cancel</v-btn>
-          <v-btn :disabled="importing || invalid" color="success" type="submit">
+          <v-btn :disabled="importDisabled" color="success" type="submit">
             <span v-if="!importing">Import</span>
             <v-icon v-else>mdi-loading mdi-spin</v-icon>
           </v-btn>
@@ -83,7 +82,7 @@
 </template>
 
 <script>
-import api from '@/admin/api/user';
+import api from '@/admin/api/import';
 import saveAs from 'save-as';
 import { validate } from 'vee-validate';
 
@@ -94,6 +93,12 @@ const inputFormats = {
 
 export default {
   name: 'import-dialog',
+  props: {
+    label: { type: String, required: true },
+    baseUrl: { type: String, required: true },
+    disabled: { type: Boolean, default: false },
+    params: { type: Object, default: null }
+  },
   data: () => ({
     visible: false,
     importing: false,
@@ -103,14 +108,13 @@ export default {
     serverErrorsReport: null
   }),
   computed: {
+    importDisabled: vm => !vm.file || vm.$refs.form.invalid || vm.importing,
     inputValidation: () => ({ required: true, mimes: Object.keys(inputFormats) }),
     acceptedFiles: () => Object.keys(inputFormats)
   },
   methods: {
     showDropZone() {
-      if (this.visible) {
-        this.isDragged = true;
-      }
+      if (this.visible) this.isDragged = true;
     },
     hideDropZone() {
       this.isDragged = false;
@@ -125,23 +129,16 @@ export default {
     launchFilePicker() {
       this.$refs.dropZone.click();
     },
-    onFileSelected(e) {
+    async onFileSelected(e) {
       this.form = new FormData();
       this.resetErrors();
       const [file] = e.target.files;
-      if (!file) {
-        this.file = null;
-        return;
-      }
+      if (!file) return (this.file = null);
       this.file = file;
-      return validate(file, this.inputValidation, { name: 'File' }).then(result => {
-        const { valid, errors } = result;
-        if (valid) {
-          this.form.append('file', file, file.name);
-          return;
-        }
-        this.$refs.form.setErrors({ File: errors });
-      });
+      const result = await validate(file, this.inputValidation, { name: 'File' });
+      const { valid, errors } = result;
+      if (!valid) return this.$refs.form.setErrors({ File: errors });
+      this.form.append('file', file, file.name);
     },
     close() {
       if (this.importing) return;
@@ -153,20 +150,23 @@ export default {
     },
     submit() {
       this.importing = true;
-      const { file } = this;
+      const { file, label, baseUrl, params } = this;
       this.form = new FormData();
       this.form.append('file', file, file.name);
-      return api.bulkImport(this.form).then(({ data, count }) => {
-        this.importing = false;
-        if (count) this.$emit('imported');
-        if (!data.size) return this.close();
-        this.$refs.form.setErrors({ File: [`${count} users were successfully imported.`] });
-        this.serverErrorsReport = data;
-      }).catch(err => {
-        this.importing = false;
-        this.$refs.form.setErrors({ File: ['Importing users failed.'] });
-        return Promise.reject(err);
-      });
+      return api.bulkImport(this.form, { baseUrl, params })
+        .then(({ data, count }) => {
+          this.importing = false;
+          if (count) this.$emit('imported');
+          if (!data.size) return this.close();
+          const msg = `${count} ${label} were successfully imported.`;
+          this.$refs.form.setErrors({ File: [msg] });
+          this.serverErrorsReport = data;
+        })
+        .catch(err => {
+          this.importing = false;
+          this.$refs.form.setErrors({ File: [`Importing ${label} failed.`] });
+          return Promise.reject(err);
+        });
     },
     resetErrors() {
       this.$refs.form.reset();
@@ -175,10 +175,10 @@ export default {
       const extension = inputFormats[this.serverErrorsReport.type];
       saveAs(this.serverErrorsReport, `Errors.${extension}`);
     },
-    downloadTemplateFile() {
-      return api.getImportTemplate().then(response => {
-        saveAs(response.data, 'Template.xlsx');
-      });
+    async downloadTemplateFile() {
+      const { baseUrl: name } = this;
+      const { data } = await api.getImportTemplate({ baseUrl: name });
+      return saveAs(data, `${name}Template.xlsx`);
     }
   },
   mounted() {
@@ -192,25 +192,25 @@ export default {
 
 <style lang="scss" scoped>
 .v-btn .v-icon {
-  padding-right: 6px;
+  padding-right: 0.375rem;
 }
 
 .v-card__actions {
-  margin-top: 20px;
+  margin-top: 1.25rem;
 }
 
 .select-file {
-  padding: 50px 10px;
+  padding: 3.125rem 0.625rem;
   text-align: center;
   color: gray;
   background-color: #f5f5f5;
-  border-radius: 5px;
+  border-radius: 0.3125rem;
 }
 
 .drop-file {
   background-color: #eee;
   outline: 2px dashed #aaa;
-  outline-offset: -10px;
+  outline-offset: -0.625rem;
 }
 
 .errors-list {

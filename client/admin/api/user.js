@@ -1,13 +1,10 @@
 import { extractData, processParams } from '@/common/api/helpers';
-import get from 'lodash/get';
 import request from '@/common/api/request';
 
 const url = {
   root: '/users',
   resource: it => `/users/${it.id}`,
-  invite: it => `/users/${it.id}/invite`,
-  import: '/users/import',
-  getImportTemplate: '/users/import/template'
+  invite: it => `/users/${it.id}/invite`
 };
 
 function fetch(params = {}) {
@@ -31,24 +28,10 @@ function invite(item) {
   return request.post(url.invite(item));
 }
 
-function bulkImport(items) {
-  return request.post(url.import, items, { responseType: 'blob' })
-    .then(({ data, headers }) => {
-      const count = parseInt(get(headers, 'data-imported-count'), 10);
-      return { data, count };
-    });
-}
-
-function getImportTemplate() {
-  return request.get(url.getImportTemplate, { responseType: 'blob' });
-}
-
 export default {
   fetch,
   create,
   update,
   remove,
-  invite,
-  bulkImport,
-  getImportTemplate
+  invite
 };

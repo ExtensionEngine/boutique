@@ -3,7 +3,7 @@
     <v-col class="mt-5">
       <v-toolbar color="#f5f5f5" flat>
         <v-spacer />
-        <import-dialog @imported="fetch(defaultPage)" />
+        <import-dialog @imported="fetch(defaultPage)" label="users" base-url="users" />
         <bulk-enrollment-dialog :disabled="!selectedUsers.length" :users="selectedUsers" />
         <v-btn @click.stop="showUserDialog()" color="success" outlined class="ml-4">
           Add user
@@ -89,7 +89,7 @@ import api from '@/admin/api/user';
 import BulkEnrollmentDialog from './BulkEnrollmentDialog';
 import ConfirmationDialog from '../common/ConfirmationDialog';
 import humanize from 'humanize-string';
-import ImportDialog from './ImportDialog';
+import ImportDialog from '../common/ImportDialog';
 import { mapState } from 'vuex';
 import throttle from 'lodash/throttle';
 import UserDialog from './UserDialog';
