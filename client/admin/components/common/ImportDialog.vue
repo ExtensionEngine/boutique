@@ -83,6 +83,7 @@
 
 <script>
 import api from '@/admin/api/import';
+import pluralize from 'pluralize';
 import saveAs from 'save-as';
 import { validate } from 'vee-validate';
 
@@ -158,7 +159,7 @@ export default {
           this.importing = false;
           if (count) this.$emit('imported');
           if (!data.size) return this.close();
-          const msg = `${count} ${label} were successfully imported.`;
+          const msg = `${count} ${pluralize(label, count)} were successfully imported.`;
           this.$refs.form.setErrors({ File: [msg] });
           this.serverErrorsReport = data;
         })
@@ -176,9 +177,9 @@ export default {
       saveAs(this.serverErrorsReport, `Errors.${extension}`);
     },
     async downloadTemplateFile() {
-      const { baseUrl: name } = this;
-      const { data } = await api.getImportTemplate({ baseUrl: name });
-      return saveAs(data, `${name}Template.xlsx`);
+      const { label, baseUrl } = this;
+      const { data } = await api.getImportTemplate({ baseUrl });
+      return saveAs(data, `${label}Template.xlsx`);
     }
   },
   mounted() {
