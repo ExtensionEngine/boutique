@@ -7,8 +7,7 @@
           v-for="({ name, label }) in tabs"
           :key="name"
           :to="{ name, params: { programId } }"
-          exact
-          ripple>
+          exact ripple>
           {{ label }}
         </v-tab>
       </v-tabs>
@@ -23,25 +22,21 @@ import find from 'lodash/find';
 
 export default {
   name: 'program',
-  props: { programId: { type: Number, required: true } },
+  props: {
+    programId: { type: Number, required: true }
+  },
   computed: {
     ...mapState('programs', { programs: 'items' }),
-    program() {
-      return find(this.programs, { id: this.programId });
-    },
-    breadcrumbs() {
-      return [
-        { text: 'Programs', disabled: true },
-        { text: this.program.name, disabled: true }
-      ];
-    },
-    tabs() {
-      return [
-        { name: 'enrollments', label: 'Enrollments' },
-        { name: 'importedContent', label: 'Content' },
-        { name: 'programSettings', label: 'Settings' }
-      ];
-    }
+    program: vm => find(vm.programs, { id: vm.programId }),
+    breadcrumbs: ({ program }) => [
+      { text: 'Programs', disabled: true },
+      { text: program.name, disabled: true }
+    ],
+    tabs: () => [
+      { name: 'enrollments', label: 'Enrollments' },
+      { name: 'importedContent', label: 'Content' },
+      { name: 'programSettings', label: 'Settings' }
+    ]
   },
   methods: mapActions('programs', ['get']),
   created() {
@@ -56,6 +51,6 @@ export default {
 }
 
 .v-breadcrumbs {
-  padding-left: 18px;
+  padding-left: 1.125rem;
 }
 </style>

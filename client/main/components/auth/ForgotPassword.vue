@@ -82,7 +82,7 @@ export default {
   a {
     display: inline-block;
     color: #444;
-    font-size: 14px;
+    font-size: 0.875rem;
   }
 }
 </style>

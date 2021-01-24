@@ -58,7 +58,7 @@ export default {
   name: 'bulk-enrollment-dialog',
   props: {
     disabled: { type: Boolean, default: true },
-    users: { type: Array, default: () => ([]) }
+    users: { type: Array, default: () => [] }
   },
   data: () => ({
     visible: false,
@@ -67,16 +67,14 @@ export default {
   }),
   computed: {
     ...mapState('programs', { programs: 'items' }),
-    programOptions() {
-      return map(this.programs, it => ({ text: `${it.name}`, value: it.id }));
-    },
+    programOptions: vm => map(vm.programs, it => ({ value: it.id, text: it.name })),
     enrollDisabled: vm => !vm.programId || vm.enrolling
   },
   methods: {
     submit() {
       this.enrolling = true;
-      const userIds = map(this.users, 'id');
-      return api.create({ learnerId: userIds, programId: this.programId })
+      const { users, programId } = this;
+      return api.create({ learnerId: map(users, 'id'), programId })
         .then(({ failed = [] }) => {
           if (failed.length <= 0) return this.close();
           const msg = `Enrolling failed for ${failed.length} users`;
