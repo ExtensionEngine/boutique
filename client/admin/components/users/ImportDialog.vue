@@ -66,7 +66,7 @@
               v-show="serverErrorsReport"
               @click="downloadErrorsFile"
               color="error">
-              <v-icon>mdi-cloud-download</v-icon>Errors
+              <v-icon class="pr-2">mdi-cloud-download</v-icon>Errors
             </v-btn>
           </v-fade-transition>
           <v-btn @click="close">Cancel</v-btn>
@@ -123,23 +123,15 @@ export default {
     launchFilePicker() {
       this.$refs.dropZone.click();
     },
-    onFileSelected(e) {
+    async onFileSelected(e) {
       this.form = new FormData();
       this.resetErrors();
       const [file] = e.target.files;
-      if (!file) {
-        this.file = null;
-        return;
-      }
+      if (!file) return (this.file = null);
       this.file = file;
-      return validate(file, this.inputValidation, { name: 'File' }).then(result => {
-        const { valid, errors } = result;
-        if (valid) {
-          this.form.append('file', file, file.name);
-          return;
-        }
-        this.$refs.form.setErrors({ File: errors });
-      });
+      const { valid, errors } = await validate(file, this.inputValidation, { name: 'File' });
+      if (valid) return (this.form.append('file', file, file.name));
+      this.$refs.form.setErrors({ File: errors });
     },
     close() {
       if (this.importing) return;
@@ -168,6 +160,7 @@ export default {
     },
     resetErrors() {
       this.$refs.form.reset();
+      this.serverErrorsReport = null;
     },
     downloadErrorsFile() {
       const extension = inputFormats[this.serverErrorsReport.type];
