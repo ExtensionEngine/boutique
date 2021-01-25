@@ -10,7 +10,7 @@
     no-click-animation>
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" color="blue-grey" outlined>
-        <v-icon>mdi-cloud-upload</v-icon>Import
+        <v-icon class="pr-2">mdi-cloud-upload</v-icon>Import
       </v-btn>
     </template>
     <validation-observer
@@ -24,11 +24,9 @@
         <v-card-title class="headline">Import Users</v-card-title>
         <v-card-text>
           <validation-provider v-slot="{ errors }" name="File" slim>
-            <div
-              :class="{ 'drop-file': isDragged }"
-              class="select-file">
+            <div :class="{ 'drop-file': isDragged }" class="select-file">
               <v-btn @click="launchFilePicker" color="info">
-                <v-icon>mdi-upload</v-icon>
+                <v-icon class="pr-2">mdi-upload</v-icon>
                 Upload .xslx or .csv file
               </v-btn>
               <div class="my-3">Or drag and drop file here</div>
@@ -51,9 +49,9 @@
                   @dragleave="hideDropZone"
                   @drop="hideDropZone"
                   :accept="acceptedFiles"
-                  class="drop-zone"
                   name="file"
-                  type="file">
+                  type="file"
+                  class="drop-zone">
               </label>
             </div>
           </validation-provider>
@@ -191,16 +189,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.v-btn .v-icon {
-  padding-right: 6px;
-}
-
-.v-card__actions {
-  margin-top: 20px;
-}
-
 .select-file {
-  padding: 50px 10px;
+  padding: 3.125rem 0.625rem;
   text-align: center;
   color: gray;
   background-color: #f5f5f5;
@@ -210,7 +200,7 @@ export default {
 .drop-file {
   background-color: #eee;
   outline: 2px dashed #aaa;
-  outline-offset: -10px;
+  outline-offset: -0.625rem;
 }
 
 .errors-list {
