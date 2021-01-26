@@ -1,6 +1,6 @@
 <template>
   <div class="content-container">
-    <circular-progress v-if="isLoading" :height="50" :width="50" />
+    <v-progress-circular v-if="isLoading" size="50" indeterminate />
     <div v-else class="columns is-multiline">
       <tailor-teaching-elements
         v-for="element in container.elements"
@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import CircularProgress from '@/main/components/common/CircularProgress';
 import TailorTeachingElements from 'tailor-teaching-elements';
 
 export default {
@@ -20,18 +19,16 @@ export default {
   props: {
     getContainer: { type: Function, required: true }
   },
-  data() {
-    return {
-      container: null,
-      isLoading: true
-    };
-  },
+  data: () => ({
+    container: null,
+    isLoading: true
+  }),
   created() {
     return this.getContainer()
       .then(container => (this.container = container))
       .finally(() => (this.isLoading = false));
   },
-  components: { CircularProgress, TailorTeachingElements }
+  components: { TailorTeachingElements }
 };
 </script>
 
@@ -39,14 +36,14 @@ export default {
 .content-container {
   display: flex;
   justify-content: center;
-  margin: 35px 0;
+  margin: 2.1875rem 0;
 
   .columns {
     flex: 1;
   }
 
   .te-container {
-    padding: 10px 0;
+    padding: 0.625rem 0;
   }
 }
 </style>

@@ -1,11 +1,9 @@
 <template>
   <div class="main-drawer">
     <v-navigation-drawer
-      @input="val => $emit('update:drawer', val)"
+      @input="$emit('update:drawer', $event)"
       :value="drawer"
-      fixed
-      clipped
-      app
+      fixed clipped app
       class="grey lighten-4">
       <v-list flat dense class="grey lighten-4 pt-4">
         <v-list-item :to="{ name: 'users' }">
@@ -24,13 +22,13 @@
           </v-col>
         </v-row>
         <v-list-item
-          v-for="program in persistedPrograms"
-          :key="program.id"
-          :to="{ name: 'enrollments', params: { programId: program.id } }"
+          v-for="{ id, name } in persistedPrograms"
+          :key="id"
+          :to="{ name: 'enrollments', params: { programId: id } }"
           active-class="grey lighten-2">
           <v-list-item-content>
             <v-list-item-title class="grey--text">
-              {{ program.name }}
+              {{ name }}
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -50,9 +48,7 @@ export default {
   },
   computed: {
     ...mapState('programs', { programs: 'items' }),
-    persistedPrograms() {
-      return filter(this.programs, 'id');
-    }
+    persistedPrograms: vm => filter(vm.programs, 'id')
   },
   components: { ProgramModal }
 };

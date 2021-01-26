@@ -72,19 +72,17 @@ const formatDate = d => d && format(new Date(d), DST_FORMAT);
 
 export default {
   name: 'program-settings',
-  props: { program: { type: Object, default: null } },
-  data() {
-    return {
-      programData: null,
-      isEditing: false,
-      confirmationDialog: false
-    };
+  props: {
+    program: { type: Object, default: null }
   },
+  data: () => ({
+    programData: null,
+    isEditing: false,
+    confirmationDialog: false
+  }),
   computed: {
     dateFormat: () => DST_FORMAT,
-    confirmationMessage() {
-      return `Are you sure you want to delete "${this.program.name}"?`;
-    }
+    confirmationMessage: vm => `Are you sure you want to delete "${vm.program.name}"?`
   },
   methods: {
     ...mapActions('programs', ['save', 'remove']),

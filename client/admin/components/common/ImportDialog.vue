@@ -23,11 +23,9 @@
         <v-card-title class="headline">Import Users</v-card-title>
         <v-card-text>
           <validation-provider v-slot="{ errors }" name="File" slim>
-            <div
-              :class="{ 'drop-file': isDragged }"
-              class="select-file">
+            <div :class="{ 'drop-file': isDragged }" class="select-file">
               <v-btn @click="launchFilePicker" color="info">
-                <v-icon>mdi-upload</v-icon>
+                <v-icon class="pr-2">mdi-upload</v-icon>
                 Upload .xslx or .csv file
               </v-btn>
               <div class="my-3">Or drag and drop file here</div>
@@ -50,9 +48,9 @@
                   @dragleave="hideDropZone"
                   @drop="hideDropZone"
                   :accept="acceptedFiles"
-                  class="drop-zone"
                   name="file"
-                  type="file">
+                  type="file"
+                  class="drop-zone">
               </label>
             </div>
           </validation-provider>
@@ -67,7 +65,7 @@
               v-show="serverErrorsReport"
               @click="downloadErrorsFile"
               color="error">
-              <v-icon>mdi-cloud-download</v-icon>Errors
+              <v-icon class="pr-2">mdi-cloud-download</v-icon>Errors
             </v-btn>
           </v-fade-transition>
           <v-btn @click="close">Cancel</v-btn>
@@ -171,6 +169,7 @@ export default {
     },
     resetErrors() {
       this.$refs.form.reset();
+      this.serverErrorsReport = null;
     },
     downloadErrorsFile() {
       const extension = inputFormats[this.serverErrorsReport.type];
@@ -192,14 +191,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.v-btn .v-icon {
-  padding-right: 0.375rem;
-}
-
-.v-card__actions {
-  margin-top: 1.25rem;
-}
-
 .select-file {
   padding: 3.125rem 0.625rem;
   text-align: center;
