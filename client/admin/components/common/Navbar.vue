@@ -1,19 +1,26 @@
 <template>
-  <v-app-bar color="amber" app fixed clipped-left>
+  <v-app-bar
+    color="primary"
+    elevation="2"
+    app fixed clipped-left dark>
     <v-app-bar-nav-icon @click.native="$emit('update:drawer', !drawer)" />
-    <span class="title ml-3 mr-5">
-      <v-icon class="mr-2">mdi-shopping</v-icon>
-      Boutique
-      <span class="font-weight-light">LMS</span>
-    </span>
+    <v-toolbar-title>
+      <v-icon dense class="mr-1">mdi-school</v-icon>
+      Tailor
+      <span class="pa-1">|</span>
+      <span class="subtitle-1 secondary--text">LMS starter</span>
+    </v-toolbar-title>
     <v-spacer />
     <v-menu min-width="220px" transition="slide-y-transition" offset-y>
       <template v-slot:activator="{ on: menu }">
         <v-tooltip left>
           <template v-slot:activator="{ on: tooltip }">
             <v-btn icon large class="mr-2">
-              <v-avatar v-on="{ ...tooltip, ...menu }" size="42px" color="#eaeaea">
-                <span class="grey--text headline">{{ user.firstName[0] }}</span>
+              <v-avatar
+                v-on="{ ...tooltip, ...menu }"
+                size="36"
+                color="primary lighten-2">
+                {{ user.firstName[0] }}
               </v-avatar>
             </v-btn>
           </template>

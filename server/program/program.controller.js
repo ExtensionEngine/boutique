@@ -11,8 +11,8 @@ function list({ query }, res) {
   const { name, deleted } = query;
   const where = {};
   if (name) where.name = { [Op.iLike]: name.trim() };
-  return Program.findAll({ where, paranoid: !deleted })
-    .then(programs => res.jsend.success(programs));
+  return Program.findAndCountAll({ where, paranoid: !deleted })
+    .then(({ rows, count }) => res.jsend.success({ items: rows, total: count }));
 }
 
 function get({ program }, res) {

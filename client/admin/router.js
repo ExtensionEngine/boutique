@@ -1,12 +1,13 @@
-import Content from '@/admin/components/Program/Content';
-import Enrollments from '@/admin/components/Program/Enrollments';
+import Content from '@/admin/components/Programs/Program/Content';
+import Enrollments from '@/admin/components/Programs/Program/Enrollments';
 import get from 'lodash/get';
 import { navigateTo } from '@/common/navigation';
 import NotFound from '@/admin/components/common/NotFound';
-import Program from '@/admin/components/Program';
+import Program from '@/admin/components/Programs/Program';
+import Programs from '@/admin/components/Programs';
 import role from '@/../common/config/role';
 import Router from 'vue-router';
-import Settings from '@/admin/components/Program/Settings';
+import Settings from '@/admin/components/Programs/Program/Settings';
 import store from './store';
 import Users from '@/admin/components/users';
 import Vue from 'vue';
@@ -27,7 +28,12 @@ const router = new Router({
     component: Users,
     meta: { auth: true }
   }, {
-    path: '/programs/:programId',
+    path: '/programs',
+    name: 'programs',
+    component: Programs,
+    meta: { auth: true }
+  }, {
+    path: ':programId',
     component: Program,
     props: parseProgramId,
     children: [{

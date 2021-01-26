@@ -6,8 +6,8 @@
     no-click-animation
     width="700">
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on" color="blue-grey" outlined>
-        <v-icon>mdi-cloud-upload</v-icon>Import
+      <v-btn v-on="on" color="primary" text>
+        <v-icon dense class="mr-1">mdi-cloud-upload</v-icon>Import users
       </v-btn>
     </template>
     <validation-observer

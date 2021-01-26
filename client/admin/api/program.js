@@ -10,4 +10,8 @@ function fetch(params = {}) {
     .then(extractData);
 }
 
-export default { fetch };
+function create(item) {
+  return request.post(urls.root, item).then(extractData);
+}
+
+export default { create, fetch };

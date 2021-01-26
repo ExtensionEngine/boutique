@@ -6,8 +6,9 @@
     width="700"
     class="bulk-enrollment">
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on" :disabled="disabled" color="success" outlined class="ml-4">
-        Enroll
+      <v-btn v-on="on" :disabled="disabled" color="primary" text>
+        <v-icon dense class="mr-2">mdi-school</v-icon>
+        Enroll user
       </v-btn>
     </template>
     <validation-observer

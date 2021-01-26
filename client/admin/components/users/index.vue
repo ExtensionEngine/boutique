@@ -1,16 +1,17 @@
 <template>
   <v-row justify="center">
     <v-col class="mt-5">
-      <v-toolbar color="#f5f5f5" flat>
+      <v-toolbar color="transparent" flat>
         <v-spacer />
         <import-dialog @imported="fetch(defaultPage)" />
         <bulk-enrollment-dialog :disabled="!selectedUsers.length" :users="selectedUsers" />
-        <v-btn @click.stop="showUserDialog()" color="success" outlined class="ml-4">
+        <v-btn @click.stop="showUserDialog()" color="primary" text>
+          <v-icon dense class="mr-1">mdi-plus</v-icon>
           Add user
         </v-btn>
       </v-toolbar>
-      <div class="elevation-1 ml-2 mr-4">
-        <v-row justify="end" no-gutters class="px-4 table-toolbar">
+      <div class="ml-2 mr-4">
+        <v-row justify="end" no-gutters class="px-4">
           <v-col lg="4">
             <v-text-field
               v-model="filter"
@@ -31,7 +32,7 @@
           :server-items-length="totalItems"
           :options.sync="dataTable"
           show-select must-sort
-          class="user-table">
+          class="user-table transparent">
           <template v-slot:item="props">
             <tr :key="props.item.id">
               <td>
@@ -45,15 +46,15 @@
               <td class="text-no-wrap text-center">
                 <v-btn
                   @click="showUserDialog(props.item)"
-                  color="grey darken-2"
-                  small text icon>
+                  color="grey darken-3"
+                  x-small icon>
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
                 <v-btn
                   @click="archiveOrRestore(props.item)"
                   :disabled="user.id === props.item.id"
-                  color="grey darken-2"
-                  small text icon>
+                  color="grey darken-3"
+                  x-small icon>
                   <v-icon>
                     mdi-account-{{ props.item.deletedAt ? 'convert' : 'off' }}
                   </v-icon>

@@ -1,7 +1,10 @@
 <template>
   <v-dialog v-model="visible" v-hotkey="{ esc: close }" width="600">
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on" small text>Create</v-btn>
+      <v-btn v-on="on" text>
+        <v-icon dense class="mr-1">mdi-plus</v-icon>
+        Create
+      </v-btn>
     </template>
     <validation-observer
       v-if="visible"
@@ -34,7 +37,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import api from '@/admin/api/program';
 
 const getDefaultData = () => ({ name: '' });
 
@@ -45,12 +48,11 @@ export default {
     program: getDefaultData()
   }),
   methods: {
-    ...mapActions('programs', { saveProgram: 'save' }),
     close() {
       this.visible = false;
     },
     save() {
-      this.saveProgram(this.program);
+      api.create(this.program).then(() => this.$emit('created'));
       this.close();
     }
   },
