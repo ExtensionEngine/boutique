@@ -166,10 +166,9 @@ export default {
       const extension = inputFormats[this.serverErrorsReport.type];
       saveAs(this.serverErrorsReport, `Errors.${extension}`);
     },
-    downloadTemplateFile() {
-      return api.getImportTemplate().then(response => {
-        saveAs(response.data, 'Template.xlsx');
-      });
+    async downloadTemplateFile() {
+      const { data } = await api.getImportTemplate();
+      saveAs(data, 'Template.xlsx');
     }
   },
   mounted() {

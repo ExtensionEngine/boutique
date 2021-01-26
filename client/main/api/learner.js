@@ -1,12 +1,13 @@
 import { extractData } from '@/common/api/helpers';
+import path from 'path';
 import request from '@/common/api/request';
 
-const url = {
-  programs: '/programs/current-user'
+const urls = {
+  programs: () => path.join('programs', 'current-user')
 };
 
 function fetchPrograms() {
-  return request.get(url.programs).then(extractData);
+  return request.get(urls.programs()).then(extractData);
 }
 
 export default {

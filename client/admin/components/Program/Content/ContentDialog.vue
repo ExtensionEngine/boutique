@@ -24,9 +24,9 @@
           <v-btn
             :disabled="!sourceId"
             :loading="isImporting"
+            type="submit"
             color="success"
-            outlined
-            type="submit">
+            outlined>
             Import
           </v-btn>
         </v-card-actions>
@@ -46,7 +46,7 @@ export default {
   name: 'content-import-dialog',
   props: {
     programId: { type: Number, required: true },
-    importedRepos: { type: Array, default: () => ([]) }
+    importedRepos: { type: Array, default: () => [] }
   },
   data: () => ({
     visible: false,
@@ -68,6 +68,9 @@ export default {
           this.close();
         });
     },
+    setCatalog(repos) {
+      this.catalog = map(repos, it => ({ text: it.name, sourceId: it.id }));
+    },
     close() {
       this.visible = false;
       this.sourceId = null;
@@ -79,9 +82,7 @@ export default {
       if (!val) return;
       this.isLoading = true;
       return api.getCatalog()
-        .then(repos => {
-          this.catalog = map(repos, it => ({ text: it.name, sourceId: it.id }));
-        })
+        .then(this.setCatalog)
         .finally(() => (this.isLoading = false));
     }
   }

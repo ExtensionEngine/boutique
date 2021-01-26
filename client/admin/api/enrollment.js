@@ -1,22 +1,23 @@
 import { extractData, processParams } from '@/common/api/helpers';
+import path from 'path';
 import request from '@/common/api/request';
 
-const url = {
+const urls = {
   root: '/enrollments',
-  resource: it => `/enrollments/${it.id}`
+  resource: id => path.join(urls.root, String(id))
 };
 
 function fetch(opts) {
-  return request.get(url.root, { params: processParams(opts) })
+  return request.get(urls.root, { params: processParams(opts) })
     .then(extractData);
 }
 
 function create(payload) {
-  return request.post(url.root, payload).then(extractData);
+  return request.post(urls.root, payload).then(extractData);
 }
 
 function remove(item) {
-  return request.delete(url.resource(item));
+  return request.delete(urls.resource(item.id));
 }
 
 export default {
