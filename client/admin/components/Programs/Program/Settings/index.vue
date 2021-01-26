@@ -1,63 +1,61 @@
 <template>
-  <div v-if="program" class="mt-3 ml-2 mr-4">
-    <v-toolbar color="#f5f5f5" flat>
-      <v-spacer />
-      <v-btn @click="confirmationDialog = true" color="error" outlined>
-        Delete Program
-      </v-btn>
-    </v-toolbar>
-    <v-row no-gutters>
-      <v-col cols="12" sm="6" md="4">
-        <validation-observer
-          ref="form"
-          @submit.prevent="$refs.form.handleSubmit(saveProgram)"
-          tag="form"
-          novalidate>
-          <validation-provider
-            v-slot="{ errors }"
-            :rules="{ required: true, min: 2, max: 255, unique_program_name: program }"
-            name="program name">
-            <v-text-field
-              v-model.trim="programData.name"
-              :error-messages="errors"
-              :disabled="!isEditing"
-              name="name"
-              label="Program name"
-              append-icon="mdi-pencil" />
-          </validation-provider>
-          <date-picker
-            v-model="programData.startDate"
+  <v-row v-if="program" class="pa-4">
+    <v-col cols="12" sm="12" md="6" xl="4">
+      <div class="d-flex justify-end">
+        <v-btn @click="confirmationDialog = true" color="error" text>
+          <v-icon dense class="mr-1">mdi-delete-outline</v-icon>
+          Delete Program
+        </v-btn>
+      </div>
+      <validation-observer
+        ref="form"
+        @submit.prevent="$refs.form.handleSubmit(saveProgram)"
+        tag="form"
+        novalidate
+        class="mt-5">
+        <validation-provider
+          v-slot="{ errors }"
+          :rules="{ required: true, min: 2, max: 255, unique_program_name: program }"
+          name="program name">
+          <v-text-field
+            v-model.trim="programData.name"
+            :error-messages="errors"
             :disabled="!isEditing"
-            name="startDate"
-            label="Start Date" />
-          <validation-provider
-            v-slot="{ errors }"
-            :rules="{ after: programData.startDate }"
-            name="end date">
-            <date-picker
-              v-model="programData.endDate"
-              :disabled="!isEditing"
-              :error-messages="errors"
-              name="endDate"
-              label="End Date" />
-          </validation-provider>
-          <v-row no-gutters>
-            <v-spacer />
-            <template v-if="isEditing">
-              <v-btn @click="cancel" outlined>Cancel</v-btn>
-              <v-btn type="submit" class="ml-4" color="success">Save</v-btn>
-            </template>
-            <v-btn v-else @click="isEditing = true" outlined>Edit</v-btn>
-          </v-row>
-        </validation-observer>
-      </v-col>
-    </v-row>
+            name="name"
+            label="Program name"
+            append-icon="mdi-pencil" />
+        </validation-provider>
+        <date-picker
+          v-model="programData.startDate"
+          :disabled="!isEditing"
+          name="startDate"
+          label="Start Date" />
+        <validation-provider
+          v-slot="{ errors }"
+          :rules="{ after: programData.startDate }"
+          name="end date">
+          <date-picker
+            v-model="programData.endDate"
+            :disabled="!isEditing"
+            :error-messages="errors"
+            name="endDate"
+            label="End Date" />
+        </validation-provider>
+        <div class="d-flex justify-end">
+          <div v-if="isEditing">
+            <v-btn @click="cancel" text>Cancel</v-btn>
+            <v-btn type="submit" color="success" text class="ml-4">Save</v-btn>
+          </div>
+          <v-btn v-else @click="isEditing = true" text>Edit</v-btn>
+        </div>
+      </validation-observer>
+    </v-col>
     <confirmation-dialog
       :visible.sync="confirmationDialog"
       :action="removeProgram"
       :message="confirmationMessage"
       heading="Delete program" />
-  </div>
+  </v-row>
 </template>
 
 <script>
