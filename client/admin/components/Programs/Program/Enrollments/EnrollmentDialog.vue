@@ -1,7 +1,10 @@
 <template>
   <v-dialog v-model="visible" v-hotkey="{ esc: close }" width="500">
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on" color="success" outlined>Enroll learner</v-btn>
+      <v-btn v-on="on" color="primary" text>
+        <v-icon dense class="mr-1">mdi-plus</v-icon>
+        Enroll learner
+      </v-btn>
     </template>
     <validation-observer
       v-if="visible"

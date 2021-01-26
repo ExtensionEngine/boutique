@@ -1,41 +1,39 @@
 <template>
-  <div class="mt-3">
-    <v-toolbar color="#f5f5f5" flat>
-      <v-spacer />
-      <enrollment-dialog @enrolled="fetch(defaultPage)" :program-id="programId" />
-    </v-toolbar>
-    <div class="elevation-1 ml-2 mr-4">
-      <v-row class="px-4 py-3 table-toolbar" no-gutters>
-        <v-col lg="3" offset-lg="9">
-          <v-text-field
-            v-model.trim="filter"
-            append-icon="mdi-magnify"
-            label="Search"
-            single-line clearable />
-        </v-col>
-      </v-row>
-      <v-data-table
-        :headers="headers"
-        :items="enrollments"
-        :options.sync="dataTable"
-        :server-items-length="totalItems"
-        :no-data-text="noEnrollmentsMessage"
-        must-sort>
-        <template v-slot:item="{ item }">
-          <tr>
-            <td>{{ get(item.learner, 'email') }}</td>
-            <td>{{ get(item.learner, 'firstName') }}</td>
-            <td>{{ get(item.learner, 'lastName') }}</td>
-            <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
-            <td class="text-center">
-              <v-btn @click="unenroll(item)" icon text small>
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </td>
-          </tr>
-        </template>
-      </v-data-table>
-    </div>
+  <div class="ma-4">
+    <v-row no-gutters class="my-6">
+      <v-col cols="6">
+        <v-text-field
+          v-model.trim="filter"
+          label="Search"
+          append-icon="mdi-magnify"
+          single-line clearable />
+      </v-col>
+      <v-col cols="6" class="d-flex justify-end">
+        <enrollment-dialog @enrolled="fetch(defaultPage)" :program-id="programId" />
+      </v-col>
+    </v-row>
+    <v-data-table
+      :headers="headers"
+      :items="enrollments"
+      :options.sync="dataTable"
+      :server-items-length="totalItems"
+      :no-data-text="noEnrollmentsMessage"
+      must-sort
+      class="transparent">
+      <template v-slot:item="{ item }">
+        <tr>
+          <td>{{ get(item.learner, 'email') }}</td>
+          <td>{{ get(item.learner, 'firstName') }}</td>
+          <td>{{ get(item.learner, 'lastName') }}</td>
+          <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
+          <td class="text-center">
+            <v-btn @click="unenroll(item)" icon x-small>
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </td>
+        </tr>
+      </template>
+    </v-data-table>
     <confirmation-dialog
       @confirmed="fetch()"
       :visible.sync="confirmation.dialog"
