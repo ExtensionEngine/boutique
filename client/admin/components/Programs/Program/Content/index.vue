@@ -1,71 +1,69 @@
 <template>
-  <div class="mt-3">
-    <v-toolbar color="#f5f5f5" flat>
-      <v-spacer />
-      <content-dialog :program-id="programId" :imported-repos="importedRepos" />
-    </v-toolbar>
-    <div class="elevation-1 ml-2 mr-4">
-      <v-row justify="end" no-gutters class="px-4 table-toolbar">
-        <v-col lg="4">
-          <v-text-field
-            v-model.trim="filter"
-            :disabled="importedRepos.length <= 0"
-            append-icon="mdi-magnify"
-            label="Search"
-            hide-details single-line clearable />
-          <v-checkbox
-            v-model="showArchived"
-            label="Show archived"
-            class="my-2 archived-checkbox"
-            hide-details />
-        </v-col>
-      </v-row>
-      <v-data-table
-        :headers="headers"
-        :items="filteredRepos"
-        :no-data-text="noContentMessage"
-        item-key="_cid"
-        hide-default-footer>
-        <template v-slot:item="{ item }">
-          <tr
-            v-show="!item.deletedAt || showArchived"
-            :key="item.sourceId"
-            :class="{ 'grey lighten-2': item.deletedAt }">
-            <td>{{ item.name }}</td>
-            <td class="text-no-wrap">{{ item.repoVersion | formatDate }}</td>
-            <td class="text-no-wrap">{{ item.publishedAt | formatDate }}</td>
-            <td class="text-no-wrap text-center actions">
-              <v-btn
-                v-if="item.repoVersion > item.publishedAt"
-                @click="save(item)"
-                text small>
-                Sync
-              </v-btn>
-              <span v-else-if="item.repoVersion">Synced</span>
-            </td>
-            <td class="text-no-wrap text-center">
-              <v-btn
-                v-if="!item.deletedAt"
-                @click="showConfirmationDialog(item)"
-                icon small text>
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-              <v-btn v-else @click="showRestoreDialog(item)" icon small text>
-                <v-icon>mdi-restore</v-icon>
-              </v-btn>
-            </td>
-          </tr>
-        </template>
-      </v-data-table>
-      <confirmation-dialog
-        @update:visible="confirmation = null"
-        @confirmed="fetchProgramRepos()"
-        v-bind="confirmation" />
-      <multiple-choice-dialog
-        @closed="restoreOptions = null"
-        @completed="fetchProgramRepos()"
-        v-bind="restoreOptions" />
-    </div>
+  <div class="ma-4">
+    <v-row no-gutters class="my-6">
+      <v-col cols="6">
+        <v-text-field
+          v-model.trim="filter"
+          :disabled="importedRepos.length <= 0"
+          append-icon="mdi-magnify"
+          label="Search"
+          hide-details single-line clearable />
+        <v-checkbox
+          v-model="showArchived"
+          label="Show archived"
+          class="my-2 archived-checkbox"
+          hide-details />
+      </v-col>
+      <v-col cols="6" class="d-flex justify-end">
+        <content-dialog :program-id="programId" :imported-repos="importedRepos" />
+      </v-col>
+    </v-row>
+    <v-data-table
+      :headers="headers"
+      :items="filteredRepos"
+      :no-data-text="noContentMessage"
+      item-key="_cid"
+      hide-default-footer
+      class="transparent">
+      <template v-slot:item="{ item }">
+        <tr
+          v-show="!item.deletedAt || showArchived"
+          :key="item.sourceId"
+          :class="{ 'grey lighten-2': item.deletedAt }">
+          <td>{{ item.name }}</td>
+          <td class="text-no-wrap">{{ item.repoVersion | formatDate }}</td>
+          <td class="text-no-wrap">{{ item.publishedAt | formatDate }}</td>
+          <td class="text-no-wrap text-center actions">
+            <v-btn
+              v-if="item.repoVersion > item.publishedAt"
+              @click="save(item)"
+              text small>
+              Sync
+            </v-btn>
+            <span v-else-if="item.repoVersion">Synced</span>
+          </td>
+          <td class="text-no-wrap text-center">
+            <v-btn
+              v-if="!item.deletedAt"
+              @click="showConfirmationDialog(item)"
+              icon small>
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+            <v-btn v-else @click="showRestoreDialog(item)" icon small>
+              <v-icon>mdi-restore</v-icon>
+            </v-btn>
+          </td>
+        </tr>
+      </template>
+    </v-data-table>
+    <confirmation-dialog
+      @update:visible="confirmation = null"
+      @confirmed="fetchProgramRepos()"
+      v-bind="confirmation" />
+    <multiple-choice-dialog
+      @closed="restoreOptions = null"
+      @completed="fetchProgramRepos()"
+      v-bind="restoreOptions" />
   </div>
 </template>
 
@@ -156,7 +154,7 @@ export default {
 
 <style lang="scss" scoped>
 .actions {
-  width: 250px;
+  width: 15.625rem;
 }
 
 ::v-deep .archived-checkbox {

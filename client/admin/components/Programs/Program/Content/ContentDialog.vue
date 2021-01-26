@@ -1,7 +1,10 @@
 <template>
   <v-dialog v-model="visible" v-hotkey="{ esc: close }" width="700">
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on" color="success" outlined>Import Content</v-btn>
+      <v-btn v-on="on" color="primary" text>
+        <v-icon dense class="mr-1">mdi-plus</v-icon>
+        Import Content
+      </v-btn>
     </template>
     <v-form @submit.prevent="importRepo">
       <v-card class="pa-3">
