@@ -1,32 +1,35 @@
+import { extractData } from './helpers';
+import path from 'path';
 import request from './request';
 
-const url = {
-  login: '/users/login',
-  logout: '/users/logout',
-  forgotPassword: '/users/forgotPassword',
-  resetPassword: '/users/resetPassword'
+const urls = {
+  root: '/users',
+  login: () => path.join(urls.root, 'login'),
+  forgotPassword: () => path.join(urls.root, 'forgotPassword'),
+  resetPassword: () => path.join(urls.root, 'resetPassword')
 };
 
 function login(credentials) {
-  return request.base.post(url.login, credentials)
-    .then(res => res.data.data)
+  return request.base.post(urls.login(), credentials)
+    .then(extractData)
     .then(({ token, user }) => {
-      window.localStorage.setItem('LMS_TOKEN', token);
+      request.auth.token = token;
       return user;
     });
 }
 
 function logout() {
-  return request.post(url.logout)
-    .finally(() => window.localStorage.removeItem('LMS_TOKEN'));
+  request.auth.token = null;
+  // TODO: Add server side invalidation
+  return Promise.resolve(true);
 }
 
 function forgotPassword(email) {
-  return request.post(url.forgotPassword, { email });
+  return request.post(urls.forgotPassword(), { email });
 }
 
 function resetPassword(body) {
-  return request.post(url.resetPassword, body);
+  return request.post(urls.resetPassword(), body);
 }
 
 export default {

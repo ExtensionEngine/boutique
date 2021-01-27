@@ -1,6 +1,7 @@
 import Content from '@/admin/components/Program/Content';
 import Enrollments from '@/admin/components/Program/Enrollments';
 import get from 'lodash/get';
+import { navigateTo } from '@/common/navigation';
 import NotFound from '@/admin/components/common/NotFound';
 import Program from '@/admin/components/Program';
 import role from '@/../common/config/role';
@@ -21,7 +22,7 @@ const fallbackRoute = { path: '*', component: NotFound };
 
 const router = new Router({
   routes: [{
-    path: '',
+    path: '/',
     name: 'users',
     component: Users,
     meta: { auth: true }
@@ -48,14 +49,11 @@ const router = new Router({
   }, fallbackRoute]
 });
 
-router.beforeEach((to, from, next) => {
-  const user = get(store.state, 'auth.user');
-  const isNotAuthenticated = to.matched.some(it => it.meta.auth) && !user;
-  const isNotAuthorized = user && user.role !== role.ADMIN;
-  if (isNotAuthenticated || isNotAuthorized) return loadMainSpa();
-  next();
-});
+const isAdmin = user => user && user.role === role.ADMIN;
 
-const loadMainSpa = () => window.location.replace(window.location.origin);
+router.beforeEach((_to, _from, next) => {
+  const user = get(store.state, 'auth.user');
+  return isAdmin(user) ? next() : navigateTo('/');
+});
 
 export default router;

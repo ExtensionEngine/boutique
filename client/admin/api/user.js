@@ -1,36 +1,45 @@
 import { extractData, processParams } from '@/common/api/helpers';
+import get from 'lodash/get';
+import path from 'path';
 import request from '@/common/api/request';
 
-const url = {
+const urls = {
   root: '/users',
-  resource: it => `/users/${it.id}`,
-  invite: it => `/users/${it.id}/invite`,
-  import: '/users/import'
+  resource: id => path.join(urls.root, String(id)),
+  invite: id => path.join(urls.resource(id), 'invite'),
+  import: () => path.join(urls.root, 'import'),
+  getImportTemplate: () => path.join(urls.import(), 'template')
 };
 
 function fetch(params = {}) {
-  return request.get(url.root, { params: processParams(params) })
+  return request.get(urls.root, { params: processParams(params) })
     .then(extractData);
 }
 
 function create(item) {
-  return request.post(url.root, item).then(extractData);
+  return request.post(urls.root, item).then(extractData);
 }
 
 function update(item) {
-  return request.patch(url.resource(item), item).then(extractData);
+  return request.patch(urls.resource(item.id), item).then(extractData);
 }
 
 function remove(item) {
-  return request.delete(url.resource(item));
+  return request.delete(urls.resource(item.id));
 }
 
 function invite(item) {
-  return request.post(url.invite(item));
+  return request.post(urls.invite(item.id));
 }
 
-function bulkImport(items) {
-  return request.post(url.import, items, { responseType: 'blob' });
+async function bulkImport(items) {
+  const options = { responseType: 'blob' };
+  const { data, headers } = await request.post(urls.import(), items, options);
+  return { data, count: parseInt(get(headers, 'data-imported-count'), 10) };
+}
+
+function getImportTemplate() {
+  return request.get(urls.getImportTemplate(), { responseType: 'blob' });
 }
 
 export default {
@@ -39,5 +48,6 @@ export default {
   update,
   remove,
   invite,
-  bulkImport
+  bulkImport,
+  getImportTemplate
 };

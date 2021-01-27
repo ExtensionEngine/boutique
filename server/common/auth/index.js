@@ -1,11 +1,11 @@
 'use strict';
 
-const { auth: config = {} } = require('../../config');
 const { ExtractJwt, Strategy } = require('passport-jwt');
-const { User } = require('../database');
 const Audience = require('./audience');
+const { auth: config = {} } = require('../../config');
 const LocalStrategy = require('passport-local');
 const passport = require('passport');
+const { User } = require('../database');
 
 const options = {
   usernameField: 'email',
@@ -27,12 +27,12 @@ const jwtOptions = {
 };
 
 passport.use(new Strategy(jwtOptions, (payload, done) => {
-  return User.findById(payload.id, { rejectOnEmpty: true })
+  return User.findByPk(payload.id)
     .then(user => {
       user.session.start();
       done(null, user || false);
     })
-    .catch(err => done(err, false));
+    .error(err => done(err, false));
 }));
 
 passport.serializeUser((user, done) => done(null, user));

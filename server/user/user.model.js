@@ -1,13 +1,11 @@
 'use strict';
 
-const config = require('../config');
-const ActivityTracker = require('./activity-tracker')(config.activityTracker);
 const { Model, Sequelize, Op, UniqueConstraintError } = require('sequelize');
-const { role } = require('../../common/config');
-const { sql } = require('../common/database/helpers');
 const Audience = require('../common/auth/audience');
 const bcrypt = require('bcrypt');
 const castArray = require('lodash/castArray');
+const config = require('../config');
+const ActivityTracker = require('./activity-tracker')(config.activityTracker);
 const find = require('lodash/find');
 const jwt = require('jsonwebtoken');
 const logger = require('../common/logger')();
@@ -15,7 +13,9 @@ const mail = require('../common/mail');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
 const Promise = require('bluebird');
+const { role } = require('../../common/config');
 const Role = require('../../common/config/role');
+const { sql } = require('../common/database/helpers');
 const values = require('lodash/values');
 
 class User extends Model {
@@ -42,7 +42,7 @@ class User extends Model {
       role: {
         type: DataTypes.ENUM(values(role)),
         allowNull: false,
-        defaultValue: role.STUDENT
+        defaultValue: role.LEARNER
       },
       token: {
         type: DataTypes.STRING,
@@ -75,8 +75,10 @@ class User extends Model {
       profile: {
         type: DataTypes.VIRTUAL,
         get() {
-          const profile = pick(this,
-            ['id', 'firstName', 'lastName', 'email', 'role', 'lastActive', 'createdAt']);
+          const profile = pick(this, [
+            'id', 'firstName', 'lastName', 'email',
+            'role', 'lastActive', 'createdAt', 'deletedAt'
+          ]);
           profile.lastActive = ActivityTracker.lastActive(this);
           return profile;
         }
@@ -95,7 +97,7 @@ class User extends Model {
 
   static associate({ Enrollment }) {
     this.hasMany(Enrollment, {
-      foreignKey: { name: 'studentId', field: 'student_id' }
+      foreignKey: { name: 'learnerId', field: 'learner_id' }
     });
   }
 
@@ -156,7 +158,7 @@ class User extends Model {
       const { message = 'Failed to import user.' } = result.reason();
       errors.push({ ...users[i], message });
     }, { concurrency });
-    return errors.length && errors;
+    return errors;
   }
 
   static async restoreOrBuild(users, { concurrency = 16 } = {}) {
@@ -166,11 +168,11 @@ class User extends Model {
     return Promise.map(users, userData => Promise.try(() => {
       const user = find(found, { email: userData.email });
       if (user && !user.deletedAt) {
-        const message = this.attributes.email.unique.msg;
+        const message = this.rawAttributes.email.unique.msg;
         throw new UniqueConstraintError({ message });
       }
       if (user) {
-        user.setDataValue('deleteAt', null);
+        user.setDataValue('deletedAt', null);
         return user;
       }
       return this.build(userData);
