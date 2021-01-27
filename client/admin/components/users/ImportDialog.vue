@@ -27,7 +27,7 @@
             prepend-icon="mdi-attachment"
             label="Upload .xlsx or .csv file" />
         </validation-provider>
-        <div class="d-flex mb-2">
+        <div class="d-flex my-2">
           <v-btn @click="downloadTemplateFile" color="primary" text>
             Download Template
           </v-btn>
