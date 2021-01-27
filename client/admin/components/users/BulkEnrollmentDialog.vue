@@ -2,7 +2,7 @@
   <admin-dialog v-model="visible" header-icon="mdi-school">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" :disabled="!users.length" text>
-        <v-icon dense class="mr-1">mdi-school</v-icon>
+        <v-icon dense class="mr-2">mdi-school</v-icon>
         Enroll selected
       </v-btn>
     </template>
