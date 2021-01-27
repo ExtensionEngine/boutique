@@ -1,8 +1,8 @@
 <template>
   <admin-dialog v-model="visible" header-icon="mdi-school">
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on" :disabled="disabled" color="primary" text>
-        <v-icon dense class="mr-2">mdi-school</v-icon>
+      <v-btn v-on="on" :disabled="!users.length" text>
+        <v-icon dense class="mr-1">mdi-school</v-icon>
         Enroll selected
       </v-btn>
     </template>
@@ -17,13 +17,13 @@
           v-slot="{ errors }"
           name="program">
           <v-autocomplete
-            v-model="programId"
+            v-model="selectedProgramId"
             :items="programOptions"
             :disabled="enrolling"
             :error-messages="errors"
             name="program"
             label="Program"
-            placeholder="Start typing to Search"
+            placeholder="Start typing to search"
             prepend-icon="mdi-magnify"
             clearable />
         </validation-provider>
@@ -51,18 +51,17 @@ import programApi from '@/admin/api/program';
 export default {
   name: 'bulk-enrollment-dialog',
   props: {
-    disabled: { type: Boolean, default: true },
     users: { type: Array, default: () => [] }
   },
   data: () => ({
     visible: false,
-    programId: null,
-    enrolling: false,
-    programs: []
+    selectedProgramId: null,
+    programs: [],
+    enrolling: false
   }),
   computed: {
     programOptions: vm => map(vm.programs, it => ({ value: it.id, text: it.name })),
-    enrollDisabled: vm => !vm.programId || vm.enrolling
+    enrollDisabled: vm => !vm.selectedProgramId || vm.enrolling
   },
   methods: {
     async fetch() {
@@ -71,7 +70,7 @@ export default {
     },
     submit() {
       this.enrolling = true;
-      const { users, programId } = this;
+      const { users, selectedProgramId: programId } = this;
       return enrollmentApi.create({ learnerId: map(users, 'id'), programId })
         .then(({ failed = [] }) => {
           if (failed.length <= 0) return this.close();
@@ -79,7 +78,7 @@ export default {
           this.$refs.form.setErrors({ program: [msg] });
         })
         .catch(error => {
-          const msg = 'Error! Unable to enroll Users!';
+          const msg = 'Error! Unable to enroll users!';
           this.$refs.form.setErrors({ program: [msg] });
           return Promise.reject(error);
         })
@@ -87,7 +86,7 @@ export default {
     },
     close() {
       this.visible = false;
-      this.programId = null;
+      this.selectedProgramId = null;
       this.$refs.form.reset();
     }
   },

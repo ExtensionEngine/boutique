@@ -1,81 +1,68 @@
 <template>
-  <v-row justify="center">
-    <v-col class="mt-5">
-      <v-toolbar color="transparent" flat>
-        <v-spacer />
+  <v-container fluid>
+    <v-row class="ma-5">
+      <v-col lg="6" md="4">
+        <v-text-field
+          v-model="filter"
+          append-icon="mdi-magnify"
+          label="Search"
+          single-line hide-details clearable />
+        <v-checkbox
+          v-model="showArchived"
+          label="Show archived"
+          hide-details
+          class="my-2 archived-checkbox" />
+      </v-col>
+      <v-col lg="6" md="8" class="d-flex justify-end">
         <import-dialog @imported="fetch(defaultPage)" />
-        <bulk-enrollment-dialog :disabled="!selectedUsers.length" :users="selectedUsers" />
-        <v-btn @click.stop="showUserDialog()" color="primary" text>
-          <v-icon dense class="mr-1">mdi-plus</v-icon>
-          Add user
+        <bulk-enrollment-dialog :users="selectedUsers" />
+        <v-btn @click.stop="showUserDialog()" text>
+          <v-icon dense class="mr-1">mdi-plus</v-icon>Add user
         </v-btn>
-      </v-toolbar>
-      <div class="ml-2 mr-4">
-        <v-row justify="end" no-gutters class="px-4">
-          <v-col lg="4">
-            <v-text-field
-              v-model="filter"
-              append-icon="mdi-magnify"
-              label="Search"
-              single-line hide-details clearable />
-            <v-checkbox
-              v-model="showArchived"
-              label="Show archived"
-              class="my-2 archived-checkbox"
-              hide-details />
-          </v-col>
-        </v-row>
-        <v-data-table
-          v-model="selectedUsers"
-          :headers="headers"
-          :items="users"
-          :server-items-length="totalItems"
-          :options.sync="dataTable"
-          show-select must-sort
-          class="user-table transparent">
-          <template v-slot:item="props">
-            <tr :key="props.item.id">
-              <td>
-                <v-checkbox v-model="props.isSelected" hide-details />
-              </td>
-              <td>{{ props.item.email }}</td>
-              <td>{{ props.item.role }}</td>
-              <td>{{ props.item.firstName }}</td>
-              <td>{{ props.item.lastName }}</td>
-              <td class="text-no-wrap">{{ props.item.createdAt | formatDate }}</td>
-              <td class="text-no-wrap text-center">
-                <v-btn
-                  @click="showUserDialog(props.item)"
-                  color="grey darken-3"
-                  x-small icon>
-                  <v-icon>mdi-pencil</v-icon>
-                </v-btn>
-                <v-btn
-                  @click="archiveOrRestore(props.item)"
-                  :disabled="user.id === props.item.id"
-                  color="grey darken-3"
-                  x-small icon>
-                  <v-icon>
-                    mdi-account-{{ props.item.deletedAt ? 'convert' : 'off' }}
-                  </v-icon>
-                </v-btn>
-              </td>
-            </tr>
-          </template>
-        </v-data-table>
-      </div>
-      <user-dialog
-        @updated="fetch(defaultPage)"
-        @created="fetch(defaultPage)"
-        :visible.sync="userDialog"
-        :user-data="editedUser" />
-      <confirmation-dialog
-        @update:visible="confirmation = null"
-        @confirmed="fetch()"
-        v-bind="confirmation"
-        :visible="!!confirmation" />
-    </v-col>
-  </v-row>
+      </v-col>
+    </v-row>
+    <v-data-table
+      v-model="selectedUsers"
+      :headers="headers"
+      :items="users"
+      :server-items-length="totalItems"
+      :options.sync="dataTable"
+      show-select must-sort
+      class="ma-5 transparent">
+      <template v-slot:item.createdAt="{ item }">
+        {{ item.createdAt | formatDate }}
+      </template>
+      <template v-slot:item.actions="{ item }">
+        <div class="text-no-wrap text-center">
+          <v-btn
+            @click="showUserDialog(item)"
+            color="grey darken-3"
+            x-small icon>
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+          <v-btn
+            @click="archiveOrRestore(item)"
+            :disabled="user.id === item.id"
+            color="grey darken-3"
+            x-small icon>
+            <v-icon>
+              mdi-account-{{ item.deletedAt ? 'convert' : 'off' }}
+            </v-icon>
+          </v-btn>
+        </div>
+      </template>
+    </v-data-table>
+    <user-dialog
+      @updated="fetch(defaultPage)"
+      @created="fetch(defaultPage)"
+      :visible.sync="userDialog"
+      :user-data="editedUser" />
+    <confirmation-dialog
+      @update:visible="confirmation = null"
+      @confirmed="fetch()"
+      v-bind="confirmation"
+      :visible="!!confirmation" />
+  </v-container>
 </template>
 
 <script>
@@ -95,7 +82,7 @@ const headers = () => [
   { text: 'First Name', value: 'firstName' },
   { text: 'Last Name', value: 'lastName' },
   { text: 'Date Created', value: 'createdAt' },
-  { text: 'Actions', value: 'email', align: 'center', sortable: false }
+  { text: 'Actions', value: 'actions', align: 'center', sortable: false }
 ];
 const actions = user => ({
   archive: () => api.remove(user),
