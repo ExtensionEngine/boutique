@@ -33,21 +33,21 @@ const router = new Router({
     component: Programs,
     meta: { auth: true }
   }, {
-    path: ':programId',
+    path: '/:programId',
     component: Program,
     props: parseProgramId,
     children: [{
-      path: '',
+      path: '/',
       name: 'enrollments',
       component: Enrollments,
       props: parseProgramId
     }, {
-      path: 'content',
+      path: '/content',
       name: 'importedContent',
       component: Content,
       props: parseProgramId
     }, {
-      path: 'settings',
+      path: '/settings',
       name: 'programSettings',
       component: Settings,
       props: parseProgramId
