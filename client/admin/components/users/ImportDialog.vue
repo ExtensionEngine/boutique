@@ -1,8 +1,8 @@
 <template>
-  <admin-dialog v-model="visible" header-icon="mdi-cloud-upload">
+  <admin-dialog v-model="visible" width="600" header-icon="mdi-cloud-upload">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" color="primary" text>
-        <v-icon dense class="mr-1">mdi-cloud-upload</v-icon>Import users
+        <v-icon dense class="mr-2">mdi-cloud-upload</v-icon>Import users
       </v-btn>
     </template>
     <template v-slot:header>Import Users</template>
@@ -36,7 +36,8 @@
             <v-btn
               v-show="serverErrorsReport"
               @click="downloadErrorsFile"
-              color="error">
+              color="error"
+              text>
               <v-icon class="mr-1">mdi-cloud-download</v-icon>Errors
             </v-btn>
           </v-fade-transition>
@@ -90,12 +91,12 @@ export default {
         if (count) this.$emit('imported');
         if (!data.size) return this.close();
         const message = `${count} users were successfully imported.`;
-        this.$refs.validationObserver.setErrors({ File: [message] });
+        this.$refs.form.setErrors({ file: [message] });
         this.serverErrorsReport = data;
       }).catch(err => {
         this.importing = false;
         const message = 'Importing users failed.';
-        this.$refs.validationObserver.setErrors({ File: [message] });
+        this.$refs.form.setErrors({ file: [message] });
         return Promise.reject(err);
       });
     },
