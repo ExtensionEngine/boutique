@@ -1,19 +1,19 @@
 <template>
   <v-container fluid>
     <v-row class="ma-5">
-      <v-col cols="6">
+      <v-col lg="4" md="6">
         <v-text-field
           v-model="filter"
           append-icon="mdi-magnify"
           label="Search"
-          outlined single-line hide-details clearable />
+          single-line hide-details clearable />
         <v-checkbox
           v-model="showArchived"
           label="Show archived"
           class="my-2 archived-checkbox"
           hide-details />
       </v-col>
-      <v-col cols="6" class="d-flex justify-end">
+      <v-col lg="8" md="6" class="d-flex justify-end">
         <create-dialog @created="fetch(defaultPage)" />
       </v-col>
     </v-row>
