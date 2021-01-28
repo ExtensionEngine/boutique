@@ -2,9 +2,7 @@
   <router-host>
     <v-app id="app">
       <v-main>
-        <v-container>
-          <router-view />
-        </v-container>
+        <router-view />
       </v-main>
     </v-app>
   </router-host>
@@ -42,5 +40,9 @@ html, body {
 
 .v-main {
   background-color: #f5f5f5;
+}
+
+input:-webkit-autofill {
+  transition-delay: 99999s;
 }
 </style>

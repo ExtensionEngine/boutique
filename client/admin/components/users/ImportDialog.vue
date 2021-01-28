@@ -96,11 +96,13 @@ export default {
         this.importing = false;
         if (count) this.$emit('imported');
         if (!data.size) return this.close();
-        this.$refs.validationObserver.setErrors({ File: [`${count} users were successfully imported.`] });
+        const message = `${count} users were successfully imported.`;
+        this.$refs.validationObserver.setErrors({ File: [message] });
         this.serverErrorsReport = data;
       }).catch(err => {
         this.importing = false;
-        this.$refs.validationObserver.setErrors({ File: ['Importing users failed.'] });
+        const message = 'Importing users failed.';
+        this.$refs.validationObserver.setErrors({ File: [message] });
         return Promise.reject(err);
       });
     },
@@ -108,10 +110,9 @@ export default {
       const extension = inputFormats[this.serverErrorsReport.type];
       saveAs(this.serverErrorsReport, `Errors.${extension}`);
     },
-    downloadTemplateFile() {
-      return api.getImportTemplate().then(response => {
-        saveAs(response.data, 'Template.xlsx');
-      });
+    async downloadTemplateFile() {
+      const { data } = await api.getImportTemplate();
+      saveAs(data, 'Template.xlsx');
     }
   }
 };
@@ -123,11 +124,11 @@ export default {
 }
 
 .v-btn .v-icon {
-  padding-right: 6px;
+  padding-right: 0.375rem;
 }
 
-.v-text-field {
-  ::v-deep .v-text-field__slot {
+.v-text-field ::v-deep {
+  .v-text-field__slot {
     cursor: pointer;
 
     input {
@@ -135,14 +136,12 @@ export default {
     }
   }
 
-  ::v-deep {
-    .mdi {
-      transform: rotate(-90deg);
-    }
+  .mdi {
+    transform: rotate(-90deg);
   }
 }
 
 .v-card__actions {
-  margin-top: 20px;
+  margin-top: 1.25rem;
 }
 </style>

@@ -39,10 +39,7 @@ export default {
   },
   computed: {
     ...mapState('auth', ['user']),
-    fullName() {
-      const { firstName, lastName } = this.user;
-      return `${firstName} ${lastName}`;
-    }
+    fullName: ({ user }) => `${user.firstName} ${user.lastName}`
   },
   methods: mapActions('auth', ['logout'])
 };

@@ -16,9 +16,7 @@
               v-model="filter"
               append-icon="mdi-magnify"
               label="Search"
-              single-line
-              hide-details
-              clearable />
+              single-line hide-details clearable />
             <v-checkbox
               v-model="showArchived"
               label="Show archived"
@@ -32,9 +30,8 @@
           :items="users"
           :server-items-length="totalItems"
           :options.sync="dataTable"
-          :must-sort="true"
-          class="user-table"
-          show-select>
+          show-select must-sort
+          class="user-table">
           <template v-slot:item="props">
             <tr :key="props.item.id">
               <td>
@@ -49,18 +46,14 @@
                 <v-btn
                   @click="showUserDialog(props.item)"
                   color="grey darken-2"
-                  small
-                  text
-                  icon>
+                  small text icon>
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
                 <v-btn
                   @click="archiveOrRestore(props.item)"
                   :disabled="user.id === props.item.id"
                   color="grey darken-2"
-                  small
-                  text
-                  icon>
+                  small text icon>
                   <v-icon>
                     mdi-account-{{ props.item.deletedAt ? 'convert' : 'off' }}
                   </v-icon>
@@ -110,19 +103,17 @@ const actions = user => ({
 
 export default {
   name: 'user-list',
-  data() {
-    return {
-      users: [],
-      selectedUsers: [],
-      filter: null,
-      dataTable: defaultPage(),
-      totalItems: 0,
-      userDialog: false,
-      editedUser: null,
-      showArchived: false,
-      confirmation: null
-    };
-  },
+  data: () => ({
+    users: [],
+    selectedUsers: [],
+    filter: null,
+    dataTable: defaultPage(),
+    totalItems: 0,
+    userDialog: false,
+    editedUser: null,
+    showArchived: false,
+    confirmation: null
+  }),
   computed: {
     ...mapState('auth', ['user']),
     headers,
@@ -154,17 +145,16 @@ export default {
     }
   },
   watch: {
-    dataTable() {
-      this.fetch();
-    },
-    filter() {
-      this.fetch();
-    },
-    showArchived() {
-      this.fetch();
-    }
+    dataTable: 'fetch',
+    filter: 'fetch',
+    showArchived: 'fetch'
   },
-  components: { BulkEnrollmentDialog, ConfirmationDialog, ImportDialog, UserDialog }
+  components: {
+    BulkEnrollmentDialog,
+    ConfirmationDialog,
+    ImportDialog,
+    UserDialog
+  }
 };
 </script>
 
@@ -188,11 +178,11 @@ export default {
     }
 
     .v-icon {
-      font-size: 18px;
+      font-size: 1.125rem;
     }
 
     label {
-      font-size: 14px;
+      font-size: 0.875rem;
     }
   }
 }

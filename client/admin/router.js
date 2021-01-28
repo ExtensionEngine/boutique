@@ -51,10 +51,9 @@ const router = new Router({
 
 const isAdmin = user => user && user.role === role.ADMIN;
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((_to, _from, next) => {
   const user = get(store.state, 'auth.user');
-  if (!isAdmin(user)) return navigateTo('/');
-  return next();
+  return isAdmin(user) ? next() : navigateTo('/');
 });
 
 export default router;

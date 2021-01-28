@@ -1,14 +1,17 @@
+import { extractData } from './helpers';
+import path from 'path';
 import request from './request';
 
-const url = {
-  login: '/users/login',
-  forgotPassword: '/users/forgotPassword',
-  resetPassword: '/users/resetPassword'
+const urls = {
+  root: '/users',
+  login: () => path.join(urls.root, 'login'),
+  forgotPassword: () => path.join(urls.root, 'forgotPassword'),
+  resetPassword: () => path.join(urls.root, 'resetPassword')
 };
 
 function login(credentials) {
-  return request.base.post(url.login, credentials)
-    .then(res => res.data.data)
+  return request.base.post(urls.login(), credentials)
+    .then(extractData)
     .then(({ token, user }) => {
       request.auth.token = token;
       return user;
@@ -22,11 +25,11 @@ function logout() {
 }
 
 function forgotPassword(email) {
-  return request.post(url.forgotPassword, { email });
+  return request.post(urls.forgotPassword(), { email });
 }
 
 function resetPassword(body) {
-  return request.post(url.resetPassword, body);
+  return request.post(urls.resetPassword(), body);
 }
 
 export default {
