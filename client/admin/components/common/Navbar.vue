@@ -1,5 +1,6 @@
 <template>
   <v-app-bar
+    :dense="!!program"
     extension-height="74"
     color="primary"
     elevation="2"
@@ -35,7 +36,7 @@
       </v-list>
     </v-menu>
     <template v-if="program" v-slot:extension>
-      <div :key="programId" class="ml-10">
+      <div class="ml-10">
         <v-breadcrumbs :items="breadcrumbs" />
         <v-tabs
           color="grey lighten-2"
