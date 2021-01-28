@@ -116,8 +116,10 @@ export default {
       Object.assign(this.dataTable, opts);
       const { items, total } = await api.fetch({
         ...this.dataTable,
-        filter: this.filter,
-        archived: this.showArchived
+        params: {
+          filter: this.filter,
+          archived: this.showArchived
+        }
       });
       this.users = items;
       this.totalItems = total;
