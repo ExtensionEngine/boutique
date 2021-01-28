@@ -1,5 +1,7 @@
 <template>
-  <router-view v-if="program" :key="programId" :program="program" />
+  <v-container fluid>
+    <router-view v-if="program" :key="programId" :program="program" />
+  </v-container>
 </template>
 
 <script>

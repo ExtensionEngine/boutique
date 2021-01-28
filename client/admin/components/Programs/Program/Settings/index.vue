@@ -1,5 +1,5 @@
 <template>
-  <v-row class="pa-8">
+  <v-row class="ma-4">
     <v-col sm="12" lg="6">
       <div class="d-flex justify-end mb-5">
         <v-btn @click="showConfirmationDialog = true" color="error" text>

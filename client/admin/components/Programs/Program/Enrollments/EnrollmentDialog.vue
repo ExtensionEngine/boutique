@@ -1,51 +1,47 @@
 <template>
-  <v-dialog v-model="visible" v-hotkey="{ esc: close }" width="500">
+  <admin-dialog v-model="isVisible" header-icon="mdi-school">
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on" color="primary" text>
-        <v-icon dense class="mr-1">mdi-plus</v-icon>
+      <v-btn v-on="on" text>
+        <v-icon dense class="mr-1">mdi-school</v-icon>
         Enroll learner
       </v-btn>
     </template>
-    <validation-observer
-      v-if="visible"
-      ref="form"
-      v-slot="{ invalid }"
-      @submit.prevent="$refs.form.handleSubmit(enroll)"
-      tag="form"
-      novalidate>
-      <v-card class="pa-3">
-        <v-card-title class="headline">Enroll learner</v-card-title>
-        <v-card-text>
-          <validation-provider
-            v-slot="{ errors }"
-            name="name"
-            :rules="{ required: true, unique_enrollment: { learnerId, programId } }">
-            <v-autocomplete
-              v-model="learnerId"
-              :items="learners"
-              :search-input.sync="email"
-              :error-messages="errors"
-              :loading="isLoading"
-              name="learner"
-              label="Learner"
-              placeholder="Start typing to Search"
-              prepend-icon="mdi-magnify"
-              clearable />
-          </validation-provider>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn @click="close">Cancel</v-btn>
-          <v-btn :disabled="invalid" type="submit" color="success" outlined>
-            Enroll
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </validation-observer>
-  </v-dialog>
+    <template v-slot:header>Enroll learner</template>
+    <template v-slot:body>
+      <validation-observer
+        v-if="isVisible"
+        ref="form"
+        v-slot="{ invalid }"
+        @submit.prevent="$refs.form.handleSubmit(enroll)"
+        tag="form"
+        novalidate>
+        <validation-provider
+          v-slot="{ errors }"
+          name="learner"
+          :rules="{ required: true, unique_enrollment: { learnerId, programId } }">
+          <v-autocomplete
+            v-model="learnerId"
+            :items="learners"
+            :error-messages="errors"
+            :search-input.sync="email"
+            :loading="isLoading"
+            name="learner"
+            label="Learner"
+            placeholder="Start typing to Search"
+            prepend-icon="mdi-magnify"
+            clearable />
+        </validation-provider>
+        <div class="d-flex justify-end">
+          <v-btn @click="close" text>Cancel</v-btn>
+          <v-btn :disabled="invalid" type="submit" text>Enroll</v-btn>
+        </div>
+      </validation-observer>
+    </template>
+  </admin-dialog>
 </template>
 
 <script>
+import AdminDialog from '@/admin/components/common/Dialog';
 import enrollmentApi from '@/admin/api/enrollment';
 import map from 'lodash/map';
 import pick from 'lodash/pick';
@@ -57,7 +53,7 @@ export default {
     programId: { type: Number, required: true }
   },
   data: () => ({
-    visible: false,
+    isVisible: false,
     email: null,
     learnerId: null,
     learners: [],
@@ -71,7 +67,7 @@ export default {
       this.$emit('enrolled');
     },
     close() {
-      this.visible = false;
+      this.isVisible = false;
       this.learnerId = null;
     },
     setLearners({ items: learners }) {
@@ -93,10 +89,11 @@ export default {
     email(val) {
       if (val) this.fetch(val);
     },
-    visible(val) {
+    isVisible(val) {
       if (!val) return;
       this.fetch();
     }
-  }
+  },
+  components: { AdminDialog }
 };
 </script>

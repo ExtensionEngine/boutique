@@ -1,14 +1,14 @@
 <template>
   <div class="ma-4">
-    <v-row no-gutters class="my-6">
-      <v-col cols="6">
+    <v-row class="my-6">
+      <v-col md="6" lg="4">
         <v-text-field
           v-model.trim="filter"
           label="Search"
           append-icon="mdi-magnify"
-          single-line clearable />
+          single-line hide-details clearable />
       </v-col>
-      <v-col cols="6" class="d-flex justify-end">
+      <v-col md="6" lg="8" class="d-flex justify-end">
         <enrollment-dialog @enrolled="fetch(defaultPage)" :program-id="programId" />
       </v-col>
     </v-row>
@@ -26,7 +26,7 @@
           <td>{{ get(item.learner, 'firstName') }}</td>
           <td>{{ get(item.learner, 'lastName') }}</td>
           <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
-          <td class="text-center">
+          <td class="text-no-wrap text-center">
             <v-btn @click="unenroll(item)" icon x-small>
               <v-icon>mdi-delete</v-icon>
             </v-btn>
@@ -68,9 +68,9 @@ export default {
   },
   data: () => ({
     enrollments: [],
-    filter: null,
     dataTable: { rowsPerPage: 10, ...defaultPage() },
     totalItems: 0,
+    filter: null,
     confirmation: { dialog: null }
   }),
   computed: {
