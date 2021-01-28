@@ -27,6 +27,6 @@ async function getGroup(req, _, next, groupId) {
 }
 
 module.exports = {
-  path: '/group',
+  path: '/groups',
   router
 };
