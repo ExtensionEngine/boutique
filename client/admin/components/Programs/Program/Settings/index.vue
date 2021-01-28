@@ -1,8 +1,8 @@
 <template>
-  <v-row v-if="program" class="pa-4">
-    <v-col cols="12" sm="12" md="6" xl="4">
-      <div class="d-flex justify-end">
-        <v-btn @click="confirmationDialog = true" color="error" text>
+  <v-row class="pa-8">
+    <v-col sm="12" lg="6">
+      <div class="d-flex justify-end mb-5">
+        <v-btn @click="showConfirmationDialog = true" color="error" text>
           <v-icon dense class="mr-1">mdi-delete-outline</v-icon>
           Delete Program
         </v-btn>
@@ -11,16 +11,15 @@
         ref="form"
         @submit.prevent="$refs.form.handleSubmit(saveProgram)"
         tag="form"
-        novalidate
-        class="mt-5">
+        novalidate>
         <validation-provider
           v-slot="{ errors }"
           :rules="{ required: true, min: 2, max: 255, unique_program_name: program }"
           name="program name">
           <v-text-field
             v-model.trim="programData.name"
-            :error-messages="errors"
             :disabled="!isEditing"
+            :error-messages="errors"
             name="name"
             label="Program name"
             append-icon="mdi-pencil" />
@@ -42,16 +41,16 @@
             label="End Date" />
         </validation-provider>
         <div class="d-flex justify-end">
-          <div v-if="isEditing">
+          <template v-if="isEditing">
             <v-btn @click="cancel" text>Cancel</v-btn>
-            <v-btn type="submit" color="success" text class="ml-4">Save</v-btn>
-          </div>
+            <v-btn type="submit" text>Save</v-btn>
+          </template>
           <v-btn v-else @click="isEditing = true" text>Edit</v-btn>
         </div>
       </validation-observer>
     </v-col>
     <confirmation-dialog
-      :visible.sync="confirmationDialog"
+      :visible.sync="showConfirmationDialog"
       :action="removeProgram"
       :message="confirmationMessage"
       heading="Delete program" />
@@ -76,7 +75,7 @@ export default {
   data: () => ({
     programData: null,
     isEditing: false,
-    confirmationDialog: false
+    showConfirmationDialog: false
   }),
   computed: {
     dateFormat: () => DST_FORMAT,
@@ -90,7 +89,7 @@ export default {
     },
     removeProgram() {
       this.remove(this.program)
-        .then(() => this.$router.push({ name: 'users' }));
+        .then(() => this.$router.push({ name: 'programs' }));
     },
     cloneProgram() {
       const { program } = this;
