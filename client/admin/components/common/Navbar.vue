@@ -1,5 +1,6 @@
 <template>
   <v-app-bar
+    extension-height="74"
     color="primary"
     elevation="2"
     app fixed clipped-left dark>
@@ -11,7 +12,7 @@
       <span class="subtitle-1 secondary--text">LMS starter</span>
     </v-toolbar-title>
     <v-spacer />
-    <v-menu min-width="220px" transition="slide-y-transition" offset-y>
+    <v-menu min-width="220" transition="slide-y-transition" offset-y>
       <template v-slot:activator="{ on: menu }">
         <v-tooltip left>
           <template v-slot:activator="{ on: tooltip }">
@@ -33,21 +34,60 @@
         </v-list-item>
       </v-list>
     </v-menu>
+    <template v-if="program" v-slot:extension>
+      <div :key="programId" class="ml-10">
+        <v-breadcrumbs :items="breadcrumbs" />
+        <v-tabs
+          color="grey lighten-2"
+          background-color="transparent"
+          slider-color="secondary">
+          <v-tab
+            v-for="({ name, label }) in tabs"
+            :key="name"
+            :to="{ name, params: { programId } }"
+            exact ripple>
+            {{ label }}
+          </v-tab>
+        </v-tabs>
+      </div>
+    </template>
   </v-app-bar>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex';
+import find from 'lodash/find';
+
+const parseNumber = val => val !== undefined ? parseInt(val, 10) : val;
 
 export default {
-  name: 'main-toolbar',
+  name: 'app-toolbar',
   props: {
     drawer: { type: Boolean, default: true }
   },
   computed: {
     ...mapState('auth', ['user']),
-    fullName: ({ user }) => `${user.firstName} ${user.lastName}`
+    ...mapState('programs', { programs: 'items' }),
+    fullName: ({ user }) => `${user.firstName} ${user.lastName}`,
+    programId: vm => parseNumber(vm.$route.params.programId),
+    program: vm => vm.programId && find(vm.programs, { id: vm.programId }),
+    tabs: () => [
+      { name: 'enrollments', label: 'Enrollments' },
+      { name: 'importedContent', label: 'Content' },
+      { name: 'programSettings', label: 'Settings' }
+    ],
+    breadcrumbs: ({ program }) => program
+      ? [
+        { text: 'Programs', disabled: true },
+        { text: program.name, disabled: true }]
+      : []
   },
   methods: mapActions('auth', ['logout'])
 };
 </script>
+
+<style lang="scss" scoped>
+.v-breadcrumbs {
+  padding: 0 0 0.25rem 1rem;
+}
+</style>
