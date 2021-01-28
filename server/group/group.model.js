@@ -1,7 +1,7 @@
 'use strict';
 
 const { Model } = require('sequelize');
-const { restoreOrBuild } = require('../common/database/restore');
+const { restoreOrCreate } = require('../common/database/restore');
 
 class Group extends Model {
   static fields({ DATE, STRING }) {
@@ -31,8 +31,8 @@ class Group extends Model {
     });
   }
 
-  static async restoreOrBuild(group, options) {
-    return restoreOrBuild(this, group, options);
+  static async restoreOrCreate(group, options) {
+    return restoreOrCreate(this, group, options);
   }
 
   static options() {

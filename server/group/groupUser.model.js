@@ -37,9 +37,12 @@ class GroupUser extends Model {
     };
   }
 
-  static associate({ User }) {
+  static associate({ Group, User }) {
     this.belongsTo(User, {
       foreignKey: { name: 'userId', field: 'user_id' }
+    });
+    this.belongsTo(Group, {
+      foreignKey: { name: 'groupId', field: 'group_id' }
     });
   }
 

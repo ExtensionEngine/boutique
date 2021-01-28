@@ -6,13 +6,9 @@ const { Group } = require('../common/database');
 const { NOT_FOUND } = require('http-status');
 const router = require('express').Router();
 
-router.get('/upload-url', ctrl.getUploadUrl);
-
 router
   .param('groupId', getGroup)
-  .use('/:groupId')
-  .get('/:groupId', ctrl.get)
-  .patch('/:groupId', ctrl.update)
+  .patch('/:groupId', ctrl.patch)
   .delete('/:groupId', ctrl.remove);
 
 router

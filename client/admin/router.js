@@ -1,6 +1,7 @@
 import Content from '@/admin/components/Program/Content';
 import Enrollments from '@/admin/components/Program/Enrollments';
 import get from 'lodash/get';
+import Groups from '@/admin/components/Groups';
 import { navigateTo } from '@/common/navigation';
 import NotFound from '@/admin/components/common/NotFound';
 import Program from '@/admin/components/Program';
@@ -25,6 +26,11 @@ const router = new Router({
     path: '/',
     name: 'users',
     component: Users,
+    meta: { auth: true }
+  }, {
+    path: '/groups',
+    name: 'groups',
+    component: Groups,
     meta: { auth: true }
   }, {
     path: '/programs/:programId',
