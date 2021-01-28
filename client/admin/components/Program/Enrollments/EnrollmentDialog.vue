@@ -33,7 +33,9 @@
         <v-card-actions>
           <v-spacer />
           <v-btn @click="close">Cancel</v-btn>
-          <v-btn :disabled="invalid" color="success" type="submit" outlined>Enroll</v-btn>
+          <v-btn :disabled="invalid" type="submit" color="success" outlined>
+            Enroll
+          </v-btn>
         </v-card-actions>
       </v-card>
     </validation-observer>
@@ -59,27 +61,28 @@ export default {
     isLoading: false
   }),
   methods: {
-    enroll() {
-      enrollmentApi.create(pick(this, ['learnerId', 'programId'])).then(() => {
-        this.close();
-        this.$emit('enrolled');
-      });
+    async enroll() {
+      const params = pick(this, ['learnerId', 'programId']);
+      await enrollmentApi.create(params);
+      this.close();
+      this.$emit('enrolled');
     },
     close() {
       this.visible = false;
       this.learnerId = null;
+    },
+    setLearners({ items: learners }) {
+      this.learners = map(learners, ({ id, email, firstName, lastName }) => ({
+        value: id,
+        text: `${email} - ${firstName} ${lastName}`
+      }));
     },
     fetch(email) {
       if (this.learnerId) return;
       this.isLoading = true;
       const params = { emailLike: email, role: 'LEARNER', limit: 30 };
       return userApi.fetch({ params })
-        .then(({ items: learners }) => {
-          this.learners = map(learners, it => ({
-            text: `${it.email} - ${it.firstName} ${it.lastName}`,
-            value: it.id
-          }));
-        })
+        .then(this.setLearners)
         .finally(() => (this.isLoading = false));
     }
   },

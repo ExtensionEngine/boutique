@@ -1,12 +1,12 @@
 import { extractData, processParams } from '@/common/api/helpers';
 import request from '@/common/api/request';
 
-const url = {
+const urls = {
   root: '/programs'
 };
 
 function fetch(params = {}) {
-  return request.get(url.root, { params: processParams(params) })
+  return request.get(urls.root, { params: processParams(params) })
     .then(extractData);
 }
 

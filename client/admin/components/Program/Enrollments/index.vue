@@ -11,8 +11,7 @@
             v-model.trim="filter"
             append-icon="mdi-magnify"
             label="Search"
-            single-line
-            clearable />
+            single-line clearable />
         </v-col>
       </v-row>
       <v-data-table
@@ -20,8 +19,8 @@
         :items="enrollments"
         :options.sync="dataTable"
         :server-items-length="totalItems"
-        :must-sort="true"
-        :no-data-text="noEnrollmentsMessage">
+        :no-data-text="noEnrollmentsMessage"
+        must-sort>
         <template v-slot:item="{ item }">
           <tr>
             <td>{{ get(item.learner, 'email') }}</td>
@@ -66,16 +65,16 @@ const headers = () => [
 
 export default {
   name: 'enrollments',
-  props: { programId: { type: Number, required: true } },
-  data() {
-    return {
-      enrollments: [],
-      filter: null,
-      dataTable: { rowsPerPage: 10, ...defaultPage() },
-      totalItems: 0,
-      confirmation: { dialog: null }
-    };
+  props: {
+    programId: { type: Number, required: true }
   },
+  data: () => ({
+    enrollments: [],
+    filter: null,
+    dataTable: { rowsPerPage: 10, ...defaultPage() },
+    totalItems: 0,
+    confirmation: { dialog: null }
+  }),
   computed: {
     headers,
     defaultPage,
@@ -104,12 +103,8 @@ export default {
     }
   },
   watch: {
-    dataTable() {
-      this.fetch();
-    },
-    filter() {
-      this.fetch();
-    }
+    dataTable: 'fetch',
+    filter: 'fetch'
   },
   components: { ConfirmationDialog, EnrollmentDialog }
 };

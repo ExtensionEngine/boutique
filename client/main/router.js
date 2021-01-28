@@ -80,11 +80,10 @@ const router = new Router({
 const isAdmin = user => user && user.role === role.ADMIN;
 const requiresAuth = route => route.matched.some(it => it.meta.auth);
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   const user = get(store.state, 'auth.user');
   if (requiresAuth(to) && !user) return next({ name: 'login' });
-  if (isAdmin(user)) return navigateTo('/admin');
-  return next();
+  return !isAdmin(user) ? next() : navigateTo('/admin');
 });
 
 export default router;
