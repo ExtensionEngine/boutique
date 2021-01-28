@@ -1,20 +1,20 @@
 <template>
   <div class="ma-4">
-    <v-row no-gutters class="my-6">
-      <v-col cols="6">
+    <v-row class="my-6">
+      <v-col md="6" lg="4">
         <v-text-field
           v-model.trim="filter"
-          :disabled="importedRepos.length <= 0"
+          :disabled="!importedRepos.length"
           append-icon="mdi-magnify"
           label="Search"
           hide-details single-line clearable />
         <v-checkbox
           v-model="showArchived"
           label="Show archived"
-          class="my-2 archived-checkbox"
+          class="archived-checkbox my-2"
           hide-details />
       </v-col>
-      <v-col cols="6" class="d-flex justify-end">
+      <v-col md="6" lg="8" class="d-flex justify-end">
         <content-dialog :program-id="programId" :imported-repos="importedRepos" />
       </v-col>
     </v-row>
@@ -22,7 +22,6 @@
       :headers="headers"
       :items="filteredRepos"
       :no-data-text="noContentMessage"
-      item-key="_cid"
       hide-default-footer
       class="transparent">
       <template v-slot:item="{ item }">
@@ -46,10 +45,10 @@
             <v-btn
               v-if="!item.deletedAt"
               @click="showConfirmationDialog(item)"
-              icon small>
+              icon x-small>
               <v-icon>mdi-delete</v-icon>
             </v-btn>
-            <v-btn v-else @click="showRestoreDialog(item)" icon small>
+            <v-btn v-else @click="showRestoreDialog(item)" icon x-small>
               <v-icon>mdi-restore</v-icon>
             </v-btn>
           </td>
@@ -102,9 +101,8 @@ export default {
     ...mapState('contentRepo', { repoStore: 'items' }),
     headers,
     importedRepos() {
-      return filter(this.repoStore, it => {
-        return it.id && it.programId === this.programId;
-      });
+      const { programId } = this;
+      return filter(this.repoStore, it => it.id && (it.programId === programId));
     },
     filteredRepos() {
       if (!this.filter) return this.importedRepos;
@@ -164,11 +162,6 @@ export default {
 
   .v-input__slot {
     flex-direction: row-reverse;
-
-    .v-input--selection-controls__input {
-      justify-content: center;
-      margin-right: 0;
-    }
 
     .v-icon {
       font-size: 18px;
