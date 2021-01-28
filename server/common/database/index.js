@@ -20,6 +20,8 @@ const Preview = require('../../preview/preview.model');
 const Program = require('../../program/program.model');
 const Enrollment = require('../../enrollment/enrollment.model');
 const ContentRepo = require('../../content-repo/content-repo.model');
+const Group = require('../../group/group.model');
+const GroupUser = require('../../group/groupUser.model');
 /* eslint-enable */
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -78,7 +80,9 @@ const models = {
   Preview: defineModel(Preview),
   Program: defineModel(Program),
   Enrollment: defineModel(Enrollment),
-  ContentRepo: defineModel(ContentRepo)
+  ContentRepo: defineModel(ContentRepo),
+  Group: defineModel(Group),
+  GroupUser: defineModel(GroupUser)
 };
 
 forEach(models, model => {

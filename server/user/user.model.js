@@ -80,9 +80,13 @@ class User extends Model {
     );
   }
 
-  static associate({ Enrollment }) {
+  static associate({ Enrollment, Group, GroupUser }) {
     this.hasMany(Enrollment, {
       foreignKey: { name: 'learnerId', field: 'learner_id' }
+    });
+    this.belongsToMany(Group, {
+      through: GroupUser,
+      foreignKey: { name: 'userId', field: 'user_id' }
     });
   }
 
