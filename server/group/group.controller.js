@@ -1,13 +1,14 @@
 'use strict';
 
 const { CONFLICT, NO_CONTENT } = require('http-status');
+const { Group, User } = require('../common/database');
 const { createError } = require('../common/errors');
-const { Group } = require('../common/database');
 
 function list({ opts, query }, res) {
   const { parentId = null, archived } = query;
   if (parentId) opts.where.parentId = parentId;
-  return Group.findAndCountAll({ ...opts, paranoid: !archived })
+  const include = { model: User };
+  return Group.findAndCountAll({ ...opts, include, paranoid: !archived })
     .then(({ rows, count }) => res.jsend.success({ items: rows, total: count }));
 }
 
@@ -23,8 +24,7 @@ async function patch({ group, body }, res) {
 }
 
 function remove({ group }, res) {
-  return group.destroy()
-    .then(() => res.sendStatus(NO_CONTENT));
+  return group.destroy().then(() => res.sendStatus(NO_CONTENT));
 }
 
 module.exports = {

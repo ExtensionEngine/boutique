@@ -49,6 +49,8 @@ class GroupUser extends Model {
   static options() {
     return {
       modelName: 'groupUser',
+      tableName: 'group_user',
+      underscored: true,
       timestamps: true,
       paranoid: true,
       freezeTableName: true
