@@ -28,10 +28,10 @@
       class="ma-5 transparent">
       <template v-slot:item="{ item }">
         <tr :key="item.id">
-          <td>{{ item.email }}</td>
           <td>{{ item.role }}</td>
-          <td>{{ item.firstName }}</td>
-          <td>{{ item.lastName }}</td>
+          <td>{{ item.member.email }}</td>
+          <td>{{ item.member.firstName }}</td>
+          <td>{{ item.member.lastName }}</td>
           <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
           <td class="text-no-wrap text-center">
             <v-btn
@@ -77,7 +77,7 @@ const defaultPage = () => ({ sortBy: ['updatedAt'], sortDesc: [true], page: 1 })
 
 const headers = () => [
   { text: 'Email', value: 'email' },
-  { text: 'Role', value: 'role' },
+  { text: 'Group Member Role', value: 'role' },
   { text: 'First Name', value: 'firstName' },
   { text: 'Last Name', value: 'lastName' },
   { text: 'Date Created', value: 'createdAt' },
@@ -112,9 +112,9 @@ export default {
     },
     fetch: throttle(async function (opts) {
       Object.assign(this.dataTable, opts);
-      const { dataTable, filter, showArchived: archived } = this;
-      const params = { filter, archived };
-      const { items, total } = await api.fetch({ ...dataTable, params });
+      const { dataTable, groupId, filter, showArchived: archived } = this;
+      const options = { ...dataTable, params: { groupId, filter, archived } };
+      const { items, total } = await api.getMembers(groupId, options);
       this.members = items;
       this.totalItems = total;
     }, 400),
@@ -137,3 +137,27 @@ export default {
   components: { ConfirmationDialog, MemberDialog }
 };
 </script>
+
+<style lang="scss" scoped>
+::v-deep .archived-checkbox {
+  &.v-input--checkbox {
+    justify-content: flex-end;
+  }
+
+  .v-input__slot {
+    flex-direction: row-reverse;
+
+    .v-input--selection-controls__input {
+      margin-right: 0;
+    }
+
+    .v-icon {
+      font-size: 1.125rem;
+    }
+
+    label {
+      font-size: 0.875rem;
+    }
+  }
+}
+</style>

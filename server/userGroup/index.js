@@ -9,7 +9,8 @@ const router = require('express').Router();
 router
   .param('userGroupId', getUserGroup)
   .patch('/:userGroupId', ctrl.patch)
-  .delete('/:userGroupId', ctrl.remove);
+  .delete('/:userGroupId', ctrl.remove)
+  .get('/:userGroupId/members', ctrl.getMembers);
 
 router
   .get('/', ctrl.list)

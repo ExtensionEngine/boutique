@@ -4,11 +4,17 @@ import request from '@/common/api/request';
 
 const urls = {
   root: '/user-groups',
-  resource: id => path.join(urls.root, String(id))
+  resource: id => path.join(urls.root, String(id)),
+  members: id => path.join(urls.resource(id), 'members')
 };
 
 function fetch(params = {}) {
   return request.get(urls.root, { params: processParams(params) })
+    .then(extractData);
+}
+
+function getMembers(groupId, params = {}) {
+  return request.get(urls.members(groupId), { params: processParams(params) })
     .then(extractData);
 }
 
@@ -28,5 +34,6 @@ export default {
   fetch,
   create,
   update,
-  remove
+  remove,
+  getMembers
 };
