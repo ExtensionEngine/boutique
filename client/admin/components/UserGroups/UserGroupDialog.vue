@@ -13,11 +13,13 @@
         <validation-provider
           v-slot="{ errors }"
           name="user group name"
-          rules="required|alpha|min:2|max:50">
+          rules="required|min:2|max:50"
+          outlined>
           <v-text-field
             v-model="userGroup.name"
             :error-messages="errors"
             label="User Group Name"
+            outlined
             class="mb-3" />
         </validation-provider>
         <div class="d-flex justify-end mb-2">

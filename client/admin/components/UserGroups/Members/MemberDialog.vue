@@ -20,6 +20,7 @@
             :error-messages="errors"
             name="role"
             label="Role"
+            outlined
             class="mb-3" />
         </validation-provider>
         <validation-provider
@@ -30,6 +31,7 @@
             v-model="member.user"
             :error-messages="errors"
             label="User"
+            outlined
             class="mb-3" />
         </validation-provider>
         <div class="d-flex justify-end mb-2">
@@ -76,7 +78,7 @@ export default {
       }
     },
     roles: () => map(role, it => ({ text: humanize(it), value: it })),
-    isNewMember: vm => vm.member.id
+    isNewMember: vm => !vm.member.id
   },
   methods: {
     close() {
