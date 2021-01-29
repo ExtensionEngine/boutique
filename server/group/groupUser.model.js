@@ -6,17 +6,19 @@ const { role: roles } = require('../../common/config');
 class GroupUser extends Model {
   static fields({ DATE, ENUM, INTEGER }) {
     return {
+      id: {
+        type: INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
+      },
       userId: {
         type: INTEGER,
-        field: 'user_id',
-        primaryKey: true,
-        unique: 'group_user_pkey'
+        field: 'user_id'
       },
       groupId: {
         type: INTEGER,
-        field: 'group_id',
-        primaryKey: true,
-        unique: 'group_user_pkey'
+        field: 'group_id'
       },
       role: {
         type: ENUM(Object.values(roles)),

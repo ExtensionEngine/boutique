@@ -4,14 +4,13 @@ const { role: roles } = require('../../../../common/config');
 
 const TABLE_NAME = 'group_user';
 
-exports.up = async (qi, Sequelize) => {
-  await qi.createTable(TABLE_NAME, getColumns(Sequelize));
-  return addConstraints(qi);
-};
-
-exports.down = qi => qi.dropTable(TABLE_NAME);
-
-const getColumns = ({ DATE, ENUM, INTEGER }) => ({
+exports.up = (qi, { DATE, ENUM, INTEGER }) => qi.createTable(TABLE_NAME, {
+  id: {
+    type: INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+    allowNull: false
+  },
   userId: {
     type: INTEGER,
     field: 'user_id',
@@ -43,10 +42,4 @@ const getColumns = ({ DATE, ENUM, INTEGER }) => ({
   }
 });
 
-async function addConstraints(qi) {
-  const table = await qi.describeTable(TABLE_NAME);
-  if (table.group_id.primaryKey && table.user_id.primaryKey) return;
-  const fields = ['group_id', 'user_id'];
-  const options = { name: 'group_user_pkey', type: 'primary key', fields };
-  return qi.addConstraint(TABLE_NAME, options);
-}
+exports.down = qi => qi.dropTable(TABLE_NAME);
