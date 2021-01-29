@@ -1,50 +1,48 @@
 <template>
-  <v-dialog v-model="show" v-hotkey="{ esc: close }" width="700">
-    <validation-observer
-      v-if="show"
-      ref="form"
-      @submit.prevent="$refs.form.handleSubmit(save)"
-      tag="form"
-      novalidate>
-      <v-card class="pa-3">
-        <v-card-title class="headline">
-          <span>{{ memberData ? 'Edit' : 'Add' }} Member</span>
-        </v-card-title>
-        <v-card-text>
-          <validation-provider
-            v-slot="{ errors }"
+  <admin-dialog v-model="show" header-icon="mdi-folder-plus-outline">
+    <template v-slot:header>
+      {{ memberData ? 'Edit' : 'Add' }} Member
+    </template>
+    <template v-slot:body>
+      <validation-observer
+        v-if="show"
+        ref="form"
+        @submit.prevent="$refs.form.handleSubmit(save)"
+        tag="form"
+        novalidate>
+        <validation-provider
+          v-slot="{ errors }"
+          name="role"
+          rules="required">
+          <v-select
+            v-model="member.role"
+            :items="roles"
+            :error-messages="errors"
             name="role"
-            rules="required">
-            <v-select
-              v-model="member.role"
-              :items="roles"
-              :error-messages="errors"
-              name="role"
-              label="Role"
-              class="mb-3" />
-          </validation-provider>
-          <validation-provider
-            v-slot="{ errors }"
-            name="user"
-            rules="required">
-            <user-select
-              v-model="member.user"
-              :error-messages="errors"
-              label="User"
-              class="mb-3" />
-          </validation-provider>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn @click="close">Cancel</v-btn>
-          <v-btn color="success" type="submit">Save</v-btn>
-        </v-card-actions>
-      </v-card>
-    </validation-observer>
-  </v-dialog>
+            label="Role"
+            class="mb-3" />
+        </validation-provider>
+        <validation-provider
+          v-slot="{ errors }"
+          name="user"
+          rules="required">
+          <user-select
+            v-model="member.user"
+            :error-messages="errors"
+            label="User"
+            class="mb-3" />
+        </validation-provider>
+        <div class="d-flex justify-end mb-2">
+          <v-btn @click="close" text>Cancel</v-btn>
+          <v-btn type="submit" text>Save</v-btn>
+        </div>
+      </validation-observer>
+    </template>
+  </admin-dialog>
 </template>
 
 <script>
+import AdminDialog from '@/admin/components/common/Dialog';
 import api from '@/admin/api/user';
 import cloneDeep from 'lodash/cloneDeep';
 import humanize from 'humanize-string';
@@ -98,6 +96,6 @@ export default {
       if (!isEmpty(this.memberData)) this.member = cloneDeep(this.memberData);
     }
   },
-  components: { UserSelect }
+  components: { AdminDialog, UserSelect }
 };
 </script>

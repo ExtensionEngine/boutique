@@ -30,8 +30,9 @@ export default {
     drawer: { type: Boolean, default: true }
   },
   computed: {
-    routes: vm => [
+    routes: () => [
       { name: 'users', label: 'Users', icon: 'account-multiple' },
+      { name: 'groups', label: 'Groups', icon: 'account-group' },
       { name: 'programs', label: 'Programs', icon: 'bookshelf' }
     ]
   }

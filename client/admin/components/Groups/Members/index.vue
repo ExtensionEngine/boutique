@@ -1,75 +1,69 @@
 <template>
-  <v-row justify="center">
-    <v-col class="mt-5">
-      <v-toolbar color="#f5f5f5" flat>
-        <v-spacer />
-        <v-btn @click.stop="showMemberDialog()" color="success" outlined class="ml-4">
-          Add member
+  <v-container fluid>
+    <v-row class="ma-5">
+      <v-col sm="4" md="5" lg="4">
+        <v-text-field
+          v-model="filter"
+          append-icon="mdi-magnify"
+          label="Search"
+          single-line hide-details clearable />
+        <v-checkbox
+          v-model="showArchived"
+          label="Show archived"
+          hide-details
+          class="my-2 archived-checkbox" />
+      </v-col>
+      <v-col sm="8" md="7" lg="8" class="d-flex justify-end">
+        <v-btn @click.stop="showMemberDialog()" text>
+          <v-icon dense class="mr-1">mdi-plus</v-icon>Add group
         </v-btn>
-      </v-toolbar>
-      <div class="elevation-1 ml-2 mr-4">
-        <v-row justify="end" no-gutters class="px-4 table-toolbar">
-          <v-col lg="4">
-            <v-text-field
-              v-model="filter"
-              append-icon="mdi-magnify"
-              label="Search"
-              single-line hide-details clearable />
-            <v-checkbox
-              v-model="showArchived"
-              label="Show archived"
-              class="my-2 archived-checkbox"
-              hide-details />
-          </v-col>
-        </v-row>
-        <v-data-table
-          v-model="selectedMembers"
-          :headers="headers"
-          :items="members"
-          :server-items-length="totalItems"
-          :options.sync="dataTable"
-          must-sort
-          class="member-table">
-          <template v-slot:item="{ item }">
-            <tr :key="item.id">
-              <td>{{ item.email }}</td>
-              <td>{{ item.role }}</td>
-              <td>{{ item.firstName }}</td>
-              <td>{{ item.lastName }}</td>
-              <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
-              <td class="text-no-wrap text-center">
-                <v-btn
-                  @click="showMemberDialog(item)"
-                  color="grey darken-2"
-                  small text icon>
-                  <v-icon>mdi-pencil</v-icon>
-                </v-btn>
-                <v-btn
-                  @click="archiveOrRestore(item)"
-                  color="grey darken-2"
-                  small text icon>
-                  <v-icon>
-                    mdi-account-{{ item.deletedAt ? 'convert' : 'off' }}
-                  </v-icon>
-                </v-btn>
-              </td>
-            </tr>
-          </template>
-        </v-data-table>
-      </div>
-      <member-dialog
-        @updated="fetch(defaultPage)"
-        @created="fetch(defaultPage)"
-        :visible.sync="memberDialog"
-        :member-data="editedMember"
-        :group-id="groupId" />
-      <confirmation-dialog
-        @update:visible="confirmation = null"
-        @confirmed="fetch()"
-        v-bind="confirmation"
-        :visible="!!confirmation" />
-    </v-col>
-  </v-row>
+      </v-col>
+    </v-row>
+    <v-data-table
+      :headers="headers"
+      :items="members"
+      :server-items-length="totalItems"
+      :options.sync="dataTable"
+      must-sort
+      class="ma-5 transparent">
+      <template v-slot:item="{ item }">
+        <tr :key="item.id">
+          <td>{{ item.email }}</td>
+          <td>{{ item.role }}</td>
+          <td>{{ item.firstName }}</td>
+          <td>{{ item.lastName }}</td>
+          <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
+          <td class="text-no-wrap text-center">
+            <v-btn
+              @click="showMemberDialog(item)"
+              color="grey darken-3"
+              x-small icon>
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+            <v-btn
+              @click="archiveOrRestore(item)"
+              color="grey darken-3"
+              x-small icon>
+              <v-icon>
+                mdi-account-{{ item.deletedAt ? 'convert' : 'off' }}
+              </v-icon>
+            </v-btn>
+          </td>
+        </tr>
+      </template>
+    </v-data-table>
+    <member-dialog
+      @updated="fetch(defaultPage)"
+      @created="fetch(defaultPage)"
+      :visible.sync="memberDialog"
+      :member-data="editedMember"
+      :group-id="groupId" />
+    <confirmation-dialog
+      @update:visible="confirmation = null"
+      @confirmed="fetch()"
+      v-bind="confirmation"
+      :visible="!!confirmation" />
+  </v-container>
 </template>
 
 <script>
@@ -102,7 +96,6 @@ export default {
   },
   data: () => ({
     members: [],
-    selectedMembers: [],
     filter: null,
     dataTable: defaultPage(),
     totalItems: 0,
@@ -143,33 +136,3 @@ export default {
   components: { ConfirmationDialog, MemberDialog }
 };
 </script>
-
-<style lang="scss" scoped>
-.member-table ::v-deep .v-input--checkbox {
-  justify-content: center;
-  margin-top: 0;
-}
-
-::v-deep .archived-checkbox {
-  &.v-input--checkbox {
-    justify-content: flex-end;
-  }
-
-  .v-input__slot {
-    flex-direction: row-reverse;
-
-    .v-input--selection-controls__input {
-      justify-content: center;
-      margin-right: 0;
-    }
-
-    .v-icon {
-      font-size: 1.125rem;
-    }
-
-    label {
-      font-size: 0.875rem;
-    }
-  }
-}
-</style>
