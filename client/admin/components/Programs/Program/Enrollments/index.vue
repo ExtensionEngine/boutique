@@ -9,7 +9,7 @@
           single-line hide-details clearable />
       </v-col>
       <v-col md="6" lg="8" class="d-flex justify-end">
-        <enrollment-dialog @enrolled="fetch(defaultPage)" :program-id="programId" />
+        <enrollment-dialog @enrolled="fetch(defaultPage)" :program-id="program.id" />
       </v-col>
     </v-row>
     <v-data-table
@@ -48,7 +48,6 @@ import api from '@/admin/api/enrollment';
 import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
 import EnrollmentDialog from './EnrollmentDialog';
 import get from 'lodash/get';
-import pick from 'lodash/pick';
 import throttle from 'lodash/throttle';
 
 const defaultPage = () => ({ sortBy: ['updatedAt'], sortDesc: [true], page: 1 });
@@ -64,7 +63,7 @@ const headers = () => [
 export default {
   name: 'enrollments',
   props: {
-    programId: { type: Number, required: true }
+    program: { type: Object, required: true }
   },
   data: () => ({
     enrollments: [],
@@ -86,7 +85,10 @@ export default {
     get,
     fetch: throttle(async function (opts) {
       Object.assign(this.dataTable, opts);
-      const params = pick(this, ['programId', 'filter']);
+      const params = {
+        filter: this.filter,
+        programId: this.program.id
+      };
       const { items, total } = await api.fetch({ ...this.dataTable, params });
       this.enrollments = items;
       this.totalItems = total;

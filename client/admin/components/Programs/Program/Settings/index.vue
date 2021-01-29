@@ -70,7 +70,7 @@ const formatDate = d => d && format(new Date(d), DST_FORMAT);
 export default {
   name: 'program-settings',
   props: {
-    program: { type: Object, default: null }
+    program: { type: Object, required: true }
   },
   data: () => ({
     programData: null,

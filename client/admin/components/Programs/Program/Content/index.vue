@@ -15,7 +15,7 @@
           hide-details />
       </v-col>
       <v-col md="6" lg="8" class="d-flex justify-end">
-        <content-dialog :program-id="programId" :imported-repos="importedRepos" />
+        <content-dialog :program-id="program.id" :imported-repos="importedRepos" />
       </v-col>
     </v-row>
     <v-data-table
@@ -89,7 +89,7 @@ const headers = () => [
 export default {
   name: 'imported-content',
   props: {
-    programId: { type: Number, required: true }
+    program: { type: Object, required: true }
   },
   data: () => ({
     filter: null,
@@ -101,8 +101,8 @@ export default {
     ...mapState('contentRepo', { repoStore: 'items' }),
     headers,
     importedRepos() {
-      const { programId } = this;
-      return filter(this.repoStore, it => it.id && (it.programId === programId));
+      const { program } = this;
+      return filter(this.repoStore, it => it.id && (it.programId === program.id));
     },
     filteredRepos() {
       if (!this.filter) return this.importedRepos;
@@ -119,8 +119,12 @@ export default {
   methods: {
     ...mapActions('contentRepo', ['fetch', 'save']),
     fetchProgramRepos() {
-      const { programId } = this;
-      return this.fetch({ programId, srcVersion: true, archived: true });
+      const { program } = this;
+      return this.fetch({
+        programId: program.id,
+        srcVersion: true,
+        archived: true
+      });
     },
     showConfirmationDialog(item) {
       this.confirmation = {
