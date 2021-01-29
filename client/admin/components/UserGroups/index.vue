@@ -33,7 +33,7 @@
           tag="tr">
           <td>{{ item.name }}</td>
           <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
-          <td class="text-no-wrap">{{ item.users.length }}</td>
+          <td class="text-no-wrap">{{ item.members.length }}</td>
           <td class="text-no-wrap text-center">
             <v-btn
               @click.stop="showGroupDialog(item)"

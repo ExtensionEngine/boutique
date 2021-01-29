@@ -1,5 +1,5 @@
 <template>
-  <admin-dialog v-model="show" header-icon="mdi-folder-plus-outline">
+  <admin-dialog v-model="show" header-icon="mdi-account-multiple-plus-outline">
     <template v-slot:header>
       {{ userGroupData ? 'Edit' : 'Create' }} User Group
     </template>
