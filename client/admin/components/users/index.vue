@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row class="ma-5">
-      <v-col lg="6" md="4">
+      <v-col sm="4" md="5" lg="4">
         <v-text-field
           v-model="filter"
           append-icon="mdi-magnify"
@@ -13,7 +13,7 @@
           hide-details
           class="my-2 archived-checkbox" />
       </v-col>
-      <v-col lg="6" md="8" class="d-flex justify-end">
+      <v-col sm="8" md="7" lg="8" class="d-flex justify-end">
         <import-dialog @imported="fetch(defaultPage)" />
         <bulk-enrollment-dialog :users="selectedUsers" />
         <v-btn @click.stop="showUserDialog()" text>
