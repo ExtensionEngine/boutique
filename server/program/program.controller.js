@@ -2,17 +2,19 @@
 
 const { Enrollment, Program, Sequelize, sequelize } = require('../common/database');
 const pick = require('lodash/pick');
+const yn = require('yn');
 
 const { Op } = Sequelize;
 
 const processInput = input => pick(input, ['name', 'startDate', 'endDate']);
 
-function list({ query }, res) {
-  const { name, deleted } = query;
+function list({ query, options }, res) {
+  const { name, filter, deleted } = query;
   const where = {};
+  if (filter) where.name = { [Op.iLike]: `%${filter.trim()}%` };
   if (name) where.name = { [Op.iLike]: name.trim() };
-  return Program.findAll({ where, paranoid: !deleted })
-    .then(programs => res.jsend.success(programs));
+  return Program.findAndCountAll({ where, ...options, paranoid: !yn(deleted) })
+    .then(({ rows, count }) => res.jsend.success({ items: rows, total: count }));
 }
 
 function get({ program }, res) {

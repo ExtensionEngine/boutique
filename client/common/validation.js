@@ -43,7 +43,7 @@ const uniqueProgramName = {
     const programName = get(program, 'name');
     if (programName && programName.toLowerCase() === name.toLowerCase()) return true;
     return programApi.fetch({ params: { name, deleted: true } })
-      .then(([fetchedProgram]) => !fetchedProgram);
+      .then(({ items: [fetchedProgram] }) => !fetchedProgram);
   },
   message: 'Program named {_value_} already exists'
 };
