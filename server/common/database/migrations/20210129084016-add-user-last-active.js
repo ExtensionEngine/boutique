@@ -7,7 +7,7 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.addColumn(TABLE_NAME, COLUMN_NAME, Sequelize.DATE);
   },
-  down: (queryInterface, Sequelize) => {
+  down: queryInterface => {
     return queryInterface.removeColumn(TABLE_NAME, COLUMN_NAME);
   }
 };
