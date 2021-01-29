@@ -28,33 +28,33 @@
           :items="groups"
           :server-items-length="totalItems"
           :options.sync="dataTable"
-          show-select must-sort
+          must-sort
           class="group-table">
-          <template v-slot:item="props">
-            <tr :key="props.item.id">
-              <td>
-                <v-checkbox v-model="props.isSelected" hide-details />
-              </td>
-              <td>{{ props.item.name }}</td>
-              <td class="text-no-wrap">{{ props.item.createdAt | formatDate }}</td>
-              <td class="text-no-wrap">{{ props.item.users.length }}</td>
+          <template v-slot:item="{ item }">
+            <router-link
+              :key="item.id"
+              :to="{ name: 'members', params: { groupId: item.id } }"
+              tag="tr">
+              <td>{{ item.name }}</td>
+              <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
+              <td class="text-no-wrap">{{ item.users.length }}</td>
               <td class="text-no-wrap text-center">
                 <v-btn
-                  @click="showGroupDialog(props.item)"
+                  @click="showGroupDialog(item)"
                   color="grey darken-2"
                   small text icon>
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
                 <v-btn
-                  @click="archiveOrRestore(props.item)"
+                  @click="archiveOrRestore(item)"
                   color="grey darken-2"
                   small text icon>
                   <v-icon>
-                    mdi-account-{{ props.item.deletedAt ? 'convert' : 'off' }}
+                    mdi-account-{{ item.deletedAt ? 'convert' : 'off' }}
                   </v-icon>
                 </v-btn>
               </td>
-            </tr>
+            </router-link>
           </template>
         </v-data-table>
       </div>

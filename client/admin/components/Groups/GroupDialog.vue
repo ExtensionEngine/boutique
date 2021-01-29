@@ -36,7 +36,6 @@
 import api from '@/admin/api/group';
 import cloneDeep from 'lodash/cloneDeep';
 import isEmpty from 'lodash/isEmpty';
-// import { role } from '@/../common/config';
 
 const resetGroup = () => ({
   name: ''

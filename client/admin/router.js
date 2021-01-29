@@ -2,8 +2,10 @@ import Content from '@/admin/components/Program/Content';
 import Enrollments from '@/admin/components/Program/Enrollments';
 import get from 'lodash/get';
 import Groups from '@/admin/components/Groups';
+import Members from '@/admin/components/Groups/Members';
 import { navigateTo } from '@/common/navigation';
 import NotFound from '@/admin/components/common/NotFound';
+import { numeric as numericParser } from '@/common/utils/paramsParser';
 import Program from '@/admin/components/Program';
 import role from '@/../common/config/role';
 import Router from 'vue-router';
@@ -13,10 +15,6 @@ import Users from '@/admin/components/users';
 import Vue from 'vue';
 
 Vue.use(Router);
-
-const parseProgramId = ({ params }) => ({
-  programId: parseInt(params.programId, 10)
-});
 
 // Handle 404
 const fallbackRoute = { path: '*', component: NotFound };
@@ -33,24 +31,30 @@ const router = new Router({
     component: Groups,
     meta: { auth: true }
   }, {
+    path: '/groups/:groupId/members',
+    name: 'members',
+    props: numericParser.params,
+    component: Members,
+    meta: { auth: true }
+  }, {
     path: '/programs/:programId',
     component: Program,
-    props: parseProgramId,
+    props: numericParser.params,
     children: [{
       path: '',
       name: 'enrollments',
       component: Enrollments,
-      props: parseProgramId
+      props: numericParser.params
     }, {
       path: 'content',
       name: 'importedContent',
       component: Content,
-      props: parseProgramId
+      props: numericParser.params
     }, {
       path: 'settings',
       name: 'programSettings',
       component: Settings,
-      props: parseProgramId
+      props: numericParser.params
     }]
   }, fallbackRoute]
 });
