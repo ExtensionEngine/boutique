@@ -167,6 +167,10 @@ export default {
   .v-input__slot {
     flex-direction: row-reverse;
 
+    .v-input--selection-controls__input {
+      margin-right: 0;
+    }
+
     .v-icon {
       font-size: 1.125rem;
     }
