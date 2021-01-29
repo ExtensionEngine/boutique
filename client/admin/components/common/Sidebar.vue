@@ -11,8 +11,8 @@
         class="pt-4 fill-height">
         <v-list-item
           v-for="it in routes"
-          :key="it.to"
-          :to="{ name: it.to }"
+          :key="it.name"
+          :to="{ name: it.name }"
           class="mb-1">
           <v-list-item-icon>
             <v-icon>mdi-{{ it.icon }}</v-icon>
@@ -31,8 +31,8 @@ export default {
   },
   computed: {
     routes: vm => [
-      { label: 'Users', icon: 'account-multiple', to: 'users' },
-      { label: 'Programs', icon: 'bookshelf', to: 'programs' }
+      { name: 'users', label: 'Users', icon: 'account-multiple' },
+      { name: 'programs', label: 'Programs', icon: 'bookshelf' }
     ]
   }
 };

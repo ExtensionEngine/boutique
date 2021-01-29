@@ -11,8 +11,8 @@
         <v-checkbox
           v-model="showArchived"
           label="Show archived"
-          class="archived-checkbox my-2"
-          hide-details />
+          hide-details
+          class="archived-checkbox my-2" />
       </v-col>
       <v-col md="6" lg="8" class="d-flex justify-end">
         <content-dialog :program-id="program.id" :imported-repos="importedRepos" />
@@ -32,16 +32,16 @@
           <td>{{ item.name }}</td>
           <td class="text-no-wrap">{{ item.repoVersion | formatDate }}</td>
           <td class="text-no-wrap">{{ item.publishedAt | formatDate }}</td>
-          <td class="text-no-wrap text-center actions">
+          <td class="text-no-wrap text-center">
             <v-btn
               v-if="item.repoVersion > item.publishedAt"
               @click="save(item)"
-              text small>
+              text x-small>
               Sync
             </v-btn>
             <span v-else-if="item.repoVersion">Synced</span>
           </td>
-          <td class="text-no-wrap text-center">
+          <td class="text-no-wrap text-center actions">
             <v-btn
               v-if="!item.deletedAt"
               @click="showConfirmationDialog(item)"
@@ -168,11 +168,11 @@ export default {
     flex-direction: row-reverse;
 
     .v-icon {
-      font-size: 18px;
+      font-size: 1.125rem;
     }
 
     label {
-      font-size: 14px;
+      font-size: 0.875rem;
     }
   }
 }

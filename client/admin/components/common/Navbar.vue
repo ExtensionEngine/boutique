@@ -69,9 +69,9 @@ export default {
   computed: {
     ...mapState('auth', ['user']),
     ...mapState('programs', { programs: 'items' }),
-    fullName: ({ user }) => `${user.firstName} ${user.lastName}`,
     programId: vm => parseNumber(vm.$route.params.programId),
     program: vm => vm.programId && find(vm.programs, { id: vm.programId }),
+    fullName: ({ user }) => `${user.firstName} ${user.lastName}`,
     tabs: () => [
       { name: 'enrollments', label: 'Enrollments' },
       { name: 'importedContent', label: 'Content' },

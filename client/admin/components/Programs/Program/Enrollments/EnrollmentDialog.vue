@@ -17,8 +17,8 @@
         novalidate>
         <validation-provider
           v-slot="{ errors }"
-          name="learner"
-          :rules="{ required: true, unique_enrollment: { learnerId, programId } }">
+          :rules="{ required: true, unique_enrollment: { learnerId, programId } }"
+          name="learner">
           <v-autocomplete
             v-model="learnerId"
             :items="learners"
