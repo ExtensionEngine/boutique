@@ -2,7 +2,7 @@
 
 const { role: roles } = require('../../../../common/config');
 
-const TABLE_NAME = 'group_user';
+const TABLE_NAME = 'user_group_members';
 
 exports.up = (qi, { DATE, ENUM, INTEGER }) => qi.createTable(TABLE_NAME, {
   id: {
@@ -17,10 +17,10 @@ exports.up = (qi, { DATE, ENUM, INTEGER }) => qi.createTable(TABLE_NAME, {
     references: { model: 'user', key: 'id' },
     allowNull: false
   },
-  groupId: {
+  userGroupId: {
     type: INTEGER,
-    field: 'group_id',
-    references: { model: 'group', key: 'id' },
+    field: 'user_group_id',
+    references: { model: 'user_group', key: 'id' },
     allowNull: false
   },
   role: {

@@ -14,29 +14,28 @@
           class="my-2 archived-checkbox" />
       </v-col>
       <v-col sm="8" md="7" lg="8" class="d-flex justify-end">
-        <v-btn @click.stop="showGroupDialog()" text>
-          <v-icon dense class="mr-1">mdi-plus</v-icon>Add group
+        <v-btn @click.stop="showMemberDialog()" text>
+          <v-icon dense class="mr-1">mdi-plus</v-icon>Add Member
         </v-btn>
       </v-col>
     </v-row>
     <v-data-table
       :headers="headers"
-      :items="groups"
+      :items="members"
       :server-items-length="totalItems"
       :options.sync="dataTable"
       must-sort
       class="ma-5 transparent">
       <template v-slot:item="{ item }">
-        <router-link
-          :key="item.id"
-          :to="{ name: 'members', params: { groupId: item.id } }"
-          tag="tr">
-          <td>{{ item.name }}</td>
+        <tr :key="item.id">
+          <td>{{ item.email }}</td>
+          <td>{{ item.role }}</td>
+          <td>{{ item.firstName }}</td>
+          <td>{{ item.lastName }}</td>
           <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
-          <td class="text-no-wrap">{{ item.users.length }}</td>
           <td class="text-no-wrap text-center">
             <v-btn
-              @click="showGroupDialog(item)"
+              @click="showMemberDialog(item)"
               color="grey darken-3"
               x-small icon>
               <v-icon>mdi-pencil</v-icon>
@@ -46,18 +45,19 @@
               color="grey darken-3"
               x-small icon>
               <v-icon>
-                mdi-account-{{ item.deletedAt ? 'convert' : 'off' }}
+                mdi-{{ item.deletedAt ? 'restore' : 'archive-outline' }}
               </v-icon>
             </v-btn>
           </td>
-        </router-link>
+        </tr>
       </template>
     </v-data-table>
-    <group-dialog
+    <member-dialog
       @updated="fetch(defaultPage)"
       @created="fetch(defaultPage)"
-      :visible.sync="groupDialog"
-      :group-data="editedGroup" />
+      :visible.sync="memberDialog"
+      :member-data="editedMember"
+      :group-id="groupId" />
     <confirmation-dialog
       @update:visible="confirmation = null"
       @confirmed="fetch()"
@@ -67,58 +67,65 @@
 </template>
 
 <script>
-import api from '@/admin/api/group';
-import ConfirmationDialog from '../common/ConfirmationDialog';
-import GroupDialog from './GroupDialog';
+import api from '@/admin/api/userGroup';
+import ConfirmationDialog from '../../common/ConfirmationDialog';
 import humanize from 'humanize-string';
+import MemberDialog from './MemberDialog';
 import throttle from 'lodash/throttle';
 
 const defaultPage = () => ({ sortBy: ['updatedAt'], sortDesc: [true], page: 1 });
 
 const headers = () => [
-  { text: 'Group Name', value: 'name' },
+  { text: 'Email', value: 'email' },
+  { text: 'Role', value: 'role' },
+  { text: 'First Name', value: 'firstName' },
+  { text: 'Last Name', value: 'lastName' },
   { text: 'Date Created', value: 'createdAt' },
-  { text: 'Users', value: '' },
-  { text: 'Actions', value: 'name', align: 'center', sortable: false }
+  { text: 'Actions', value: 'email', align: 'center', sortable: false }
 ];
 
-const actions = group => ({
-  archive: () => api.remove(group),
-  restore: () => api.create(group)
+const actions = member => ({
+  archive: () => api.remove(member),
+  restore: () => api.create(member)
 });
 
 export default {
-  name: 'group-list',
+  name: 'member-list',
+  props: {
+    groupId: { type: Number, required: true }
+  },
   data: () => ({
-    groups: [],
+    members: [],
     filter: null,
     dataTable: defaultPage(),
     totalItems: 0,
-    groupDialog: false,
-    editedGroup: null,
+    memberDialog: false,
+    editedMember: null,
     showArchived: false,
     confirmation: null
   }),
   computed: { headers, defaultPage },
   methods: {
-    showGroupDialog(group = null) {
-      this.editedGroup = group;
-      this.groupDialog = true;
+    showMemberDialog(member = null) {
+      this.editedMember = member;
+      this.memberDialog = true;
     },
     fetch: throttle(async function (opts) {
       Object.assign(this.dataTable, opts);
       const { dataTable, filter, showArchived: archived } = this;
-      const { items, total } = await api.fetch({ dataTable, filter, archived });
-      this.groups = items;
+      const params = { filter, archived };
+      const { items, total } = await api.fetch({ ...dataTable, params });
+      this.members = items;
       this.totalItems = total;
     }, 400),
-    archiveOrRestore(group) {
-      const { name, deletedAt } = group;
+    archiveOrRestore(member) {
+      const { firstName, lastName, deletedAt } = member;
       const action = deletedAt ? 'restore' : 'archive';
+      const name = `${firstName} ${lastName}`;
       this.confirmation = {
-        heading: `${humanize(action)} group`,
-        message: `Are you sure you want to ${action} group "${name}"?`,
-        action: actions(group)[action]
+        heading: `${humanize(action)} member`,
+        message: `Are you sure you want to ${action} member "${name}"?`,
+        action: actions(member)[action]
       };
     }
   },
@@ -127,6 +134,6 @@ export default {
     filter: 'fetch',
     showArchived: 'fetch'
   },
-  components: { ConfirmationDialog, GroupDialog }
+  components: { ConfirmationDialog, MemberDialog }
 };
 </script>

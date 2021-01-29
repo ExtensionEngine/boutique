@@ -3,7 +3,7 @@ import path from 'path';
 import request from '@/common/api/request';
 
 const urls = {
-  root: '/groups',
+  root: '/user-groups',
   resource: id => path.join(urls.root, String(id))
 };
 

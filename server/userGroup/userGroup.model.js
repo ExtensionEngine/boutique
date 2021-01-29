@@ -3,7 +3,7 @@
 const { Model } = require('sequelize');
 const { restoreOrCreate } = require('../common/database/restore');
 
-class Group extends Model {
+class UserGroup extends Model {
   static fields({ DATE, STRING }) {
     return {
       name: {
@@ -24,20 +24,21 @@ class Group extends Model {
     };
   }
 
-  static associate({ GroupUser, User }) {
+  static associate({ User, UserGroupMembers }) {
     this.belongsToMany(User, {
-      through: GroupUser,
-      foreignKey: { name: 'groupId', field: 'group_id' }
+      through: UserGroupMembers,
+      foreignKey: { name: 'userGroupId', field: 'user_group_id' }
     });
   }
 
-  static async restoreOrCreate(group, options) {
-    return restoreOrCreate(this, group, options);
+  static async restoreOrCreate(userGroup, options) {
+    return restoreOrCreate(this, userGroup, options);
   }
 
   static options() {
     return {
-      modelName: 'group',
+      modelName: 'userGroup',
+      tableName: 'user_group',
       timestamps: true,
       paranoid: true,
       freezeTableName: true
@@ -45,4 +46,4 @@ class Group extends Model {
   }
 }
 
-module.exports = Group;
+module.exports = UserGroup;

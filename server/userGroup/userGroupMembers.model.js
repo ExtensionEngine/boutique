@@ -3,7 +3,7 @@
 const { Model } = require('sequelize');
 const { role: roles } = require('../../common/config');
 
-class GroupUser extends Model {
+class UserGroupMembers extends Model {
   static fields({ DATE, ENUM, INTEGER }) {
     return {
       id: {
@@ -16,9 +16,9 @@ class GroupUser extends Model {
         type: INTEGER,
         field: 'user_id'
       },
-      groupId: {
+      userGroupId: {
         type: INTEGER,
-        field: 'group_id'
+        field: 'user_group_id'
       },
       role: {
         type: ENUM(Object.values(roles)),
@@ -39,19 +39,19 @@ class GroupUser extends Model {
     };
   }
 
-  static associate({ Group, User }) {
+  static associate({ User, UserGroup }) {
     this.belongsTo(User, {
       foreignKey: { name: 'userId', field: 'user_id' }
     });
-    this.belongsTo(Group, {
-      foreignKey: { name: 'groupId', field: 'group_id' }
+    this.belongsTo(UserGroup, {
+      foreignKey: { name: 'userGroupId', field: 'user_group_id' }
     });
   }
 
   static options() {
     return {
-      modelName: 'groupUser',
-      tableName: 'group_user',
+      modelName: 'userGroupMembers',
+      tableName: 'user_group_members',
       underscored: true,
       timestamps: true,
       paranoid: true,
@@ -60,4 +60,4 @@ class GroupUser extends Model {
   }
 }
 
-module.exports = GroupUser;
+module.exports = UserGroupMembers;

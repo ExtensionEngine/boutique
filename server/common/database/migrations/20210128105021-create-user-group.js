@@ -1,6 +1,6 @@
 'use strict';
 
-const TABLE_NAME = 'group';
+const TABLE_NAME = 'user_group';
 
 module.exports = {
   up: (qi, { DATE, INTEGER, STRING }) => qi.createTable(TABLE_NAME, {
@@ -12,7 +12,7 @@ module.exports = {
     parentId: {
       type: INTEGER,
       field: 'parent_id',
-      references: { model: 'group', key: 'id' }
+      references: { model: 'user_group', key: 'id' }
     },
     name: {
       type: STRING

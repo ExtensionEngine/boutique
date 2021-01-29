@@ -43,7 +43,7 @@
 
 <script>
 import AdminDialog from '@/admin/components/common/Dialog';
-import api from '@/admin/api/user';
+import api from '@/admin/api/userGroup';
 import cloneDeep from 'lodash/cloneDeep';
 import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';

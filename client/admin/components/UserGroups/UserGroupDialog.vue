@@ -1,7 +1,7 @@
 <template>
   <admin-dialog v-model="show" header-icon="mdi-folder-plus-outline">
     <template v-slot:header>
-      {{ groupData ? 'Edit' : 'Create' }} Group
+      {{ userGroupData ? 'Edit' : 'Create' }} User Group
     </template>
     <template v-slot:body>
       <validation-observer
@@ -12,12 +12,12 @@
         novalidate>
         <validation-provider
           v-slot="{ errors }"
-          name="group name"
+          name="user group name"
           rules="required|alpha|min:2|max:50">
           <v-text-field
-            v-model="group.name"
+            v-model="userGroup.name"
             :error-messages="errors"
-            label="Group Name"
+            label="User Group Name"
             class="mb-3" />
         </validation-provider>
         <div class="d-flex justify-end mb-2">
@@ -31,20 +31,20 @@
 
 <script>
 import AdminDialog from '@/admin/components/common/Dialog';
-import api from '@/admin/api/group';
+import api from '@/admin/api/userGroup';
 import cloneDeep from 'lodash/cloneDeep';
 import isEmpty from 'lodash/isEmpty';
 
-const resetGroup = () => ({ name: '' });
+const resetUserGroup = () => ({ name: '' });
 
 export default {
-  name: 'group-dialog',
+  name: 'user-group-dialog',
   props: {
     visible: { type: Boolean, default: false },
-    groupData: { type: Object, default: () => ({}) }
+    userGroupData: { type: Object, default: () => ({}) }
   },
   data: () => ({
-    group: resetGroup(),
+    userGroup: resetUserGroup(),
     isLoading: false
   }),
   computed: {
@@ -54,16 +54,16 @@ export default {
         if (!value) this.close();
       }
     },
-    isNewGroup: vm => !vm.group.id
+    isNewUserGroup: vm => !vm.userGroup.id
   },
   methods: {
     close() {
-      this.group = resetGroup();
+      this.userGroup = resetUserGroup();
       this.$emit('update:visible', false);
     },
     async save() {
-      const action = this.isNewGroup ? 'create' : 'update';
-      await api[action](this.group);
+      const action = this.isNewUserGroup ? 'create' : 'update';
+      await api[action](this.userGroup);
       this.$emit(`${action}d`);
       this.close();
     }
@@ -71,7 +71,8 @@ export default {
   watch: {
     show(val) {
       if (!val) return;
-      if (!isEmpty(this.groupData)) this.group = cloneDeep(this.groupData);
+      const { userGroupData } = this;
+      if (!isEmpty(userGroupData)) this.userGroup = cloneDeep(userGroupData);
     }
   },
   components: { AdminDialog }
