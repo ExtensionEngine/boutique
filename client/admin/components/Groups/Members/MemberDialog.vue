@@ -60,7 +60,7 @@ const resetMember = groupId => ({
 });
 
 export default {
-  name: 'user-dialog',
+  name: 'member-dialog',
   props: {
     visible: { type: Boolean, default: false },
     memberData: { type: Object, default: () => ({}) },
@@ -82,7 +82,7 @@ export default {
   },
   methods: {
     close() {
-      this.user = resetMember();
+      this.member = resetMember();
       this.$emit('update:visible', false);
     },
     async save() {
