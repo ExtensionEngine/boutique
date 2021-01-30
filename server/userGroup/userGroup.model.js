@@ -32,10 +32,6 @@ class UserGroup extends Model {
     });
   }
 
-  static async restoreOrCreate(userGroup, options) {
-    return restoreOrCreate(this, userGroup, options);
-  }
-
   static options() {
     return {
       modelName: 'userGroup',
@@ -44,6 +40,10 @@ class UserGroup extends Model {
       paranoid: true,
       freezeTableName: true
     };
+  }
+
+  static async restoreOrCreate(userGroup, options) {
+    return restoreOrCreate(this, userGroup, options);
   }
 }
 

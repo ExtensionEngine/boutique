@@ -19,13 +19,13 @@ async function restoreOrBuildAll(Model, items = [], { where } = {}, options = {}
   const { save = false, concurrency = 16 } = options;
   const found = await Model.findAll({ where, paranoid: false });
   const results = await Promise.map(items, item => pTuple(() => {
-    const model = find(found, item);
+    const model = find(found, { id: item.id });
     if (model && !model.deletedAt) {
       const message = `${capitalize(name(Model))} already exists`;
       throw new UniqueConstraintError({ message });
     }
     if (!model) return save ? Model.create(item) : Model.build(item);
-    model.setDataValue('deleteAt', null);
+    model.setDataValue('deletedAt', null);
     return save ? model.save() : model;
   }), { concurrency });
   return Array.isArray(items) ? results : results[0];

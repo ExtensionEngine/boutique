@@ -11,7 +11,9 @@ router
   .patch('/:userGroupId', ctrl.patch)
   .delete('/:userGroupId', ctrl.remove)
   .get('/:userGroupId/members', ctrl.getMembers)
-  .post('/:userGroupId/members', ctrl.addMember);
+  .post('/:userGroupId/members', ctrl.addMember)
+  .patch('/:userGroupId/members/:memberId', ctrl.updateMember)
+  .delete('/:userGroupId/members/:memberId', ctrl.removeMember);
 
 router
   .get('/', ctrl.list)

@@ -29,7 +29,7 @@
       <template v-slot:item="{ item }">
         <router-link
           :key="item.id"
-          :to="{ name: 'members', params: { groupId: item.id } }"
+          :to="{ name: 'members', params: { userGroupId: item.id } }"
           tag="tr">
           <td>{{ item.name }}</td>
           <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>

@@ -29,7 +29,7 @@
           rules="required">
           <user-select
             v-model="member.user"
-            :params="{ userIds: memberIds }"
+            :params="{ userIds }"
             :error-messages="errors"
             label="User"
             outlined
@@ -64,7 +64,7 @@ export default {
   props: {
     visible: { type: Boolean, default: false },
     memberData: { type: Object, default: () => ({}) },
-    memberIds: { type: Array, default: () => [] },
+    userIds: { type: Array, default: () => [] },
     userGroupId: { type: Number, required: true }
   },
   data: () => ({

@@ -29,9 +29,9 @@
       <template v-slot:item="{ item }">
         <tr :key="item.id">
           <td>{{ item.role }}</td>
-          <td>{{ item.member.email }}</td>
-          <td>{{ item.member.firstName }}</td>
-          <td>{{ item.member.lastName }}</td>
+          <td>{{ item.user.email }}</td>
+          <td>{{ item.user.firstName }}</td>
+          <td>{{ item.user.lastName }}</td>
           <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
           <td class="text-no-wrap text-center">
             <v-btn
@@ -57,7 +57,7 @@
       :visible.sync="memberDialog"
       :member-data="editedMember"
       :user-group-id="userGroupId"
-      :member-ids="memberIds" />
+      :user-ids="userIds" />
     <confirmation-dialog
       @update:visible="confirmation = null"
       @confirmed="fetch()"
@@ -107,7 +107,7 @@ export default {
   computed: {
     headers,
     defaultPage,
-    memberIds: vm => vm.members.map(it => it.userId)
+    userIds: vm => vm.members.map(it => it.userId)
   },
   methods: {
     showMemberDialog(member = null) {
