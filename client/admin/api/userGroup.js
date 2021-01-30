@@ -13,11 +13,6 @@ function fetch(params = {}) {
     .then(extractData);
 }
 
-function getMembers(groupId, params = {}) {
-  return request.get(urls.members(groupId), { params: processParams(params) })
-    .then(extractData);
-}
-
 function create(item) {
   return request.post(urls.root, item).then(extractData);
 }
@@ -30,10 +25,20 @@ function remove(item) {
   return request.delete(urls.resource(item.id));
 }
 
+function getMembers(userGroupId, params = {}) {
+  return request.get(urls.members(userGroupId), { params: processParams(params) })
+    .then(extractData);
+}
+
+function addMember(item) {
+  return request.post(urls.members(item.userGroupId), item).then(extractData);
+}
+
 export default {
   fetch,
   create,
   update,
   remove,
-  getMembers
+  getMembers,
+  addMember
 };

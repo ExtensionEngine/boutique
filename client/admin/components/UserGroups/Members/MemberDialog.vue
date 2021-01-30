@@ -29,6 +29,7 @@
           rules="required">
           <user-select
             v-model="member.user"
+            :params="{ userIds: memberIds }"
             :error-messages="errors"
             label="User"
             outlined
@@ -53,8 +54,7 @@ import map from 'lodash/map';
 import { role } from '@/../common/config';
 import UserSelect from '../../common/UserSelect';
 
-const resetMember = groupId => ({
-  groupId,
+const resetMember = () => ({
   user: null,
   role: null
 });
@@ -64,10 +64,11 @@ export default {
   props: {
     visible: { type: Boolean, default: false },
     memberData: { type: Object, default: () => ({}) },
-    groupId: { type: Number, required: true }
+    memberIds: { type: Array, default: () => [] },
+    userGroupId: { type: Number, required: true }
   },
-  data: ({ groupId }) => ({
-    member: resetMember(groupId),
+  data: () => ({
+    member: resetMember(),
     isLoading: false
   }),
   computed: {
@@ -86,9 +87,10 @@ export default {
       this.$emit('update:visible', false);
     },
     async save() {
-      const action = this.isNewMember ? 'create' : 'update';
-      await api[action](this.member);
-      this.$emit(`${action}d`);
+      const { member, userGroupId, isNewMember } = this;
+      const action = isNewMember ? 'addMember' : 'updateMember';
+      await api[action]({ ...member, userGroupId });
+      this.$emit('upserted');
       this.close();
     }
   },

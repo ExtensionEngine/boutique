@@ -53,11 +53,11 @@
       </template>
     </v-data-table>
     <member-dialog
-      @updated="fetch(defaultPage)"
-      @created="fetch(defaultPage)"
+      @upserted="fetch(defaultPage)"
       :visible.sync="memberDialog"
       :member-data="editedMember"
-      :group-id="groupId" />
+      :user-group-id="userGroupId"
+      :member-ids="memberIds" />
     <confirmation-dialog
       @update:visible="confirmation = null"
       @confirmed="fetch()"
@@ -85,14 +85,14 @@ const headers = () => [
 ];
 
 const actions = member => ({
-  archive: () => api.remove(member),
-  restore: () => api.create(member)
+  archive: () => api.removeMember(member),
+  restore: () => api.addMember(member)
 });
 
 export default {
   name: 'member-list',
   props: {
-    groupId: { type: Number, required: true }
+    userGroupId: { type: Number, required: true }
   },
   data: () => ({
     members: [],
@@ -104,7 +104,11 @@ export default {
     showArchived: false,
     confirmation: null
   }),
-  computed: { headers, defaultPage },
+  computed: {
+    headers,
+    defaultPage,
+    memberIds: vm => vm.members.map(it => it.userId)
+  },
   methods: {
     showMemberDialog(member = null) {
       this.editedMember = member;
@@ -112,9 +116,9 @@ export default {
     },
     fetch: throttle(async function (opts) {
       Object.assign(this.dataTable, opts);
-      const { dataTable, groupId, filter, showArchived: archived } = this;
-      const options = { ...dataTable, params: { groupId, filter, archived } };
-      const { items, total } = await api.getMembers(groupId, options);
+      const { dataTable, userGroupId, filter, showArchived: archived } = this;
+      const options = { ...dataTable, params: { filter, archived } };
+      const { items, total } = await api.getMembers(userGroupId, options);
       this.members = items;
       this.totalItems = total;
     }, 400),

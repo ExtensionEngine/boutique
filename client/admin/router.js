@@ -32,7 +32,7 @@ const router = new Router({
     component: UserGroups,
     meta: { auth: true }
   }, {
-    path: '/user-groups/:groupId/members',
+    path: '/user-groups/:userGroupId/members',
     name: 'members',
     props: numericParser.params,
     component: Members,

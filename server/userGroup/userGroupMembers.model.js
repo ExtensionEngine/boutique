@@ -1,6 +1,7 @@
 'use strict';
 
 const { Model } = require('sequelize');
+const { restoreOrCreate } = require('../common/database/restore');
 const { role: roles } = require('../../common/config');
 
 class UserGroupMembers extends Model {
@@ -58,6 +59,10 @@ class UserGroupMembers extends Model {
       paranoid: true,
       freezeTableName: true
     };
+  }
+
+  static async restoreOrCreate(userGroupMember, options) {
+    return restoreOrCreate(this, userGroupMember, options);
   }
 }
 

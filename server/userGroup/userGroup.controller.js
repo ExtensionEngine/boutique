@@ -32,6 +32,13 @@ async function getMembers({ userGroup, query, options }, res) {
     .then(({ rows, count }) => res.jsend.success({ items: rows, total: count }));
 }
 
+async function addMember({ userGroup, body }, res) {
+  const payload = { userGroupId: userGroup.id, userId: body.user.id };
+  const [err, member] = await UserGroupMembers.restoreOrCreate(payload);
+  if (err) return createError(CONFLICT, 'Group member exists!');
+  return res.jsend.success(member);
+}
+
 async function create({ body }, res) {
   const { name, parentId = null } = body;
   const [err, userGroup] = await UserGroup.restoreOrCreate({ name, parentId });
@@ -53,5 +60,6 @@ module.exports = {
   create,
   patch,
   remove,
-  getMembers
+  getMembers,
+  addMember
 };

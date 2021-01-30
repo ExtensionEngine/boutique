@@ -10,7 +10,8 @@ router
   .param('userGroupId', getUserGroup)
   .patch('/:userGroupId', ctrl.patch)
   .delete('/:userGroupId', ctrl.remove)
-  .get('/:userGroupId/members', ctrl.getMembers);
+  .get('/:userGroupId/members', ctrl.getMembers)
+  .post('/:userGroupId/members', ctrl.addMember);
 
 router
   .get('/', ctrl.list)
