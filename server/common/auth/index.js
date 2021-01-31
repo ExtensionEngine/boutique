@@ -29,7 +29,7 @@ const jwtOptions = {
 passport.use(new Strategy(jwtOptions, (payload, done) => {
   return User.findByPk(payload.id)
     .then(user => {
-      user.session.start();
+      user.logActivity();
       done(null, user || false);
     })
     .error(err => done(err, false));

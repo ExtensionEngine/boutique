@@ -48,8 +48,8 @@ module.exports = {
     sourcePath: process.env.PUBLISHED_CONTENT,
     importPath: process.env.IMPORTED_CONTENT
   },
-  activityTracker: {
-    saveInterval: ms('1 hour'),
-    ttl: ms('10 minutes')
+  userActivity: {
+    yieldInterval: ms(process.env.USER_ACTIVITY_YIELD_INTERVAL || '1h'),
+    ttl: ms(process.env.USER_ACTIVITY_TTL || '10min')
   }
 };

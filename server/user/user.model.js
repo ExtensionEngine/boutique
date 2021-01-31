@@ -1,12 +1,12 @@
 'use strict';
 
-const { Model, Sequelize, Op, UniqueConstraintError } = require('sequelize');
+const { Model, Op, Sequelize, UniqueConstraintError } = require('sequelize');
 const Audience = require('../common/auth/audience');
 const bcrypt = require('bcrypt');
 const castArray = require('lodash/castArray');
 const config = require('../config');
-const ActivityTracker = require('./activity-tracker')(config.activityTracker);
 const find = require('lodash/find');
+const IntervalCache = require('../common/util/interval-cache');
 const jwt = require('jsonwebtoken');
 const logger = require('../common/logger')();
 const mail = require('../common/mail');
@@ -18,15 +18,12 @@ const Role = require('../../common/config/role');
 const { sql } = require('../common/database/helpers');
 const values = require('lodash/values');
 
-class User extends Model {
-  constructor(...args) {
-    super(...args);
-    this.session = {
-      start: () => ActivityTracker.startSession(this),
-      end: () => ActivityTracker.endSession(this)
-    };
-  }
+const activityLookup = new IntervalCache(config.userActivity);
+Object.values(IntervalCache.EVENTS).forEach(event => {
+  activityLookup.on(event, (id, date) => User.updateActivity(id, date));
+});
 
+class User extends Model {
   static fields(DataTypes) {
     return {
       email: {
@@ -77,9 +74,9 @@ class User extends Model {
         get() {
           const profile = pick(this, [
             'id', 'firstName', 'lastName', 'email',
-            'role', 'lastActive', 'createdAt', 'deletedAt'
+            'role', 'createdAt', 'deletedAt'
           ]);
-          profile.lastActive = ActivityTracker.lastActive(this);
+          profile.lastActive = activityLookup.get(this.id) || this.lastActive;
           return profile;
         }
       }
@@ -177,6 +174,14 @@ class User extends Model {
       }
       return this.build(userData);
     }).reflect(), { concurrency });
+  }
+
+  static updateActivity(id, lastActive) {
+    return this.update({ lastActive }, { where: { id } });
+  }
+
+  logActivity() {
+    activityLookup.set(this.id, new Date());
   }
 
   async encryptPassword() {
