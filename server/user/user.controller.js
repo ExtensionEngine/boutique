@@ -13,6 +13,8 @@ const pick = require('lodash/pick');
 const { ACCEPTED, BAD_REQUEST, CONFLICT, NO_CONTENT, NOT_FOUND } = HttpStatus;
 const { EmptyResultError, Op } = Sequelize;
 
+const WRONG_CREDENTIALS_MESSAGE = 'Incorrect email or password.';
+
 const columns = {
   email: { header: 'Email', width: 30 },
   firstName: { header: 'First Name', width: 30 },
@@ -67,9 +69,9 @@ function login({ body }, res) {
   }
 
   return User.findOne({ where: { email } })
-    .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
+    .then(user => user || createError(NOT_FOUND, WRONG_CREDENTIALS_MESSAGE))
     .then(user => user.authenticate(password))
-    .then(user => user || createError(NOT_FOUND, 'Wrong password!'))
+    .then(user => user || createError(NOT_FOUND, WRONG_CREDENTIALS_MESSAGE))
     .then(user => {
       const token = user.createToken({
         audience: Audience.Scope.Access,
