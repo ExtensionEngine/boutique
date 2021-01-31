@@ -188,6 +188,7 @@ class User extends Model {
 
   logActivity() {
     activityLookup.set(this.id, new Date());
+    return this;
   }
 
   async encryptPassword() {
