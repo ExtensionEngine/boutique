@@ -22,10 +22,10 @@ class Enrollment extends Model {
     };
   }
 
-  static associate({ Program, User }) {
-    this.belongsTo(Program, {
-      as: 'program',
-      foreignKey: { name: 'programId', field: 'program_id' }
+  static associate({ EnrollmentOffering, User }) {
+    this.belongsTo(EnrollmentOffering, {
+      as: 'offering',
+      foreignKey: { name: 'offeringId', field: 'enrollment_offering_id' }
     });
     this.belongsTo(User, {
       as: 'learner',
