@@ -1,7 +1,7 @@
 'use strict';
 
 const { Model, Op, Sequelize } = require('sequelize');
-const { restoreOrBuild, restoreOrBuildAll } = require('../common/database/restore');
+const { restoreOrCreate, restoreOrCreateAll } = require('../common/database/restore');
 const Audience = require('../common/auth/audience');
 const bcrypt = require('bcrypt');
 const { auth: config = {} } = require('../config');
@@ -136,13 +136,13 @@ class User extends Model {
     return user.save({ paranoid: false });
   }
 
-  static async restoreOrBuild(user, options) {
-    return restoreOrBuild(this, user, options);
+  static async restoreOrCreate(user, options) {
+    return restoreOrCreate(this, user, options);
   }
 
-  static async restoreOrBuildAll(users, options) {
+  static async restoreOrCreateAll(users, options) {
     const where = { email: map(users, 'email') };
-    return restoreOrBuildAll(this, users, { where }, options);
+    return restoreOrCreateAll(this, users, { where }, options);
   }
 
   async encryptPassword() {

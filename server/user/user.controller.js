@@ -36,7 +36,8 @@ function list({ query: { email, role, filter, archived }, options }, res) {
 }
 
 async function create({ body, origin }, res) {
-  const [err, user] = await User.restoreOrBuild(pick(body, inputAttrs));
+  const options = { modelSearchKey: 'email' };
+  const [err, user] = await User.restoreOrCreate(pick(body, inputAttrs), options);
   if (err) return createError(CONFLICT, 'User exists!');
   await User.invite(user, { origin });
   res.jsend.success(user.profile);
@@ -126,7 +127,7 @@ module.exports = {
 
 async function bulkCreate(users, { concurrency = 16, ...options } = {}) {
   const errors = [];
-  await User.restoreOrBuildAll(users, { concurrency })
+  await User.restoreOrCreateAll(users, { concurrency, modelSearchKey: 'email' })
     .map(([err, user], index) => {
       if (!err && user) return User.invite(user, options);
       const { message = 'Failed to import user.' } = err;
