@@ -4,7 +4,7 @@ const { Model, Op, Sequelize } = require('sequelize');
 const { restoreOrCreate, restoreOrCreateAll } = require('../common/database/restore');
 const Audience = require('../common/auth/audience');
 const bcrypt = require('bcrypt');
-const { auth: config = {} } = require('../config');
+const config = require('../config');
 const IntervalCache = require('../common/util/interval-cache');
 const jwt = require('jsonwebtoken');
 const logger = require('../common/logger')();
