@@ -1,41 +1,41 @@
 <template>
-  <v-dialog v-model="visible" v-hotkey="{ esc: close }" width="700">
+  <admin-dialog v-model="isVisible" header-icon="mdi-book-arrow-up-outline">
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on" color="success" outlined>Import Content</v-btn>
+      <v-btn v-on="on" text>
+        <v-icon dense class="mr-1">mdi-book-arrow-up-outline</v-icon>
+        Import Content
+      </v-btn>
     </template>
-    <v-form @submit.prevent="importRepo">
-      <v-card class="pa-3">
-        <v-card-title class="headline">Import Content</v-card-title>
-        <v-card-text>
-          <v-autocomplete
-            v-model="sourceId"
-            :items="availableRepos"
-            :loading="isLoading"
-            item-value="sourceId"
-            no-data-text="No available repositories for import"
-            prepend-icon="mdi-magnify"
-            label="Repository"
-            placeholder="Start typing to Search"
-            hide-selected />
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn @click="close" :disabled="isImporting">Cancel</v-btn>
+    <template v-slot:header>Import Content</template>
+    <template v-slot:body>
+      <v-form @submit.prevent="importRepo">
+        <v-autocomplete
+          v-model="sourceId"
+          :items="availableRepos"
+          :loading="isLoading"
+          item-value="sourceId"
+          label="Repository"
+          placeholder="Start typing to search"
+          no-data-text="No available repositories for import"
+          prepend-icon="mdi-magnify"
+          hide-selected />
+        <div class="d-flex justify-end">
+          <v-btn @click="close" :disabled="isImporting" text>Cancel</v-btn>
           <v-btn
             :disabled="!sourceId"
             :loading="isImporting"
             type="submit"
-            color="success"
-            outlined>
+            text>
             Import
           </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-form>
-  </v-dialog>
+        </div>
+      </v-form>
+    </template>
+  </admin-dialog>
 </template>
 
 <script>
+import AdminDialog from '@/admin/components/common/Dialog';
 import api from '@/admin/api/contentRepo';
 import differenceBy from 'lodash/differenceBy';
 import map from 'lodash/map';
@@ -49,9 +49,9 @@ export default {
     importedRepos: { type: Array, default: () => [] }
   },
   data: () => ({
-    visible: false,
-    sourceId: null,
+    isVisible: false,
     catalog: [],
+    sourceId: null,
     isImporting: false,
     isLoading: false
   }),
@@ -72,19 +72,20 @@ export default {
       this.catalog = map(repos, it => ({ text: it.name, sourceId: it.id }));
     },
     close() {
-      this.visible = false;
+      this.isVisible = false;
       this.sourceId = null;
       this.catalog = [];
     }
   },
   watch: {
-    visible(val) {
+    isVisible(val) {
       if (!val) return;
       this.isLoading = true;
       return api.getCatalog()
         .then(this.setCatalog)
         .finally(() => (this.isLoading = false));
     }
-  }
+  },
+  components: { AdminDialog }
 };
 </script>

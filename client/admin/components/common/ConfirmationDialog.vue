@@ -1,20 +1,23 @@
 <template>
-  <v-dialog v-model="show" max-width="500">
-    <v-form @submit.prevent="executeAction">
-      <v-card>
-        <v-card-title class="headline">{{ heading }}</v-card-title>
-        <v-card-text>{{ message }}</v-card-text>
-        <v-card-actions>
-          <v-spacer />
+  <admin-dialog v-model="visible" width="500" header-icon="mdi-alert">
+    <template v-slot:header>{{ heading }}</template>
+    <template v-slot:body>
+      <v-form @submit.prevent="executeAction">
+        {{ message }}
+        <div class="d-flex justify-end">
           <v-btn @click="close" text>Cancel</v-btn>
-          <v-btn :disabled="isLoading" type="submit" color="red" text>Yes</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-form>
-  </v-dialog>
+          <v-btn :disabled="isLoading" type="submit" color="error" text>
+            Confirm
+          </v-btn>
+        </div>
+      </v-form>
+    </template>
+  </admin-dialog>
 </template>
 
 <script>
+import AdminDialog from '@/admin/components/common/Dialog';
+
 export default {
   name: 'confirmation-dialog',
   props: {
@@ -45,6 +48,7 @@ export default {
         })
         .finally(() => (this.isLoading = false));
     }
-  }
+  },
+  components: { AdminDialog }
 };
 </script>
