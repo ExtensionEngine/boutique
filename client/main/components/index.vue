@@ -1,16 +1,15 @@
 <template>
   <div>
     <navbar />
-    <div class="container">
-      <circular-progress-bar v-if="isLoading" :width="50" :height="50" />
+    <v-container fill-height class="d-flex justify-center align-start">
+      <v-progress-circular v-if="isLoading" size="50" indeterminate />
       <router-view v-else />
-    </div>
+    </v-container>
   </div>
 </template>
 
 <script>
 import api from '@/main/api/learner';
-import CircularProgressBar from '@/main/components/common/CircularProgressBar';
 import head from 'lodash/head';
 import { mapMutations } from 'vuex';
 import Navbar from '@/main/components/common/Navbar';
@@ -26,16 +25,12 @@ export default {
         setPrograms(programs);
         if (programs.length !== 1 || $route.name === 'activity') return;
         const programId = head(programs).id;
+        const isSameRoute = parseInt($route.params.programId, 10) === programId;
+        if (isSameRoute) return;
         $router.push({ name: 'courseware', params: { programId } });
       })
-      .finally(() => { this.isLoading = false; });
+      .finally(() => (this.isLoading = false));
   },
-  components: { Navbar, CircularProgressBar }
+  components: { Navbar }
 };
 </script>
-
-<style lang="scss" scoped>
-.container {
-  padding: 50px 0;
-}
-</style>

@@ -1,13 +1,17 @@
 import { extractData, processParams } from '@/common/api/helpers';
 import request from '@/common/api/request';
 
-const url = {
+const urls = {
   root: '/programs'
 };
 
 function fetch(params = {}) {
-  return request.get(url.root, { params: processParams(params) })
+  return request.get(urls.root, { params: processParams(params) })
     .then(extractData);
 }
 
-export default { fetch };
+function create(item) {
+  return request.post(urls.root, item).then(extractData);
+}
+
+export default { create, fetch };

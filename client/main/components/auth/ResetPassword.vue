@@ -1,52 +1,61 @@
 <template>
   <div>
-    <div v-if="error" class="notification is-error">
-      <span>{{ error }}</span>
-    </div>
-    <form @submit.prevent="submit">
-      <v-input
-        v-model="password"
-        type="password"
+    <v-alert
+      :value="!!error"
+      color="pink lighten-1"
+      text
+      class="mb-5">
+      {{ error }}
+    </v-alert>
+    <validation-observer
+      ref="form"
+      @submit.prevent="$refs.form.handleSubmit(submit)"
+      tag="form"
+      novalidate>
+      <validation-provider
+        v-slot="{ errors }"
         name="password"
-        validate="required|alphanumerical|min:6" />
-      <v-input
-        v-model="passwordConfirmation"
-        :validate="{ rules: { required: true, is: password } }"
-        type="password"
-        name="passwordConfirmation" />
-      <button class="button" type="submit">
-        Change password
-      </button>
-    </form>
+        rules="required|alphanumerical|min:6">
+        <v-text-field
+          v-model="password"
+          :error-messages="errors"
+          type="password"
+          label="Password"
+          outlined />
+      </validation-provider>
+      <validation-provider
+        v-slot="{ errors }"
+        name="password confirmation"
+        :rules="{ required: true, is: password }">
+        <v-text-field
+          v-model="passwordConfirmation"
+          :error-messages="errors"
+          type="password"
+          label="Confirm Password"
+          outlined />
+      </validation-provider>
+      <v-btn type="submit" text block>Change password</v-btn>
+    </validation-observer>
   </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex';
-import VInput from '@/common/components/form/VInput';
-import { withValidation } from '@/common/validation';
 
 export default {
-  mixins: [withValidation()],
-  data() {
-    return {
-      error: null,
-      password: '',
-      passwordConfirmation: ''
-    };
-  },
+  data: () => ({
+    error: null,
+    password: '',
+    passwordConfirmation: ''
+  }),
   methods: {
     ...mapActions('auth', ['resetPassword']),
     submit() {
       const token = this.$route.params.token;
-      this.$validator.validateAll().then(isValid => {
-        if (!isValid) return;
-        return this.resetPassword({ password: this.password, token })
-          .then(() => this.$router.push('/'))
-          .catch(() => (this.error = 'An error has occurred!'));
-      });
+      return this.resetPassword({ password: this.password, token })
+        .then(() => this.$router.push('/'))
+        .catch(() => (this.error = 'An error has occurred!'));
     }
-  },
-  components: { VInput }
+  }
 };
 </script>

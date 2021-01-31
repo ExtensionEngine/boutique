@@ -1,30 +1,21 @@
 <template>
-  <div>
-    <div v-if="!courseware.length" class="container">
-      <div class="notification is-warning has-text-centered">
-        This Program doesn't have any courseware!
-      </div>
-    </div>
-    <div v-else>
+  <v-row no-gutters>
+    <v-alert v-if="!courseware.length" color="warning" class="col py-4 text-center">
+      This Program doesn't have any courseware!
+    </v-alert>
+    <v-col v-else>
       <transition name="slide-fade">
-        <div v-show="!filteredCourseware.length" class="container">
-          <div class="notification is-warning has-text-centered">
-            No courseware found!
-          </div>
-        </div>
+        <v-alert v-if="!filteredCourseware.length" color="warning" class="text-center">
+          No courseware found!
+        </v-alert>
       </transition>
-      <transition-group
-        name="slide-list"
-        class="columns is-multiline"
-        tag="div">
-        <activity-card
-          v-for="it in filteredCourseware"
-          :key="it.id"
-          :program-id="programId"
-          :activity="it" />
+      <transition-group name="slide-list" tag="div" class="row">
+        <v-col v-for="activity in filteredCourseware" :key="activity.id" cols="4">
+          <activity-card v-bind="{ programId, activity }" />
+        </v-col>
       </transition-group>
-    </div>
-  </div>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -54,15 +45,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container {
-  display: flex;
-  justify-content: center;
-
-  .notification {
-    margin-top: 0.6rem;
-  }
-}
-
 .slide-fade-enter-active, .slide-fade-leave-active {
   transition: all 0.1s;
 }

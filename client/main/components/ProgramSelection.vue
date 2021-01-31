@@ -1,21 +1,17 @@
 <template>
-  <div class="columns is-centered">
-    <div v-if="!programs.length" class="column is-4">
-      <div class="notification is-warning has-text-centered">
-        You aren't enrolled in any Program!
-      </div>
-    </div>
-    <div v-else class="column is-4">
-      <h1 class="title has-text-centered">Select your program</h1>
-      <ul class="program-selection">
-        <li v-for="it in programs" :key="it.id">
-          <router-link
-            :to="{ name: 'courseware', params: { programId: it.id } }"
-            class="button is-medium is-fullwidth">
-            {{ it.name | truncate(25) }}
-          </router-link>
-        </li>
-      </ul>
+  <div class="d-flex justify-center">
+    <v-alert v-if="!programs.length" color="warning" class="d-inline-block text-center">
+      You aren't enrolled in any Program!
+    </v-alert>
+    <div v-else>
+      <h1 class="title">Select your program</h1>
+      <v-btn
+        v-for="{ id, name } in programs"
+        :key="id"
+        :to="{ name: 'courseware', params: { programId: id } }"
+        class="d-flex mb-5">
+        {{ name | truncate(25) }}
+      </v-btn>
     </div>
   </div>
 </template>
@@ -34,9 +30,5 @@ export default {
   margin: 1rem 0 3rem;
   font-size: 1.5rem;
   font-weight: 300;
-}
-
-.program-selection li {
-  margin-bottom: 20px;
 }
 </style>

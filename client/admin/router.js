@@ -1,12 +1,13 @@
-import Content from '@/admin/components/Program/Content';
-import Enrollments from '@/admin/components/Program/Enrollments';
+import Content from '@/admin/components/Programs/Program/Content';
+import Enrollments from '@/admin/components/Programs/Program/Enrollments';
 import get from 'lodash/get';
 import { navigateTo } from '@/common/navigation';
 import NotFound from '@/admin/components/common/NotFound';
-import Program from '@/admin/components/Program';
+import Program from '@/admin/components/Programs/Program';
+import Programs from '@/admin/components/Programs';
 import role from '@/../common/config/role';
 import Router from 'vue-router';
-import Settings from '@/admin/components/Program/Settings';
+import Settings from '@/admin/components/Programs/Program/Settings';
 import store from './store';
 import Users from '@/admin/components/users';
 import Vue from 'vue';
@@ -46,15 +47,19 @@ const router = new Router({
       component: Settings,
       props: parseProgramId
     }]
+  }, {
+    path: '/programs',
+    name: 'programs',
+    component: Programs,
+    meta: { auth: true }
   }, fallbackRoute]
 });
 
 const isAdmin = user => user && user.role === role.ADMIN;
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((_to, _from, next) => {
   const user = get(store.state, 'auth.user');
-  if (!isAdmin(user)) return navigateTo('/');
-  return next();
+  return isAdmin(user) ? next() : navigateTo('/');
 });
 
 export default router;

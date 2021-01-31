@@ -1,51 +1,50 @@
 <template>
-  <nav
-    class="navbar is-fixed-top is-info"
-    role="navigation"
-    aria-label="main navigation">
-    <div class="navbar-brand">
-      <router-link :to="rootRoute" class="navbar-item">
-        <span class="mdi mdi-shopping"></span>Boutique
+  <v-app-bar color="primary" app dark>
+    <v-toolbar-title>
+      <router-link :to="rootRoute" class="d-flex align-center">
+        <v-icon size="24" class="mr-1">mdi-shopping</v-icon>
+        <span class="white--text">Boutique</span>
       </router-link>
-    </div>
-    <div v-if="user" class="navbar-menu">
-      <transition name="fade">
-        <div
-          v-show="$route.name === 'courseware' && courseware.length"
-          class="navbar-start search-container">
-          <div class="navbar-item">
-            <search />
-          </div>
+    </v-toolbar-title>
+    <v-spacer />
+    <v-text-field
+      v-if="$route.name === 'courseware' && courseware.length"
+      @input="setCoursewareFilter"
+      :value="coursewareFilter"
+      placeholder="Search..."
+      prepend-inner-icon="mdi-magnify"
+      hide-details clearable filled dense />
+    <v-spacer />
+    <v-menu>
+      <template v-slot:activator="{ on }">
+        <div v-on="on" class="dropdown-activator">
+          <v-icon size="24" class="mr-1">mdi-account-circle</v-icon>
+          <span>{{ user.email }}</span>
+          <v-icon size="24" class="mr-1">mdi-chevron-down</v-icon>
         </div>
-      </transition>
-      <div class="navbar-end">
-        <div class="navbar-item has-dropdown is-hoverable user-dropdown">
-          <a href="#" class="navbar-link">
-            <span class="mdi mdi-account-circle"></span>{{ user.email }}
-          </a>
-          <div class="navbar-dropdown is-right">
-            <a @click.prevent="logout" href="#" class="navbar-item">
-              <span class="mdi mdi-logout"></span>Logout
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
+      </template>
+      <v-list>
+        <v-list-item @click.prevent="logout">
+          <v-list-item-title>
+            <v-icon size="24" class="mr-1">mdi-logout</v-icon>
+            <span>Logout</span>
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+  </v-app-bar>
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
-import Search from './Search';
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex';
 
 export default {
   name: 'main-navbar',
   computed: {
     ...mapState('auth', ['user']),
+    ...mapState('learner', ['coursewareFilter']),
     ...mapGetters('learner', ['courseware']),
-    programId() {
-      return this.$route.params.programId;
-    },
+    programId: vm => vm.$route.params.programId,
     rootRoute() {
       const { programId } = this;
       return programId
@@ -53,81 +52,15 @@ export default {
         : { name: 'program-selection' };
     }
   },
-  methods: mapActions('auth', ['logout']),
-  mounted() {
-    // NOTE: Add appropriate css class to <html> element according to:
-    //       https://bulma.io/documentation/components/navbar/#fixed-navbar
-    document.documentElement.classList.add('has-navbar-fixed-top');
-  },
-  components: { Search }
+  methods: {
+    ...mapActions('auth', ['logout']),
+    ...mapMutations('learner', ['setCoursewareFilter'])
+  }
 };
 </script>
 
 <style lang="scss" scoped>
-.navbar {
-  min-height: 4rem;
-  box-shadow:
-    0 2px 4px -1px rgba(0,0,0,0.2),
-    0 4px 5px 0 rgba(0,0,0,0.14),
-    0 1px 10px 0 rgba(0,0,0,0.12);
-}
-
-.navbar-item {
-  font-size: 1.25rem;
-  font-weight: 300;
-}
-
-.search-container {
-  width: 51%;
-  margin-left: 6%;
-}
-
-.search-container .navbar-item {
-  width: 100%;
-}
-
-.fade-enter-active, .fade-leave-active {
-  transition: all 0.5s;
-}
-
-.fade-enter, .fade-leave-to {
-  opacity: 0;
-}
-
-.user-dropdown {
-  margin-left: 2rem;
-
-  .navbar-dropdown {
-    padding: 0;
-  }
-
-  .mdi {
-    padding-right: 0.5rem;
-    font-size: 1.5rem;
-  }
-
-  .navbar-link .mdi {
-    font-size: 2rem;
-  }
-
-  .mdi-logout {
-    padding-left: 0.4rem;
-  }
-
-  .navbar-item {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-  }
-}
-
-.navbar-brand .navbar-item {
-  padding: 0 1.5rem;
-  font-size: 1.5rem;
-  line-height: 2.5rem;
-
-  .mdi {
-    margin-right: 0.5rem;
-    font-size: 2rem;
-  }
+.dropdown-activator {
+  cursor: pointer;
 }
 </style>

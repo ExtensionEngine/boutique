@@ -1,17 +1,22 @@
+import '@/common/validation';
+
+import {
+  setInteractionMode,
+  ValidationObserver,
+  ValidationProvider
+} from 'vee-validate';
 import App from './App';
 import router from './router';
 import store from './store';
 import truncate from 'truncate';
-import VeeValidate from '@/common/validation';
 import Vue from 'vue';
+import vuetify from '@/plugins/vuetify';
 import VueVisible from 'vue-visible';
 
-Vue.use(VeeValidate, {
-  delay: 700,
-  fieldsBagName: 'vFields',
-  errorBagName: 'vErrors',
-  inject: false
-});
+Vue.component('ValidationProvider', ValidationProvider);
+Vue.component('ValidationObserver', ValidationObserver);
+setInteractionMode('eager');
+
 Vue.use(VueVisible);
 
 Vue.filter('truncate', (value, maxLength = 50) => {
@@ -22,6 +27,7 @@ Vue.filter('truncate', (value, maxLength = 50) => {
 new Vue({
   router,
   store,
+  vuetify,
   el: '#app',
   render: h => h(App)
 });

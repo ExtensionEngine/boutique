@@ -1,36 +1,32 @@
 <template>
-  <v-dialog v-model="show" max-width="500">
-    <v-form>
-      <v-card>
-        <v-card-title class="headline">{{ heading }}</v-card-title>
-        <v-card-text class="pb-1">{{ message }}</v-card-text>
-        <v-card-text v-if="warning" class="pt-1 caption">
-          <span class="warning-label">Warning:</span>
-          {{ warning }}
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn @click="close" text>Cancel</v-btn>
-          <v-btn
-            v-for="(action, index) in actions"
-            :key="index"
-            @click="execute(action.callback)"
-            :disabled="isLoading"
-            type="submit"
-            color="red"
-            text>
-            {{ action.label }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-form>
-  </v-dialog>
+  <admin-dialog v-model="show" header-icon="mdi-alert">
+    <template v-slot:header>{{ heading }}</template>
+    <template v-slot:body>
+      <div class="mb-1 subtitle-1">{{ message }}</div>
+      <div v-if="warning" class="mb-2 caption">
+        <span class="error--text">Warning:</span>
+        {{ warning }}
+      </div>
+      <div class="d-flex justify-end my-2">
+        <v-btn @click="close" text>Cancel</v-btn>
+        <v-btn
+          v-for="(action, index) in actions"
+          :key="index"
+          @click="execute(action.callback)"
+          :disabled="isLoading"
+          type="submit"
+          color="red"
+          text>
+          {{ action.label }}
+        </v-btn>
+      </div>
+    </template>
+  </admin-dialog>
 </template>
 
 <script>
-import { withFocusTrap } from '@/common/focustrap';
+import AdminDialog from '@/admin/components/common/Dialog';
 
-const el = vm => vm.$children[0].$refs.dialog;
 const validator = actions => {
   if (!(actions instanceof Array)) return false;
   return actions.every(el => el.label && el.callback);
@@ -38,7 +34,6 @@ const validator = actions => {
 
 export default {
   name: 'multiple-choice-dialog',
-  mixins: [withFocusTrap({ el })],
   props: {
     visible: { type: Boolean, default: false },
     heading: { type: String, default: '' },
@@ -49,9 +44,7 @@ export default {
   data: () => ({ isLoading: false }),
   computed: {
     show: {
-      get() {
-        return this.visible;
-      },
+      get: vm => vm.visible,
       set(value) {
         if (!value) this.close();
       }
@@ -71,16 +64,6 @@ export default {
         .finally(() => (this.isLoading = false));
     }
   },
-  watch: {
-    show(val) {
-      this.$nextTick(() => this.focusTrap.toggle(val));
-    }
-  }
+  components: { AdminDialog }
 };
 </script>
-
-<style lang="scss" scoped>
-.warning-label {
-  color: red;
-}
-</style>
