@@ -1,6 +1,6 @@
 'use strict';
 
-const { Enrollment, Program, sequelize, Sequelize } = require('../common/database');
+const { Enrollment, Program, Sequelize, sequelize } = require('../common/database');
 const pick = require('lodash/pick');
 const yn = require('yn');
 
@@ -32,20 +32,16 @@ function patch({ body, program }, res) {
 }
 
 function destroy({ program }, res) {
-  sequelize.transaction(async transaction => {
+  return sequelize.transaction(async transaction => {
     await Enrollment.destroy({ where: { programId: program.id }, transaction });
-    return res.jsend.success(await program.destroy({ transaction }));
-  });
+    return program.destroy({ transaction });
+  })
+  .then(program => res.jsend.success(program));
 }
 
 function getEnrolledPrograms({ user }, res) {
-  const currentDate = new Date();
-  const Op = Sequelize.Op;
   const include = [{ model: Enrollment, where: { learnerId: user.id } }];
-  const startDate = { [Op.or]: { [Op.lt]: currentDate, [Op.eq]: null } };
-  const endDate = { [Op.or]: { [Op.gt]: currentDate, [Op.eq]: null } };
-
-  return Program.findAll({ include, where: { startDate, endDate } })
+  return Program.active().findAll({ include })
     .then(programs => res.jsend.success(programs));
 }
 
