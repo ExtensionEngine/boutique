@@ -5,7 +5,7 @@
         <div class="auth-header py-9">
           <div class="d-flex justify-center">
             <v-avatar size="72" color="primary" class="elevation-2">
-              <v-icon size="40" color="secondary" dark>mdi-school-outline</v-icon>
+              <v-icon size="40" color="secondary">mdi-school-outline</v-icon>
             </v-avatar>
           </div>
           <div class="d-flex justify-center">
