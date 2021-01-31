@@ -5,7 +5,7 @@ import { navigateTo } from '@/common/navigation';
 import NotFound from '@/admin/components/common/NotFound';
 import Program from '@/admin/components/Programs/Program';
 import Programs from '@/admin/components/Programs';
-import role from '@/../common/config/role';
+import { Role } from '@/../common/config';
 import Router from 'vue-router';
 import Settings from '@/admin/components/Programs/Program/Settings';
 import store from './store';
@@ -55,7 +55,7 @@ const router = new Router({
   }, fallbackRoute]
 });
 
-const isAdmin = user => user && user.role === role.ADMIN;
+const isAdmin = user => user && user.role === Role.ADMIN;
 
 router.beforeEach((_to, _from, next) => {
   const user = get(store.state, 'auth.user');

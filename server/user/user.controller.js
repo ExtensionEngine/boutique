@@ -10,8 +10,10 @@ const map = require('lodash/map');
 const mime = require('mime');
 const pick = require('lodash/pick');
 
-const { ACCEPTED, CONFLICT, NO_CONTENT, NOT_FOUND } = HttpStatus;
+const { ACCEPTED, BAD_REQUEST, CONFLICT, NO_CONTENT, NOT_FOUND } = HttpStatus;
 const { EmptyResultError, Op } = Sequelize;
+
+const WRONG_CREDENTIALS_MESSAGE = 'Incorrect email or password.';
 
 const columns = {
   email: { header: 'Email', width: 30 },
@@ -60,12 +62,29 @@ function destroy({ params }, res) {
   .then(() => res.sendStatus(NO_CONTENT));
 }
 
-function login({ user }, res) {
-  const token = user.createToken({
-    audience: Audience.Scope.Access,
-    expiresIn: '5 days'
-  });
-  res.jsend.success({ token, user: user.profile });
+function login({ body }, res) {
+  const { email, password } = body;
+  if (!email || !password) {
+    return createError(BAD_REQUEST, 'Please enter email and password!');
+  }
+
+  return User.findOne({ where: { email } })
+    .then(user => user || createError(NOT_FOUND, WRONG_CREDENTIALS_MESSAGE))
+    .then(user => user.authenticate(password))
+    .then(user => user || createError(NOT_FOUND, WRONG_CREDENTIALS_MESSAGE))
+    .then(user => {
+      const token = user.createToken({
+        audience: Audience.Scope.Access,
+        expiresIn: '5 days'
+      });
+      res.jsend.success({ token, user: user.profile });
+    });
+}
+
+function logout({ user }, res) {
+  // TODO: Add token invalidation
+  User.stopActivityLog(user.id);
+  return res.end();
 }
 
 function invite({ params, origin }, res) {
@@ -120,6 +139,7 @@ module.exports = {
   patch,
   destroy,
   login,
+  logout,
   invite,
   forgotPassword,
   resetPassword,

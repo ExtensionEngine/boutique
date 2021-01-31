@@ -32,6 +32,10 @@
       <template v-slot:item.createdAt="{ item }">
         {{ item.createdAt | formatDate }}
       </template>
+      <template v-slot:item.lastActive="{ item }">
+        <span v-if="!item.lastActive">Never</span>
+        <v-timeago v-else :datetime="item.lastActive" />
+      </template>
       <template v-slot:item.actions="{ item }">
         <div class="text-no-wrap text-center">
           <v-btn
@@ -82,6 +86,7 @@ const headers = () => [
   { text: 'First Name', value: 'firstName' },
   { text: 'Last Name', value: 'lastName' },
   { text: 'Date Created', value: 'createdAt' },
+  { text: 'Last Active', value: 'lastActive' },
   { text: 'Actions', value: 'actions', align: 'center', sortable: false }
 ];
 const actions = user => ({

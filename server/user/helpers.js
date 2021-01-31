@@ -1,6 +1,6 @@
 'use strict';
 
-const { role } = require('../../common/config');
+const { Role } = require('../../common/config');
 const times = require('lodash/times');
 
 function generate() {
@@ -8,7 +8,7 @@ function generate() {
     firstName: 'Admin',
     lastName: 'Example',
     email: 'admin@example.org',
-    role: role.ADMIN
+    role: Role.ADMIN
   }];
   times(10, i => {
     const suffix = i || '';
@@ -16,7 +16,7 @@ function generate() {
       firstName: `Learner ${suffix}`,
       lastName: 'Example',
       email: `learner${suffix}@example.org`,
-      role: role.LEARNER
+      role: Role.LEARNER
     });
   });
   return users;

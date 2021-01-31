@@ -84,7 +84,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
-import { role } from '@/../common/config';
+import { Role } from '@/../common/config';
 
 const resetUser = () => ({
   firstName: '',
@@ -110,7 +110,7 @@ export default {
         if (!value) this.close();
       }
     },
-    roles: vm => map(role, it => ({ text: humanize(it), value: it })),
+    roles: vm => map(Role, it => ({ text: humanize(it), value: it })),
     isNewUser: vm => !vm.user.id
   },
   methods: {
