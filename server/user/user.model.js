@@ -14,7 +14,6 @@ const map = require('lodash/map');
 const pick = require('lodash/pick');
 const Promise = require('bluebird');
 const { role } = require('../../common/config');
-const Role = require('../../common/config/role');
 const { sql } = require('../common/database/helpers');
 const values = require('lodash/values');
 
@@ -214,7 +213,7 @@ class User extends Model {
   }
 
   isAdmin() {
-    return this.role === Role.ADMIN;
+    return this.role === role.ADMIN;
   }
 }
 
