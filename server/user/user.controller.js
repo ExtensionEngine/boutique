@@ -97,6 +97,7 @@ function resetPassword({ body }, res) {
 async function bulkImport({ body, file, origin }, res) {
   const users = (await Datasheet.load(file)).toJSON({ include: inputAttrs });
   const errors = await bulkCreate(users, { origin });
+  res.set('data-imported-count', users.length - errors.length);
   if (!errors) return res.end();
   const creator = 'Boutique';
   columns.message = { header: 'Error', width: 30 };
