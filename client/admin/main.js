@@ -1,6 +1,10 @@
 import '@/common/validation';
 
-import { ValidationObserver, ValidationProvider } from 'vee-validate';
+import {
+  setInteractionMode,
+  ValidationObserver,
+  ValidationProvider
+} from 'vee-validate';
 import App from './App';
 import format from 'date-fns/format';
 import router from './router';
@@ -12,6 +16,8 @@ import VueVisible from 'vue-visible';
 
 Vue.component('ValidationProvider', ValidationProvider);
 Vue.component('ValidationObserver', ValidationObserver);
+setInteractionMode('eager');
+
 Vue.use(VueHotkey);
 Vue.use(VueVisible);
 
