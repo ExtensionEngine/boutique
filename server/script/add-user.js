@@ -4,12 +4,12 @@
 require('../common/logger').disable();
 
 const { getValidator } = require('../common/database/helpers');
-const { prompt } = require('inquirer');
-const { role } = require('../../common/config');
-const { User } = require('../common/database');
 const humanize = require('humanize-string');
 const isEmail = require('is-email-like');
 const map = require('lodash/map');
+const { prompt } = require('inquirer');
+const { role } = require('../../common/config');
+const { User } = require('../common/database');
 
 const questions = [{
   type: 'input',

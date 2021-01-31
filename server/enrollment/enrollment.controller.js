@@ -1,7 +1,7 @@
 'use strict';
 
+const { Enrollment, Sequelize, User } = require('../common/database');
 const { createError } = require('../common/errors');
-const { Enrollment, User, Sequelize } = require('../common/database');
 const HttpStatus = require('http-status');
 const map = require('lodash/map');
 

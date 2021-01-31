@@ -1,23 +1,25 @@
 'use strict';
 
-const { migrationsPath } = require('../../../sequelize.config');
-const { wrapAsyncMethods } = require('./helpers');
 const config = require('./config');
 const forEach = require('lodash/forEach');
 const invoke = require('lodash/invoke');
-const logger = require('../logger')('db');
+const { migrationsPath } = require('../../../sequelize.config');
 const pick = require('lodash/pick');
 const pkg = require('../../../package.json');
 const semver = require('semver');
 const Sequelize = require('sequelize');
 const Umzug = require('umzug');
+const { wrapAsyncMethods } = require('./helpers');
+const logger = require('../logger')('db');
 
 // Require models.
+/* eslint-disable require-sort/require-sort */
 const User = require('../../user/user.model');
 const Preview = require('../../preview/preview.model');
 const Program = require('../../program/program.model');
 const Enrollment = require('../../enrollment/enrollment.model');
 const ContentRepo = require('../../content-repo/content-repo.model');
+/* eslint-enable require-sort/require-sort */
 
 const isProduction = process.env.NODE_ENV === 'production';
 const sequelize = createConnection(config);

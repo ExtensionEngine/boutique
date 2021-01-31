@@ -1,7 +1,7 @@
 'use strict';
 
-const { auth: config = {} } = require('../../../config');
 const bcrypt = require('bcrypt');
+const { auth: config = {} } = require('../../../config');
 const Promise = require('bluebird');
 const { role } = require('../../../../common/config');
 

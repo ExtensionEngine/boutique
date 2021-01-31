@@ -1,11 +1,11 @@
 'use strict';
 
-const { auth: config = {} } = require('../../config');
 const { ExtractJwt, Strategy } = require('passport-jwt');
-const { User } = require('../database');
 const Audience = require('./audience');
+const { auth: config = {} } = require('../../config');
 const LocalStrategy = require('passport-local');
 const passport = require('passport');
+const { User } = require('../database');
 
 const options = {
   usernameField: 'email',

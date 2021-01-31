@@ -1,6 +1,6 @@
 'use strict';
 
-const { Sequelize, Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 const has = require('lodash/has');
 const inRange = require('lodash/inRange');
 const last = require('lodash/last');
