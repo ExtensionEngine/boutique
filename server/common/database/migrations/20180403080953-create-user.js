@@ -1,6 +1,6 @@
 'use strict';
 
-const { role } = require('../../../../common/config');
+const { Role } = require('../../../../common/config');
 const values = require('lodash/values');
 
 module.exports = {
@@ -20,7 +20,7 @@ module.exports = {
       type: Sequelize.STRING
     },
     role: {
-      type: Sequelize.ENUM(values(role)),
+      type: Sequelize.ENUM(values(Role)),
       allowNull: false
     },
     token: {

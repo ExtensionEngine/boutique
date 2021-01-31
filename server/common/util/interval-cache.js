@@ -5,7 +5,7 @@ const each = require('lodash/each');
 const { EventEmitter } = require('events');
 const throttle = require('lodash/throttle');
 
-const EVENTS = {
+const Events = {
   YIELDED: 'yielded',
   CLEARED: 'cleared'
 };
@@ -21,18 +21,18 @@ class CacheItem extends EventEmitter {
   }
 
   _yield() {
-    this.emit(EVENTS.YIELDED, this._key, this.value);
+    this.emit(Events.YIELDED, this._key, this.value);
   }
 
   _clear({ silent = false } = {}) {
-    if (!silent) this.emit(EVENTS.CLEARED, this._key, this.value);
+    if (!silent) this.emit(Events.CLEARED, this._key, this.value);
     this.clear.cancel();
     this.yield.cancel();
     this._removeListeners();
   }
 
   _removeListeners() {
-    Object.values(EVENTS).forEach(event => this.removeAllListeners(event));
+    Object.values(Events).forEach(event => this.removeAllListeners(event));
   }
 
   get value() {
@@ -54,19 +54,19 @@ class IntervalCache extends EventEmitter {
   }
 
   _yield(key, value) {
-    this.emit(EVENTS.YIELDED, key, value);
+    this.emit(Events.YIELDED, key, value);
   }
 
   _clear(key, value) {
     if (!this._map[key]) return;
     this._map[key] = null;
-    this.emit(EVENTS.CLEARED, key, value);
+    this.emit(Events.CLEARED, key, value);
   }
 
   get _listeners() {
     return {
-      [EVENTS.YIELDED]: this._yield.bind(this),
-      [EVENTS.CLEARED]: this._clear.bind(this)
+      [Events.YIELDED]: this._yield.bind(this),
+      [Events.CLEARED]: this._clear.bind(this)
     };
   }
 
@@ -87,4 +87,4 @@ class IntervalCache extends EventEmitter {
   }
 }
 
-module.exports = Object.assign(IntervalCache, { EVENTS });
+module.exports = Object.assign(IntervalCache, { Events });

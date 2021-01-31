@@ -22,7 +22,7 @@ const PROFILE_ATTRS = [
 ];
 
 const activityLookup = new IntervalCache(config.userActivity);
-Object.values(IntervalCache.EVENTS).forEach(event => {
+Object.values(IntervalCache.Events).forEach(event => {
   activityLookup.on(event, (id, date) => User.updateActivity(id, date));
 });
 
