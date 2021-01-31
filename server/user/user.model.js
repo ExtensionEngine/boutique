@@ -119,6 +119,9 @@ class User extends Model {
       },
       beforeBulkCreate(users) {
         return Promise.map(users, user => user.encryptPassword());
+      },
+      beforeDestroy(user) {
+        activityLookup.remove(user.id);
       }
     };
   }

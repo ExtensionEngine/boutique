@@ -56,7 +56,6 @@ function destroy({ params }, res) {
   sequelize.transaction(async transaction => {
     const user = await User.findByPk(params.id, { transaction });
     if (!user) createError(NOT_FOUND);
-    user.session.end();
     await Enrollment.destroy({ where: { learnerId: user.id }, transaction });
     await user.destroy({ transaction });
     res.end();
