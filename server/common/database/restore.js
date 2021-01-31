@@ -2,11 +2,17 @@
 
 const find = require('lodash/find');
 const Promise = require('bluebird');
+const transform = require('lodash/transform');
 const { UniqueConstraintError } = require('sequelize');
 const capitalize = require('change-case').upperCaseFirst;
 
 const name = Model => Model.rawAttributes.modelName || Model.name;
 const pTuple = fn => Promise.try(fn).then(result => [null, result], err => [err]);
+
+function processSearchKey(key, item) {
+  if (!Array.isArray(key)) return { [key]: item[key] };
+  return transform(key, (acc, searchKey) => (acc[searchKey] = item[searchKey]), {});
+}
 
 module.exports = {
   restoreOrBuild,
@@ -16,10 +22,10 @@ module.exports = {
 };
 
 async function restoreOrBuildAll(Model, items = [], { where } = {}, options = {}) {
-  const { save = false, concurrency = 16 } = options;
+  const { save = false, concurrency = 16, modelSearchKey = 'id' } = options;
   const found = await Model.findAll({ where, paranoid: false });
   const results = await Promise.map(items, item => pTuple(() => {
-    const model = find(found, { id: item.id });
+    const model = find(found, processSearchKey(modelSearchKey, item));
     if (model && !model.deletedAt) {
       const message = `${capitalize(name(Model))} already exists`;
       throw new UniqueConstraintError({ message });
