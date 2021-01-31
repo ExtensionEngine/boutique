@@ -3,7 +3,6 @@
 const debounce = require('lodash/debounce');
 const each = require('lodash/each');
 const { EventEmitter } = require('events');
-const ms = require('ms');
 const throttle = require('lodash/throttle');
 
 const EVENTS = {
@@ -14,19 +13,22 @@ const EVENTS = {
 class CacheItem extends EventEmitter {
   constructor(key, value, listeners, { ttl, yieldInterval }) {
     super();
-    this.yield = throttle(() => this._yield(key), yieldInterval);
-    this.clear = debounce(() => this._clear(key), ttl);
+    this._key = key;
+    this.yield = throttle(this._yield.bind(this), yieldInterval);
+    this.clear = debounce(this._clear.bind(this), ttl);
     each(listeners, (handler, event) => this.on(event, handler));
     this.set(value);
   }
 
-  _yield(key) {
-    this.emit(EVENTS.YIELDED, key, this.value);
+  _yield() {
+    this.emit(EVENTS.YIELDED, this._key, this.value);
   }
 
-  _clear(key) {
-    this.emit(EVENTS.CLEARED, key, this.value);
-    this.remove();
+  _clear({ silent = false } = {}) {
+    if (!silent) this.emit(EVENTS.CLEARED, this._key, this.value);
+    this.clear.cancel();
+    this.yield.cancel();
+    this._removeListeners();
   }
 
   _removeListeners() {
@@ -41,12 +43,6 @@ class CacheItem extends EventEmitter {
     this._value = value;
     this.clear();
     this.yield();
-  }
-
-  remove() {
-    this.clear.cancel();
-    this.yield.cancel();
-    this._removeListeners();
   }
 }
 
@@ -84,9 +80,9 @@ class IntervalCache extends EventEmitter {
     this._map[key] = new CacheItem(key, value, this._listeners, this._options);
   }
 
-  remove(key) {
+  clear(key, { silent = false } = {}) {
     if (!this._map[key]) return;
-    this._map[key].remove();
+    this._map[key].clear.flush({ silent });
     this._map[key] = null;
   }
 }

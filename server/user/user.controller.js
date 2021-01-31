@@ -81,11 +81,10 @@ function login({ body }, res) {
     });
 }
 
-function logout(req, res) {
-  const id = req.user.id;
-  return User.findById(id)
-    .then(user => user.session.end())
-    .then(() => res.end());
+function logout({ user }, res) {
+  // TODO: Add token invalidation
+  User.stopActivityLog(user.id);
+  return res.end();
 }
 
 function invite({ params, origin }, res) {

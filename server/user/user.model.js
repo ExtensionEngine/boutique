@@ -120,7 +120,7 @@ class User extends Model {
         return Promise.map(users, user => user.encryptPassword());
       },
       beforeDestroy(user) {
-        activityLookup.remove(user.id);
+        activityLookup.clear(user.id, { silent: true });
       }
     };
   }
@@ -180,6 +180,10 @@ class User extends Model {
 
   static updateActivity(id, lastActive) {
     return this.update({ lastActive }, { where: { id } });
+  }
+
+  static stopActivityLog(userId) {
+    activityLookup.clear(userId);
   }
 
   logActivity() {
