@@ -1,18 +1,18 @@
 'use strict';
 
+const Promise = require('bluebird');
 const { promisify } = require('util');
-const bluebird = require('bluebird');
-const sequelize = require('sequelize');
 
-if (process.env.NODE_ENV !== 'production') {
-  sequelize.Promise.config({ longStackTraces: true });
-  bluebird.config({ longStackTraces: true });
-}
+const isProduction = process.env.NODE_ENV === 'production';
+Promise.config({ longStackTraces: !isProduction });
 
+/* eslint-disable require-sort/require-sort */
 const { ip, port } = require('./config');
 const app = require('./app');
 const database = require('./common/database');
 const logger = require('./common/logger')();
+/* eslint-enable */
+
 const runServer = promisify(app.listen.bind(app));
 
 const address = `http://${ip}:${port}`;
