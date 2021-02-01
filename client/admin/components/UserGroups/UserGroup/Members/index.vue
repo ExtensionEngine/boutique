@@ -76,8 +76,8 @@ import throttle from 'lodash/throttle';
 const defaultPage = () => ({ sortBy: ['updatedAt'], sortDesc: [true], page: 1 });
 
 const headers = () => [
-  { text: 'Email', value: 'email' },
   { text: 'Group Member Role', value: 'role' },
+  { text: 'Email', value: 'email' },
   { text: 'Full Name', value: 'fullName' },
   { text: 'Date Created', value: 'createdAt' },
   { text: 'Actions', value: 'email', align: 'center', sortable: false }

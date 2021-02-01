@@ -1,21 +1,20 @@
 'use strict';
 
 const { CONFLICT, NO_CONTENT } = require('http-status');
-const { Sequelize, User, UserGroup } = require('../common/database');
+const { Sequelize, UserGroup } = require('../common/database');
 const { createError } = require('../common/errors');
 const yn = require('yn');
 
 const { Op } = Sequelize;
 
-function list({ query, options }, res) {
+async function list({ query, options }, res) {
   const { parentId = null, filter, archived } = query;
   const where = {};
   if (parentId) where.parentId = parentId;
   if (filter) where.name = { [Op.iLike]: `%${filter.trim()}%` };
-  const include = { model: User, as: 'members' };
-  Object.assign(options, { where, include });
-  return UserGroup.findAndCountAll({ ...options, paranoid: !yn(archived) })
-    .then(({ rows, count }) => res.jsend.success({ items: rows, total: count }));
+  Object.assign(options, { where, paranoid: !yn(archived) });
+  const { rows, count } = await UserGroup.findAndCountAll(options);
+  res.jsend.success({ items: rows, total: count });
 }
 
 async function create({ body }, res) {

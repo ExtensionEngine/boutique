@@ -60,6 +60,18 @@ class UserGroupMember extends Model {
     };
   }
 
+  static scopes({ User }) {
+    return {
+      user: options => ({ include: { model: User, ...options } })
+    };
+  }
+
+  static withUser(options = {}) {
+    const defaultAttrs = ['id', 'email', 'firstName', 'lastName', 'fullName', 'label'];
+    if (!options.attributes) options.attributes = defaultAttrs;
+    return this.scope({ method: ['user', options] });
+  }
+
   static async restoreOrCreate(userGroupMember, options) {
     return restoreOrCreate(this, userGroupMember, options);
   }

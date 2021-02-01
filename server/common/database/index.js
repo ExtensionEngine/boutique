@@ -8,6 +8,7 @@ const logger = require('../logger')('db');
 const pick = require('lodash/pick');
 const pkg = require('../../../package.json');
 const Promise = require('bluebird');
+const result = require('lodash/result');
 const semver = require('semver');
 const Sequelize = require('sequelize');
 const Umzug = require('umzug');
@@ -31,10 +32,9 @@ const { Sequelize: { DataTypes } } = sequelize;
 const defineModel = Model => {
   const fields = invoke(Model, 'fields', DataTypes, sequelize) || {};
   const hooks = invoke(Model, 'hooks') || {};
-  const scopes = invoke(Model, 'scopes', sequelize) || {};
   const options = invoke(Model, 'options') || {};
   wrapMethods(Model, Promise);
-  return Model.init(fields, { sequelize, hooks, scopes, ...options });
+  return Model.init(fields, { sequelize, hooks, ...options });
 };
 
 function initialize() {
@@ -86,6 +86,7 @@ const models = {
 };
 
 forEach(models, model => {
+  addScopes(model, models);
   invoke(model, 'associate', models);
   invoke(model, 'addHooks', models);
 });
@@ -134,4 +135,12 @@ function checkPostgreVersion(sequelize) {
       logger.error({ version, required: range }, err.message);
       return Promise.reject(err);
     });
+}
+
+function addScopes(Model, models) {
+  const scopes = invoke(Model, 'scopes', models);
+  forEach(scopes, (scope, name) => {
+    if (name === 'defaultScope') scope = result(scopes, 'defaultScope');
+    Model.addScope(name, scope, { override: true });
+  });
 }
