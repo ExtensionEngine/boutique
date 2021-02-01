@@ -4,6 +4,7 @@ const { Model, Op, Sequelize } = require('sequelize');
 const { restoreOrCreate, restoreOrCreateAll } = require('../common/database/restore');
 const Audience = require('../common/auth/audience');
 const bcrypt = require('bcrypt');
+const compact = require('lodash/compact');
 const config = require('../config');
 const IntervalCache = require('../common/util/interval-cache');
 const jwt = require('jsonwebtoken');
@@ -18,7 +19,8 @@ const values = require('lodash/values');
 
 const PROFILE_ATTRS = [
   'id', 'firstName', 'lastName', 'email',
-  'role', 'createdAt', 'lastActive', 'deletedAt'
+  'role', 'createdAt', 'lastActive', 'deletedAt',
+  'fullName', 'label'
 ];
 
 const activityLookup = new IntervalCache(config.userActivity);
@@ -55,6 +57,18 @@ class User extends Model {
       lastName: {
         type: STRING,
         field: 'last_name'
+      },
+      fullName: {
+        type: VIRTUAL,
+        get() {
+          return compact([this.firstName, this.lastName]).join(' ') || null;
+        }
+      },
+      label: {
+        type: VIRTUAL,
+        get() {
+          return this.fullName || this.email;
+        }
       },
       lastActive: {
         type: DATE,

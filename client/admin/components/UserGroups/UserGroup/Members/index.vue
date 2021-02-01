@@ -30,8 +30,7 @@
         <tr :key="item.id">
           <td>{{ item.role }}</td>
           <td>{{ item.user.email }}</td>
-          <td>{{ item.user.firstName }}</td>
-          <td>{{ item.user.lastName }}</td>
+          <td>{{ item.user.fullName }}</td>
           <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
           <td class="text-no-wrap text-center">
             <v-btn
@@ -79,8 +78,7 @@ const defaultPage = () => ({ sortBy: ['updatedAt'], sortDesc: [true], page: 1 })
 const headers = () => [
   { text: 'Email', value: 'email' },
   { text: 'Group Member Role', value: 'role' },
-  { text: 'First Name', value: 'firstName' },
-  { text: 'Last Name', value: 'lastName' },
+  { text: 'Full Name', value: 'fullName' },
   { text: 'Date Created', value: 'createdAt' },
   { text: 'Actions', value: 'email', align: 'center', sortable: false }
 ];
@@ -126,9 +124,8 @@ export default {
     archiveOrRestore(member) {
       const { user, deletedAt } = member;
       const action = deletedAt ? 'restore' : 'archive';
-      const name = `${user.firstName} ${user.lastName}`;
       Object.assign(this.confirmation, {
-        message: `Are you sure you want to ${action} member "${name}"?`,
+        message: `Are you sure you want to ${action} member "${user.label}"?`,
         action: actions(member)[action],
         dialog: true
       });

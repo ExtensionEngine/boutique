@@ -131,10 +131,9 @@ export default {
     }, 400),
     archiveOrRestore(user) {
       const action = user.deletedAt ? 'restore' : 'archive';
-      const name = user.firstName + ' ' + user.lastName;
       this.confirmation = {
         heading: `${humanize(action)} user`,
-        message: `Are you sure you want to ${action} user "${name}"?`,
+        message: `Are you sure you want to ${action} user "${user.label}"?`,
         action: actions(user)[action]
       };
     }
