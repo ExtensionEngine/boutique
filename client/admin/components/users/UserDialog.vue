@@ -110,7 +110,7 @@ export default {
         if (!value) this.close();
       }
     },
-    roles: vm => map(Role, it => ({ text: humanize(it), value: it })),
+    roles: () => map(Role, it => ({ text: humanize(it), value: it })),
     isNewUser: vm => !vm.user.id
   },
   methods: {

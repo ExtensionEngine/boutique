@@ -2,7 +2,7 @@
 
 const { Model } = require('sequelize');
 const { restoreOrCreate } = require('../common/database/restore');
-const { role: roles } = require('../../common/config');
+const { Role } = require('../../common/config');
 
 class UserGroupMembers extends Model {
   static fields({ DATE, ENUM, INTEGER }) {
@@ -22,8 +22,8 @@ class UserGroupMembers extends Model {
         field: 'user_group_id'
       },
       role: {
-        type: ENUM(Object.values(roles)),
-        defaultValue: roles.LEARNER
+        type: ENUM(Object.values(Role)),
+        defaultValue: Role.LEARNER
       },
       createdAt: {
         type: DATE,
