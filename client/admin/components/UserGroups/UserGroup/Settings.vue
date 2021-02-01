@@ -9,7 +9,7 @@
       </div>
       <validation-observer
         ref="form"
-        @submit.prevent="$refs.form.handleSubmit(saveProgram)"
+        @submit.prevent="$refs.form.handleSubmit(saveUserGroup)"
         tag="form"
         novalidate>
         <validation-provider
@@ -42,9 +42,9 @@
 </template>
 
 <script>
+import api from '@/admin/api/userGroup';
 import cloneDeep from 'lodash/cloneDeep';
 import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
-import { mapActions } from 'vuex';
 
 export default {
   name: 'user-group-settings',
@@ -60,13 +60,12 @@ export default {
     confirmationMessage: vm => `Are you sure you want to delete "${vm.userGroup.name}"?`
   },
   methods: {
-    ...mapActions('userGroups', ['save', 'remove']),
-    saveProgram() {
-      this.save(this.userGroupData);
+    async saveUserGroup() {
+      await api.create(this.userGroupData);
       this.isEditing = false;
     },
     async removeUserGroup() {
-      await this.remove(this.userGroup);
+      await api.remove(this.userGroup);
       this.$router.push({ name: 'user-groups' });
     },
     cloneUserGroup() {

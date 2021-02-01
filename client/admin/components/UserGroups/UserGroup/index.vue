@@ -17,17 +17,15 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
-import find from 'lodash/find';
+import api from '@/admin/api/userGroup';
 
 export default {
   name: 'user-group-container',
   props: {
     userGroupId: { type: Number, required: true }
   },
+  data: () => ({ userGroup: null }),
   computed: {
-    ...mapState('userGroups', { userGroups: 'items' }),
-    userGroup: vm => find(vm.userGroups, { id: vm.userGroupId }),
     tabs: () => [
       { name: 'members', label: 'Members' },
       { name: 'userGroupSettings', label: 'Settings' }
@@ -38,9 +36,8 @@ export default {
         { text: userGroup.name, disabled: true }]
       : []
   },
-  methods: mapActions('userGroups', ['get']),
-  created() {
-    this.get(this.userGroupId);
+  async created() {
+    this.userGroup = await api.get(this.userGroupId);
   }
 };
 </script>

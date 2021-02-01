@@ -3,7 +3,6 @@ import { auth as authPlugin } from '@/common/store/plugins';
 import contentRepo from '@/admin/store/modules/content-repo';
 import programs from '@/admin/store/modules/programs';
 import request from '@/common/api/request';
-import userGroups from '@/admin/store/modules/userGroups';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
@@ -15,8 +14,7 @@ const store = new Vuex.Store({
   modules: {
     auth,
     contentRepo,
-    programs,
-    userGroups
+    programs
   },
   plugins: [authPlugin({ storageKey: 'LMS_USER' })],
   strict: !isProduction
