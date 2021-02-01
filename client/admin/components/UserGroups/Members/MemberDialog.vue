@@ -46,7 +46,7 @@
 
 <script>
 import AdminDialog from '@/admin/components/common/Dialog';
-import api from '@/admin/api/userGroup';
+import api from '@/admin/api/userGroupMember';
 import cloneDeep from 'lodash/cloneDeep';
 import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';
@@ -88,9 +88,9 @@ export default {
     },
     async save() {
       const { member, userGroupId, isNewMember } = this;
-      const action = isNewMember ? 'addMember' : 'updateMember';
+      const action = isNewMember ? 'create' : 'update';
       await api[action]({ ...member, userGroupId });
-      this.$emit('upserted');
+      this.$emit(`${action}d`);
       this.close();
     }
   },

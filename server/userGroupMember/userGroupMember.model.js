@@ -4,7 +4,7 @@ const { Model } = require('sequelize');
 const { restoreOrCreate } = require('../common/database/restore');
 const { Role } = require('../../common/config');
 
-class UserGroupMembers extends Model {
+class UserGroupMember extends Model {
   static fields({ DATE, ENUM, INTEGER }) {
     return {
       id: {
@@ -51,8 +51,8 @@ class UserGroupMembers extends Model {
 
   static options() {
     return {
-      modelName: 'userGroupMembers',
-      tableName: 'user_group_members',
+      modelName: 'userGroupMember',
+      tableName: 'user_group_member',
       underscored: true,
       timestamps: true,
       paranoid: true,
@@ -65,4 +65,4 @@ class UserGroupMembers extends Model {
   }
 }
 
-module.exports = UserGroupMembers;
+module.exports = UserGroupMember;

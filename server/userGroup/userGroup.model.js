@@ -24,10 +24,10 @@ class UserGroup extends Model {
     };
   }
 
-  static associate({ User, UserGroupMembers }) {
+  static associate({ User, UserGroupMember }) {
     this.belongsToMany(User, {
       as: 'members',
-      through: UserGroupMembers,
+      through: UserGroupMember,
       foreignKey: { name: 'userGroupId', field: 'user_group_id' }
     });
   }

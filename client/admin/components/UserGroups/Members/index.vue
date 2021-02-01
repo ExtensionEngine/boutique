@@ -53,7 +53,8 @@
       </template>
     </v-data-table>
     <member-dialog
-      @upserted="fetch(defaultPage)"
+      @created="fetch(defaultPage)"
+      @updated="fetch(defaultPage)"
       :visible.sync="memberDialog"
       :member-data="editedMember"
       :user-group-id="userGroupId"
@@ -67,7 +68,7 @@
 </template>
 
 <script>
-import api from '@/admin/api/userGroup';
+import api from '@/admin/api/userGroupMember';
 import ConfirmationDialog from '../../common/ConfirmationDialog';
 import humanize from 'humanize-string';
 import MemberDialog from './MemberDialog';
@@ -85,8 +86,8 @@ const headers = () => [
 ];
 
 const actions = member => ({
-  archive: () => api.removeMember(member),
-  restore: () => api.addMember(member)
+  archive: () => api.remove(member),
+  restore: () => api.create(member)
 });
 
 export default {
@@ -118,7 +119,7 @@ export default {
       Object.assign(this.dataTable, opts);
       const { dataTable, userGroupId, filter, showArchived: archived } = this;
       const options = { ...dataTable, params: { filter, archived } };
-      const { items, total } = await api.getMembers(userGroupId, options);
+      const { items, total } = await api.fetch(userGroupId, options);
       this.members = items;
       this.totalItems = total;
     }, 400),

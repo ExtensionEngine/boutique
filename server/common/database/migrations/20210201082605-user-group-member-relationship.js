@@ -2,7 +2,7 @@
 
 const { Role } = require('../../../../common/config');
 
-const TABLE_NAME = 'user_group_members';
+const TABLE_NAME = 'user_group_member';
 
 exports.up = (qi, { DATE, ENUM, INTEGER }) => qi.createTable(TABLE_NAME, {
   id: {
