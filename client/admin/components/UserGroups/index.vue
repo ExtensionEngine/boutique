@@ -14,7 +14,7 @@
           class="my-2 archived-checkbox" />
       </v-col>
       <v-col lg="8" md="6" class="d-flex justify-end">
-        <user-group-dialog @created="fetch(defaultPage)" />
+        <user-group-dialog @create="createOrRestore" />
       </v-col>
     </v-row>
     <v-data-iterator
@@ -37,7 +37,7 @@
               <v-card-actions class="justify-end">
                 <v-btn
                   v-if="item.deletedAt"
-                  @click="restore(item)"
+                  @click="createOrRestore(item)"
                   color="secondary"
                   text>
                   <v-icon class="mr-1">mdi-restore</v-icon>
@@ -83,9 +83,10 @@ export default {
       this.userGroups = items;
       this.totalItems = total;
     }, 400),
-    async restore(item) {
-      await api.create(item);
-      this.showArchived = false;
+    createOrRestore(userGroup) {
+      return api.create(userGroup)
+        .then(() => this.fetch(defaultPage))
+        .finally(() => (this.showArchived = false));
     }
   },
   watch: {

@@ -37,7 +37,6 @@
 
 <script>
 import AdminDialog from '@/admin/components/common/Dialog';
-import api from '@/admin/api/userGroup';
 
 const getDefaultData = () => ({ name: '' });
 
@@ -52,7 +51,7 @@ export default {
       this.visible = false;
     },
     save() {
-      api.create(this.userGroup).then(() => this.$emit('created'));
+      this.$emit('create', this.userGroup);
       this.close();
     }
   },
