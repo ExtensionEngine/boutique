@@ -4,21 +4,27 @@ const { Model, Op, Sequelize } = require('sequelize');
 const { restoreOrCreate, restoreOrCreateAll } = require('../common/database/restore');
 const Audience = require('../common/auth/audience');
 const bcrypt = require('bcrypt');
-const { auth: config = {} } = require('../config');
+const config = require('../config');
+const IntervalCache = require('../common/util/interval-cache');
 const jwt = require('jsonwebtoken');
+const logger = require('../common/logger')();
 const mail = require('../common/mail');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
 const Promise = require('bluebird');
-const Role = require('../../common/config/role');
-const { role } = require('../../common/config');
+const { Role } = require('../../common/config');
 const { sql } = require('../common/database/helpers');
-const logger = require('../common/logger')();
 const values = require('lodash/values');
 
 const PROFILE_ATTRS = [
-  'id', 'firstName', 'lastName', 'email', 'role', 'createdAt', 'deletedAt'
+  'id', 'firstName', 'lastName', 'email',
+  'role', 'createdAt', 'lastActive', 'deletedAt'
 ];
+
+const activityLookup = new IntervalCache(config.userActivity);
+Object.values(IntervalCache.Events).forEach(event => {
+  activityLookup.on(event, (id, date) => User.updateActivity(id, date));
+});
 
 class User extends Model {
   static fields({ DATE, ENUM, STRING, VIRTUAL }) {
@@ -34,9 +40,9 @@ class User extends Model {
         validate: { notEmpty: true, len: [5, 255] }
       },
       role: {
-        type: ENUM(values(role)),
+        type: ENUM(values(Role)),
         allowNull: false,
-        defaultValue: role.LEARNER
+        defaultValue: Role.LEARNER
       },
       token: {
         type: STRING,
@@ -49,6 +55,10 @@ class User extends Model {
       lastName: {
         type: STRING,
         field: 'last_name'
+      },
+      lastActive: {
+        type: DATE,
+        field: 'last_active'
       },
       createdAt: {
         type: DATE,
@@ -65,7 +75,10 @@ class User extends Model {
       profile: {
         type: VIRTUAL,
         get() {
-          return pick(this, PROFILE_ATTRS);
+          const profile = pick(this, PROFILE_ATTRS);
+          const lastActive = activityLookup.get(this.id);
+          if (lastActive) profile.lastActive = lastActive;
+          return profile;
         }
       }
     };
@@ -111,6 +124,9 @@ class User extends Model {
       },
       beforeBulkCreate(users) {
         return Promise.map(users, user => user.encryptPassword());
+      },
+      beforeDestroy(user) {
+        activityLookup.clear(user.id, { silent: true });
       }
     };
   }
@@ -149,9 +165,22 @@ class User extends Model {
     return restoreOrCreateAll(this, users, { where }, options);
   }
 
+  static updateActivity(id, lastActive) {
+    return this.update({ lastActive }, { where: { id } });
+  }
+
+  static stopActivityLog(userId) {
+    activityLookup.clear(userId);
+  }
+
+  logActivity() {
+    activityLookup.set(this.id, new Date());
+    return this;
+  }
+
   async encryptPassword() {
     if (!this.password) return;
-    this.password = await bcrypt.hash(this.password, config.saltRounds);
+    this.password = await bcrypt.hash(this.password, config.auth.saltRounds);
     return this;
   }
 
@@ -172,7 +201,7 @@ class User extends Model {
 
   createToken(options = {}) {
     const payload = pick(this, ['id', 'email']);
-    return jwt.sign(payload, config.secret, options);
+    return jwt.sign(payload, config.auth.secret, options);
   }
 
   isAdmin() {

@@ -5,6 +5,7 @@ import request from './request';
 const urls = {
   root: '/users',
   login: () => path.join(urls.root, 'login'),
+  logout: () => path.join(urls.root, 'logout'),
   forgotPassword: () => path.join(urls.root, 'forgotPassword'),
   resetPassword: () => path.join(urls.root, 'resetPassword')
 };
@@ -19,9 +20,9 @@ function login(credentials) {
 }
 
 function logout() {
-  request.auth.token = null;
-  // TODO: Add server side invalidation
-  return Promise.resolve(true);
+  request.post(urls.logout()).then(() => {
+    request.auth.token = null;
+  });
 }
 
 function forgotPassword(email) {

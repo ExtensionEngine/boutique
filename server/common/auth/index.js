@@ -1,11 +1,11 @@
 'use strict';
 
-const { auth: config = {} } = require('../../config');
 const { ExtractJwt, Strategy } = require('passport-jwt');
-const { User } = require('../database');
 const Audience = require('./audience');
+const { auth: config = {} } = require('../../config');
 const LocalStrategy = require('passport-local');
 const passport = require('passport');
+const { User } = require('../database');
 
 const options = {
   usernameField: 'email',
@@ -28,7 +28,7 @@ const jwtOptions = {
 
 passport.use(new Strategy(jwtOptions, (payload, done) => {
   return User.findByPk(payload.id)
-    .then(user => done(null, user || false))
+    .then(user => done(null, user ? user.logActivity() : false))
     .error(err => done(err, false));
 }));
 

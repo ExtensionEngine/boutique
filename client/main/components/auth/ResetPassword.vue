@@ -1,8 +1,12 @@
 <template>
   <div>
-    <div v-if="error" class="notification is-error">
-      <span>{{ error }}</span>
-    </div>
+    <v-alert
+      :value="!!error"
+      color="pink lighten-1"
+      text
+      class="mb-5">
+      {{ error }}
+    </v-alert>
     <validation-observer
       ref="form"
       @submit.prevent="$refs.form.handleSubmit(submit)"
@@ -30,9 +34,7 @@
           label="Confirm Password"
           outlined />
       </validation-provider>
-      <v-btn type="submit" outlined>
-        Change password
-      </v-btn>
+      <v-btn type="submit" text block>Change password</v-btn>
     </validation-observer>
   </div>
 </template>

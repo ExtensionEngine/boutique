@@ -12,7 +12,7 @@ import Preview from '@/main/components/preview';
 import Program from '@/main/components/program';
 import ProgramSelection from '@/main/components/ProgramSelection';
 import ResetPassword from '@/main/components/auth/ResetPassword';
-import role from '@/../common/config/role';
+import { Role } from '@/../common/config';
 import Router from 'vue-router';
 import store from './store';
 import Vue from 'vue';
@@ -74,7 +74,7 @@ const router = new Router({
   fallbackRoute]
 });
 
-const isAdmin = user => user && user.role === role.ADMIN;
+const isAdmin = user => user && user.role === Role.ADMIN;
 const requiresAuth = route => route.matched.some(it => it.meta.auth);
 
 router.beforeEach((to, _from, next) => {
