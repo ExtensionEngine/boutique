@@ -1,7 +1,7 @@
 <template>
-  <v-container fluid>
-    <v-row class="ma-5">
-      <v-col sm="4" md="5" lg="4">
+  <v-container fluid class="pa-8">
+    <v-row class="toolbar">
+      <v-col lg="4" md="6">
         <v-text-field
           v-model="filter"
           append-icon="mdi-magnify"
@@ -13,122 +13,87 @@
           hide-details
           class="my-2 archived-checkbox" />
       </v-col>
-      <v-col sm="8" md="7" lg="8" class="d-flex justify-end">
-        <v-btn @click.stop="showGroupDialog()" text>
-          <v-icon dense class="mr-1">mdi-plus</v-icon>Add user group
-        </v-btn>
+      <v-col lg="8" md="6" class="d-flex justify-end">
+        <user-group-dialog @created="fetch(defaultPage)" />
       </v-col>
     </v-row>
-    <v-data-table
-      :headers="headers"
+    <v-data-iterator
       :items="userGroups"
+      :options.sync="options"
+      :footer-props="{ itemsPerPageOptions: [30, 60, 90, -1] }"
       :server-items-length="totalItems"
-      :options.sync="dataTable"
-      must-sort
-      class="ma-5 transparent">
-      <template v-slot:item="{ item }">
-        <router-link
-          :key="item.id"
-          :to="{ name: 'members', params: { userGroupId: item.id } }"
-          tag="tr">
-          <td>{{ item.name }}</td>
-          <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
-          <td class="text-no-wrap">{{ item.members.length }}</td>
-          <td class="text-no-wrap text-center">
-            <v-btn
-              @click.stop="showGroupDialog(item)"
-              color="grey darken-3"
-              x-small icon>
-              <v-icon>mdi-pencil</v-icon>
-            </v-btn>
-            <v-btn
-              @click.stop="archiveOrRestore(item)"
-              color="grey darken-3"
-              x-small icon>
-              <v-icon>
-                mdi-{{ item.deletedAt ? 'restore' : 'archive-outline' }}
-              </v-icon>
-            </v-btn>
-          </td>
-        </router-link>
+      :hide-default-footer="totalItems < options.itemsPerPage">
+      <template :slot-scope="{ items: userGroups }">
+        <v-row>
+          <v-col v-for="item in userGroups" :key="item.id" lg="4" sm="12">
+            <v-card
+              color="primary"
+              min-height="200"
+              dark
+              class="d-flex flex-column justify-space-between">
+              <v-card-title class="headline grey--text text--lighten-3">
+                {{ item.name }}
+              </v-card-title>
+              <v-card-actions class="justify-end">
+                <v-btn
+                  v-if="item.deletedAt"
+                  @click="restore(item)"
+                  color="secondary"
+                  text>
+                  <v-icon class="mr-1">mdi-restore</v-icon>
+                  Restore
+                </v-btn>
+                <v-btn
+                  :to="{ name: 'members', params: { userGroupId: item.id } }"
+                  color="secondary"
+                  text>
+                  Open
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
       </template>
-    </v-data-table>
-    <user-group-dialog
-      @updated="fetch(defaultPage)"
-      @created="fetch(defaultPage)"
-      :visible.sync="userGroupDialog"
-      :user-group-data="editedUserGroup" />
-    <confirmation-dialog
-      @update:visible="confirmation = null"
-      @confirmed="fetch()"
-      v-bind="confirmation"
-      :visible="!!confirmation" />
+    </v-data-iterator>
   </v-container>
 </template>
 
 <script>
 import api from '@/admin/api/userGroup';
-import ConfirmationDialog from '../common/ConfirmationDialog';
-import humanize from 'humanize-string';
 import throttle from 'lodash/throttle';
 import UserGroupDialog from './UserGroupDialog';
 
 const defaultPage = () => ({ sortBy: ['updatedAt'], sortDesc: [true], page: 1 });
-
-const headers = () => [
-  { text: 'User Group Name', value: 'name' },
-  { text: 'Date Created', value: 'createdAt' },
-  { text: 'Users', value: '' },
-  { text: 'Actions', value: 'name', align: 'center', sortable: false }
-];
-
-const actions = userGroup => ({
-  archive: () => api.remove(userGroup),
-  restore: () => api.create(userGroup)
-});
 
 export default {
   name: 'user-group-list',
   data: () => ({
     userGroups: [],
     filter: null,
-    dataTable: defaultPage(),
     totalItems: 0,
-    userGroupDialog: false,
-    editedUserGroup: null,
     showArchived: false,
-    confirmation: null
+    options: { itemsPerPage: 30, ...defaultPage() }
   }),
-  computed: { headers, defaultPage },
+  computed: { defaultPage },
   methods: {
-    showGroupDialog(userGroup = null) {
-      this.editedUserGroup = userGroup;
-      this.userGroupDialog = true;
-    },
     fetch: throttle(async function (opts) {
-      Object.assign(this.dataTable, opts);
-      const { dataTable, filter, showArchived: archived } = this;
-      const params = { filter, archived };
-      const { items, total } = await api.fetch({ ...dataTable, params });
+      Object.assign(this.options, opts);
+      const params = { filter: this.filter, archived: this.showArchived };
+      const { items, total } = await api.fetch({ ...this.options, params });
       this.userGroups = items;
       this.totalItems = total;
     }, 400),
-    archiveOrRestore(userGroup) {
-      const { name, deletedAt } = userGroup;
-      const action = deletedAt ? 'restore' : 'archive';
-      this.confirmation = {
-        heading: `${humanize(action)} user group`,
-        message: `Are you sure you want to ${action} user group "${name}"?`,
-        action: actions(userGroup)[action]
-      };
+    async restore(item) {
+      await api.create(item);
+      this.showArchived = false;
     }
   },
   watch: {
-    dataTable: 'fetch',
+    options: 'fetch',
     filter: 'fetch',
     showArchived: 'fetch'
   },
-  components: { ConfirmationDialog, UserGroupDialog }
+  components: { UserGroupDialog }
 };
 </script>
 

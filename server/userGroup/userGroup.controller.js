@@ -25,6 +25,10 @@ async function create({ body }, res) {
   return res.jsend.success(userGroup);
 }
 
+function get({ userGroup }, res) {
+  return res.jsend.success(userGroup);
+}
+
 async function patch({ userGroup, body }, res) {
   const data = await userGroup.update({ name: body.name });
   res.jsend.success(data);
@@ -37,6 +41,7 @@ function remove({ userGroup }, res) {
 module.exports = {
   list,
   create,
+  get,
   patch,
   remove
 };

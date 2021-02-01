@@ -11,6 +11,7 @@ const router = require('express').Router();
 router
   .param('userGroupId', getUserGroup)
   .patch('/:userGroupId', ctrl.patch)
+  .get('/:userGroupId', ctrl.get)
   .delete('/:userGroupId', ctrl.remove);
 
 router

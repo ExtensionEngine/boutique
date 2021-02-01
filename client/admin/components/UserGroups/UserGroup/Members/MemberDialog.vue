@@ -52,7 +52,7 @@ import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
 import { Role } from '@/../common/config';
-import UserSelect from '../../common/UserSelect';
+import UserSelect from '../../../common/UserSelect';
 
 const resetMember = () => ({
   user: null,

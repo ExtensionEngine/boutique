@@ -1,7 +1,7 @@
 import Content from '@/admin/components/Programs/Program/Content';
 import Enrollments from '@/admin/components/Programs/Program/Enrollments';
 import get from 'lodash/get';
-import Members from '@/admin/components/UserGroups/Members';
+import Members from '@/admin/components/UserGroups/UserGroup/Members';
 import { navigateTo } from '@/common/navigation';
 import NotFound from '@/admin/components/common/NotFound';
 import { numeric as numericParser } from '@/common/utils/paramsParser';
@@ -11,7 +11,9 @@ import { Role } from '@/../common/config';
 import Router from 'vue-router';
 import Settings from '@/admin/components/Programs/Program/Settings';
 import store from './store';
+import UserGroup from '@/admin/components/UserGroups/UserGroup';
 import UserGroups from '@/admin/components/UserGroups';
+import UserGroupSettings from '@/admin/components/UserGroups/UserGroup/Settings';
 import Users from '@/admin/components/users';
 import Vue from 'vue';
 
@@ -32,11 +34,21 @@ const router = new Router({
     component: UserGroups,
     meta: { auth: true }
   }, {
-    path: '/user-groups/:userGroupId/members',
-    name: 'members',
+    path: '/user-groups/:userGroupId',
+    component: UserGroup,
     props: numericParser.params,
-    component: Members,
-    meta: { auth: true }
+    children: [{
+      path: 'members',
+      name: 'members',
+      component: Members,
+      props: numericParser.params,
+      meta: { auth: true }
+    }, {
+      path: 'settings',
+      name: 'userGroupSettings',
+      component: UserGroupSettings,
+      props: numericParser.params
+    }]
   }, {
     path: '/programs',
     name: 'programs',

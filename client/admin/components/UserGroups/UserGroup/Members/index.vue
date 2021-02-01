@@ -60,17 +60,17 @@
       :user-group-id="userGroupId"
       :user-ids="userIds" />
     <confirmation-dialog
-      @update:visible="confirmation = null"
       @confirmed="fetch()"
-      v-bind="confirmation"
-      :visible="!!confirmation" />
+      :visible.sync="confirmation.dialog"
+      :action="confirmation.action"
+      :message="confirmation.message"
+      heading="Unenroll" />
   </v-container>
 </template>
 
 <script>
 import api from '@/admin/api/userGroupMember';
-import ConfirmationDialog from '../../common/ConfirmationDialog';
-import humanize from 'humanize-string';
+import ConfirmationDialog from '../../../common/ConfirmationDialog';
 import MemberDialog from './MemberDialog';
 import throttle from 'lodash/throttle';
 
@@ -98,12 +98,12 @@ export default {
   data: () => ({
     members: [],
     filter: null,
-    dataTable: defaultPage(),
+    dataTable: { rowsPerPage: 10, ...defaultPage() },
     totalItems: 0,
     memberDialog: false,
     editedMember: null,
     showArchived: false,
-    confirmation: null
+    confirmation: { dialog: null }
   }),
   computed: {
     headers,
@@ -124,14 +124,14 @@ export default {
       this.totalItems = total;
     }, 400),
     archiveOrRestore(member) {
-      const { firstName, lastName, deletedAt } = member;
+      const { user, deletedAt } = member;
       const action = deletedAt ? 'restore' : 'archive';
-      const name = `${firstName} ${lastName}`;
-      this.confirmation = {
-        heading: `${humanize(action)} member`,
+      const name = `${user.firstName} ${user.lastName}`;
+      Object.assign(this.confirmation, {
         message: `Are you sure you want to ${action} member "${name}"?`,
-        action: actions(member)[action]
-      };
+        action: actions(member)[action],
+        dialog: true
+      });
     }
   },
   watch: {

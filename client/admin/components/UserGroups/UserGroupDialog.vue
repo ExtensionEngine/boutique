@@ -1,11 +1,15 @@
 <template>
-  <admin-dialog v-model="show" header-icon="mdi-account-multiple-plus-outline">
-    <template v-slot:header>
-      {{ userGroupData ? 'Edit' : 'Create' }} User Group
+  <admin-dialog v-model="visible" header-icon="mdi-account-multiple-plus-outline">
+    <template v-slot:activator="{ on }">
+      <v-btn v-on="on" text>
+        <v-icon dense class="mr-1">mdi-plus</v-icon>
+        Create
+      </v-btn>
     </template>
+    <template v-slot:header>Create User Group</template>
     <template v-slot:body>
       <validation-observer
-        v-if="show"
+        v-if="visible"
         ref="form"
         @submit.prevent="$refs.form.handleSubmit(save)"
         tag="form"
@@ -34,47 +38,28 @@
 <script>
 import AdminDialog from '@/admin/components/common/Dialog';
 import api from '@/admin/api/userGroup';
-import cloneDeep from 'lodash/cloneDeep';
-import isEmpty from 'lodash/isEmpty';
 
-const resetUserGroup = () => ({ name: '' });
+const getDefaultData = () => ({ name: '' });
 
 export default {
   name: 'user-group-dialog',
-  props: {
-    visible: { type: Boolean, default: false },
-    userGroupData: { type: Object, default: () => ({}) }
-  },
   data: () => ({
-    userGroup: resetUserGroup(),
-    isLoading: false
+    visible: false,
+    userGroup: getDefaultData()
   }),
-  computed: {
-    show: {
-      get: vm => vm.visible,
-      set(value) {
-        if (!value) this.close();
-      }
-    },
-    isNewUserGroup: vm => !vm.userGroup.id
-  },
   methods: {
     close() {
-      this.userGroup = resetUserGroup();
-      this.$emit('update:visible', false);
+      this.visible = false;
     },
-    async save() {
-      const action = this.isNewUserGroup ? 'create' : 'update';
-      await api[action](this.userGroup);
-      this.$emit(`${action}d`);
+    save() {
+      api.create(this.userGroup).then(() => this.$emit('created'));
       this.close();
     }
   },
   watch: {
-    show(val) {
+    visible(val) {
       if (!val) return;
-      const { userGroupData } = this;
-      if (!isEmpty(userGroupData)) this.userGroup = cloneDeep(userGroupData);
+      this.userGroup = getDefaultData();
     }
   },
   components: { AdminDialog }
