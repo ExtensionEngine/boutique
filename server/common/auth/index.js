@@ -28,7 +28,7 @@ const jwtOptions = {
 
 passport.use(new Strategy(jwtOptions, (payload, done) => {
   return User.findByPk(payload.id)
-    .then(user => done(null, user || false))
+    .then(user => done(null, user ? user.logActivity() : false))
     .error(err => done(err, false));
 }));
 

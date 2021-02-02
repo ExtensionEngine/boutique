@@ -8,7 +8,7 @@ const humanize = require('humanize-string');
 const isEmail = require('is-email-like');
 const map = require('lodash/map');
 const { prompt } = require('inquirer');
-const { role } = require('../../common/config');
+const { Role } = require('../../common/config');
 const { User } = require('../common/database');
 
 const questions = [{
@@ -35,7 +35,7 @@ const questions = [{
 }, {
   type: 'list',
   name: 'role',
-  choices: map(role, value => ({ name: humanize(value), value })),
+  choices: map(Role, value => ({ name: humanize(value), value })),
   message: 'Select role:'
 }];
 

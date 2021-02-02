@@ -3,14 +3,15 @@
 const config = require('./config');
 const forEach = require('lodash/forEach');
 const invoke = require('lodash/invoke');
+const logger = require('../logger')('db');
 const { migrationsPath } = require('../../../sequelize.config');
 const pick = require('lodash/pick');
 const pkg = require('../../../package.json');
+const Promise = require('bluebird');
 const semver = require('semver');
 const Sequelize = require('sequelize');
 const Umzug = require('umzug');
-const { wrapAsyncMethods } = require('./helpers');
-const logger = require('../logger')('db');
+const { wrapMethods } = require('./helpers');
 
 // Require models.
 /* eslint-disable require-sort/require-sort */
@@ -30,7 +31,7 @@ const defineModel = Model => {
   const hooks = invoke(Model, 'hooks') || {};
   const scopes = invoke(Model, 'scopes', sequelize) || {};
   const options = invoke(Model, 'options') || {};
-  wrapAsyncMethods(Model);
+  wrapMethods(Model, Promise);
   return Model.init(fields, { sequelize, hooks, scopes, ...options });
 };
 
@@ -92,6 +93,7 @@ const db = {
   ...models
 };
 
+wrapMethods(Sequelize.Model, Promise);
 // Patch Sequelize#method to support getting models by class name.
 sequelize.model = name => sequelize.models[name] || db[name];
 

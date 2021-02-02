@@ -2,19 +2,17 @@
 
 const { ip, port } = require('./config');
 const app = require('./app');
-const bluebird = require('bluebird');
 const database = require('./common/database');
-const { promisify } = require('util');
-const sequelize = require('sequelize');
 const logger = require('./common/logger')();
-const runServer = promisify(app.listen.bind(app));
+const Promise = require('bluebird');
+const { promisify } = require('util');
 
-if (process.env.NODE_ENV !== 'production') {
-  sequelize.Promise.config({ longStackTraces: true });
-  bluebird.config({ longStackTraces: true });
-}
+const isProduction = process.env.NODE_ENV === 'production';
+Promise.config({ longStackTraces: !isProduction });
 
 const address = `http://${ip}:${port}`;
+
+const runServer = promisify(app.listen.bind(app));
 
 database.initialize()
   .then(() => runServer(port, ip))

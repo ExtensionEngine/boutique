@@ -1,68 +1,84 @@
 'use strict';
 
-const { Model, Op, Sequelize, UniqueConstraintError } = require('sequelize');
+const { Model, Op, Sequelize } = require('sequelize');
+const { restoreOrCreate, restoreOrCreateAll } = require('../common/database/restore');
 const Audience = require('../common/auth/audience');
 const bcrypt = require('bcrypt');
-const castArray = require('lodash/castArray');
-const { auth: config = {} } = require('../config');
-const find = require('lodash/find');
+const config = require('../config');
+const IntervalCache = require('../common/util/interval-cache');
 const jwt = require('jsonwebtoken');
 const logger = require('../common/logger')();
 const mail = require('../common/mail');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
 const Promise = require('bluebird');
-const { role } = require('../../common/config');
+const { Role } = require('../../common/config');
 const { sql } = require('../common/database/helpers');
 const values = require('lodash/values');
 
+const PROFILE_ATTRS = [
+  'id', 'firstName', 'lastName', 'email',
+  'role', 'createdAt', 'lastActive', 'deletedAt'
+];
+
+const activityLookup = new IntervalCache(config.userActivity);
+Object.values(IntervalCache.Events).forEach(event => {
+  activityLookup.on(event, (id, date) => User.updateActivity(id, date));
+});
+
 class User extends Model {
-  static fields(DataTypes) {
+  static fields({ DATE, ENUM, STRING, VIRTUAL }) {
     return {
       email: {
-        type: DataTypes.STRING,
+        type: STRING,
         allowNull: false,
         validate: { isEmail: true, notEmpty: true },
         unique: { msg: 'This email address is already in use.' }
       },
       password: {
-        type: DataTypes.STRING,
+        type: STRING,
         validate: { notEmpty: true, len: [5, 255] }
       },
       role: {
-        type: DataTypes.ENUM(values(role)),
+        type: ENUM(values(Role)),
         allowNull: false,
-        defaultValue: role.LEARNER
+        defaultValue: Role.LEARNER
       },
       token: {
-        type: DataTypes.STRING,
+        type: STRING,
         validate: { notEmpty: true, len: [10, 500] }
       },
       firstName: {
-        type: DataTypes.STRING,
+        type: STRING,
         field: 'first_name'
       },
       lastName: {
-        type: DataTypes.STRING,
+        type: STRING,
         field: 'last_name'
       },
+      lastActive: {
+        type: DATE,
+        field: 'last_active'
+      },
       createdAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         field: 'created_at'
       },
       updatedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         field: 'updated_at'
       },
       deletedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         field: 'deleted_at'
       },
       profile: {
-        type: DataTypes.VIRTUAL,
+        type: VIRTUAL,
         get() {
-          return pick(this,
-            ['id', 'firstName', 'lastName', 'email', 'role', 'createdAt', 'deletedAt']);
+          const profile = pick(this, PROFILE_ATTRS);
+          const lastActive = activityLookup.get(this.id);
+          if (lastActive) profile.lastActive = lastActive;
+          return profile;
         }
       }
     };
@@ -104,6 +120,9 @@ class User extends Model {
       },
       beforeBulkCreate(users) {
         return Promise.map(users, user => user.encryptPassword());
+      },
+      beforeDestroy(user) {
+        activityLookup.clear(user.id, { silent: true });
       }
     };
   }
@@ -133,37 +152,31 @@ class User extends Model {
     return user.save({ paranoid: false });
   }
 
-  static async import(users, { concurrency = 16, ...options } = {}) {
-    const errors = [];
-    await this.restoreOrBuild(users, { concurrency }).map((result, i) => {
-      if (result.isFulfilled()) return this.invite(result.value(), options);
-      const { message = 'Failed to import user.' } = result.reason();
-      errors.push({ ...users[i], message });
-    }, { concurrency });
-    return errors;
+  static async restoreOrCreate(user, options) {
+    return restoreOrCreate(this, user, options);
   }
 
-  static async restoreOrBuild(users, { concurrency = 16 } = {}) {
-    users = castArray(users);
+  static async restoreOrCreateAll(users, options) {
     const where = { email: map(users, 'email') };
-    const found = await User.findAll({ where, paranoid: false });
-    return Promise.map(users, userData => Promise.try(() => {
-      const user = find(found, { email: userData.email });
-      if (user && !user.deletedAt) {
-        const message = this.rawAttributes.email.unique.msg;
-        throw new UniqueConstraintError({ message });
-      }
-      if (user) {
-        user.setDataValue('deletedAt', null);
-        return user;
-      }
-      return this.build(userData);
-    }).reflect(), { concurrency });
+    return restoreOrCreateAll(this, users, { where }, options);
+  }
+
+  static updateActivity(id, lastActive) {
+    return this.update({ lastActive }, { where: { id } });
+  }
+
+  static stopActivityLog(userId) {
+    activityLookup.clear(userId);
+  }
+
+  logActivity() {
+    activityLookup.set(this.id, new Date());
+    return this;
   }
 
   async encryptPassword() {
     if (!this.password) return;
-    this.password = await bcrypt.hash(this.password, config.saltRounds);
+    this.password = await bcrypt.hash(this.password, config.auth.saltRounds);
     return this;
   }
 
@@ -184,7 +197,7 @@ class User extends Model {
 
   createToken(options = {}) {
     const payload = pick(this, ['id', 'email']);
-    return jwt.sign(payload, config.secret, options);
+    return jwt.sign(payload, config.auth.secret, options);
   }
 
   isAdmin() {
