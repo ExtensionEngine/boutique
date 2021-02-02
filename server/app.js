@@ -7,8 +7,6 @@ const bodyParser = require('body-parser');
 const config = require('./config');
 const cors = require('cors');
 const express = require('express');
-// eslint-disable-next-line require-sort/require-sort
-require('express-async-errors');
 const fallback = require('express-history-api-fallback');
 const helmet = require('helmet');
 const HttpError = require('http-errors').HttpError;
@@ -17,8 +15,10 @@ const morgan = require('morgan');
 const nocache = require('nocache');
 const origin = require('./common/origin');
 const router = require('./router');
-
 const logger = require('./common/logger')();
+
+// eslint-disable-next-line require-sort/require-sort
+require('express-async-errors');
 
 const app = express();
 app.use(helmet());

@@ -3,7 +3,6 @@
 const config = require('./config');
 const forEach = require('lodash/forEach');
 const invoke = require('lodash/invoke');
-const logger = require('../logger')('db');
 const { migrationsPath } = require('../../../sequelize.config');
 const pick = require('lodash/pick');
 const pkg = require('../../../package.json');
@@ -12,6 +11,7 @@ const semver = require('semver');
 const Sequelize = require('sequelize');
 const Umzug = require('umzug');
 const { wrapMethods } = require('./helpers');
+const logger = require('../logger')('db');
 
 // Require models.
 /* eslint-disable require-sort/require-sort */
