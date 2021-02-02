@@ -29,9 +29,9 @@ const uniqueEmail = {
 };
 
 const uniqueEnrollment = {
-  params: ['learnerId', 'programId'],
-  validate: (_, { learnerId, programId }) => {
-    const params = { learnerId, programId };
+  params: ['learnerId', 'offeringId'],
+  validate: (_, { learnerId, offeringId }) => {
+    const params = { learnerId, offeringId };
     return enrollmentApi.fetch({ params }).then(({ total }) => !total);
   },
   message: 'Learner is already enrolled.'

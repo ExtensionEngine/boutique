@@ -18,35 +18,19 @@
       </v-col>
     </v-row>
     <v-data-iterator
-      :items="programs"
+      :items="offerings"
       :options.sync="options"
       :footer-props="{ itemsPerPageOptions: [30, 60, 90, -1] }"
       :server-items-length="totalItems"
       :hide-default-footer="totalItems < options.itemsPerPage">
-      <template slot-scope="{ items: programs }">
+      <template slot-scope="{ items }">
         <v-row>
           <v-col
-            v-for="({ id, name }) in programs"
-            :key="id"
+            v-for="it in items"
+            :key="it.id"
             lg="4"
             sm="12">
-            <v-card
-              color="primary"
-              min-height="200"
-              dark
-              class="d-flex flex-column justify-space-between">
-              <v-card-title class="headline grey--text text--lighten-3">
-                {{ name }}
-              </v-card-title>
-              <v-card-actions class="justify-end">
-                <v-btn
-                  :to="{ name: 'enrollments', params: { programId: id } }"
-                  color="secondary"
-                  text>
-                  Open
-                </v-btn>
-              </v-card-actions>
-            </v-card>
+            <offering-card v-bind="it" />
           </v-col>
         </v-row>
       </template>
@@ -55,16 +39,17 @@
 </template>
 
 <script>
-import api from '@/admin/api/program';
+import api from '@/admin/api/offering';
 import CreateDialog from './CreateDialog';
+import OfferingCard from './Card';
 import throttle from 'lodash/throttle';
 
 const defaultPage = () => ({ page: 1, sortBy: ['updatedAt'], sortDesc: [true] });
 
 export default {
-  name: 'program-list',
+  name: 'offering-list',
   data: () => ({
-    programs: [],
+    offerings: [],
     filter: null,
     totalItems: 0,
     showArchived: false,
@@ -83,7 +68,7 @@ export default {
           deleted: this.showArchived
         }
       });
-      this.programs = items;
+      this.offerings = items;
       this.totalItems = total;
     }, 400)
   },
@@ -96,7 +81,8 @@ export default {
     this.fetch();
   },
   components: {
-    CreateDialog
+    CreateDialog,
+    OfferingCard
   }
 };
 </script>

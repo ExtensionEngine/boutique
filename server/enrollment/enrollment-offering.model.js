@@ -22,14 +22,16 @@ class EnrollmentOffering extends Model {
     };
   }
 
-  static associate({ ContentRepo, Program }) {
+  static associate({ ContentRepo, Enrollment, Program }) {
     this.belongsTo(Program, {
-      as: 'program',
       foreignKey: { name: 'programId', field: 'program_id' }
     });
     this.belongsTo(ContentRepo, {
       as: 'repository',
       foreignKey: { name: 'repositoryId', field: 'repository_id' }
+    });
+    this.hasMany(Enrollment, {
+      foreignKey: { name: 'offeringId', field: 'enrollment_offering_id' }
     });
   }
 
