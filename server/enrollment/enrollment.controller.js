@@ -1,6 +1,14 @@
 'use strict';
 
-const { Enrollment, Sequelize, User } = require('../common/database');
+const {
+  ContentRepo,
+  Enrollment,
+  EnrollmentOffering,
+  Program,
+  Sequelize,
+  User
+} = require('../common/database');
+
 const { createError } = require('../common/errors');
 const HttpStatus = require('http-status');
 const map = require('lodash/map');
@@ -10,29 +18,40 @@ const Op = Sequelize.Op;
 
 const processOutput = model => ({ ...model.toJSON(), learner: model.learner.profile });
 
-function list({ query: { programId, learnerId, filter }, options }, res) {
+function list({ query: { offeringId, learnerId, filter }, options }, res) {
+  const include = [{
+    model: User.match(filter),
+    as: 'learner'
+  }, {
+    model: EnrollmentOffering,
+    as: 'offering',
+    include: [{ model: Program }, { model: ContentRepo, as: 'repository' }]
+  }];
   const cond = [];
-  const include = [{ model: User.match(filter), as: 'learner' }];
-  if (programId) cond.push({ programId });
+  if (offeringId) cond.push({ offeringId });
   if (learnerId) cond.push({ learnerId });
-  const opts = { where: { [Op.and]: cond }, include, ...options };
+  const opts = {
+    where: { [Op.and]: cond },
+    include,
+    ...options
+  };
   return Enrollment.findAndCountAll(opts).then(({ rows, count }) => {
     res.jsend.success({ items: map(rows, processOutput), total: count });
   });
 }
 
 async function create({ body }, res) {
-  const { learnerId, programId } = body;
+  const { learnerId, offeringId } = body;
   if (!Array.isArray(learnerId)) {
-    const [err, enrollment] = await Enrollment.restoreOrCreate({ learnerId, programId });
+    const [err, enrollment] = await Enrollment.restoreOrCreate({ learnerId, offeringId });
     if (err) return createError(CONFLICT, 'Enrollment exists!');
     await enrollment.reload({ include: ['learner'] });
     return res.jsend.success(enrollment);
   }
-  const data = learnerId.map(id => ({ learnerId: id, programId }));
+  const data = learnerId.map(id => ({ learnerId: id, offeringId }));
   const [learners, enrollments] = await bulkCreate(data);
   const failed = learners.map(it => ({
-    programId,
+    offeringId,
     learnerId: it.id,
     learner: it.profile
   }));

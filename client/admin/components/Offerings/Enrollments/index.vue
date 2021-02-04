@@ -9,7 +9,9 @@
           single-line hide-details clearable />
       </v-col>
       <v-col md="6" lg="8" class="d-flex justify-end">
-        <enrollment-dialog @enrolled="fetch(defaultPage)" :program-id="program.id" />
+        <enrollment-dialog
+          @enrolled="fetch(defaultPage)"
+          :offering-id="offering.id" />
       </v-col>
     </v-row>
     <v-data-table
@@ -63,7 +65,7 @@ const headers = () => [
 export default {
   name: 'enrollments',
   props: {
-    program: { type: Object, required: true }
+    offering: { type: Object, required: true }
   },
   data: () => ({
     enrollments: [],
@@ -87,7 +89,7 @@ export default {
       Object.assign(this.dataTable, opts);
       const params = {
         filter: this.filter,
-        programId: this.program.id
+        offeringId: this.offering.id
       };
       const { items, total } = await api.fetch({ ...this.dataTable, params });
       this.enrollments = items;

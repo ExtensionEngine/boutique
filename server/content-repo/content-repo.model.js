@@ -56,9 +56,12 @@ class ContentRepo extends Model {
     };
   }
 
-  static associate({ Program }) {
+  static associate({ EnrollmentOffering, Program }) {
     this.belongsTo(Program, {
       foreignKey: { name: 'programId', field: 'program_id' }
+    });
+    this.hasOne(EnrollmentOffering, {
+      foreignKey: { name: 'repositoryId', field: 'repository_id' }
     });
   }
 

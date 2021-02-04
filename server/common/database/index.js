@@ -20,6 +20,7 @@ const User = require('../../user/user.model');
 const Preview = require('../../preview/preview.model');
 const Program = require('../../program/program.model');
 const Enrollment = require('../../enrollment/enrollment.model');
+const EnrollmentOffering = require('../../enrollment/enrollment-offering.model');
 const ContentRepo = require('../../content-repo/content-repo.model');
 const UserGroup = require('../../userGroup/userGroup.model');
 const UserGroupMember = require('../../userGroupMember/userGroupMember.model');
@@ -80,6 +81,7 @@ const models = {
   Preview: defineModel(Preview),
   Program: defineModel(Program),
   Enrollment: defineModel(Enrollment),
+  EnrollmentOffering: defineModel(EnrollmentOffering),
   ContentRepo: defineModel(ContentRepo),
   UserGroup: defineModel(UserGroup),
   UserGroupMember: defineModel(UserGroupMember)

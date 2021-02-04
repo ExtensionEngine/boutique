@@ -1,15 +1,15 @@
-import Content from '@/admin/components/Programs/Program/Content';
-import Enrollments from '@/admin/components/Programs/Program/Enrollments';
+import Content from '@/admin/components/Offerings/Program/Content';
+import Enrollments from '@/admin/components/Offerings/Enrollments';
 import get from 'lodash/get';
 import Members from '@/admin/components/UserGroups/UserGroup/Members';
 import { navigateTo } from '@/common/navigation';
 import NotFound from '@/admin/components/common/NotFound';
 import { numeric as numericParser } from '@/common/utils/paramsParser';
-import Program from '@/admin/components/Programs/Program';
-import Programs from '@/admin/components/Programs';
+import Offerings from '@/admin/components/Offerings';
+import Program from '@/admin/components/Offerings/Program';
 import { Role } from '@/../common/config';
 import Router from 'vue-router';
-import Settings from '@/admin/components/Programs/Program/Settings';
+import Settings from '@/admin/components/Offerings/Program/Settings';
 import store from './store';
 import UserGroup from '@/admin/components/UserGroups/UserGroup';
 import UserGroups from '@/admin/components/UserGroups';
@@ -50,9 +50,9 @@ const router = new Router({
       props: numericParser.params
     }]
   }, {
-    path: '/programs',
-    name: 'programs',
-    component: Programs,
+    path: '/offerings',
+    name: 'offerings',
+    component: Offerings,
     meta: { auth: true }
   }, {
     path: '/programs/:programId',
@@ -60,7 +60,7 @@ const router = new Router({
     props: numericParser.params,
     children: [{
       path: '',
-      name: 'enrollments',
+      name: 'programEnrollments',
       component: Enrollments,
       props: numericParser.params
     }, {
