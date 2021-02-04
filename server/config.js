@@ -11,6 +11,7 @@ module.exports = {
   apiPath: process.env.API_PATH || '/api/v1/',
   staticFolder: path.resolve(__dirname, '../dist'),
   uploadLimit: '10mb',
+  userImportTemplateFormat: process.env.USER_IMPORT_TEMPLATE_FORMAT || 'xlsx',
   cors: {
     allowedOrigins: [],
     allowedHeaders: []
