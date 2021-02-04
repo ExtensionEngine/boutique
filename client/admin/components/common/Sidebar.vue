@@ -33,7 +33,6 @@ export default {
     routes: () => [
       { name: 'users', label: 'Users', icon: 'account-multiple' },
       { name: 'user-groups', label: 'User Groups', icon: 'account-group' },
-      { name: 'programs', label: 'Programs', icon: 'bookshelf' },
       { name: 'offerings', label: 'Courses & Series', icon: 'bookshelf' }
     ]
   }
