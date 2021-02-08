@@ -21,7 +21,9 @@
       must-sort
       class="transparent">
       <template v-slot:item="{ item }">
-        <tr>
+        <router-link
+          :to="{ name: 'members', params: { userGroupId: item.userGroupId } }"
+          tag="tr">
           <td>{{ item.userGroup.name }}</td>
           <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
           <td class="text-no-wrap text-center">
@@ -29,7 +31,7 @@
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </td>
-        </tr>
+        </router-link>
       </template>
     </v-data-table>
     <confirmation-dialog
