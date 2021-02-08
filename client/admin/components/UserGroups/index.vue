@@ -23,7 +23,7 @@
       :footer-props="{ itemsPerPageOptions: [30, 60, 90, -1] }"
       :server-items-length="totalItems"
       :hide-default-footer="totalItems < options.itemsPerPage">
-      <template :slot-scope="{ items: userGroups }">
+      <template slot-scope="{ items: userGroups }">
         <v-row>
           <v-col v-for="item in userGroups" :key="item.id" lg="4" sm="12">
             <v-card

@@ -24,11 +24,15 @@ class UserGroup extends Model {
     };
   }
 
-  static associate({ User, UserGroupMember }) {
+  static associate({ EnrollmentOffering, User, UserGroupMember, OfferingUserGroup }) {
     this.belongsToMany(User, {
       as: 'members',
       through: UserGroupMember,
       foreignKey: { name: 'userGroupId', field: 'user_group_id' }
+    });
+    this.belongsToMany(EnrollmentOffering, {
+      through: OfferingUserGroup,
+      foreignKey: { name: 'enrollmentOfferingId', field: 'enrollment_offering_id' }
     });
   }
 

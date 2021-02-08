@@ -20,10 +20,11 @@ const User = require('../../user/user.model');
 const Preview = require('../../preview/preview.model');
 const Program = require('../../program/program.model');
 const Enrollment = require('../../enrollment/enrollment.model');
-const EnrollmentOffering = require('../../enrollment/enrollment-offering.model');
+const EnrollmentOffering = require('../../enrollment-offering/enrollment-offering.model');
 const ContentRepo = require('../../content-repo/content-repo.model');
-const UserGroup = require('../../userGroup/userGroup.model');
-const UserGroupMember = require('../../userGroupMember/userGroupMember.model');
+const UserGroup = require('../../user-group/user-group.model');
+const UserGroupMember = require('../../user-group-member/user-group-member.model');
+const OfferingUserGroup = require('../../offering-user-group/offering-user-group.model');
 /* eslint-enable */
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -84,7 +85,8 @@ const models = {
   EnrollmentOffering: defineModel(EnrollmentOffering),
   ContentRepo: defineModel(ContentRepo),
   UserGroup: defineModel(UserGroup),
-  UserGroupMember: defineModel(UserGroupMember)
+  UserGroupMember: defineModel(UserGroupMember),
+  OfferingUserGroup: defineModel(OfferingUserGroup)
 };
 
 forEach(models, model => {

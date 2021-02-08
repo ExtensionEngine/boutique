@@ -2,7 +2,7 @@ import { extractData, processParams } from '@/common/api/helpers';
 import request from '@/common/api/request';
 
 const urls = {
-  root: '/enrollments/offerings'
+  root: '/offerings'
 };
 
 function fetch(params = {}) {

@@ -1,7 +1,7 @@
 'use strict';
 
 const { createError } = require('../common/errors');
-const ctrl = require('./userGroupMember.controller');
+const ctrl = require('./user-group-member.controller');
 const { NOT_FOUND } = require('http-status');
 const { UserGroupMember } = require('../common/database');
 const router = require('express').Router();

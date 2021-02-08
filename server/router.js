@@ -3,22 +3,23 @@
 const auth = require('./common/auth').authenticate('jwt');
 const contentRepo = require('./content-repo');
 const enrollment = require('./enrollment');
+const enrollmentOffering = require('./enrollment-offering');
 const express = require('express');
 const get = require('lodash/get');
 const preview = require('./preview');
 const program = require('./program');
 const { Sequelize } = require('./common/database');
 const user = require('./user');
-const userGroup = require('./userGroup');
+const userGroup = require('./user-group');
 
 const router = express.Router();
-// TODO: Remove this demo route!
-router.use('/ping', (_, res) => res.jsend.success(null));
+
 router.use('/', parseOptions);
 router.use(user.path, user.router);
 router.use(contentRepo.path, auth, contentRepo.router);
 router.use(program.path, auth, program.router);
 router.use(enrollment.path, auth, enrollment.router);
+router.use(enrollmentOffering.path, auth, enrollmentOffering.router);
 router.use(preview.path, preview.router);
 router.use(userGroup.path, userGroup.router);
 

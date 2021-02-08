@@ -1,7 +1,6 @@
 <template>
   <v-container fluid>
     <div class="ml-10">
-      <v-breadcrumbs :items="breadcrumbs" class="px-0" />
       <v-tabs color="primary" background-color="transparent">
         <v-tab
           v-for="({ name, label }) in tabs"
@@ -29,12 +28,7 @@ export default {
     tabs: () => [
       { name: 'members', label: 'Members' },
       { name: 'userGroupSettings', label: 'Settings' }
-    ],
-    breadcrumbs: ({ userGroup }) => userGroup
-      ? [
-        { text: 'User groups', disabled: true },
-        { text: userGroup.name, disabled: true }]
-      : []
+    ]
   },
   async created() {
     this.userGroup = await api.get(this.userGroupId);
