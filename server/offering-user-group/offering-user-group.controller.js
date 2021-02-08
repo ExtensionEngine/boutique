@@ -10,8 +10,8 @@ const { Op } = Sequelize;
 function list({ offering, query, options }, res) {
   const { filter, archived } = query;
   const where = { enrollmentOfferingId: offering.id };
-  if (filter) where.name = { [Op.iLike]: `%${filter.trim()}%` };
-  const include = { model: UserGroup, attributes: ['id', 'name'] };
+  const include = { model: UserGroup, where: {}, attributes: ['id', 'name'] };
+  if (filter) include.where.name = { [Op.iLike]: `%${filter.trim()}%` };
   Object.assign(options, { where, include, paranoid: !yn(archived) });
   return OfferingUserGroup.findAndCountAll(options)
     .then(({ rows, count }) => res.jsend.success({ items: rows, total: count }));
