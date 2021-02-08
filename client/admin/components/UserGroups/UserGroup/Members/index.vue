@@ -63,7 +63,7 @@
       :visible.sync="confirmation.dialog"
       :action="confirmation.action"
       :message="confirmation.message"
-      heading="Unenroll" />
+      heading="Archive or Restore" />
   </v-container>
 </template>
 

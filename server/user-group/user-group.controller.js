@@ -9,8 +9,7 @@ const { Op } = Sequelize;
 
 async function list({ query, options }, res) {
   const { parentId = null, filter, archived } = query;
-  const where = {};
-  if (parentId) where.parentId = parentId;
+  const where = { parentId };
   if (filter) where.name = { [Op.iLike]: `%${filter.trim()}%` };
   Object.assign(options, { where, paranoid: !yn(archived) });
   const { rows, count } = await UserGroup.findAndCountAll(options);
@@ -18,7 +17,7 @@ async function list({ query, options }, res) {
 }
 
 async function create({ body }, res) {
-  const { id, name, parentId = null } = body;
+  const { id, name, parentId } = body;
   const [err, userGroup] = await UserGroup.restoreOrCreate({ id, name, parentId });
   if (err) return createError(CONFLICT, 'User group exists!');
   return res.jsend.success(userGroup);

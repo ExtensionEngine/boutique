@@ -4,8 +4,12 @@ const { Model } = require('sequelize');
 const { restoreOrCreate } = require('../common/database/restore');
 
 class UserGroup extends Model {
-  static fields({ DATE, STRING }) {
+  static fields({ DATE, INTEGER, STRING }) {
     return {
+      parentId: {
+        type: INTEGER,
+        field: 'parent_id'
+      },
       name: {
         type: STRING
       },

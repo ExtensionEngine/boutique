@@ -16,6 +16,7 @@ import UserGroup from '@/admin/components/UserGroups/UserGroup';
 import UserGroups from '@/admin/components/UserGroups';
 import UserGroupSettings from '@/admin/components/UserGroups/UserGroup/Settings';
 import Users from '@/admin/components/users';
+import UserSubGroups from '@/admin/components/UserGroups/UserGroup/SubGroups';
 import Vue from 'vue';
 
 Vue.use(Router);
@@ -42,6 +43,12 @@ const router = new Router({
       path: 'members',
       name: 'members',
       component: Members,
+      props: numericParser.params,
+      meta: { auth: true }
+    }, {
+      path: 'sub-groups',
+      name: 'subGroups',
+      component: UserSubGroups,
       props: numericParser.params,
       meta: { auth: true }
     }, {
