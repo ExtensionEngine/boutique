@@ -6,6 +6,7 @@ import { navigateTo } from '@/common/navigation';
 import NotFound from '@/admin/components/common/NotFound';
 import { numeric as numericParser } from '@/common/utils/paramsParser';
 import Offerings from '@/admin/components/Offerings';
+import OfferingUserGroups from '@/admin/components/Offerings/UserGroups';
 import Program from '@/admin/components/Offerings/Program';
 import { Role } from '@/../common/config';
 import Router from 'vue-router';
@@ -62,6 +63,11 @@ const router = new Router({
       path: '',
       name: 'programEnrollments',
       component: Enrollments,
+      props: numericParser.params
+    }, {
+      path: 'user-groups',
+      name: 'offeringUserGroups',
+      component: OfferingUserGroups,
       props: numericParser.params
     }, {
       path: 'content',

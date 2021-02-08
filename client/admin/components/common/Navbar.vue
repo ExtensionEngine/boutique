@@ -71,6 +71,7 @@ export default {
     fullName: ({ user }) => `${user.firstName} ${user.lastName}`,
     tabs: () => [
       { name: 'programEnrollments', label: 'Enrollments' },
+      { name: 'offeringUserGroups', label: 'User Groups' },
       { name: 'importedContent', label: 'Content' },
       { name: 'programSettings', label: 'Settings' }
     ]

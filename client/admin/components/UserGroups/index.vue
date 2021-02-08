@@ -14,7 +14,7 @@
           class="my-2 archived-checkbox" />
       </v-col>
       <v-col lg="8" md="6" class="d-flex justify-end">
-        <user-group-dialog @create="createOrRestore" />
+        <create-dialog @create="createOrRestore" />
       </v-col>
     </v-row>
     <v-data-iterator
@@ -60,8 +60,8 @@
 
 <script>
 import api from '@/admin/api/userGroup';
+import CreateDialog from './CreateDialog';
 import throttle from 'lodash/throttle';
-import UserGroupDialog from './UserGroupDialog';
 
 const defaultPage = () => ({ sortBy: ['updatedAt'], sortDesc: [true], page: 1 });
 
@@ -94,7 +94,7 @@ export default {
     filter: 'fetch',
     showArchived: 'fetch'
   },
-  components: { UserGroupDialog }
+  components: { CreateDialog }
 };
 </script>
 

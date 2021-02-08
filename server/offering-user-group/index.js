@@ -22,6 +22,6 @@ async function getUserGroup(req, _, next, userGroupId) {
 }
 
 module.exports = {
-  path: '/offering-user-group',
+  path: '/user-groups',
   router
 };
