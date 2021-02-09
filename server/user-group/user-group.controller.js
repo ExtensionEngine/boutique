@@ -8,8 +8,8 @@ const yn = require('yn');
 const { Op } = Sequelize;
 
 async function list({ query, options }, res) {
-  const { parentId = null, filter, archived } = query;
-  const where = { parentId };
+  const { parentId = null, filter, archived, fetchAll } = query;
+  const where = !fetchAll ? { parentId } : {};
   if (filter) where.name = { [Op.iLike]: `%${filter.trim()}%` };
   Object.assign(options, { where, paranoid: !yn(archived) });
   const { rows, count } = await UserGroup.findAndCountAll(options);

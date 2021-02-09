@@ -1,5 +1,5 @@
 <template>
-  <admin-dialog v-model="isVisible" header-icon="mdi-school">
+  <admin-dialog v-model="isVisible" header-icon="mdi-account-multiple-plus-outline">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" text>
         <v-icon dense class="mr-1">mdi-plus</v-icon>
@@ -76,7 +76,7 @@ export default {
     fetch(name) {
       if (this.userGroupId) return;
       this.isLoading = true;
-      const params = { name, limit: 30 };
+      const params = { name, fetchAll: true, limit: 30 };
       return userGroupApi.fetch({ params })
         .then(this.setUserGroups)
         .finally(() => (this.isLoading = false));

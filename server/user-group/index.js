@@ -16,7 +16,6 @@ router
 
 router
   .get('/', ctrl.list)
-  .get('/offering-user-groups', ctrl.list)
   .post('/', ctrl.create);
 
 router.use(path.join('/:userGroupId', userGroupMember.path), userGroupMember.router);
