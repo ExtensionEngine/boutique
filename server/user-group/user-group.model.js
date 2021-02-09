@@ -38,6 +38,14 @@ class UserGroup extends Model {
       through: OfferingUserGroup,
       foreignKey: { name: 'enrollmentOfferingId', field: 'enrollment_offering_id' }
     });
+    this.belongsTo(this, {
+      as: 'parent',
+      foreignKey: { name: 'parentId', field: 'parent_id' }
+    });
+    this.hasMany(this, {
+      as: 'children',
+      foreignKey: { name: 'parentId', field: 'parent_id' }
+    });
   }
 
   static options() {

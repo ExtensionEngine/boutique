@@ -31,11 +31,15 @@ export default {
       { name: 'subGroups', label: 'Sub Groups' },
       { name: 'userGroupSettings', label: 'Settings' }
     ],
-    breadcrumbs: ({ userGroup }) => userGroup
-      ? [
+    breadcrumbs() {
+      if (!this.userGroup) return [];
+      const { name, parent } = this.userGroup;
+      return [
         { text: 'User groups', disabled: true },
-        { text: userGroup.name, disabled: true }]
-      : []
+        ...parent ? [{ text: parent.name, disabled: true }] : [],
+        { text: name, disabled: true }
+      ];
+    }
   },
   watch: {
     userGroupId: {

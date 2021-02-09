@@ -24,7 +24,10 @@ async function create({ body }, res) {
 }
 
 function get({ userGroup }, res) {
-  return res.jsend.success(userGroup);
+  const alias = userGroup.parentId ? 'parent' : 'children';
+  const include = { model: UserGroup, as: alias };
+  return userGroup.reload({ include })
+    .then(userGroup => res.jsend.success(userGroup));
 }
 
 async function patch({ userGroup, body }, res) {
