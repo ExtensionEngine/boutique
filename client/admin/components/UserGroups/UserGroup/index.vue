@@ -12,7 +12,11 @@
         </v-tab>
       </v-tabs>
     </div>
-    <router-view v-if="userGroup" :key="userGroupId" :user-group="userGroup" />
+    <router-view
+      v-if="userGroup"
+      :key="userGroupId"
+      @created="fetch"
+      :user-group="userGroup" />
   </v-container>
 </template>
 
@@ -48,10 +52,15 @@ export default {
     },
     breadcrumbs: vm => [{ text: 'User groups', disabled: true }, ...vm.breadcrumbItems]
   },
-  async created() {
-    const params = { fetchAll: true };
-    const { items } = await api.fetch({ params });
-    this.userGroups = items;
+  methods: {
+    async fetch() {
+      const params = { fetchAll: true };
+      const { items } = await api.fetch({ params });
+      this.userGroups = items;
+    }
+  },
+  created() {
+    this.fetch();
   }
 };
 </script>

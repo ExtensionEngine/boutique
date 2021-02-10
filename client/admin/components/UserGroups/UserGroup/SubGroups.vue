@@ -89,7 +89,10 @@ export default {
     }, 400),
     createOrRestore(userGroup) {
       return api.create(userGroup)
-        .then(() => this.fetch(defaultPage))
+        .then(() => {
+          this.$emit('created');
+          return this.fetch(defaultPage);
+        })
         .finally(() => (this.showArchived = false));
     }
   },
