@@ -35,8 +35,9 @@ export default {
       { name: 'userGroupSettings', label: 'Settings' }
     ],
     userGroup: vm => find(vm.userGroups, { id: vm.userGroupId }),
-    bradcrumbItems() {
+    breadcrumbItems() {
       const { userGroups, userGroup } = this;
+      if (!userGroup) return [];
       const ancestors = transform(userGroups, (acc, _it) => {
         const parent = find(userGroups, { id: acc.currentGroup.parentId });
         if (!parent) return false;
@@ -45,10 +46,7 @@ export default {
       }, { items: [userGroup], currentGroup: userGroup });
       return reverse(ancestors.items).map(it => ({ text: it.name, disabled: true }));
     },
-    breadcrumbs() {
-      if (!this.userGroup) return [];
-      return [{ text: 'User groups', disabled: true }, ...this.bradcrumbItems];
-    }
+    breadcrumbs: vm => [{ text: 'User groups', disabled: true }, ...vm.breadcrumbItems]
   },
   async created() {
     const params = { fetchAll: true };
