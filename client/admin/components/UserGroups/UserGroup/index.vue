@@ -48,7 +48,10 @@ export default {
         acc.items.push(parent);
         acc.currentGroup = parent;
       }, { items: [userGroup], currentGroup: userGroup });
-      return reverse(ancestors.items).map(it => ({ text: it.name, disabled: true }));
+      return reverse(ancestors.items).map(({ id, name }) => {
+        const params = { userGroupId: id };
+        return { text: name, to: { params } };
+      });
     },
     breadcrumbs: vm => [{ text: 'User groups', disabled: true }, ...vm.breadcrumbItems]
   },
