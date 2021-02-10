@@ -18,36 +18,42 @@
 
 <script>
 import api from '@/admin/api/userGroup';
+import find from 'lodash/find';
+import reverse from 'lodash/reverse';
+import transform from 'lodash/transform';
 
 export default {
   name: 'user-group-container',
   props: {
     userGroupId: { type: Number, required: true }
   },
-  data: () => ({ userGroup: null }),
+  data: () => ({ userGroups: [] }),
   computed: {
     tabs: () => [
       { name: 'members', label: 'Members' },
       { name: 'subGroups', label: 'Sub Groups' },
       { name: 'userGroupSettings', label: 'Settings' }
     ],
+    userGroup: vm => find(vm.userGroups, { id: vm.userGroupId }),
+    bradcrumbItems() {
+      const { userGroups, userGroup } = this;
+      const ancestors = transform(userGroups, (acc, _it) => {
+        const parent = find(userGroups, { id: acc.currentGroup.parentId });
+        if (!parent) return false;
+        acc.items.push(parent);
+        acc.currentGroup = parent;
+      }, { items: [userGroup], currentGroup: userGroup });
+      return reverse(ancestors.items).map(it => ({ text: it.name, disabled: true }));
+    },
     breadcrumbs() {
       if (!this.userGroup) return [];
-      const { name, parent } = this.userGroup;
-      return [
-        { text: 'User groups', disabled: true },
-        ...parent ? [{ text: parent.name, disabled: true }] : [],
-        { text: name, disabled: true }
-      ];
+      return [{ text: 'User groups', disabled: true }, ...this.bradcrumbItems];
     }
   },
-  watch: {
-    userGroupId: {
-      immediate: true,
-      async handler(userGroupId) {
-        this.userGroup = await api.get(userGroupId);
-      }
-    }
+  async created() {
+    const params = { fetchAll: true };
+    const { items } = await api.fetch({ params });
+    this.userGroups = items;
   }
 };
 </script>
