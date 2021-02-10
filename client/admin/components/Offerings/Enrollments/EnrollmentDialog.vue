@@ -19,17 +19,14 @@
           v-slot="{ errors }"
           :rules="{ required: true, unique_enrollment: { learnerId, offeringId } }"
           name="learner">
-          <v-autocomplete
-            v-model="learnerId"
-            :items="learners"
+          <user-select
+            v-model="learner"
+            :params="{ role: 'LEARNER', limit: 30 }"
             :error-messages="errors"
-            :search-input.sync="email"
-            :loading="isLoading"
-            name="learner"
             label="Learner"
-            placeholder="Start typing to Search"
-            prepend-icon="mdi-magnify"
-            clearable />
+            append-icon="mdi-magnify"
+            clearable outlined
+            class="mb-3" />
         </validation-provider>
         <div class="d-flex justify-end">
           <v-btn @click="close" text>Cancel</v-btn>
@@ -45,7 +42,7 @@ import AdminDialog from '@/admin/components/common/Dialog';
 import enrollmentApi from '@/admin/api/enrollment';
 import map from 'lodash/map';
 import pick from 'lodash/pick';
-import userApi from '@/admin/api/user';
+import UserSelect from '@/admin/components/common/UserSelect';
 
 export default {
   name: 'enrollment-dialog',
@@ -54,11 +51,13 @@ export default {
   },
   data: () => ({
     isVisible: false,
-    email: null,
-    learnerId: null,
     learners: [],
+    learner: null,
     isLoading: false
   }),
+  computed: {
+    learnerId: vm => vm.learner?.id
+  },
   methods: {
     async enroll() {
       const params = pick(this, ['learnerId', 'offeringId']);
@@ -68,32 +67,15 @@ export default {
     },
     close() {
       this.isVisible = false;
-      this.learnerId = null;
+      this.learner = null;
     },
     setLearners({ items: learners }) {
       this.learners = map(learners, ({ id, email, firstName, lastName }) => ({
         value: id,
         text: `${email} - ${firstName} ${lastName}`
       }));
-    },
-    fetch(email) {
-      if (this.learnerId) return;
-      this.isLoading = true;
-      const params = { emailLike: email, role: 'LEARNER', limit: 30 };
-      return userApi.fetch({ params })
-        .then(this.setLearners)
-        .finally(() => (this.isLoading = false));
     }
   },
-  watch: {
-    email(val) {
-      if (val) this.fetch(val);
-    },
-    isVisible(val) {
-      if (!val) return;
-      this.fetch();
-    }
-  },
-  components: { AdminDialog }
+  components: { AdminDialog, UserSelect }
 };
 </script>

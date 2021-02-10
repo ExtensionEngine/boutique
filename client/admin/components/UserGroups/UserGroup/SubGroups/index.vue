@@ -35,13 +35,13 @@
           <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
           <td class="text-no-wrap text-center">
             <v-btn
-              @click="showSubGroupDialog(item)"
+              @click.stop="showSubGroupDialog(item)"
               color="grey darken-3"
               x-small icon>
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
             <v-btn
-              @click="archiveOrRestore(item)"
+              @click.stop="archiveOrRestore(item)"
               color="grey darken-3"
               x-small icon>
               <v-icon>

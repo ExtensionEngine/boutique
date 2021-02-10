@@ -70,8 +70,8 @@ export default {
     programId: vm => parseNumber(vm.$route.params.programId),
     fullName: ({ user }) => `${user.firstName} ${user.lastName}`,
     tabs: () => [
-      { name: 'programEnrollments', label: 'Enrollments' },
       { name: 'offeringUserGroups', label: 'User Groups' },
+      { name: 'programEnrollments', label: 'Enrollments' },
       { name: 'importedContent', label: 'Content' },
       { name: 'programSettings', label: 'Settings' }
     ]

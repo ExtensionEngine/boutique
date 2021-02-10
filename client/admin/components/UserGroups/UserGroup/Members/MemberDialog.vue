@@ -32,6 +32,7 @@
             :params="{ userIds }"
             :error-messages="errors"
             label="User"
+            append-icon="mdi-magnify"
             outlined
             class="mb-3" />
         </validation-provider>
@@ -52,7 +53,7 @@ import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
 import { Role } from '@/../common/config';
-import UserSelect from '../../../common/UserSelect';
+import UserSelect from '@/admin/components/common/UserSelect';
 
 const resetMember = () => ({
   user: null,
