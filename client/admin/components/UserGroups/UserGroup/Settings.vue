@@ -66,7 +66,7 @@ export default {
     },
     async removeUserGroup() {
       await api.remove(this.userGroup);
-      this.$router.push({ name: 'user-groups' });
+      this.$router.push({ name: 'userGroups' });
     },
     cloneUserGroup() {
       this.userGroupData = cloneDeep(this.userGroup);

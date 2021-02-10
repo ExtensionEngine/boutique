@@ -32,7 +32,7 @@ export default {
   computed: {
     routes: () => [
       { name: 'users', label: 'Users', icon: 'account-multiple' },
-      { name: 'user-groups', label: 'User Groups', icon: 'account-group' },
+      { name: 'userGroups', label: 'User Groups', icon: 'account-group' },
       { name: 'offerings', label: 'Courses & Series', icon: 'bookshelf' }
     ]
   }

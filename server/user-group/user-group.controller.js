@@ -17,7 +17,7 @@ async function list({ query, options }, res) {
 }
 
 async function create({ body }, res) {
-  const { id, name, parentId } = body;
+  const { id, name, parentId = null } = body;
   const [err, userGroup] = await UserGroup.restoreOrCreate({ id, name, parentId });
   if (err) return createError(CONFLICT, 'User group exists!');
   return res.jsend.success(userGroup);

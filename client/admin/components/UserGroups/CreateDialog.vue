@@ -42,9 +42,6 @@ const getDefaultData = () => ({ name: '' });
 
 export default {
   name: 'user-group-dialog',
-  props: {
-    parentId: { type: Number, default: null }
-  },
   data: () => ({
     visible: false,
     userGroup: getDefaultData()
@@ -54,8 +51,7 @@ export default {
       this.visible = false;
     },
     save() {
-      const { userGroup, parentId } = this;
-      this.$emit('create', { ...userGroup, parentId });
+      this.$emit('create', this.userGroup);
       this.close();
     }
   },
