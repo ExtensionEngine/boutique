@@ -28,8 +28,8 @@
             name="User group"
             label="User Group"
             placeholder="Start typing to Search"
-            prepend-icon="mdi-magnify"
-            clearable />
+            append-icon="mdi-magnify"
+            clearable outlined />
         </validation-provider>
         <div class="d-flex justify-end">
           <v-btn @click="close" text>Cancel</v-btn>

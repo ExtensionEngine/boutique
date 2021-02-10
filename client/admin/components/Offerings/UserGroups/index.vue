@@ -27,7 +27,7 @@
           <td>{{ item.userGroup.name }}</td>
           <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
           <td class="text-no-wrap text-center">
-            <v-btn @click="remove(item)" icon x-small>
+            <v-btn @click.stop="remove(item)" icon x-small>
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </td>
