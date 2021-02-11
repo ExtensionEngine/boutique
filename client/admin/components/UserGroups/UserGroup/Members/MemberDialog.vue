@@ -1,5 +1,8 @@
 <template>
-  <admin-dialog v-model="show" header-icon="mdi-account-plus-outline">
+  <admin-dialog
+    v-model="show"
+    @click:outside="close"
+    header-icon="mdi-account-plus-outline">
     <template v-slot:header>
       {{ memberData ? 'Edit' : 'Add' }} Member
     </template>

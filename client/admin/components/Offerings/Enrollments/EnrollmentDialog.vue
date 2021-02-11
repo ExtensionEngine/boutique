@@ -1,5 +1,5 @@
 <template>
-  <admin-dialog v-model="isVisible" header-icon="mdi-school">
+  <admin-dialog v-model="isVisible" @click:outside="close" header-icon="mdi-school">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" text>
         <v-icon dense class="mr-1">mdi-school</v-icon>

@@ -1,5 +1,8 @@
 <template>
-  <admin-dialog v-model="isVisible" header-icon="mdi-account-multiple-plus-outline">
+  <admin-dialog
+    v-model="isVisible"
+    @click:outside="close"
+    header-icon="mdi-account-multiple-plus-outline">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" text>
         <v-icon dense class="mr-1">mdi-plus</v-icon>
@@ -16,7 +19,7 @@
         novalidate>
         <validation-provider
           v-slot="{ errors }"
-          :rules="{ required: true }"
+          rules="required"
           name="user group">
           <user-group-select
             v-model="userGroup"

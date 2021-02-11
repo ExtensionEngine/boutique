@@ -1,5 +1,8 @@
 <template>
-  <admin-dialog v-model="show" header-icon="mdi-account-multiple-plus-outline">
+  <admin-dialog
+    v-model="show"
+    @click:outside="close"
+    header-icon="mdi-account-multiple-plus-outline">
     <template v-slot:header>
       {{ subGroupData ? 'Edit' : 'Create' }} Sub Group
     </template>
