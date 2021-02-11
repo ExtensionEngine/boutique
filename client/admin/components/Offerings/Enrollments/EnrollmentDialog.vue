@@ -21,7 +21,7 @@
           name="learner">
           <user-select
             v-model="learner"
-            :params="{ role: 'LEARNER', limit: 30 }"
+            :params="{ role: 'LEARNER' }"
             :error-messages="errors"
             label="Learner"
             append-icon="mdi-magnify"
@@ -40,7 +40,6 @@
 <script>
 import AdminDialog from '@/admin/components/common/Dialog';
 import enrollmentApi from '@/admin/api/enrollment';
-import map from 'lodash/map';
 import pick from 'lodash/pick';
 import UserSelect from '@/admin/components/common/UserSelect';
 
@@ -51,7 +50,6 @@ export default {
   },
   data: () => ({
     isVisible: false,
-    learners: [],
     learner: null,
     isLoading: false
   }),
@@ -68,12 +66,6 @@ export default {
     close() {
       this.isVisible = false;
       this.learner = null;
-    },
-    setLearners({ items: learners }) {
-      this.learners = map(learners, ({ id, email, firstName, lastName }) => ({
-        value: id,
-        text: `${email} - ${firstName} ${lastName}`
-      }));
     }
   },
   components: { AdminDialog, UserSelect }

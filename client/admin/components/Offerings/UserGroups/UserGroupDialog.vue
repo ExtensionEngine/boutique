@@ -11,29 +11,25 @@
       <validation-observer
         v-if="isVisible"
         ref="form"
-        v-slot="{ invalid }"
         @submit.prevent="$refs.form.handleSubmit(add)"
         tag="form"
         novalidate>
         <validation-provider
           v-slot="{ errors }"
           :rules="{ required: true }"
-          name="learner">
-          <v-autocomplete
-            v-model="userGroupId"
-            :items="userGroups"
+          name="user group">
+          <user-group-select
+            v-model="userGroup"
+            :params="{ userGroupIds, fetchAll: true }"
             :error-messages="errors"
-            :search-input.sync="name"
-            :loading="isLoading"
-            name="User group"
             label="User Group"
-            placeholder="Start typing to Search"
             append-icon="mdi-magnify"
-            clearable outlined />
+            clearable outlined
+            class="mb-3" />
         </validation-provider>
         <div class="d-flex justify-end">
           <v-btn @click="close" text>Cancel</v-btn>
-          <v-btn :disabled="invalid" type="submit" text>Add</v-btn>
+          <v-btn type="submit" text>Add</v-btn>
         </div>
       </validation-observer>
     </template>
@@ -42,10 +38,8 @@
 
 <script>
 import AdminDialog from '@/admin/components/common/Dialog';
-import map from 'lodash/map';
 import offeringApi from '@/admin/api/offering';
-import pick from 'lodash/pick';
-import userGroupApi from '@/admin/api/userGroup';
+import UserGroupSelect from '@/admin/components/common/UserGroupSelect';
 
 export default {
   name: 'user-group-dialog',
@@ -55,44 +49,22 @@ export default {
   },
   data: () => ({
     isVisible: false,
-    name: null,
-    userGroupId: null,
-    userGroups: [],
+    userGroup: null,
     isLoading: false
   }),
   methods: {
     async add() {
-      const params = pick(this, ['userGroupId', 'offeringId']);
+      const { offeringId, userGroup } = this;
+      const params = { offeringId, userGroupId: userGroup.id };
       await offeringApi.addUserGroup(params);
       this.close();
       this.$emit('added');
     },
     close() {
       this.isVisible = false;
-      this.userGroupId = null;
-    },
-    setUserGroups({ items: userGroups }) {
-      this.userGroups = map(userGroups, ({ id, name }) => ({ value: id, text: name }));
-    },
-    fetch(name) {
-      if (this.userGroupId) return;
-      this.isLoading = true;
-      const { userGroupIds } = this;
-      const params = { name, userGroupIds, fetchAll: true, limit: 30 };
-      return userGroupApi.fetch({ params })
-        .then(this.setUserGroups)
-        .finally(() => (this.isLoading = false));
+      this.userGroup = null;
     }
   },
-  watch: {
-    name(val) {
-      if (val) this.fetch(val);
-    },
-    isVisible(val) {
-      if (!val) return;
-      this.fetch();
-    }
-  },
-  components: { AdminDialog }
+  components: { AdminDialog, UserGroupSelect }
 };
 </script>

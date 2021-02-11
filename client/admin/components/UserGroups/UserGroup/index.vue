@@ -26,6 +26,13 @@ import find from 'lodash/find';
 import reverse from 'lodash/reverse';
 import transform from 'lodash/transform';
 
+const getAncestors = (userGroups, userGroup) => transform(userGroups, acc => {
+  const parent = find(userGroups, { id: acc.currentGroup.parentId });
+  if (!parent) return false;
+  acc.items.push(parent);
+  acc.currentGroup = parent;
+}, { items: [userGroup], currentGroup: userGroup });
+
 export default {
   name: 'user-group-container',
   props: {
@@ -42,18 +49,16 @@ export default {
     breadcrumbItems() {
       const { userGroups, userGroup } = this;
       if (!userGroup) return [];
-      const ancestors = transform(userGroups, (acc, _it) => {
-        const parent = find(userGroups, { id: acc.currentGroup.parentId });
-        if (!parent) return false;
-        acc.items.push(parent);
-        acc.currentGroup = parent;
-      }, { items: [userGroup], currentGroup: userGroup });
-      return reverse(ancestors.items).map(({ id, name }) => {
+      const { items } = getAncestors(userGroups, userGroup);
+      return reverse(items).map(({ id, name }) => {
         const params = { userGroupId: id };
         return { text: name, to: { params } };
       });
     },
-    breadcrumbs: vm => [{ text: 'User groups', disabled: true }, ...vm.breadcrumbItems]
+    breadcrumbs: vm => [
+      { text: 'User groups', disabled: true },
+      ...vm.breadcrumbItems
+    ]
   },
   methods: {
     async fetch() {
