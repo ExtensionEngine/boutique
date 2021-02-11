@@ -13,15 +13,18 @@ function fetch(userGroupId, params = {}) {
 }
 
 function create(item) {
-  return request.post(urls.root(item.userGroupId), item).then(extractData);
+  return request.post(urls.root(item.userGroupId), item)
+    .then(extractData);
 }
 
 function update(item) {
-  return request.patch(urls.resource(item), item).then(extractData);
+  return request.patch(urls.resource(item), item)
+    .then(extractData);
 }
 
 function remove(item) {
-  return request.delete(urls.resource(item), item).then(extractData);
+  return request.delete(urls.resource(item), item)
+    .then(extractData);
 }
 
 export default {

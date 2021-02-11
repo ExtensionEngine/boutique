@@ -13,15 +13,18 @@ function fetch(params = {}) {
 }
 
 function create(item) {
-  return request.post(urls.root, item).then(extractData);
+  return request.post(urls.root, item)
+    .then(extractData);
 }
 
 function get(id) {
-  return request.get(urls.resource(id)).then(extractData);
+  return request.get(urls.resource(id))
+    .then(extractData);
 }
 
 function update(item) {
-  return request.patch(urls.resource(item.id), item).then(extractData);
+  return request.patch(urls.resource(item.id), item)
+    .then(extractData);
 }
 
 function remove(item) {
