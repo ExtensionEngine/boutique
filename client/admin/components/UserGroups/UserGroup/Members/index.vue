@@ -29,14 +29,15 @@
       <template v-slot:item="{ item }">
         <tr :key="item.id">
           <td>{{ item.role }}</td>
-          <td>{{ item.user.email }}</td>
-          <td>{{ item.user.fullName }}</td>
+          <td>{{ get(item.user, 'email') }}</td>
+          <td>{{ get(item.user, 'fullName') }}</td>
           <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
           <td class="text-no-wrap text-center">
             <v-btn
               @click="showMemberDialog(item)"
               color="grey darken-3"
-              x-small icon>
+              x-small icon
+              class="mr-1">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
             <v-btn
@@ -70,6 +71,7 @@
 <script>
 import api from '@/admin/api/userGroupMember';
 import ConfirmationDialog from '../../../common/ConfirmationDialog';
+import get from 'lodash/get';
 import MemberDialog from './MemberDialog';
 import throttle from 'lodash/throttle';
 
@@ -109,6 +111,7 @@ export default {
     userIds: vm => vm.members.map(it => it.userId)
   },
   methods: {
+    get,
     showMemberDialog(member = null) {
       this.editedMember = member;
       this.memberDialog = true;

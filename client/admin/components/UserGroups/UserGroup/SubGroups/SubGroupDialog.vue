@@ -77,8 +77,9 @@ export default {
   },
   watch: {
     show(val) {
-      if (!val) return;
-      if (!isEmpty(this.subGroupData)) this.subGroup = cloneDeep(this.subGroupData);
+      const { subGroupData } = this;
+      if (!val || isEmpty(subGroupData)) return;
+      this.subGroup = cloneDeep(subGroupData);
     }
   },
   components: { AdminDialog }

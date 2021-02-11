@@ -37,7 +37,8 @@
             <v-btn
               @click.stop="showSubGroupDialog(item)"
               color="grey darken-3"
-              x-small icon>
+              x-small icon
+              class="mr-1">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
             <v-btn

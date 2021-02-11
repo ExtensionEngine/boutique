@@ -30,7 +30,7 @@
           <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
           <td class="text-no-wrap text-center">
             <v-btn @click="unenroll(item)" icon x-small>
-              <v-icon>mdi-delete</v-icon>
+              <v-icon>mdi-delete-outline</v-icon>
             </v-btn>
           </td>
         </tr>
