@@ -9,7 +9,9 @@
           single-line hide-details clearable />
       </v-col>
       <v-col md="6" lg="8" class="d-flex justify-end">
-        <user-group-dialog @added="fetch(defaultPage)" :offering-id="offering.id" />
+        <user-group-dialog
+          @added="fetch(defaultPage)"
+          v-bind="{ offeringId, userGroupIds }" />
       </v-col>
     </v-row>
     <v-data-table
@@ -44,7 +46,7 @@
 </template>
 
 <script>
-import api from '@/admin/api/offeringUserGroup';
+import api from '@/admin/api/offering';
 import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
 import throttle from 'lodash/throttle';
 import UserGroupDialog from './UserGroupDialog';
@@ -71,6 +73,8 @@ export default {
   computed: {
     headers,
     defaultPage,
+    offeringId: vm => vm.offering.id,
+    userGroupIds: vm => vm.userGroups.map(it => it.userGroupId),
     noUserGroupsMessage() {
       return this.filter
         ? `Your search for "${this.filter}" found no results.`
@@ -80,15 +84,17 @@ export default {
   methods: {
     fetch: throttle(async function (opts) {
       Object.assign(this.dataTable, opts);
-      const options = { ...this.dataTable, params: { filter: this.filter } };
-      const { items, total } = await api.fetch(this.offering.id, options);
+      const { dataTable, filter, offeringId } = this;
+      const options = { ...dataTable, params: { filter } };
+      const { items, total } = await api.getUserGroups(offeringId, options);
       this.userGroups = items;
       this.totalItems = total;
     }, 400),
-    remove({ userGroup }) {
+    remove(offeringUserGroup) {
+      const { name } = offeringUserGroup.userGroup;
       Object.assign(this.confirmation, {
-        message: `Are you sure you want to remove "${userGroup.name}"?`,
-        action: () => api.remove(userGroup),
+        message: `Are you sure you want to remove "${name}"?`,
+        action: () => api.removeUserGroup(offeringUserGroup),
         dialog: true
       });
     }

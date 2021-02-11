@@ -15,9 +15,9 @@ router
   .post('/', ctrl.create);
 
 async function getUserGroup(req, _, next, userGroupId) {
-  const userGroup = await OfferingUserGroup.findByPk(userGroupId);
-  if (!userGroup) return createError(NOT_FOUND, 'Not found!');
-  req.userGroup = userGroup;
+  const offeringUserGroup = await OfferingUserGroup.findByPk(userGroupId);
+  if (!offeringUserGroup) return createError(NOT_FOUND, 'Not found!');
+  req.offeringUserGroup = offeringUserGroup;
   next();
 }
 

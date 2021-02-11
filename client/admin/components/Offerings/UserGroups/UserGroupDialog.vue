@@ -43,14 +43,15 @@
 <script>
 import AdminDialog from '@/admin/components/common/Dialog';
 import map from 'lodash/map';
-import offeringUserGroupApi from '@/admin/api/offeringUserGroup';
+import offeringApi from '@/admin/api/offering';
 import pick from 'lodash/pick';
 import userGroupApi from '@/admin/api/userGroup';
 
 export default {
   name: 'user-group-dialog',
   props: {
-    offeringId: { type: Number, required: true }
+    offeringId: { type: Number, required: true },
+    userGroupIds: { type: Array, default: () => [] }
   },
   data: () => ({
     isVisible: false,
@@ -62,7 +63,7 @@ export default {
   methods: {
     async add() {
       const params = pick(this, ['userGroupId', 'offeringId']);
-      await offeringUserGroupApi.create(params);
+      await offeringApi.addUserGroup(params);
       this.close();
       this.$emit('added');
     },
@@ -76,7 +77,8 @@ export default {
     fetch(name) {
       if (this.userGroupId) return;
       this.isLoading = true;
-      const params = { name, fetchAll: true, limit: 30 };
+      const { userGroupIds } = this;
+      const params = { name, userGroupIds, fetchAll: true, limit: 30 };
       return userGroupApi.fetch({ params })
         .then(this.setUserGroups)
         .finally(() => (this.isLoading = false));
