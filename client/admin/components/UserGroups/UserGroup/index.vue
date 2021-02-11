@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <div class="ml-10">
-      <v-breadcrumbs :items="breadcrumbs" class="px-0" />
+      <v-breadcrumbs :items="breadcrumbs" divider="|" class="px-0" />
       <v-tabs color="primary" background-color="transparent">
         <v-tab
           v-for="({ name, label }) in tabs"
@@ -26,12 +26,20 @@ import find from 'lodash/find';
 import reverse from 'lodash/reverse';
 import transform from 'lodash/transform';
 
-const getAncestors = (userGroups, userGroup) => transform(userGroups, acc => {
-  const parent = find(userGroups, { id: acc.currentGroup.parentId });
-  if (!parent) return false;
-  acc.items.push(parent);
-  acc.currentGroup = parent;
-}, { items: [userGroup], currentGroup: userGroup });
+const getBreadcrumbItems = ({ userGroups, userGroup }) => {
+  const { items } = transform(userGroups, acc => {
+    const parent = find(userGroups, { id: acc.currentGroup.parentId });
+    if (!parent) return false;
+    acc.items.push(parent);
+    acc.currentGroup = parent;
+  }, { items: [userGroup], currentGroup: userGroup });
+  return reverse(items);
+};
+
+const formatBreadcrumbs = items => items.map(({ id, name }) => {
+  const params = { userGroupId: id };
+  return { text: name, to: { params } };
+});
 
 export default {
   name: 'user-group-container',
@@ -46,19 +54,11 @@ export default {
       { name: 'userGroupSettings', label: 'Settings' }
     ],
     userGroup: vm => find(vm.userGroups, { id: vm.userGroupId }),
-    breadcrumbItems() {
-      const { userGroups, userGroup } = this;
-      if (!userGroup) return [];
-      const { items } = getAncestors(userGroups, userGroup);
-      return reverse(items).map(({ id, name }) => {
-        const params = { userGroupId: id };
-        return { text: name, to: { params } };
-      });
-    },
-    breadcrumbs: vm => [
-      { text: 'User groups', disabled: true },
-      ...vm.breadcrumbItems
-    ]
+    breadcrumbs() {
+      if (!this.userGroup) return [];
+      const items = getBreadcrumbItems(this);
+      return [{ text: 'User groups', disabled: true }, ...formatBreadcrumbs(items)];
+    }
   },
   methods: {
     async fetch() {
