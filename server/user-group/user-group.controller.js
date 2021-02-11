@@ -11,9 +11,9 @@ async function list({ query, options }, res) {
   const { parentId = null, filter, archived, fetchAll } = query;
   const where = !fetchAll ? { parentId } : {};
   if (filter) where.name = { [Op.iLike]: `%${filter.trim()}%` };
-  Object.assign(options, { where, paranoid: !yn(archived) });
-  const { rows, count } = await UserGroup.findAndCountAll(options);
-  res.jsend.success({ items: rows, total: count });
+  const opts = { ...options, where, paranoid: !yn(archived) };
+  const { rows, count } = await UserGroup.findAndCountAll(opts);
+  return res.jsend.success({ items: rows, total: count });
 }
 
 async function create({ body }, res) {
@@ -35,8 +35,9 @@ async function patch({ userGroup, body }, res) {
   res.jsend.success(data);
 }
 
-function remove({ userGroup }, res) {
-  return userGroup.destroy().then(() => res.sendStatus(NO_CONTENT));
+async function remove({ userGroup }, res) {
+  await userGroup.destroy();
+  return res.sendStatus(NO_CONTENT);
 }
 
 module.exports = {

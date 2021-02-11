@@ -7,14 +7,14 @@ const yn = require('yn');
 
 const { Op } = Sequelize;
 
-function list({ offering, query, options }, res) {
+async function list({ offering, query, options }, res) {
   const { filter, archived } = query;
   const where = { enrollmentOfferingId: offering.id };
   const include = { model: UserGroup, where: {}, attributes: ['id', 'name'] };
   if (filter) include.where.name = { [Op.iLike]: `%${filter.trim()}%` };
-  Object.assign(options, { where, include, paranoid: !yn(archived) });
-  return OfferingUserGroup.findAndCountAll(options)
-    .then(({ rows, count }) => res.jsend.success({ items: rows, total: count }));
+  const opts = { ...options, where, include, paranoid: !yn(archived) };
+  const { rows, count } = await OfferingUserGroup.findAndCountAll(opts);
+  return res.jsend.success({ items: rows, total: count });
 }
 
 async function create({ offering, body }, res) {
@@ -26,7 +26,8 @@ async function create({ offering, body }, res) {
 }
 
 async function remove({ offeringUserGroup }, res) {
-  return offeringUserGroup.destroy().then(() => res.sendStatus(NO_CONTENT));
+  await offeringUserGroup.destroy();
+  return res.sendStatus(NO_CONTENT);
 }
 
 module.exports = {

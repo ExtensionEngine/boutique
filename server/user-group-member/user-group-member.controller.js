@@ -15,8 +15,8 @@ function list({ userGroup, query, options }, res) {
   const { filter, archived } = query;
   const where = { userGroupId: userGroup.id };
   const userWhere = filter ? { [Op.or]: createFilter(filter) } : {};
-  Object.assign(options, { where, paranoid: !yn(archived) });
-  return UserGroupMember.withUser({ where: userWhere }).findAndCountAll(options)
+  const opts = { ...options, where, paranoid: !yn(archived) };
+  return UserGroupMember.withUser({ where: userWhere }).findAndCountAll(opts)
     .then(({ rows, count }) => res.jsend.success({ items: rows, total: count }));
 }
 
@@ -35,7 +35,8 @@ async function patch({ member, body }, res) {
 }
 
 async function remove({ member }, res) {
-  return member.destroy().then(() => res.sendStatus(NO_CONTENT));
+  await member.destroy();
+  return res.sendStatus(NO_CONTENT);
 }
 
 module.exports = {
