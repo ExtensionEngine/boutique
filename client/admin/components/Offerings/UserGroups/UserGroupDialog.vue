@@ -9,7 +9,7 @@
         Add user group
       </v-btn>
     </template>
-    <template v-slot:header>Add user group</template>
+    <template v-slot:header>Add User Group</template>
     <template v-slot:body>
       <validation-observer
         v-if="isVisible"

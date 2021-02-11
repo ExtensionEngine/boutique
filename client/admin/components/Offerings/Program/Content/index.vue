@@ -46,7 +46,7 @@
               v-if="!item.deletedAt"
               @click="showConfirmationDialog(item)"
               icon x-small>
-              <v-icon>mdi-delete</v-icon>
+              <v-icon>mdi-delete-outline</v-icon>
             </v-btn>
             <v-btn v-else @click="showRestoreDialog(item)" icon x-small>
               <v-icon>mdi-restore</v-icon>

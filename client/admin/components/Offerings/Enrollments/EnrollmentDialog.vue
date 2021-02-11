@@ -6,7 +6,7 @@
         Enroll learner
       </v-btn>
     </template>
-    <template v-slot:header>Enroll learner</template>
+    <template v-slot:header>Enroll Learner</template>
     <template v-slot:body>
       <validation-observer
         v-if="isVisible"
