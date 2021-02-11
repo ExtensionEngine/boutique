@@ -54,13 +54,13 @@
       </template>
     </v-data-table>
     <sub-group-dialog
-      @created="fetch(defaultPage)"
-      @updated="fetch(defaultPage)"
+      @created="hydrateData"
+      @updated="hydrateData"
       :visible.sync="subGroupDialog"
       :sub-group-data="editedSubGroup"
       :parent-id="userGroupId" />
     <confirmation-dialog
-      @confirmed="fetch()"
+      @confirmed="fetch"
       :visible.sync="confirmation.dialog"
       :action="confirmation.action"
       :message="confirmation.message"
@@ -102,17 +102,13 @@ export default {
     showArchived: false,
     confirmation: { dialog: null }
   }),
-  computed: {
-    headers,
-    defaultPage
-  },
+  computed: { headers },
   methods: {
     showSubGroupDialog(subGroup = null) {
       this.editedSubGroup = subGroup;
       this.subGroupDialog = true;
     },
-    fetch: throttle(async function (opts) {
-      if (opts) this.$emit('upserted');
+    fetch: throttle(async function (opts = defaultPage) {
       Object.assign(this.dataTable, opts);
       const { options, filter, showArchived: archived, userGroupId } = this;
       const params = { filter, archived, parentId: userGroupId };
@@ -128,6 +124,10 @@ export default {
         action: actions(subGroup)[action],
         dialog: true
       });
+    },
+    hydrateData() {
+      this.$emit('hydrated');
+      this.fetch();
     }
   },
   watch: {
