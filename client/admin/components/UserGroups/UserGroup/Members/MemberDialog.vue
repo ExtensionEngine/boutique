@@ -23,8 +23,7 @@
             :error-messages="errors"
             name="role"
             label="Role"
-            outlined
-            class="mb-3" />
+            outlined />
         </validation-provider>
         <validation-provider
           v-slot="{ errors }"
@@ -36,8 +35,8 @@
             :error-messages="errors"
             label="User"
             append-icon="mdi-magnify"
-            outlined
-            class="mb-3" />
+            clearable outlined
+            class="mb-1" />
         </validation-provider>
         <div class="d-flex justify-end mb-2">
           <v-btn @click="close" text>Cancel</v-btn>

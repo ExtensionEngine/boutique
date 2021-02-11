@@ -28,7 +28,7 @@
             label="User Group"
             append-icon="mdi-magnify"
             clearable outlined
-            class="mb-3" />
+            class="mb-1" />
         </validation-provider>
         <div class="d-flex justify-end">
           <v-btn @click="close" text>Cancel</v-btn>

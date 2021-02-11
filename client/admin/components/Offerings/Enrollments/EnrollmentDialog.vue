@@ -11,7 +11,6 @@
       <validation-observer
         v-if="isVisible"
         ref="form"
-        v-slot="{ invalid }"
         @submit.prevent="$refs.form.handleSubmit(enroll)"
         tag="form"
         novalidate>
@@ -26,11 +25,11 @@
             label="Learner"
             append-icon="mdi-magnify"
             clearable outlined
-            class="mb-3" />
+            class="mb-1" />
         </validation-provider>
         <div class="d-flex justify-end">
           <v-btn @click="close" text>Cancel</v-btn>
-          <v-btn :disabled="invalid" type="submit" text>Enroll</v-btn>
+          <v-btn type="submit" text>Enroll</v-btn>
         </div>
       </validation-observer>
     </template>
