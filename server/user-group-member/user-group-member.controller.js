@@ -21,8 +21,8 @@ function list({ userGroup, query, options }, res) {
 }
 
 async function create({ userGroup, body }, res) {
-  const { id, user } = body;
-  const payload = { id, userGroupId: userGroup.id, userId: user.id };
+  const { id, user, role } = body;
+  const payload = { id, userGroupId: userGroup.id, userId: user.id, role };
   const [err, member] = await UserGroupMember.restoreOrCreate(payload);
   if (err) return createError(CONFLICT, 'Group member exists!');
   return res.jsend.success(member);

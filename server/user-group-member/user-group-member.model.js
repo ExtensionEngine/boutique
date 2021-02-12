@@ -1,8 +1,8 @@
 'use strict';
 
+const { MemberRole } = require('../../common/config');
 const { Model } = require('sequelize');
 const { restoreOrCreate } = require('../common/database/restore');
-const { Role } = require('../../common/config');
 
 class UserGroupMember extends Model {
   static fields({ DATE, ENUM, INTEGER }) {
@@ -22,8 +22,7 @@ class UserGroupMember extends Model {
         field: 'user_group_id'
       },
       role: {
-        type: ENUM(Object.values(Role)),
-        defaultValue: Role.LEARNER
+        type: ENUM(Object.values(MemberRole))
       },
       createdAt: {
         type: DATE,
@@ -74,6 +73,10 @@ class UserGroupMember extends Model {
 
   static async restoreOrCreate(userGroupMember, options) {
     return restoreOrCreate(this, userGroupMember, options);
+  }
+
+  isInstructor() {
+    return this.role === MemberRole.INSTRUCTOR;
   }
 }
 

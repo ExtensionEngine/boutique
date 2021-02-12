@@ -54,7 +54,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
-import { Role } from '@/../common/config';
+import { MemberRole } from '@/../common/config';
 import UserSelect from '@/admin/components/common/UserSelect';
 
 const resetMember = () => ({
@@ -81,7 +81,7 @@ export default {
         if (!value) this.close();
       }
     },
-    roles: () => map(Role, it => ({ text: humanize(it), value: it })),
+    roles: () => map(MemberRole, it => ({ text: humanize(it), value: it })),
     isNewMember: vm => !vm.member.id
   },
   methods: {

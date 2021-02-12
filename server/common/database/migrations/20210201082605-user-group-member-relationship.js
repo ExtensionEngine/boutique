@@ -1,6 +1,6 @@
 'use strict';
 
-const { Role } = require('../../../../common/config');
+const { MemberRole } = require('../../../../common/config');
 
 const TABLE_NAME = 'user_group_member';
 
@@ -24,7 +24,7 @@ exports.up = (qi, { DATE, ENUM, INTEGER }) => qi.createTable(TABLE_NAME, {
     allowNull: false
   },
   role: {
-    type: ENUM(Object.values(Role))
+    type: ENUM(Object.values(MemberRole))
   },
   createdAt: {
     type: DATE,
