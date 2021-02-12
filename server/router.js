@@ -14,13 +14,17 @@ const userGroup = require('./user-group');
 
 const router = express.Router();
 
+// Public routes:
 router.use('/', parseOptions);
 router.use(user.path, user.router);
-router.use(contentRepo.path, auth, contentRepo.router);
-router.use(program.path, auth, program.router);
-router.use(enrollment.path, auth, enrollment.router);
-router.use(enrollmentOffering.path, auth, enrollmentOffering.router);
 router.use(preview.path, preview.router);
+
+// Protected routes:
+router.use(auth);
+router.use(contentRepo.path, contentRepo.router);
+router.use(program.path, program.router);
+router.use(enrollment.path, enrollment.router);
+router.use(enrollmentOffering.path, enrollmentOffering.router);
 router.use(userGroup.path, userGroup.router);
 
 module.exports = router;
