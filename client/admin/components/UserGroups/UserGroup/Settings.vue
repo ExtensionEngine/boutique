@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     async saveUserGroup() {
-      await api.create(this.userGroupData);
+      await api.update(this.userGroupData);
       this.isEditing = false;
     },
     async removeUserGroup() {

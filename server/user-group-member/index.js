@@ -14,8 +14,7 @@ router
 
 router
   .get('/', ctrl.list)
-  .use(hasCreationAccess)
-  .post('/', ctrl.create);
+  .post('/', hasCreationAccess, ctrl.create);
 
 async function getMember(req, _, next, memberId) {
   const member = await UserGroupMember.findByPk(memberId);
@@ -37,7 +36,7 @@ async function hasCreationAccess({ user, userGroup }, _, next) {
   return member.isInstructor() ? next() : createError(FORBIDDEN, 'Forbidden!');
 }
 
-async function hasMemberAccess({ user, member }, _, next) {
+function hasMemberAccess({ user, member }, _, next) {
   if (user.isAdmin() || member.isInstructor()) return next();
   return createError(FORBIDDEN, 'Forbidden!');
 }
