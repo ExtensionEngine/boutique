@@ -18,7 +18,8 @@ router
   .get('/', ctrl.list)
   .post('/', ctrl.create);
 
-router.use(path.join('/:userGroupId', userGroupMember.path), userGroupMember.router);
+router
+  .use(path.join('/:userGroupId', userGroupMember.path), userGroupMember.router);
 
 async function getUserGroup(req, _, next, userGroupId) {
   const userGroup = await UserGroup.findByPk(userGroupId);
