@@ -8,10 +8,10 @@ const router = require('express').Router();
 const offeringUserGroup = require('../offering-user-group');
 const path = require('path');
 
-router.get('/', ctrl.list);
-
-router.param('offeringId', getOffering);
-router.use(path.join('/:offeringId', offeringUserGroup.path), offeringUserGroup.router);
+router
+  .get('/', ctrl.list)
+  .param('offeringId', getOffering)
+  .use(path.join('/:offeringId', offeringUserGroup.path), offeringUserGroup.router);
 
 async function getOffering(req, _, next, offeringId) {
   const offering = await EnrollmentOffering.findByPk(offeringId);
