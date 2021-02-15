@@ -1,7 +1,7 @@
 'use strict';
 
 const { FORBIDDEN, NOT_FOUND } = require('http-status');
-const { User, UserGroup, UserGroupMember } = require('../common/database');
+const { UserGroup, UserGroupMember } = require('../common/database');
 const { createError } = require('../common/errors');
 const ctrl = require('./user-group.controller');
 const path = require('path');
