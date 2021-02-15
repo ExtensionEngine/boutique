@@ -37,6 +37,7 @@ async function hasCreationAccess({ user, userGroup }, _, next) {
 }
 
 function hasMemberAccess({ user, member }, _, next) {
-  if (user.isAdmin() || member.isInstructor()) return next();
+  const isUserMember = user.id === member.userId;
+  if (user.isAdmin() || member.isInstructor() || isUserMember) return next();
   return createError(FORBIDDEN, 'Forbidden!');
 }
