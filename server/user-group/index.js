@@ -36,16 +36,18 @@ module.exports = {
 
 async function hasCreationAccess({ user, query: { parentId } }, _, next) {
   if (user.isAdmin() || !parentId) return next();
-  const where = { userId: user.id, userGroupId: parentId };
-  const member = await UserGroupMember.findOne({ where });
-  if (!member) return createError(NOT_FOUND, 'Not found!');
+  const member = await getMember(user.id, parentId);
   return member.isInstructor() ? next() : createError(FORBIDDEN, 'Forbidden!');
 }
 
 async function hasUserGroupAccess({ user, userGroup }, _, next) {
   if (user.isAdmin()) return next();
-  const where = { userId: user.id, userGroupId: userGroup.id };
-  const member = await UserGroupMember.findOne({ where });
-  if (!member) return createError(NOT_FOUND, 'Not found!');
+  const member = await getMember(user.id, userGroup.id);
   return member.isInstructor() ? next() : createError(FORBIDDEN, 'Forbidden!');
+}
+
+async function getMember(userId, userGroupId) {
+  const where = { userId, userGroupId };
+  const member = await UserGroupMember.findOne({ where });
+  return member || createError(NOT_FOUND, 'Not found!');
 }
