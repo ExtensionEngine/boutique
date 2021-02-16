@@ -75,7 +75,6 @@ import SubGroupDialog from './SubGroupDialog';
 import throttle from 'lodash/throttle';
 
 const defaultPage = () => ({ sortBy: ['updatedAt'], sortDesc: [true], page: 1 });
-
 const headers = () => [
   { text: 'Name', value: 'name' },
   { text: 'Date Created', value: 'createdAt' },
