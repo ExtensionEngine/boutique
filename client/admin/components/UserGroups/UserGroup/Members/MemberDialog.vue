@@ -99,8 +99,9 @@ export default {
   },
   watch: {
     show(val) {
-      if (!val) return;
-      if (!isEmpty(this.memberData)) this.member = cloneDeep(this.memberData);
+      const { memberData } = this;
+      if (!val || isEmpty(memberData)) return;
+      this.member = cloneDeep(memberData);
     }
   },
   components: { AdminDialog, UserSelect }

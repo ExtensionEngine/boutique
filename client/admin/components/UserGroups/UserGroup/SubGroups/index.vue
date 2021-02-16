@@ -137,27 +137,3 @@ export default {
   components: { ConfirmationDialog, SubGroupDialog }
 };
 </script>
-
-<style lang="scss" scoped>
-::v-deep .archived-checkbox {
-  &.v-input--checkbox {
-    justify-content: flex-end;
-  }
-
-  .v-input__slot {
-    flex-direction: row-reverse;
-
-    .v-input--selection-controls__input {
-      margin-right: 0;
-    }
-
-    .v-icon {
-      font-size: 1.125rem;
-    }
-
-    label {
-      font-size: 0.875rem;
-    }
-  }
-}
-</style>

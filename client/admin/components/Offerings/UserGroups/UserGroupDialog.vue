@@ -60,8 +60,8 @@ export default {
       const { offeringId, userGroup } = this;
       const params = { offeringId, userGroupId: userGroup.id };
       await offeringApi.addUserGroup(params);
-      this.close();
       this.$emit('added');
+      this.close();
     },
     close() {
       this.isVisible = false;
