@@ -15,7 +15,7 @@
     <router-view
       v-if="userGroup"
       :key="userGroupId"
-      @hydrated="fetch"
+      @hydrate="fetch"
       :user-group="userGroup" />
   </v-container>
 </template>

@@ -125,7 +125,7 @@ export default {
       });
     },
     hydrateData() {
-      this.$emit('hydrated');
+      this.$emit('hydrate');
       this.fetch();
     }
   },

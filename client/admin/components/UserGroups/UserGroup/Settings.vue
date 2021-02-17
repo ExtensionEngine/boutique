@@ -63,7 +63,7 @@ export default {
     async saveUserGroup() {
       await api.update(this.userGroupData);
       this.isEditing = false;
-      this.$emit('hydrated');
+      this.$emit('hydrate');
     },
     async removeUserGroup() {
       await api.remove(this.userGroup);
