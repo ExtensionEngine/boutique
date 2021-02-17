@@ -44,6 +44,7 @@
                   Restore
                 </v-btn>
                 <v-btn
+                  v-else
                   :to="{ name: 'members', params: { userGroupId: item.id } }"
                   color="secondary"
                   text>
