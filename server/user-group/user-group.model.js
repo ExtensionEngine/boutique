@@ -58,6 +58,21 @@ class UserGroup extends Model {
     };
   }
 
+  static hooks() {
+    return {
+      afterDestroy(userGroup) {
+        const where = { parentId: userGroup.id };
+        return this.destroy({ where });
+      },
+      afterUpdate(userGroup) {
+        const isRestored = userGroup.changed('deletedAt') && !userGroup.deletedAt;
+        if (!isRestored) return;
+        const where = { parentId: userGroup.id };
+        return this.update({ deletedAt: null }, { where, paranoid: false });
+      }
+    };
+  }
+
   static async restoreOrCreate(userGroup, options) {
     return restoreOrCreate(this, userGroup, options);
   }
