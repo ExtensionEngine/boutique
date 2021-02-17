@@ -22,7 +22,7 @@
             :error-messages="errors"
             name="name"
             label="User group name"
-            append-icon="mdi-pencil" />
+            append-icon="mdi-pencil-outline" />
         </validation-provider>
         <div class="d-flex justify-end">
           <template v-if="isEditing">

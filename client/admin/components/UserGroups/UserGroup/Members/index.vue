@@ -38,7 +38,7 @@
               color="grey darken-3"
               x-small icon
               class="mr-1">
-              <v-icon>mdi-pencil</v-icon>
+              <v-icon>mdi-pencil-outline</v-icon>
             </v-btn>
             <v-btn
               @click="archiveOrRestore(item)"
