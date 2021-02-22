@@ -11,11 +11,12 @@ const program = require('./program');
 const { Sequelize } = require('./common/database');
 const user = require('./user');
 const userGroup = require('./user-group');
+const yn = require('yn');
 
 const router = express.Router();
 
 // Public routes:
-router.use('/', parseOptions);
+router.use('/', parseQuery);
 router.use(user.path, user.router);
 router.use(preview.path, preview.router);
 
@@ -29,9 +30,12 @@ router.use(userGroup.path, userGroup.router);
 
 module.exports = router;
 
-function parseOptions(req, _, next) {
+function parseQuery(req, _, next) {
   let sortBy = get(req.query, 'sortBy', 'id');
   if (sortBy.includes('.')) sortBy = Sequelize.literal(sortBy);
+  const { archived, deleted } = req.query;
+  const paranoidKey = archived ? 'archived' : 'deleted';
+  req.query = { ...req.query, [paranoidKey]: !yn(archived || deleted) };
   req.options = {
     limit: parseInt(req.query.limit, 10) || 100,
     offset: parseInt(req.query.offset, 10) || 0,

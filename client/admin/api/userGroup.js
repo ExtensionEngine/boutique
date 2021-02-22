@@ -17,11 +17,6 @@ function create(item) {
     .then(extractData);
 }
 
-function get(id) {
-  return request.get(urls.resource(id))
-    .then(extractData);
-}
-
 function update(item) {
   return request.patch(urls.resource(item.id), item)
     .then(extractData);
@@ -34,7 +29,6 @@ function remove(item) {
 export default {
   fetch,
   create,
-  get,
   update,
   remove
 };

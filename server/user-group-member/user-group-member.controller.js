@@ -4,7 +4,6 @@ const { CONFLICT, NO_CONTENT } = require('http-status');
 const { Sequelize, UserGroupMember } = require('../common/database');
 const { createError } = require('../common/errors');
 const map = require('lodash/map');
-const yn = require('yn');
 
 const { Op } = Sequelize;
 
@@ -15,7 +14,7 @@ function list({ userGroup, query, options }, res) {
   const { filter, archived } = query;
   const where = { userGroupId: userGroup.id };
   const userWhere = filter ? { [Op.or]: createFilter(filter) } : {};
-  const opts = { ...options, where, paranoid: !yn(archived) };
+  const opts = { ...options, where, paranoid: archived };
   return UserGroupMember.withUser({ where: userWhere }).findAndCountAll(opts)
     .then(({ rows, count }) => res.jsend.success({ items: rows, total: count }));
 }

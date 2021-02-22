@@ -12,7 +12,6 @@ router
   .param('userGroupId', getUserGroup)
   .use('/:userGroupId', hasUserGroupAccess)
   .patch('/:userGroupId', ctrl.patch)
-  .get('/:userGroupId', ctrl.get)
   .delete('/:userGroupId', ctrl.remove);
 
 router
