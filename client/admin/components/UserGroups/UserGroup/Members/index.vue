@@ -3,10 +3,17 @@
     <v-row class="ma-5">
       <v-col sm="4" md="5" lg="4">
         <v-text-field
-          v-model="filter"
+          v-model="filter.user"
           append-icon="mdi-magnify"
           label="Search"
           single-line hide-details clearable />
+        <v-select
+          v-model="filter.role"
+          :items="roles"
+          name="role"
+          label="Filter by Role"
+          clearable
+          class="mt-2" />
         <v-checkbox
           v-model="showArchived"
           label="Show archived"
@@ -56,9 +63,7 @@
       @created="fetch(defaultPage)"
       @updated="fetch(defaultPage)"
       :visible.sync="memberDialog"
-      :member-data="editedMember"
-      :user-group-id="userGroupId"
-      :user-ids="userIds" />
+      v-bind="{ memberData: editedMember, userGroupId, userIds, roles }" />
     <confirmation-dialog
       @confirmed="fetch()"
       :visible.sync="confirmation.dialog"
@@ -72,7 +77,10 @@
 import api from '@/admin/api/userGroupMember';
 import ConfirmationDialog from '../../../common/ConfirmationDialog';
 import get from 'lodash/get';
+import humanize from 'humanize-string';
+import map from 'lodash/map';
 import MemberDialog from './MemberDialog';
+import { MemberRole } from '@/../common/config';
 import throttle from 'lodash/throttle';
 
 const defaultPage = () => ({ sortBy: ['updatedAt'], sortDesc: [true], page: 1 });
@@ -96,7 +104,7 @@ export default {
   },
   data: () => ({
     members: [],
-    filter: null,
+    filter: { user: null, role: null },
     dataTable: { rowsPerPage: 10, ...defaultPage() },
     totalItems: 0,
     memberDialog: false,
@@ -107,7 +115,8 @@ export default {
   computed: {
     headers,
     defaultPage,
-    userIds: vm => vm.members.map(it => it.userId)
+    userIds: vm => vm.members.map(it => it.userId),
+    roles: () => map(MemberRole, it => ({ text: humanize(it), value: it }))
   },
   methods: {
     get,
@@ -134,8 +143,11 @@ export default {
     }
   },
   watch: {
+    filter: {
+      deep: true,
+      handler: 'fetch'
+    },
     dataTable: 'fetch',
-    filter: 'fetch',
     showArchived: 'fetch'
   },
   components: { ConfirmationDialog, MemberDialog }

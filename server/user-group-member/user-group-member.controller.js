@@ -10,10 +10,11 @@ const { Op } = Sequelize;
 const createFilter = q => map(['email', 'firstName', 'lastName'],
   it => ({ [it]: { [Op.iLike]: `%${q}%` } }));
 
-function list({ userGroup, query, options }, res) {
-  const { filter } = query;
+function list({ query, userGroup, options }, res) {
+  const filter = JSON.parse(query.filter);
   const where = { userGroupId: userGroup.id };
-  const userWhere = filter ? { [Op.or]: createFilter(filter) } : {};
+  const userWhere = filter.user ? { [Op.or]: createFilter(filter.user) } : {};
+  if (filter.role) where.role = filter.role;
   const opts = { ...options, where };
   return UserGroupMember.withUser({ where: userWhere }).findAndCountAll(opts)
     .then(({ rows, count }) => res.jsend.success({ items: rows, total: count }));

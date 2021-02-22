@@ -51,10 +51,7 @@
 import AdminDialog from '@/admin/components/common/Dialog';
 import api from '@/admin/api/userGroupMember';
 import cloneDeep from 'lodash/cloneDeep';
-import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';
-import map from 'lodash/map';
-import { MemberRole } from '@/../common/config';
 import UserSelect from '@/admin/components/common/UserSelect';
 
 const resetMember = () => ({
@@ -67,8 +64,9 @@ export default {
   props: {
     visible: { type: Boolean, default: false },
     memberData: { type: Object, default: () => ({}) },
+    userGroupId: { type: Number, required: true },
     userIds: { type: Array, default: () => [] },
-    userGroupId: { type: Number, required: true }
+    roles: { type: Array, required: true }
   },
   data: () => ({
     member: resetMember(),
@@ -81,7 +79,6 @@ export default {
         if (!value) this.close();
       }
     },
-    roles: () => map(MemberRole, it => ({ text: humanize(it), value: it })),
     isNewMember: vm => !vm.member.id
   },
   methods: {
