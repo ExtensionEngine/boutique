@@ -7,12 +7,11 @@ const { createError } = require('../common/errors');
 const { Op } = Sequelize;
 
 async function list({ query, options }, res) {
-  const { parentId = null, userGroupIds, filter, archived, fetchAll } = query;
+  const { parentId = null, userGroupIds, filter, fetchAll } = query;
   const where = !fetchAll ? { parentId } : {};
   if (filter) where.name = { [Op.iLike]: `%${filter.trim()}%` };
   if (userGroupIds) where[Op.not] = { id: userGroupIds };
-  const opts = { ...options, where, paranoid: archived };
-  const { rows, count } = await UserGroup.findAndCountAll(opts);
+  const { rows, count } = await UserGroup.findAndCountAll({ ...options, where });
   return res.jsend.success({ items: rows, total: count });
 }
 

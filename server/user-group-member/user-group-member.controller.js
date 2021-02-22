@@ -11,10 +11,10 @@ const createFilter = q => map(['email', 'firstName', 'lastName'],
   it => ({ [it]: { [Op.iLike]: `%${q}%` } }));
 
 function list({ userGroup, query, options }, res) {
-  const { filter, archived } = query;
+  const { filter } = query;
   const where = { userGroupId: userGroup.id };
   const userWhere = filter ? { [Op.or]: createFilter(filter) } : {};
-  const opts = { ...options, where, paranoid: archived };
+  const opts = { ...options, where };
   return UserGroupMember.withUser({ where: userWhere }).findAndCountAll(opts)
     .then(({ rows, count }) => res.jsend.success({ items: rows, total: count }));
 }
