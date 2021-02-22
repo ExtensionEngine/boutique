@@ -7,13 +7,13 @@ const map = require('lodash/map');
 
 const { Op } = Sequelize;
 
-const createFilter = q => map(['email', 'firstName', 'lastName'],
+const createUserFilter = q => map(['email', 'firstName', 'lastName'],
   it => ({ [it]: { [Op.iLike]: `%${q}%` } }));
 
 function list({ query, userGroup, options }, res) {
   const filter = JSON.parse(query.filter);
   const where = { userGroupId: userGroup.id };
-  const userWhere = filter.user ? { [Op.or]: createFilter(filter.user) } : {};
+  const userWhere = filter.user ? { [Op.or]: createUserFilter(filter.user) } : {};
   if (filter.role) where.role = filter.role;
   const opts = { ...options, where };
   return UserGroupMember.withUser({ where: userWhere }).findAndCountAll(opts)
