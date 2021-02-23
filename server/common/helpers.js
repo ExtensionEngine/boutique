@@ -2,7 +2,7 @@
 
 const Datasheet = require('./datasheet');
 const mime = require('mime');
-const { role } = require('../../common/config');
+const { Role } = require('../../common/config');
 
 const times = (length, cb) => Array.from({ length }, (_, i) => cb(i));
 
@@ -11,7 +11,7 @@ function generateUsers() {
     firstName: 'Admin',
     lastName: 'Example',
     email: 'admin@example.org',
-    role: role.ADMIN
+    role: Role.ADMIN
   }];
   times(10, i => {
     const suffix = i || '';
@@ -19,7 +19,7 @@ function generateUsers() {
       firstName: `Learner ${suffix}`,
       lastName: 'Example',
       email: `learner${suffix}@example.org`,
-      role: role.LEARNER
+      role: Role.LEARNER
     });
   });
   return users;

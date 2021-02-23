@@ -13,6 +13,7 @@ router
   .post('/forgotPassword', ctrl.forgotPassword)
   .post('/resetPassword', ctrl.resetPassword)
   .use(auth.authenticate('jwt'))
+  .post('/logout', ctrl.logout)
   .get('/', ctrl.list)
   .post('/', ctrl.create)
   .patch('/:id', ctrl.patch)

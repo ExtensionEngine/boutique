@@ -1,87 +1,84 @@
 <template>
-  <v-dialog
-    v-model="visible"
-    v-hotkey="{ esc: close }"
-    :disabled="disabled"
-    width="700"
-    class="bulk-enrollment">
+  <admin-dialog v-model="visible" header-icon="mdi-school">
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on" :disabled="disabled" color="success" outlined class="ml-4">
-        Enroll
+      <v-btn v-on="on" :disabled="!users.length" text>
+        <v-icon dense class="mr-1">mdi-school</v-icon>
+        Enroll selected
       </v-btn>
     </template>
-    <validation-observer
-      ref="form"
-      @submit.prevent="$refs.form.handleSubmit(submit)"
-      tag="form"
-      novalidate>
-      <v-card class="pa-3">
-        <v-card-title class="headline">Enroll users to Program</v-card-title>
-        <v-card-text>
-          <validation-provider
-            v-slot="{ errors }"
-            name="program">
-            <v-autocomplete
-              v-model="programId"
-              :items="programOptions"
-              :disabled="enrolling"
-              :error-messages="errors"
-              name="program"
-              label="Program"
-              placeholder="Start typing to Search"
-              prepend-icon="mdi-magnify"
-              clearable />
-          </validation-provider>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn @click="close" :disabled="enrolling">Cancel</v-btn>
+    <template v-slot:header>Enroll users</template>
+    <template v-slot:body>
+      <validation-observer
+        ref="form"
+        @submit.prevent="$refs.form.handleSubmit(submit)"
+        tag="form"
+        novalidate>
+        <validation-provider
+          v-slot="{ errors }"
+          name="program">
+          <v-autocomplete
+            v-model="selectedProgramId"
+            :items="programOptions"
+            :disabled="enrolling"
+            :error-messages="errors"
+            name="program"
+            label="Program"
+            placeholder="Start typing to search"
+            prepend-icon="mdi-magnify"
+            clearable />
+        </validation-provider>
+        <div class="d-flex justify-end my-2">
+          <v-btn @click="close" :disabled="enrolling" text>Cancel</v-btn>
           <v-btn
             :disabled="enrollDisabled"
             :loading="enrolling"
-            color="success"
-            type="submit">
+            type="submit"
+            text>
             Enroll
           </v-btn>
-        </v-card-actions>
-      </v-card>
-    </validation-observer>
-  </v-dialog>
+        </div>
+      </validation-observer>
+    </template>
+  </admin-dialog>
 </template>
 
 <script>
-import api from '@/admin/api/enrollment';
+import AdminDialog from '@/admin/components/common/Dialog';
+import enrollmentApi from '@/admin/api/enrollment';
 import map from 'lodash/map';
-import { mapState } from 'vuex';
+import programApi from '@/admin/api/program';
 
 export default {
   name: 'bulk-enrollment-dialog',
   props: {
-    disabled: { type: Boolean, default: true },
     users: { type: Array, default: () => [] }
   },
   data: () => ({
     visible: false,
-    programId: null,
+    selectedProgramId: null,
+    programs: [],
     enrolling: false
   }),
   computed: {
-    ...mapState('programs', { programs: 'items' }),
     programOptions: vm => map(vm.programs, it => ({ value: it.id, text: it.name })),
-    enrollDisabled: vm => !vm.programId || vm.enrolling
+    enrollDisabled: vm => !vm.selectedProgramId || vm.enrolling
   },
   methods: {
+    async fetch() {
+      const { items } = await programApi.fetch();
+      this.programs = items;
+    },
     submit() {
       this.enrolling = true;
-      const { users, programId } = this;
-      return api.create({ learnerId: map(users, 'id'), programId })
+      const { users, selectedProgramId: programId } = this;
+      return enrollmentApi.create({ learnerId: map(users, 'id'), programId })
         .then(({ failed = [] }) => {
           if (failed.length <= 0) return this.close();
           const msg = `Enrolling failed for ${failed.length} users`;
           this.$refs.form.setErrors({ program: [msg] });
         })
         .catch(error => {
-          const msg = 'Error! Unable to enroll Users!';
+          const msg = 'Error! Unable to enroll users!';
           this.$refs.form.setErrors({ program: [msg] });
           return Promise.reject(error);
         })
@@ -89,9 +86,15 @@ export default {
     },
     close() {
       this.visible = false;
-      this.programId = null;
+      this.selectedProgramId = null;
       this.$refs.form.reset();
     }
-  }
+  },
+  watch: {
+    visible: async function (val) {
+      if (val) this.fetch();
+    }
+  },
+  components: { AdminDialog }
 };
 </script>

@@ -3,10 +3,10 @@
 const { Model, Op } = require('sequelize');
 
 class Program extends Model {
-  static fields(DataTypes) {
+  static fields({ DATE, STRING }) {
     return {
       name: {
-        type: DataTypes.STRING,
+        type: STRING,
         allowNull: false,
         unique: true,
         validate: { notEmpty: true, len: [2, 255] },
@@ -15,32 +15,32 @@ class Program extends Model {
         }
       },
       startDate: {
-        type: DataTypes.DATE,
+        type: DATE,
         field: 'start_date',
         validate: { isDate: true }
       },
       endDate: {
-        type: DataTypes.DATE,
+        type: DATE,
         field: 'end_date',
         validate: { isDate: true }
       },
       createdAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         field: 'created_at'
       },
       updatedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         field: 'updated_at'
       },
       deletedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         field: 'deleted_at'
       }
     };
   }
 
-  static associate({ Enrollment, ContentRepo }) {
-    this.hasOne(Enrollment, {
+  static associate({ EnrollmentOffering, ContentRepo }) {
+    this.hasOne(EnrollmentOffering, {
       foreignKey: { name: 'programId', field: 'program_id' }
     });
     this.hasMany(ContentRepo, {
@@ -76,6 +76,22 @@ class Program extends Model {
         }
       }
     };
+  }
+
+  static scopes() {
+    return {
+      active() {
+        const currentDate = new Date();
+        const startDate = { [Op.or]: { [Op.lt]: currentDate, [Op.eq]: null } };
+        const endDate = { [Op.or]: { [Op.gt]: currentDate, [Op.eq]: null } };
+        const where = { startDate, endDate };
+        return { where };
+      }
+    };
+  }
+
+  static active() {
+    return this.scope('active');
   }
 }
 

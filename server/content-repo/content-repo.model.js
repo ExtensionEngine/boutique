@@ -3,62 +3,65 @@
 const { Model } = require('sequelize');
 
 class ContentRepo extends Model {
-  static fields(DataTypes) {
+  static fields({ DATE, INTEGER, JSONB, STRING, TEXT, UUID }) {
     return {
       sourceId: {
-        type: DataTypes.INTEGER,
+        type: INTEGER,
         allowNull: false,
         field: 'source_id'
       },
       uid: {
-        type: DataTypes.UUID,
+        type: UUID,
         allowNull: false,
         validate: { isUUID: 'all' }
       },
       schema: {
-        type: DataTypes.STRING,
+        type: STRING,
         allowNull: false,
         validate: { notEmpty: true, len: [2, 20] }
       },
       name: {
-        type: DataTypes.STRING,
+        type: STRING,
         allowNull: false,
         validate: { notEmpty: true, len: [2, 250] }
       },
       description: {
-        type: DataTypes.TEXT,
+        type: TEXT,
         allowNull: false,
         validate: { notEmpty: true, len: [2, 2000] }
       },
       structure: {
-        type: DataTypes.JSONB,
+        type: JSONB,
         allowNull: false
       },
       publishedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         allowNull: false,
         field: 'published_at'
       },
       createdAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         allowNull: false,
         field: 'created_at'
       },
       updatedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         allowNull: false,
         field: 'updated_at'
       },
       deletedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         field: 'deleted_at'
       }
     };
   }
 
-  static associate({ Program }) {
+  static associate({ EnrollmentOffering, Program }) {
     this.belongsTo(Program, {
       foreignKey: { name: 'programId', field: 'program_id' }
+    });
+    this.hasOne(EnrollmentOffering, {
+      foreignKey: { name: 'repositoryId', field: 'repository_id' }
     });
   }
 

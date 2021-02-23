@@ -9,8 +9,10 @@ const HttpStatus = require('http-status');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
 
-const { ACCEPTED, CONFLICT, NOT_FOUND } = HttpStatus;
-const { Op } = Sequelize;
+const { ACCEPTED, BAD_REQUEST, CONFLICT, NO_CONTENT, NOT_FOUND } = HttpStatus;
+const { EmptyResultError, Op } = Sequelize;
+
+const WRONG_CREDENTIALS_MESSAGE = 'Incorrect email or password.';
 
 const columns = {
   email: { header: 'Email', width: 30 },
@@ -34,39 +36,54 @@ function list({ query: { email, role, filter, archived }, options }, res) {
     });
 }
 
-function create(req, res) {
-  const { body, origin } = req;
-  return User.restoreOrBuild(pick(body, inputAttrs))
-    .then(([result]) => {
-      if (result.isRejected()) return createError(CONFLICT);
-      return User.invite(result.value(), { origin });
-    })
-    .then(user => res.jsend.success(user.profile));
+async function create({ body, origin }, res) {
+  const options = { modelSearchKey: 'email' };
+  const [err, user] = await User.restoreOrCreate(pick(body, inputAttrs), options);
+  if (err) return createError(CONFLICT, 'User exists!');
+  await User.invite(user, { origin });
+  res.jsend.success(user.profile);
 }
 
 function patch({ params, body }, res) {
-  return User.findByPk(params.id, { paranoid: false })
-    .then(user => user || createError(NOT_FOUND, 'User does not exist!'))
+  return User.findByPk(params.id, { paranoid: false, rejectOnEmpty: true })
+    .catch(EmptyResultError, () => createError(NOT_FOUND, 'User does not exist!'))
     .then(user => user.update(pick(body, inputAttrs)))
     .then(user => res.jsend.success(user.profile));
 }
 
 function destroy({ params }, res) {
-  sequelize.transaction(async transaction => {
-    const user = await User.findByPk(params.id, { transaction });
-    if (!user) createError(NOT_FOUND);
+  return sequelize.transaction(async transaction => {
+    const user = await User.findByPk(params.id, { transaction, rejectOnEmpty: true });
     await Enrollment.destroy({ where: { learnerId: user.id }, transaction });
-    await user.destroy({ transaction });
-    res.end();
-  });
+    return user.destroy({ transaction });
+  })
+  .catch(EmptyResultError, () => createError(NOT_FOUND))
+  .then(() => res.sendStatus(NO_CONTENT));
 }
 
-function login({ user }, res) {
-  const token = user.createToken({
-    audience: Audience.Scope.Access,
-    expiresIn: '5 days'
-  });
-  res.jsend.success({ token, user: user.profile });
+function login({ body }, res) {
+  const { email, password } = body;
+  if (!email || !password) {
+    return createError(BAD_REQUEST, 'Please enter email and password!');
+  }
+
+  return User.findOne({ where: { email } })
+    .then(user => user || createError(NOT_FOUND, WRONG_CREDENTIALS_MESSAGE))
+    .then(user => user.authenticate(password))
+    .then(user => user || createError(NOT_FOUND, WRONG_CREDENTIALS_MESSAGE))
+    .then(user => {
+      const token = user.createToken({
+        audience: Audience.Scope.Access,
+        expiresIn: '5 days'
+      });
+      res.jsend.success({ token, user: user.profile });
+    });
+}
+
+function logout({ user }, res) {
+  // TODO: Add token invalidation
+  User.stopActivityLog(user.id);
+  return res.end();
 }
 
 function invite({ params, origin }, res) {
@@ -78,16 +95,16 @@ function invite({ params, origin }, res) {
 
 function forgotPassword({ origin, body }, res) {
   const { email } = body;
-  return User.findOne({ where: { email } })
-    .then(user => user || createError(NOT_FOUND, 'User not found!'))
+  return User.findOne({ where: { email }, rejectOnEmpty: true })
+    .catch(EmptyResultError, () => createError(NOT_FOUND, 'User not found!'))
     .then(user => user.sendResetToken({ origin }))
     .then(() => res.end());
 }
 
 function resetPassword({ body }, res) {
   const { password, token } = body;
-  return User.findOne({ where: { token } })
-    .then(user => user || createError(NOT_FOUND, 'Invalid token!'))
+  return User.findOne({ where: { token }, rejectOnEmpty: true })
+    .catch(EmptyResultError, () => createError(NOT_FOUND, 'Invalid token!'))
     .then(user => {
       user.password = password;
       return user.save();
@@ -98,7 +115,7 @@ function resetPassword({ body }, res) {
 async function bulkImport(req, res, next) {
   const { file, origin } = req;
   const users = (await Datasheet.load(file)).toJSON({ include: inputAttrs });
-  const errors = await User.import(users, { origin });
+  const errors = await bulkCreate(users, { origin });
   res.set('data-imported-count', users.length - errors.length);
   if (!errors.length) return res.end();
   const message = { header: 'Error', width: 30 };
@@ -118,8 +135,20 @@ module.exports = {
   patch,
   destroy,
   login,
+  logout,
   invite,
   forgotPassword,
   resetPassword,
   getImportTemplate
 };
+
+async function bulkCreate(users, { concurrency = 16, ...options } = {}) {
+  const errors = [];
+  await User.restoreOrCreateAll(users, { concurrency, modelSearchKey: 'email' })
+    .map(([err, user], index) => {
+      if (!err && user) return User.invite(user, options);
+      const { message = 'Failed to import user.' } = err;
+      errors.push({ ...users[index], message });
+    }, { concurrency });
+  return errors.length && errors;
+}

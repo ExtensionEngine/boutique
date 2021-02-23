@@ -1,61 +1,52 @@
 <template>
-  <v-dialog
-    v-model="visible"
-    v-hotkey="{ esc: close }"
-    :hide-overlay="!isDragged"
-    overlay-opacity="0.5"
-    overlay-color="#00bfff"
-    width="700"
-    persistent
-    no-click-animation>
+  <admin-dialog v-model="visible" width="600" header-icon="mdi-cloud-upload">
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on" color="blue-grey" :disabled="disabled" outlined>
-        <v-icon>mdi-cloud-upload</v-icon>Import {{ label }}
+      <v-btn v-on="on" color="primary" text>
+        <v-icon dense class="mr-1">mdi-cloud-upload</v-icon>Import {{ label }}
       </v-btn>
     </template>
-    <validation-observer
-      v-if="visible"
-      ref="form"
-      @submit.prevent="$refs.form.handleSubmit(submit)"
-      tag="form"
-      novalidate>
-      <v-card class="pa-3">
-        <v-card-title class="headline">Import Users</v-card-title>
-        <v-card-text>
-          <validation-provider v-slot="{ errors }" name="File" slim>
-            <div :class="{ 'drop-file': isDragged }" class="select-file">
-              <v-btn @click="launchFilePicker" color="info">
-                <v-icon class="pr-2">mdi-upload</v-icon>
-                Upload .xslx or .csv file
-              </v-btn>
-              <div class="my-3">Or drag and drop file here</div>
-              <v-chip
-                v-if="file"
-                @input="removeFile"
-                @click:close="removeFile"
-                close>
-                {{ file.name }}
-              </v-chip>
-              <div class="errors-list">{{ errors[0] }}</div>
-              <label for="userImportInput">
-                <input
-                  v-show="isDragged"
-                  ref="dropZone"
-                  @change="onFileSelected"
-                  @dragend="hideDropZone"
-                  @dragover="showDropZone"
-                  @dragenter="showDropZone"
-                  @dragleave="hideDropZone"
-                  @drop="hideDropZone"
-                  :accept="acceptedFiles"
-                  name="file"
-                  type="file"
-                  class="drop-zone">
-              </label>
-            </div>
-          </validation-provider>
-        </v-card-text>
-        <v-card-actions>
+    <template v-slot:header>Import Users</template>
+    <template v-slot:body>
+      <validation-observer
+        v-if="visible"
+        ref="form"
+        v-slot="{ invalid }"
+        @submit.prevent="$refs.form.handleSubmit(submit)"
+        tag="form"
+        novalidate>
+        <validation-provider v-slot="{ errors }" name="File" slim>
+          <div :class="{ 'drop-file': isDragged }" class="select-file">
+            <v-btn @click="launchFilePicker" color="info">
+              <v-icon class="pr-2">mdi-upload</v-icon>
+              Upload .xslx or .csv file
+            </v-btn>
+            <div class="my-3">Or drag and drop file here</div>
+            <v-chip
+              v-if="file"
+              @input="removeFile"
+              @click:close="removeFile"
+              close>
+              {{ file.name }}
+            </v-chip>
+            <div class="errors-list">{{ errors[0] }}</div>
+            <label for="userImportInput">
+              <input
+                v-show="isDragged"
+                ref="dropZone"
+                @change="onFileSelected"
+                @dragend="hideDropZone"
+                @dragover="showDropZone"
+                @dragenter="showDropZone"
+                @dragleave="hideDropZone"
+                @drop="hideDropZone"
+                :accept="acceptedFiles"
+                name="file"
+                type="file"
+                class="drop-zone">
+            </label>
+          </div>
+        </validation-provider>
+        <div class="d-flex align-center mb-2 mt-3">
           <v-btn @click="downloadTemplateFile" text color="blue-grey">
             Download Template
           </v-btn>
@@ -68,18 +59,18 @@
               <v-icon class="pr-2">mdi-cloud-download</v-icon>Errors
             </v-btn>
           </v-fade-transition>
-          <v-btn @click="close">Cancel</v-btn>
-          <v-btn :disabled="importDisabled" color="success" type="submit">
-            <span v-if="!importing">Import</span>
-            <v-icon v-else>mdi-loading mdi-spin</v-icon>
+          <v-btn @click="close" text>Cancel</v-btn>
+          <v-btn :disabled="invalid" :loading="importing" type="submit" text>
+            Import
           </v-btn>
-        </v-card-actions>
-      </v-card>
-    </validation-observer>
-  </v-dialog>
+        </div>
+      </validation-observer>
+    </template>
+  </admin-dialog>
 </template>
 
 <script>
+import AdminDialog from '@/admin/components/common/Dialog';
 import api from '@/admin/api/import';
 import pluralize from 'pluralize';
 import saveAs from 'save-as';
@@ -107,7 +98,6 @@ export default {
     serverErrorsReport: null
   }),
   computed: {
-    importDisabled: vm => !vm.file || vm.$refs.form.invalid || vm.importing,
     inputValidation: () => ({ required: true, mimes: Object.keys(inputFormats) }),
     acceptedFiles: () => Object.keys(inputFormats)
   },
@@ -186,7 +176,8 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener('dragenter', this.showDropZone);
-  }
+  },
+  components: { AdminDialog }
 };
 </script>
 

@@ -25,7 +25,7 @@ async function list({ query: { programId, srcVersion = false, archived } }, res)
   return res.jsend.success(repos);
 }
 
-function getCatalog(req, res) {
+function getCatalog(_req, res) {
   return Storage.getCatalog().then(data => res.jsend.success(data));
 }
 
