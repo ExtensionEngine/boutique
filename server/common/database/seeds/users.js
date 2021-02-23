@@ -22,28 +22,22 @@ const LETTER_A_CHAR_CODE = 65;
 times(10, i => {
   const suffix = i || '';
   users.push({
-    first_name: `Learner ${String.fromCharCode(LETTER_A_CHAR_CODE + i)}`,
+    first_name: `User ${String.fromCharCode(LETTER_A_CHAR_CODE + i)}`,
     last_name: 'Example',
-    email: `learner${suffix}@example.org`,
-    password: 'learner123',
-    role: Role.LEARNER,
+    email: `user${suffix}@example.org`,
+    password: 'user123',
+    role: Role.USER,
     created_at: now,
     updated_at: now
   });
 });
 
-module.exports = {
-  up(queryInterface) {
-    return Promise.map(users, user => encryptPassword(user))
-      .then(users => queryInterface.bulkInsert('user', users, {}));
-  },
-  down(queryInterface) {
-    return queryInterface.bulkDelete('user', null, {});
-  }
-};
+module.exports.up = qi => Promise.map(users, user => encryptPassword(user))
+  .then(users => qi.bulkInsert('user', users, {}));
 
-function encryptPassword(user) {
-  return bcrypt.hash(user.password, config.saltRounds)
-    .then(password => (user.password = password))
-    .then(() => user);
+module.exports.down = qi => qi.bulkDelete('user', null, {});
+
+async function encryptPassword(user) {
+  user.password = await bcrypt.hash(user.password, config.saltRounds);
+  return user;
 }

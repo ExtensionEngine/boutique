@@ -42,7 +42,7 @@ class User extends Model {
       role: {
         type: ENUM(values(Role)),
         allowNull: false,
-        defaultValue: Role.LEARNER
+        defaultValue: Role.USER
       },
       token: {
         type: STRING,
