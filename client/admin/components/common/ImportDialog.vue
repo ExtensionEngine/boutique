@@ -28,7 +28,7 @@
               close>
               {{ file.name }}
             </v-chip>
-            <div class="errors-list">{{ errors[0] }}</div>
+            <div class="errors-list mt-2">{{ errors[0] }}</div>
             <label for="userImportInput">
               <input
                 v-show="isDragged"
