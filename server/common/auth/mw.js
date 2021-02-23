@@ -2,7 +2,7 @@
 
 const { createError } = require('../errors');
 const HttpStatus = require('http-status');
-const Role = require('../../../common/config/role');
+const { Role } = require('../../../common/config');
 
 const { UNAUTHORIZED, FORBIDDEN } = HttpStatus;
 

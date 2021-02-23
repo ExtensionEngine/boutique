@@ -29,9 +29,9 @@ const uniqueEmail = {
 };
 
 const uniqueEnrollment = {
-  params: ['learnerId', 'programId'],
-  validate: (_, { learnerId, programId }) => {
-    const params = { learnerId, programId };
+  params: ['learnerId', 'offeringId'],
+  validate: (_, { learnerId, offeringId }) => {
+    const params = { learnerId, offeringId };
     return enrollmentApi.fetch({ params }).then(({ total }) => !total);
   },
   message: 'Learner is already enrolled.'
@@ -43,7 +43,7 @@ const uniqueProgramName = {
     const programName = get(program, 'name');
     if (programName && programName.toLowerCase() === name.toLowerCase()) return true;
     return programApi.fetch({ params: { name, deleted: true } })
-      .then(([fetchedProgram]) => !fetchedProgram);
+      .then(({ items: [fetchedProgram] }) => !fetchedProgram);
   },
   message: 'Program named {_value_} already exists'
 };

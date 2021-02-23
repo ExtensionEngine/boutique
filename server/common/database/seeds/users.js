@@ -1,9 +1,9 @@
 'use strict';
 
-const { auth: config = {} } = require('../../../config');
 const bcrypt = require('bcrypt');
+const { auth: config = {} } = require('../../../config');
 const Promise = require('bluebird');
-const { role } = require('../../../../common/config');
+const { Role } = require('../../../../common/config');
 
 const times = (length, cb) => Array.from({ length }, (_, i) => cb(i));
 
@@ -13,7 +13,7 @@ const users = [{
   last_name: 'Example',
   email: 'admin@example.org',
   password: 'admin123',
-  role: role.ADMIN,
+  role: Role.ADMIN,
   created_at: now,
   updated_at: now
 }];
@@ -26,18 +26,18 @@ times(10, i => {
     last_name: 'Example',
     email: `learner${suffix}@example.org`,
     password: 'learner123',
-    role: role.LEARNER,
+    role: Role.LEARNER,
     created_at: now,
     updated_at: now
   });
 });
 
 module.exports = {
-  up(queryInterface, Sequelize) {
+  up(queryInterface) {
     return Promise.map(users, user => encryptPassword(user))
       .then(users => queryInterface.bulkInsert('user', users, {}));
   },
-  down(queryInterface, Sequelize) {
+  down(queryInterface) {
     return queryInterface.bulkDelete('user', null, {});
   }
 };

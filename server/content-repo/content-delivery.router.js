@@ -17,24 +17,21 @@ router
   .get('/:repositoryId/exam/:examId', ctrl.getExam)
   .get('/:repositoryId/assessments/:assessmentsId', ctrl.getAssessments);
 
-function hasAccess({ program, user }, res, next) {
+async function hasAccess({ program, user }, _res, next) {
   if (user.isAdmin()) return next();
-  return program.getEnrollment({ where: { learnerId: user.id } })
-    .then(enrollment => {
-      if (!enrollment) return createError(FORBIDDEN, 'Access denied');
-      return next();
-    });
+  const where = { learnerId: user.id };
+  const enrollment = await program.getEnrollment({ where });
+  if (!enrollment) return createError(FORBIDDEN, 'Access denied');
+  return next();
 }
 
-function getRepo(req, res, next) {
-  return ContentRepo.findByPk(req.params.repositoryId)
-    .then(repo => {
-      if (!repo || repo.programId !== req.program.id) {
-        return createError(NOT_FOUND, 'Not found!');
-      }
-      req.repo = repo;
-      return next();
-    });
+async function getRepo(req, _res, next) {
+  const repo = await ContentRepo.findByPk(req.params.repositoryId);
+  if (!repo || repo.programId !== req.program.id) {
+    return createError(NOT_FOUND, 'Not found!');
+  }
+  req.repo = repo;
+  return next();
 }
 
 module.exports = {

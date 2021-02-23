@@ -1,32 +1,31 @@
 'use strict';
 
-const { Model, UniqueConstraintError } = require('sequelize');
-const castArray = require('lodash/castArray');
-const find = require('lodash/find');
-const Promise = require('bluebird');
+const { restoreOrCreate, restoreOrCreateAll } = require('../common/database/restore');
+const map = require('lodash/map');
+const { Model } = require('sequelize');
 
 class Enrollment extends Model {
-  static fields(DataTypes) {
+  static fields({ DATE }) {
     return {
       createdAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         field: 'created_at'
       },
       updatedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         field: 'updated_at'
       },
       deletedAt: {
-        type: DataTypes.DATE,
+        type: DATE,
         field: 'deleted_at'
       }
     };
   }
 
-  static associate({ Program, User }) {
-    this.belongsTo(Program, {
-      as: 'program',
-      foreignKey: { name: 'programId', field: 'program_id' }
+  static associate({ EnrollmentOffering, User }) {
+    this.belongsTo(EnrollmentOffering, {
+      as: 'offering',
+      foreignKey: { name: 'offeringId', field: 'enrollment_offering_id' }
     });
     this.belongsTo(User, {
       as: 'learner',
@@ -43,22 +42,13 @@ class Enrollment extends Model {
     };
   }
 
-  static async restoreOrCreate(learnerIds, programId, { concurrency = 16 } = {}) {
-    learnerIds = castArray(learnerIds);
-    const where = { learnerId: learnerIds, programId };
-    const found = await this.findAll({ where, paranoid: false });
-    return Promise.map(learnerIds, learnerId => Promise.try(() => {
-      const enrollment = find(found, { learnerId });
-      if (enrollment && !enrollment.deletedAt) {
-        const message = 'Enrollment already exists!';
-        throw new UniqueConstraintError({ message });
-      }
-      if (enrollment) {
-        enrollment.setDataValue('deletedAt', null);
-        return enrollment.save();
-      }
-      return this.create({ learnerId, programId });
-    }).reflect(), { concurrency });
+  static async restoreOrCreate(enrollment, options) {
+    return restoreOrCreate(this, enrollment, options);
+  }
+
+  static async restoreOrCreateAll(enrollments, options) {
+    const where = { learnerId: map(enrollments, 'learnerId') };
+    return restoreOrCreateAll(this, enrollments, { where }, options);
   }
 }
 
