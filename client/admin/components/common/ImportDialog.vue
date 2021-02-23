@@ -10,7 +10,6 @@
       <validation-observer
         v-if="visible"
         ref="form"
-        v-slot="{ invalid }"
         @submit.prevent="$refs.form.handleSubmit(submit)"
         tag="form"
         novalidate>
@@ -60,7 +59,7 @@
             </v-btn>
           </v-fade-transition>
           <v-btn @click="close" text>Cancel</v-btn>
-          <v-btn :disabled="invalid" :loading="importing" type="submit" text>
+          <v-btn :disabled="importDisabled" :loading="importing" type="submit" text>
             Import
           </v-btn>
         </div>
@@ -98,6 +97,7 @@ export default {
     serverErrorsReport: null
   }),
   computed: {
+    importDisabled: vm => !vm.file || vm.$refs.form.invalid || vm.importing,
     inputValidation: () => ({ required: true, mimes: Object.keys(inputFormats) }),
     acceptedFiles: () => Object.keys(inputFormats)
   },
