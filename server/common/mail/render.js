@@ -1,11 +1,11 @@
 'use strict';
 
-const { paramCase } = require('change-case');
 const cheerio = require('cheerio');
 const fs = require('fs');
 const map = require('lodash/map');
 const mapKeys = require('lodash/mapKeys');
 const mjml2html = require('mjml');
+const { paramCase } = require('change-case');
 const pupa = require('pupa');
 
 module.exports = {
