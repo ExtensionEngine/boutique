@@ -1,6 +1,7 @@
 'use strict';
 
 const Datasheet = require('./datasheet');
+const { importTemplateFormat } = require('../config');
 const mime = require('mime');
 const { Role } = require('../../common/config');
 
@@ -28,7 +29,7 @@ function generateUsers() {
 function createSheet({ sheet, body, file = {} }, res) {
   const creator = 'Boutique';
   const report = (new Datasheet(sheet)).toWorkbook({ creator });
-  const format = body.format || mime.getExtension(file.mimetype) || 'xlsx';
+  const format = body.format || mime.getExtension(file.mimetype) || importTemplateFormat;
   return report.send(res, { format });
 }
 

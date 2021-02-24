@@ -168,7 +168,8 @@ export default {
     async downloadTemplateFile() {
       const { label, baseUrl } = this;
       const { data } = await api.getImportTemplate({ baseUrl });
-      return saveAs(data, `${label}Template.xlsx`);
+      const fileName = `${label}Template.${inputFormats[data.type]}`;
+      return saveAs(data, fileName);
     }
   },
   mounted() {
