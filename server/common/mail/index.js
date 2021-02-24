@@ -1,14 +1,14 @@
 'use strict';
 
 const { createLogger, Level } = require('../logger');
-const { email: config } = require('../../config');
-const { promisify } = require('util');
 const { renderHtml, renderText } = require('./render');
-const { URL } = require('url');
+const { email: config } = require('../../config');
 const email = require('emailjs');
-const logger = createLogger('mailer', { level: Level.DEBUG });
 const path = require('path');
 const pick = require('lodash/pick');
+const { promisify } = require('util');
+const { URL } = require('url');
+const logger = createLogger('mailer', { level: Level.DEBUG });
 
 const from = `${config.sender.name} <${config.sender.address}>`;
 const server = email.server.connect(config);
