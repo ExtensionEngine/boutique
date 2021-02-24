@@ -6,10 +6,10 @@ const { createError } = require('../common/errors');
 const Datasheet = require('./datasheet');
 const { generate } = require('./helpers');
 const HttpStatus = require('http-status');
+const { importTemplateFormat } = require('./../config');
 const map = require('lodash/map');
 const mime = require('mime');
 const pick = require('lodash/pick');
-const { userImportTemplateFormat } = require('./../config');
 
 const { ACCEPTED, BAD_REQUEST, CONFLICT, NO_CONTENT, NOT_FOUND } = HttpStatus;
 const { EmptyResultError, Op } = Sequelize;
@@ -130,7 +130,7 @@ function getImportTemplate(_req, res) {
   const creator = 'Boutique';
   const data = generate();
   const report = (new Datasheet({ columns, data })).toWorkbook({ creator });
-  return report.send(res, { format: userImportTemplateFormat });
+  return report.send(res, { format: importTemplateFormat });
 }
 
 module.exports = {
