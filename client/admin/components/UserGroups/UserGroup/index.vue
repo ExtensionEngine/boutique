@@ -25,11 +25,11 @@ import api from '@/admin/api/userGroup';
 import find from 'lodash/find';
 import reverse from 'lodash/reverse';
 
-const getBreadcrumbItems = (result, currentItem, items) => {
+const getBreadcrumbItems = (items, currentItem, result = [currentItem]) => {
   const parent = find(items, { id: currentItem.parentId });
   if (!parent) return reverse(result);
   result.push(parent);
-  return getBreadcrumbItems(result, parent, items);
+  return getBreadcrumbItems(items, parent, result);
 };
 
 const formatBreadcrumbs = items => items.map(({ id, name }) => {
@@ -53,7 +53,7 @@ export default {
     breadcrumbs() {
       if (!this.userGroup) return [];
       const { userGroup, userGroups } = this;
-      const items = getBreadcrumbItems([userGroup], userGroup, userGroups);
+      const items = getBreadcrumbItems(userGroup, userGroups);
       return [{ text: 'User groups', disabled: true }, ...formatBreadcrumbs(items)];
     }
   },
