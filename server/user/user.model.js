@@ -201,7 +201,7 @@ class User extends Model {
   }
 
   isAdmin() {
-    return this.role === role.ADMIN;
+    return this.role === Role.ADMIN;
   }
 }
 
