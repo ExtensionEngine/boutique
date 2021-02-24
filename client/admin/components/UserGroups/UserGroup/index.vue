@@ -24,16 +24,12 @@
 import api from '@/admin/api/userGroup';
 import find from 'lodash/find';
 import reverse from 'lodash/reverse';
-import transform from 'lodash/transform';
 
-const getBreadcrumbItems = ({ userGroups, userGroup }) => {
-  const { items } = transform(userGroups, acc => {
-    const parent = find(userGroups, { id: acc.currentGroup.parentId });
-    if (!parent) return false;
-    acc.items.push(parent);
-    acc.currentGroup = parent;
-  }, { items: [userGroup], currentGroup: userGroup });
-  return reverse(items);
+const getBreadcrumbItems = (result, currentItem, items) => {
+  const parent = find(items, { id: currentItem.parentId });
+  if (!parent) return reverse(result);
+  result.push(parent);
+  return getBreadcrumbItems(result, parent, items);
 };
 
 const formatBreadcrumbs = items => items.map(({ id, name }) => {
@@ -56,7 +52,8 @@ export default {
     userGroup: vm => find(vm.userGroups, { id: vm.userGroupId }),
     breadcrumbs() {
       if (!this.userGroup) return [];
-      const items = getBreadcrumbItems(this);
+      const { userGroup, userGroups } = this;
+      const items = getBreadcrumbItems([userGroup], userGroup, userGroups);
       return [{ text: 'User groups', disabled: true }, ...formatBreadcrumbs(items)];
     }
   },
