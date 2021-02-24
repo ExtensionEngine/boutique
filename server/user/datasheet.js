@@ -1,8 +1,8 @@
 'use strict';
 
 const { camelCase } = require('change-case');
-const { Workbook } = require('exceljs');
 const intoStream = require('into-stream');
+const { Workbook } = require('exceljs');
 const Worksheet = require('exceljs/dist/es5/doc/worksheet');
 
 const isCsv = file => file.mimetype === 'text/csv';

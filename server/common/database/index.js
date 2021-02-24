@@ -4,7 +4,6 @@ const config = require('./config');
 const forEach = require('lodash/forEach');
 const invoke = require('lodash/invoke');
 const { migrationsPath } = require('../../../sequelize.config');
-const logger = require('../logger')('db');
 const pick = require('lodash/pick');
 const pkg = require('../../../package.json');
 const Promise = require('bluebird');
@@ -13,6 +12,7 @@ const semver = require('semver');
 const Sequelize = require('sequelize');
 const Umzug = require('umzug');
 const { wrapMethods } = require('./helpers');
+const logger = require('../logger')('db');
 
 // Require models.
 /* eslint-disable require-sort/require-sort */
@@ -25,7 +25,7 @@ const ContentRepo = require('../../content-repo/content-repo.model');
 const UserGroup = require('../../user-group/user-group.model');
 const UserGroupMember = require('../../user-group-member/user-group-member.model');
 const OfferingUserGroup = require('../../offering-user-group/offering-user-group.model');
-/* eslint-enable */
+/* eslint-enable require-sort/require-sort */
 
 const isProduction = process.env.NODE_ENV === 'production';
 const sequelize = createConnection(config);

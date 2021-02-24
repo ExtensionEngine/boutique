@@ -110,7 +110,7 @@ export default {
     },
     async downloadTemplateFile() {
       const { data } = await api.getImportTemplate();
-      saveAs(data, 'Template.xlsx');
+      saveAs(data, `Template.${inputFormats[data.type]}`);
     }
   },
   components: { AdminDialog }

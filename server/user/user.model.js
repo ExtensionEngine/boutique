@@ -8,7 +8,6 @@ const compact = require('lodash/compact');
 const config = require('../config');
 const IntervalCache = require('../common/util/interval-cache');
 const jwt = require('jsonwebtoken');
-const logger = require('../common/logger')();
 const mail = require('../common/mail');
 const map = require('lodash/map');
 const pick = require('lodash/pick');
@@ -16,6 +15,7 @@ const Promise = require('bluebird');
 const { Role } = require('../../common/config');
 const { sql } = require('../common/database/helpers');
 const values = require('lodash/values');
+const logger = require('../common/logger')();
 
 const PROFILE_ATTRS = [
   'id', 'firstName', 'lastName', 'email',

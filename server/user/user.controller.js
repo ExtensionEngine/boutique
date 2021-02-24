@@ -6,6 +6,7 @@ const { createError } = require('../common/errors');
 const Datasheet = require('./datasheet');
 const { generate } = require('./helpers');
 const HttpStatus = require('http-status');
+const { importTemplateFormat } = require('./../config');
 const map = require('lodash/map');
 const mime = require('mime');
 const pick = require('lodash/pick');
@@ -130,7 +131,7 @@ function getImportTemplate(_req, res) {
   const creator = 'Boutique';
   const data = generate();
   const report = (new Datasheet({ columns, data })).toWorkbook({ creator });
-  return report.send(res, { format: 'xlsx' });
+  return report.send(res, { format: importTemplateFormat });
 }
 
 module.exports = {
