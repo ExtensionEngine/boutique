@@ -1,6 +1,6 @@
 <template>
   <div class="ma-4">
-    <v-row class="my-6">
+    <v-row class="ma-4">
       <v-col md="6" lg="4">
         <v-text-field
           v-model.trim="filter"
@@ -19,7 +19,7 @@
       :server-items-length="totalItems"
       :no-data-text="noEnrollmentsMessage"
       must-sort
-      class="transparent">
+      class="transparent ma-4">
       <template v-slot:item="{ item }">
         <tr>
           <td>{{ get(item.learner, 'email') }}</td>

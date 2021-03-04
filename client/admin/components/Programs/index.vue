@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="pa-8">
-    <v-row class="toolbar">
+    <v-row class="toolbar ma-4">
       <v-col lg="4" md="6">
         <v-text-field
           v-model="filter"
@@ -24,7 +24,7 @@
       :server-items-length="totalItems"
       :hide-default-footer="totalItems < options.itemsPerPage">
       <template slot-scope="{ items: programs }">
-        <v-row>
+        <v-row class="ma-4">
           <v-col
             v-for="({ id, name }) in programs"
             :key="id"
