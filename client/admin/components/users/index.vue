@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-row class="ma-5">
+    <v-row class="ma-4">
       <v-col sm="4" md="5" lg="4">
         <v-text-field
           v-model="filter"
@@ -28,7 +28,7 @@
       :server-items-length="totalItems"
       :options.sync="dataTable"
       show-select must-sort
-      class="ma-5 transparent">
+      class="ma-4 transparent">
       <template v-slot:item.createdAt="{ item }">
         {{ item.createdAt | formatDate }}
       </template>
