@@ -1,5 +1,6 @@
 'use strict';
 
+require('express-async-errors');
 const { INTERNAL_SERVER_ERROR, NOT_FOUND } = require('http-status');
 const auth = require('./common/auth');
 const AuthError = require('passport/lib/errors/authenticationerror');
@@ -14,12 +15,8 @@ const jsend = require('jsend').middleware;
 const morgan = require('morgan');
 const nocache = require('nocache');
 const origin = require('./common/origin');
-const logger = require('./common/logger')();
-
-// eslint-disable-next-line require-sort/require-sort
-require('express-async-errors');
-
 const router = require('./router');
+const logger = require('./common/logger')();
 
 const app = express();
 
