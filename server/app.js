@@ -19,7 +19,6 @@ const router = require('./router');
 const logger = require('./common/logger')();
 
 const app = express();
-
 app.use(helmet());
 app.use(cors({
   origin: config.cors.allowedOrigins,
