@@ -14,13 +14,15 @@ const jsend = require('jsend').middleware;
 const morgan = require('morgan');
 const nocache = require('nocache');
 const origin = require('./common/origin');
-const router = require('./router');
 const logger = require('./common/logger')();
 
 // eslint-disable-next-line require-sort/require-sort
 require('express-async-errors');
 
+const router = require('./router');
+
 const app = express();
+
 app.use(helmet());
 app.use(cors({
   origin: config.cors.allowedOrigins,
