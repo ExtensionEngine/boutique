@@ -1,6 +1,6 @@
 <template>
   <v-app-bar
-    :dense="!!program"
+    :dense="!!programId"
     extension-height="48"
     color="primary"
     elevation="2"
