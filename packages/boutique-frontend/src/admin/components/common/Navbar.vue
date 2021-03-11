@@ -10,7 +10,7 @@
       <v-icon dense class="mr-1">mdi-school</v-icon>
       Tailor
       <span class="pa-1">|</span>
-      <span class="subtitle-1 secondary--text">LMS starter</span>
+      <span class="text-subtitle-1 secondary--text">LMS starter</span>
     </v-toolbar-title>
     <v-spacer />
     <v-menu min-width="220" transition="slide-y-transition" offset-y>

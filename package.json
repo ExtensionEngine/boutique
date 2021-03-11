@@ -10,7 +10,7 @@
     "lint:all": "lerna run --parallel lint",
     "lint:fix": "lerna run --parallel lint:fix",
     "lint:staged": "lerna run lint:staged --concurrency 1",
-    "postinstall": "lerna bootstrap"
+    "postinstall": "lerna bootstrap --hoist"
   },
   "devDependencies": {
     "husky": "^4.3.8",
@@ -18,7 +18,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint:staged && npm run test:related",
+      "pre-commit": "npm run lint:staged",
       "pre-push": "npm run lint:all"
     }
   },

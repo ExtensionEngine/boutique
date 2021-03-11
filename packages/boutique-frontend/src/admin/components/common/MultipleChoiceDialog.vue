@@ -2,8 +2,8 @@
   <admin-dialog v-model="show" header-icon="mdi-alert">
     <template v-slot:header>{{ heading }}</template>
     <template v-slot:body>
-      <div class="mb-1 subtitle-1">{{ message }}</div>
-      <div v-if="warning" class="mb-2 caption">
+      <div class="mb-1 text-subtitle-1">{{ message }}</div>
+      <div v-if="warning" class="mb-2 text-caption">
         <span class="error--text">Warning:</span>
         {{ warning }}
       </div>

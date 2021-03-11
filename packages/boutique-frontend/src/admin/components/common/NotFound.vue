@@ -1,13 +1,13 @@
 <template>
   <section class="section is-medium">
-    <h1 class="title">404</h1>
+    <h1 class="text-h6">404</h1>
     <p class="subtitle">Page not found</p>
     <router-link to="/">Go Home</router-link>
   </section>
 </template>
 
 <style lang="scss" scoped>
-.title {
+.text-h6 {
   font-size: 1000%;
 }
 

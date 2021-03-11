@@ -35,7 +35,7 @@
               min-height="200"
               dark
               class="d-flex flex-column justify-space-between">
-              <v-card-title class="headline grey--text text--lighten-3">
+              <v-card-title class="text-h5 grey--text text--lighten-3">
                 {{ name }}
               </v-card-title>
               <v-card-actions class="justify-end">

@@ -1,7 +1,6 @@
 'use strict';
 
 require('dotenv').config();
-const config = require('./config');
 const path = require('path');
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -16,7 +15,7 @@ const devServer = {
   },
   proxy: {
     '/api': {
-      target: `http://${config.ip}:${config.port}`
+      target: `http://${process.env.IP}:${process.env.PORT}`
     }
   },
   // Override using: `npm run dev:client -- --port <number>`

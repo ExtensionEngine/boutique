@@ -9,10 +9,10 @@
             </v-avatar>
           </div>
           <div class="d-flex justify-center">
-            <h1 class="ma-3 headline">
+            <h1 class="ma-3 text-h5">
               Tailor
               <span class="pa-1">|</span>
-              <span class="subtitle-2">LMS starter</span>
+              <span class="text-subtitle-2">LMS starter</span>
             </h1>
           </div>
         </div>

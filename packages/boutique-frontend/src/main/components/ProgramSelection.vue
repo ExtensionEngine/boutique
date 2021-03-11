@@ -4,7 +4,7 @@
       You aren't enrolled in any Program!
     </v-alert>
     <div v-else>
-      <h1 class="title">Select your program</h1>
+      <h1 class="text-h6">Select your program</h1>
       <v-btn
         v-for="{ id, name } in programs"
         :key="id"
@@ -26,7 +26,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.title {
+.text-h6 {
   margin: 1rem 0 3rem;
   font-size: 1.5rem;
   font-weight: 300;
