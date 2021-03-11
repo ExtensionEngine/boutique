@@ -1,4 +1,4 @@
-# Boutique V2 - README OUTDATED! 
+# Boutique
 
 [![GitHub package version](https://badgen.net/github/release/ExtensionEngine/boutique)](https://github.com/ExtensionEngine/boutique/releases)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/105e3679b14c4b7b9205981734e90424?branch=develop)](https://www.codacy.com/app/ExtensionEngine/boutique?utm_source=github.com&utm_medium=referral&utm_content=ExtensionEngine/boutique&utm_campaign=Badge_Grade)

@@ -1,0 +1,28 @@
+# Dependencies
+node_modules
+
+# Editors
+.vscode
+*.sublime-*
+.idea
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Configuration
+.env
+ecosystem.config.js
+
+# Tailor dump storage
+data/*
+!data/.gitkeep
+
+# Build artifacts
+dist/*
+!dist/.gitkeep
+stats.json
+
+# General
+.DS_Store
