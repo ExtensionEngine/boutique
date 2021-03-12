@@ -1,15 +1,15 @@
-import Content from '@/admin/components/Programs/Program/Content';
-import Enrollments from '@/admin/components/Programs/Program/Enrollments';
+import Content from '@/admin/components/Programs/Program/Content/index.vue';
+import Enrollments from '@/admin/components/Programs/Program/Enrollments/index.vue';
 import get from 'lodash/get';
 import { navigateTo } from '@/common/navigation';
-import NotFound from '@/admin/components/common/NotFound';
-import Program from '@/admin/components/Programs/Program';
-import Programs from '@/admin/components/Programs';
-import { Role } from '@/../common/config';
+import NotFound from '@/admin/components/common/NotFound.vue';
+import Program from '@/admin/components/Programs/Program/index.vue';
+import Programs from '@/admin/components/Programs/index.vue';
+import { Role } from '@/common/config';
 import Router from 'vue-router';
-import Settings from '@/admin/components/Programs/Program/Settings';
+import Settings from '@/admin/components/Programs/Program/Settings/index.vue';
 import store from './store';
-import Users from '@/admin/components/users';
+import Users from '@/admin/components/users/index.vue';
 import Vue from 'vue';
 
 Vue.use(Router);

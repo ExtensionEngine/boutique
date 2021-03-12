@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import AdminDialog from '@/admin/components/common/Dialog';
+import AdminDialog from '@/admin/components/common/Dialog.vue';
 
 export default {
   name: 'confirmation-dialog',

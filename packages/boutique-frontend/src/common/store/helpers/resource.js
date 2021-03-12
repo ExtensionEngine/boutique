@@ -4,7 +4,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import cuid from 'cuid';
 import join from 'url-join';
 import omit from 'lodash/omit';
-import Queue from 'promise-queue';
+import Queue from 'p-queue';
 
 // Used to serialize api calls that modify data.
 const queue = new Queue(1, Infinity);

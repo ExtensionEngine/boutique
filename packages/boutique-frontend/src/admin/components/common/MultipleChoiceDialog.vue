@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import AdminDialog from '@/admin/components/common/Dialog';
+import AdminDialog from '@/admin/components/common/Dialog.vue';
 
 const validator = actions => {
   if (!(actions instanceof Array)) return false;

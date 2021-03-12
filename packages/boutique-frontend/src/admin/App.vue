@@ -11,9 +11,9 @@
 </template>
 
 <script>
-import Navbar from '@/admin/components/common/Navbar';
+import Navbar from '@/admin/components/common/Navbar.vue';
 import RouterHost from '@/common/components/RouterHost';
-import Sidebar from '@/admin/components/common/Sidebar';
+import Sidebar from '@/admin/components/common/Sidebar.vue';
 
 export default {
   name: 'admin-app',

@@ -45,8 +45,8 @@
 
 <script>
 import api from '@/admin/api/enrollment';
-import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
-import EnrollmentDialog from './EnrollmentDialog';
+import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog.vue';
+import EnrollmentDialog from './EnrollmentDialog.vue';
 import get from 'lodash/get';
 import throttle from 'lodash/throttle';
 

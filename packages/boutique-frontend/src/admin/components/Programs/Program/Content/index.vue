@@ -69,11 +69,11 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import api from '@/admin/api/contentRepo';
-import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
-import ContentDialog from './ContentDialog';
+import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog.vue';
+import ContentDialog from './ContentDialog.vue';
 import filter from 'lodash/filter';
 import fuzzysearch from 'fuzzysearch';
-import MultipleChoiceDialog from '@/admin/components/common/MultipleChoiceDialog';
+import MultipleChoiceDialog from '@/admin/components/common/MultipleChoiceDialog.vue';
 
 const fuzzy = (input, content) => {
   return fuzzysearch(input.toLowerCase(), content.toLowerCase());

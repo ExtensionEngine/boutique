@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import AdminDialog from '@/admin/components/common/Dialog';
+import AdminDialog from '@/admin/components/common/Dialog.vue';
 import api from '@/admin/api/contentRepo';
 import differenceBy from 'lodash/differenceBy';
 import map from 'lodash/map';

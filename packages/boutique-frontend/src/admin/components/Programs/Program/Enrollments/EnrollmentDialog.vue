@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import AdminDialog from '@/admin/components/common/Dialog';
+import AdminDialog from '@/admin/components/common/Dialog.vue';
 import enrollmentApi from '@/admin/api/enrollment';
 import map from 'lodash/map';
 import pick from 'lodash/pick';

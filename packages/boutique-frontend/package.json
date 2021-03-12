@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "poi --serve",
+    "start": "vite -d",
     "lint:js": "eslint --ext .js,.vue .",
     "lint:md": "remark .",
     "lint:scss": "stylelint \"client/**/*.vue\" \"client/**/*.scss\"",
@@ -55,6 +55,9 @@
     "sass": "^1.26.8",
     "sass-loader": "^7.1.0",
     "stylelint": "^13.0.0",
+    "vite": "^2.0.5",
+    "vite-plugin-components": "^0.8.0",
+    "vite-plugin-vue2": "^1.3.2",
     "vue-template-compiler": "^2.6.11",
     "webpack-bundle-analyzer": "^4.0.0"
   },

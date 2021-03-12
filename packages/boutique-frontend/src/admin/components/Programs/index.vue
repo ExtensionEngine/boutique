@@ -56,7 +56,7 @@
 
 <script>
 import api from '@/admin/api/program';
-import CreateDialog from './CreateDialog';
+import CreateDialog from './CreateDialog.vue';
 import throttle from 'lodash/throttle';
 
 const defaultPage = () => ({ page: 1, sortBy: ['updatedAt'], sortDesc: [true] });

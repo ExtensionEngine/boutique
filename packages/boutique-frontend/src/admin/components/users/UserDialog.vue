@@ -78,13 +78,13 @@
 </template>
 
 <script>
-import AdminDialog from '@/admin/components/common/Dialog';
+import AdminDialog from '@/admin/components/common/Dialog.vue';
 import api from '@/admin/api/user';
 import cloneDeep from 'lodash/cloneDeep';
 import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
-import { Role } from '@/../common/config';
+import { Role } from '@/common/config';
 
 const resetUser = () => ({
   firstName: '',

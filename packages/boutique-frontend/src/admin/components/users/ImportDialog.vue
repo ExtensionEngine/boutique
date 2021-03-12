@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import AdminDialog from '@/admin/components/common/Dialog';
+import AdminDialog from '@/admin/components/common/Dialog.vue';
 import api from '@/admin/api/user';
 import saveAs from 'save-as';
 

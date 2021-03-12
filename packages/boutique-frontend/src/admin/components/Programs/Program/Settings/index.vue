@@ -59,8 +59,8 @@
 
 <script>
 import cloneDeep from 'lodash/cloneDeep';
-import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
-import DatePicker from '@/admin/components/common/DatePicker';
+import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog.vue';
+import DatePicker from '@/admin/components/common/DatePicker.vue';
 import format from 'date-fns/format';
 import { mapActions } from 'vuex';
 

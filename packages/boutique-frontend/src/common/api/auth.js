@@ -1,13 +1,12 @@
 import { extractData } from './helpers';
-import path from 'path';
 import request from './request';
 
 const urls = {
   root: '/users',
-  login: () => path.join(urls.root, 'login'),
-  logout: () => path.join(urls.root, 'logout'),
-  forgotPassword: () => path.join(urls.root, 'forgotPassword'),
-  resetPassword: () => path.join(urls.root, 'resetPassword')
+  login: () => `${urls.root}/login`,
+  logout: () => `${urls.root}/logout`,
+  forgotPassword: () => `${urls.root}/forgotPassword`,
+  resetPassword: () => `${urls.root}/resetPassword`
 };
 
 function login(credentials) {

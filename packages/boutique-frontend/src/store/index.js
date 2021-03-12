@@ -1,7 +1,6 @@
 import auth from '@/common/store/modules/auth';
 import { auth as authPlugin } from '@/common/store/plugins';
-import contentRepo from '@/admin/store/modules/content-repo';
-import programs from '@/admin/store/modules/programs';
+import learner from '@/store/modules/learner';
 import request from '@/common/api/request';
 import Vue from 'vue';
 import Vuex from 'vuex';
@@ -13,8 +12,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   modules: {
     auth,
-    contentRepo,
-    programs
+    learner
   },
   plugins: [authPlugin({ storageKey: 'LMS_USER' })],
   strict: !isProduction

@@ -1,14 +1,13 @@
 import { extractData, processParams } from '@/common/api/helpers';
 import get from 'lodash/get';
-import path from 'path';
 import request from '@/common/api/request';
 
 const urls = {
   root: '/users',
-  resource: id => path.join(urls.root, String(id)),
-  invite: id => path.join(urls.resource(id), 'invite'),
-  import: () => path.join(urls.root, 'import'),
-  getImportTemplate: () => path.join(urls.import(), 'template')
+  resource: id => `${urls.root}/${String(id)}`,
+  invite: id => `${urls.resource(id)}/invite`,
+  import: () => `${urls.root}/import`,
+  getImportTemplate: () => `${urls.import()}/template`
 };
 
 function fetch(params = {}) {

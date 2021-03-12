@@ -71,13 +71,13 @@
 
 <script>
 import api from '@/admin/api/user';
-import BulkEnrollmentDialog from './BulkEnrollmentDialog';
-import ConfirmationDialog from '../common/ConfirmationDialog';
+import BulkEnrollmentDialog from './BulkEnrollmentDialog.vue';
+import ConfirmationDialog from '../common/ConfirmationDialog.vue';
 import humanize from 'humanize-string';
-import ImportDialog from './ImportDialog';
+import ImportDialog from './ImportDialog.vue';
 import { mapState } from 'vuex';
 import throttle from 'lodash/throttle';
-import UserDialog from './UserDialog';
+import UserDialog from './UserDialog.vue';
 
 const defaultPage = () => ({ sortBy: ['updatedAt'], sortDesc: [true], page: 1 });
 const headers = () => [

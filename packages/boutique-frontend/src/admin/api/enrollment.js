@@ -1,10 +1,9 @@
 import { extractData, processParams } from '@/common/api/helpers';
-import path from 'path';
 import request from '@/common/api/request';
 
 const urls = {
   root: '/enrollments',
-  resource: id => path.join(urls.root, String(id))
+  resource: id => `${urls.root}/${String(id)}`
 };
 
 function fetch(opts) {
