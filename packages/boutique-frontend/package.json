@@ -3,16 +3,16 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "poi --serve",
+    "start": "vue-cli-service serve",
     "lint:js": "eslint --ext .js,.vue .",
     "lint:md": "remark .",
-    "lint:scss": "stylelint \"client/**/*.vue\" \"client/**/*.scss\"",
+    "lint:scss": "stylelint \"src/**/*.vue\" \"src/**/*.scss\"",
     "lint": "npm run lint:js; npm run lint:scss; npm run lint:md",
     "readme:update": "node ./server/script/update-readme",
     "prod": "NODE_ENV=production node -r dotenv/config ./server",
-    "build": "del-cli node_modules/.cache/vue-loader && poi --prod",
-    "webpack:inspect-config": "poi --inspect-webpack",
-    "webpack:bundle-report": "poi --prod --bundle-report",
+    "build": "del-cli node_modules/.cache/vue-loader && vue-cli-service build",
+    "webpack:bundle-report": "vue-cli-service build --report",
+    "webpack:inspect-config": "vue-cli-service inspect",
     "clean": "del-cli dist/* !dist/.gitkeep",
     "test": "echo \"Error: no test specified\" && exit 1",
     "postshrinkwrap": "rewrite-lockfile package-lock.json"
@@ -31,8 +31,8 @@
     "@babel/core": "^7.10.2",
     "@extensionengine/eslint-config": "^1.2.0",
     "@extensionengine/stylelint-config": "^1.1.1",
-    "@poi/plugin-bundle-report": "^12.1.2",
-    "@poi/plugin-eslint": "^12.1.0",
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
     "babel-eslint": "^10.1.0",
     "clean-webpack-plugin": "^3.0.0",
     "del-cli": "^3.0.1",
@@ -49,7 +49,6 @@
     "eslint-plugin-vue": "^6.2.2",
     "eslint-plugin-vuetify": "^1.0.0-beta.6",
     "node-sass": "^4.14.1",
-    "poi": "^12.10.3",
     "readme-filename": "^1.0.0",
     "rewrite-lockfile": "^1.0.1",
     "sass": "^1.26.8",
@@ -61,6 +60,7 @@
   "dependencies": {
     "@mdi/font": "^3.0.39",
     "axios": "^0.21.1",
+    "core-js": "^3.6.5",
     "cuid": "^2.1.8",
     "date-fns": "^2.14.0",
     "dotenv": "^8.2.0",
@@ -84,9 +84,21 @@
     "vuetify": "^2.3.4",
     "vuex": "^3.4.0"
   },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
   "engines": {
     "node": ">= 12.21.0",
     "npm": ">= 6.14.11",
     "postgres": ">= 9.4"
+  },
+  "vuePlugins": {
+    "service": [
+      "./build/plugins/envs",
+      "./build/plugins/clean-out-dir",
+      "./build/plugins/html-version-spec"
+    ]
   }
 }

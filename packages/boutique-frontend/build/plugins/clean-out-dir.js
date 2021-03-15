@@ -1,14 +1,21 @@
 'use strict';
 
-exports.name = 'clean-out-dir';
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-exports.apply = (api, options = {}) => {
-  api.hook('createWebpackChain', config => {
-    if (!api.isProd || !api.config.output.clean) return;
-    const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-    options.verbose = Boolean(api.args.options.debug);
-    config
-      .plugin('clean-out-dir')
-      .use(CleanWebpackPlugin, [options]);
-  });
+module.exports = (api, { pluginOptions } = {}) => {
+  const { build } = api.service.commands;
+  const { cleanOutDir } = pluginOptions;
+  const buildFn = build.fn;
+
+  build.fn = function (args, _api, _options) {
+    const clean = args.clean !== false;
+    api.chainWebpack(config => {
+      if (!clean) return;
+      config
+        .plugin('clean-out-dir')
+        .use(CleanWebpackPlugin, [cleanOutDir]);
+    });
+    args.clean = false;
+    return buildFn.apply(this, arguments);
+  };
 };

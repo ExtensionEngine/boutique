@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start:all": "lerna run --parallel start",
+    "boostrap": "lerna clean && lerna bootstrap --hoist",
     "clean": "lerna clean",
     "db:migrate": "lerna run --stream db:migrate",
     "db:seed": "lerna run --stream db:seed",
