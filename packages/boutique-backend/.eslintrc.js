@@ -2,9 +2,8 @@
 
 module.exports = {
   root: true,
-  extends: '@extensionengine',
-  plugins: ['vuetify'],
-  rules: {
-    'vuetify/no-deprecated-classes': 'error'
-  }
+  extends: '@extensionengine/eslint-config/base',
+  overrides: [{
+    files: ['src/**']
+  }],
 };

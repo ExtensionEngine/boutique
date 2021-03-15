@@ -9,7 +9,7 @@ module.exports = {
   ip: process.env.IP,
   useHistoryApiFallback: process.env.HISTORY_API_FALLBACK,
   apiPath: process.env.API_PATH || '/api/v1/',
-  staticFolder: path.resolve(__dirname, '../dist'),
+  staticFolder: path.resolve(__dirname, '../../boutique-frontend/dist'),
   uploadLimit: '10mb',
   importTemplateFormat: process.env.IMPORT_TEMPLATE_FORMAT || 'xlsx',
   cors: {
