@@ -10,13 +10,19 @@
     "clean": "lerna clean",
     "db:migrate": "lerna run --stream db:migrate",
     "db:seed": "lerna run --stream db:seed",
+    "lint:md": "remark .",
     "lint:all": "lerna run --parallel lint",
     "postinstall": "lerna bootstrap --hoist",
     "readme:update": "node ./scripts/update-readme"
   },
   "devDependencies": {
     "husky": "^4.3.8",
-    "lerna": "^4.0.0"
+    "lerna": "^4.0.0",
+    "read-pkg-up": "^7.0.1",
+    "readme-filename": "^1.0.0",
+    "remark-cli": "^9.0.0",
+    "remark-lint": "^8.0.0",
+    "remark-preset-lint-recommended": "^5.0.0"
   },
   "husky": {
     "hooks": {
