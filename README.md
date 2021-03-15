@@ -1,4 +1,4 @@
-# Boutique V2 - README OUTDATED! 
+# Boutique - Tailor LMS starter! 
 
 [![GitHub package version](https://badgen.net/github/release/ExtensionEngine/boutique)](https://github.com/ExtensionEngine/boutique/releases)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/105e3679b14c4b7b9205981734e90424?branch=develop)](https://www.codacy.com/app/ExtensionEngine/boutique?utm_source=github.com&utm_medium=referral&utm_content=ExtensionEngine/boutique&utm_campaign=Badge_Grade)
@@ -7,16 +7,13 @@
 [![js @extensionengine style](https://badgen.net/badge/code%20style/@extensionengine/black)](https://github.com/ExtensionEngine/eslint-config)
 [![style @extensionengine style](https://badgen.net/badge/stylelint/@extensionengine/black)](https://github.com/ExtensionEngine/stylelint-config)
 [![Open Source Love](https://badgen.net/badge/Open%20Source/%E2%9D%A4/3eaf8e)](https://github.com/ellerbrock/open-source-badges)
-
-> Under construction :construction:
-
-LMS
+[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
 
 ## :page_with_curl: Dependencies
 
 <!-- ENGINES-LIST:START - Do NOT remove or modify this section -->
-- **node** (>= 10.17.0)
-- **npm** (>= 6.11.0)
+- **node** (>= 12.21.0)
+- **npm** (>= 6.14.11)
 - **postgres** (>= 9.4)
 <!-- ENGINES-LIST:END -->
 
@@ -34,19 +31,26 @@ Check `engines` field in [`package.json`](package.json)
 
 - Run `npm install` in the repo directory
 - Create database in PostgreSQL
-- App is configured via environment variables contained in a file named `.env`.
+- App is devided into packages
+  - `boutique-frontend`
+  - `boutique-backend`
+- Each package is configured via environment variables contained in a file named `.env`.
   Use the `.env.example` file as a template: `cp .env.example .env` and enter configuration details.
 - Run `npm run db:seed`, if any error run `npm run db:reset` and then `npm run db:seed`.
-- You can create admin/learner user by running `npm run user:add`
+- You can create admin/learner user by 
+  ```sh
+  cd package/boutique-backend
+  
+  npm run user:add
+  ```
 - For other scripts run `npm run`
 
 ## :rocket: Launch
 
 ### Development
-
-- Server: `npm run dev:server`
-- Client: `npm run dev:client`
-
+```
+npm run dev
+```
 ### Production
 
 - Bundle client by issuing `npm run build`

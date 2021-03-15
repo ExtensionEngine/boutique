@@ -13,7 +13,6 @@
     "lint:md": "remark .",
     "lint": "npm run lint:js; npm run lint:md",
     "debug": "nodemon --inspect-brk -r dotenv/config ./src | bunyan",
-    "readme:update": "node ./src/script/update-readme",
     "start": "NODE_ENV=production node -r dotenv/config ./src",
     "clean": "del-cli dist/* !dist/.gitkeep",
     "test": "echo \"Error: no test specified\" && exit 1",
