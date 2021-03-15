@@ -3,7 +3,7 @@
 const { createLogger, Level } = require('../logger');
 const { renderHtml, renderText } = require('./render');
 const { email: config } = require('../../config');
-const email = require('emailjs');
+const { SMTPClient } = require('emailjs');
 const path = require('path');
 const pick = require('lodash/pick');
 const { promisify } = require('util');
@@ -11,7 +11,7 @@ const { URL } = require('url');
 const logger = createLogger('mailer', { level: Level.DEBUG });
 
 const from = `${config.sender.name} <${config.sender.address}>`;
-const server = email.server.connect(config);
+const server =  new SMTPClient(config);
 logger.info(getConfig(server), '📧  SMTP client created');
 
 const send = promisify(server.send.bind(server));
