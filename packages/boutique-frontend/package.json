@@ -5,9 +5,8 @@
   "scripts": {
     "start": "vue-cli-service serve",
     "lint:js": "eslint --ext .js,.vue .",
-    "lint:md": "remark .",
     "lint:scss": "stylelint \"src/**/*.vue\" \"src/**/*.scss\"",
-    "lint": "npm run lint:js; npm run lint:scss; npm run lint:md",
+    "lint": "npm run lint:js; npm run lint:scss",
     "readme:update": "node ./server/script/update-readme",
     "prod": "NODE_ENV=production node -r dotenv/config ./server",
     "build": "del-cli node_modules/.cache/vue-loader && vue-cli-service build",
