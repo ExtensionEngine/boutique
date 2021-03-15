@@ -3,8 +3,10 @@
   "version": "2.0.0",
   "private": true,
   "scripts": {
-    "start:all": "lerna run --parallel start",
-    "boostrap": "lerna clean && lerna bootstrap --hoist",
+    "start": "lerna run --parallel start",
+    "build": "lerna run --parallel build",
+    "dev": "lerna run --parallel dev",
+    "boostrap": "npm run clean && npm run postinstall",
     "clean": "lerna clean",
     "db:migrate": "lerna run --stream db:migrate",
     "db:seed": "lerna run --stream db:seed",
@@ -29,8 +31,5 @@
     "url": "https://github.com/ExtensionEngine/boutique/issues"
   },
   "homepage": "https://github.com/ExtensionEngine/boutique#readme",
-  "license": "MIT",
-  "dependencies": {
-    "ultra-runner": "^3.10.5"
-  }
+  "license": "MIT"
 }

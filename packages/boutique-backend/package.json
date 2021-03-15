@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon -r dotenv/config ./src | bunyan",
+    "dev": "nodemon -r dotenv/config ./src | bunyan",
     "db": "node ./src/script/sequelize",
     "db:reset": "npm run db drop && npm run db create && npm run db migrate",
     "db:seed": "npm run db seed:all",
@@ -14,7 +14,7 @@
     "lint": "npm run lint:js; npm run lint:md",
     "debug": "nodemon --inspect-brk -r dotenv/config ./src | bunyan",
     "readme:update": "node ./src/script/update-readme",
-    "prod": "NODE_ENV=production node -r dotenv/config ./src",
+    "start": "NODE_ENV=production node -r dotenv/config ./src",
     "clean": "del-cli dist/* !dist/.gitkeep",
     "test": "echo \"Error: no test specified\" && exit 1",
     "postshrinkwrap": "rewrite-lockfile package-lock.json"

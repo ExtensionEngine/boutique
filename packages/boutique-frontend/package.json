@@ -3,12 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "vue-cli-service serve",
+    "dev": "vue-cli-service serve",
     "lint:js": "eslint --ext .js,.vue .",
     "lint:scss": "stylelint \"src/**/*.vue\" \"src/**/*.scss\"",
     "lint": "npm run lint:js; npm run lint:scss",
-    "readme:update": "node ./server/script/update-readme",
-    "prod": "NODE_ENV=production node -r dotenv/config ./server",
     "build": "del-cli node_modules/.cache/vue-loader && vue-cli-service build",
     "webpack:bundle-report": "vue-cli-service build --report",
     "webpack:inspect-config": "vue-cli-service inspect",
