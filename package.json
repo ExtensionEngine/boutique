@@ -9,8 +9,6 @@
     "db:migrate": "lerna run --stream db:migrate",
     "db:seed": "lerna run --stream db:seed",
     "lint:all": "lerna run --parallel lint",
-    "lint:fix": "lerna run --parallel lint:fix",
-    "lint:staged": "lerna run lint:staged --concurrency 1",
     "postinstall": "lerna bootstrap --hoist"
   },
   "devDependencies": {
@@ -19,7 +17,6 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint:staged",
       "pre-push": "npm run lint:all"
     }
   },
@@ -32,5 +29,8 @@
     "url": "https://github.com/ExtensionEngine/boutique/issues"
   },
   "homepage": "https://github.com/ExtensionEngine/boutique#readme",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "ultra-runner": "^3.10.5"
+  }
 }
