@@ -11,7 +11,7 @@
         <v-avatar
           v-if="headerIcon"
           color="primary lighten-1"
-          size="38"
+          size="24"
           class="mr-3">
           <v-icon color="secondary accent-1">{{ headerIcon }}</v-icon>
         </v-avatar>

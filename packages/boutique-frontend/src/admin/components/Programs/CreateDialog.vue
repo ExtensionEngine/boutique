@@ -2,7 +2,7 @@
   <admin-dialog v-model="visible" :header-icon="mdiPlus">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" text>
-        <v-icon dense class="mr-1">mdiPlus</v-icon>
+        <v-icon dense class="mr-1">{{ mdiPlus }}</v-icon>
         Create
       </v-btn>
     </template>

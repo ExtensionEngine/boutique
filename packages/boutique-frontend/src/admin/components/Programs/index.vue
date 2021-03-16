@@ -117,7 +117,7 @@ export default {
     }
 
     .v-icon {
-      font-size: 1.125rem;
+      height: 1.125rem;
     }
 
     label {
