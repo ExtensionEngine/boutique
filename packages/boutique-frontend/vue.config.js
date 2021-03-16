@@ -36,12 +36,12 @@ module.exports = {
     admin: {
       filename: 'admin/index.html',
       title: 'Administration',
-      entry: './src/admin/main.js',
+      entry: './src/admin/main.js'
     },
     main: {
       filename: 'index.html',
       title: 'Boutique',
-      entry: './src/main/main.js',
+      entry: './src/main/main.js'
     }
   },
   configureWebpack: {
