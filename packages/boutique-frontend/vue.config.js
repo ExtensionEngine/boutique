@@ -2,6 +2,7 @@
 
 require('dotenv').config();
 const path = require('path');
+const { ESBuildMinifyPlugin } = require('esbuild-loader');
 
 const extensions = ['.vue'];
 const aliases = {
@@ -35,17 +36,30 @@ module.exports = {
     admin: {
       filename: 'admin/index.html',
       title: 'Administration',
-      entry: './src/admin/main.js'
+      entry: './src/admin/main.js',
     },
     main: {
       filename: 'index.html',
       title: 'Boutique',
-      entry: './src/main/main.js'
+      entry: './src/main/main.js',
     }
+  },
+  configureWebpack: {
+    optimization: {
+      minimizer: [
+        new ESBuildMinifyPlugin(),
+      ],
+    },
   },
   chainWebpack(config) {
     config.resolve.alias.merge(aliases);
     config.resolve.extensions.merge(extensions);
+    config.module
+      .rule('js')
+      .test('/.js$/')
+      .use('esbuild-loader')
+      .loader('esbuild-loader')
+      .end()
   },
   devServer
 };
