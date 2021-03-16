@@ -3,7 +3,7 @@
     <v-col sm="12" lg="6">
       <div class="d-flex justify-end mb-5">
         <v-btn @click="showConfirmationDialog = true" color="error" text>
-          <v-icon dense class="mr-1">mdi-delete-outline</v-icon>
+          <v-icon dense class="mr-1">{{ mdiDeleteOutline }}</v-icon>
           Delete Program
         </v-btn>
       </div>
@@ -20,9 +20,9 @@
             v-model.trim="programData.name"
             :disabled="!isEditing"
             :error-messages="errors"
+            :append-icon="mdiPencil"
             name="name"
-            label="Program name"
-            append-icon="mdi-pencil" />
+            label="Program name" />
         </validation-provider>
         <date-picker
           v-model="programData.startDate"
@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import { mdiDeleteOutline, mdiPencil } from '@mdi/js';
 import cloneDeep from 'lodash/cloneDeep';
 import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
 import DatePicker from '@/admin/components/common/DatePicker';
@@ -75,7 +76,9 @@ export default {
   data: () => ({
     programData: null,
     isEditing: false,
-    showConfirmationDialog: false
+    showConfirmationDialog: false,
+    mdiDeleteOutline,
+    mdiPencil
   }),
   computed: {
     dateFormat: () => DST_FORMAT,

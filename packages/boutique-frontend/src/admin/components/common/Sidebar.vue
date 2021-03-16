@@ -15,7 +15,7 @@
           :to="{ name: it.name }"
           class="mb-1">
           <v-list-item-icon>
-            <v-icon>mdi-{{ it.icon }}</v-icon>
+            <v-icon>{{ it.icon }}</v-icon>
           </v-list-item-icon>
           <v-list-item-title>{{ it.label }}</v-list-item-title>
         </v-list-item>
@@ -25,14 +25,16 @@
 </template>
 
 <script>
+import { mdiAccountMultiple, mdiBookshelf } from '@mdi/js';
+
 export default {
   props: {
     drawer: { type: Boolean, default: true }
   },
   computed: {
     routes: vm => [
-      { name: 'users', label: 'Users', icon: 'account-multiple' },
-      { name: 'programs', label: 'Programs', icon: 'bookshelf' }
+      { name: 'users', label: 'Users', icon: mdiAccountMultiple },
+      { name: 'programs', label: 'Programs', icon: mdiBookshelf }
     ]
   }
 };

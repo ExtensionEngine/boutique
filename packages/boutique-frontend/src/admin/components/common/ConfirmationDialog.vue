@@ -1,5 +1,5 @@
 <template>
-  <admin-dialog v-model="visible" width="500" header-icon="mdi-alert">
+  <admin-dialog v-model="visible" width="500" :header-icon="mdiAlert">
     <template v-slot:header>{{ heading }}</template>
     <template v-slot:body>
       <v-form @submit.prevent="executeAction">
@@ -17,6 +17,7 @@
 
 <script>
 import AdminDialog from '@/admin/components/common/Dialog';
+import { mdiAlert } from '@mdi/js'
 
 export default {
   name: 'confirmation-dialog',
@@ -26,7 +27,7 @@ export default {
     message: { type: String, default: 'Are you sure?' },
     action: { type: Function, default: () => true }
   },
-  data: () => ({ isLoading: false }),
+  data: () => ({ isLoading: false, mdiAlert }),
   computed: {
     show: {
       get: vm => vm.visible,

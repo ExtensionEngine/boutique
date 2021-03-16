@@ -21,10 +21,10 @@
           v-model="email"
           :error-messages="errors"
           :disabled="showMessage"
+          :prepend-inner-icon="mdiEmailOutline"
           type="email"
           label="Email"
           placeholder="Email"
-          prepend-inner-icon="mdi-email-outline"
           outlined
           class="required" />
       </validation-provider>
@@ -36,7 +36,7 @@
           Send reset email
         </v-btn>
         <v-btn @click="$router.go(-1)" tag="a" text class="mt-4">
-          <v-icon dense class="pr-1">mdi-arrow-left</v-icon>Back
+          <v-icon dense class="pr-1">{{ mdiArrowLeft }}</v-icon>Back
         </v-btn>
       </div>
     </validation-observer>
@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import { mdiArrowLeft, mdiEmailOutline  } from '@mdi/js';
 import { mapActions } from 'vuex';
 
 const delay = timeout => new Promise(resolve => setTimeout(resolve, timeout));
@@ -57,7 +58,11 @@ const getDefaultData = () => ({
 });
 
 export default {
-  data: () => getDefaultData(),
+  data: () => ({
+    ...getDefaultData(),
+    mdiArrowLeft,
+    mdiEmailOutline
+  }),
   methods: {
     ...mapActions('auth', ['forgotPassword']),
     submit() {

@@ -1,8 +1,8 @@
 <template>
-  <admin-dialog v-model="visible" header-icon="mdi-plus">
+  <admin-dialog v-model="visible" :header-icon="mdiPlus">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" text>
-        <v-icon dense class="mr-1">mdi-plus</v-icon>
+        <v-icon dense class="mr-1">mdiPlus</v-icon>
         Create
       </v-btn>
     </template>
@@ -37,6 +37,7 @@
 <script>
 import AdminDialog from '@/admin/components/common/Dialog';
 import api from '@/admin/api/program';
+import { mdiPlus } from '@mdi/js';
 
 const getDefaultData = () => ({ name: '' });
 
@@ -44,7 +45,8 @@ export default {
   name: 'program-dialog',
   data: () => ({
     visible: false,
-    program: getDefaultData()
+    program: getDefaultData(),
+    mdiPlus
   }),
   methods: {
     close() {

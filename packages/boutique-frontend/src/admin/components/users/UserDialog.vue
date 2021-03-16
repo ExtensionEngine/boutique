@@ -1,5 +1,5 @@
 <template>
-  <admin-dialog v-model="show" header-icon="mdi-folder-plus-outline">
+  <admin-dialog v-model="show" :header-icon="mdiFolderPlusOutline">
     <template v-slot:header>
       {{ userData ? 'Edit' : 'Create' }} User
     </template>
@@ -84,6 +84,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import humanize from 'humanize-string';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
+import { mdiFolderPlusOutline } from '@mdi/js';
 import { Role } from '@/../common/config';
 
 const resetUser = () => ({
@@ -101,7 +102,8 @@ export default {
   },
   data: () => ({
     user: resetUser(),
-    isLoading: false
+    isLoading: false,
+    mdiFolderPlusOutline
   }),
   computed: {
     show: {

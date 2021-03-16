@@ -5,7 +5,7 @@
         <v-text-field
           v-model.trim="filter"
           :disabled="!importedRepos.length"
-          append-icon="mdi-magnify"
+          :append-icon="mdiMagnify"
           label="Search"
           hide-details single-line clearable />
         <v-checkbox
@@ -46,10 +46,10 @@
               v-if="!item.deletedAt"
               @click="showConfirmationDialog(item)"
               icon x-small>
-              <v-icon>mdi-delete</v-icon>
+              <v-icon>{{ mdiDelete }} </v-icon>
             </v-btn>
             <v-btn v-else @click="showRestoreDialog(item)" icon x-small>
-              <v-icon>mdi-restore</v-icon>
+              <v-icon>{{ mdiRestore }} </v-icon>
             </v-btn>
           </td>
         </tr>
@@ -67,6 +67,7 @@
 </template>
 
 <script>
+import { mdiDelete, mdiMagnify, mdiRestore } from '@mdi/js';
 import { mapActions, mapState } from 'vuex';
 import api from '@/admin/api/contentRepo';
 import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
@@ -95,7 +96,10 @@ export default {
     filter: null,
     confirmation: null,
     showArchived: true,
-    restoreOptions: null
+    restoreOptions: null,
+    mdiDelete,
+    mdiMagnify,
+    mdiRestore
   }),
   computed: {
     ...mapState('contentRepo', { repoStore: 'items' }),

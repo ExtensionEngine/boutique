@@ -4,8 +4,8 @@
       <v-col md="6" lg="4">
         <v-text-field
           v-model.trim="filter"
+          :append-icon="mdiMagnify"
           label="Search"
-          append-icon="mdi-magnify"
           single-line hide-details clearable />
       </v-col>
       <v-col md="6" lg="8" class="d-flex justify-end">
@@ -28,7 +28,7 @@
           <td class="text-no-wrap">{{ item.createdAt | formatDate }}</td>
           <td class="text-no-wrap text-center">
             <v-btn @click="unenroll(item)" icon x-small>
-              <v-icon>mdi-delete</v-icon>
+              <v-icon>{{ mdiDelete }}</v-icon>
             </v-btn>
           </td>
         </tr>
@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import { mdiDelete, mdiMagnify } from '@mdi/js';
 import api from '@/admin/api/enrollment';
 import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
 import EnrollmentDialog from './EnrollmentDialog';
@@ -70,7 +71,9 @@ export default {
     dataTable: { rowsPerPage: 10, ...defaultPage() },
     totalItems: 0,
     filter: null,
-    confirmation: { dialog: null }
+    confirmation: { dialog: null },
+    mdiDelete,
+    mdiMagnify
   }),
   computed: {
     headers,

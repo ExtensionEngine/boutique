@@ -1,8 +1,8 @@
 <template>
-  <admin-dialog v-model="visible" width="600" header-icon="mdi-cloud-upload">
+  <admin-dialog v-model="visible" width="600" :header-icon="mdiCloudUpload">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" color="primary" text>
-        <v-icon dense class="mr-1">mdi-cloud-upload</v-icon>Import users
+        <v-icon dense class="mr-1">{{ mdiCloudUpload }}</v-icon>Import users
       </v-btn>
     </template>
     <template v-slot:header>Import Users</template>
@@ -24,7 +24,7 @@
             :accept="acceptedFiles"
             :error-messages="errors"
             :disabled="importing"
-            prepend-icon="mdi-attachment"
+            :prepend-icon="mdiAttachment"
             label="Upload .xlsx or .csv file" />
         </validation-provider>
         <div class="d-flex my-2">
@@ -38,7 +38,7 @@
               @click="downloadErrorsFile"
               color="error"
               text>
-              <v-icon class="mr-1">mdi-cloud-download</v-icon>Errors
+              <v-icon class="mr-1">{{ mdiCloudDownload }} </v-icon>Errors
             </v-btn>
           </v-fade-transition>
           <v-btn @click="close" text>Cancel</v-btn>
@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import { mdiAttachment, mdiCloudUpload, mdiCloudDownload } from '@mdi/js';
 import AdminDialog from '@/admin/components/common/Dialog';
 import api from '@/admin/api/user';
 import saveAs from 'save-as';
@@ -68,7 +69,10 @@ export default {
     importing: false,
     file: null,
     form: null,
-    serverErrorsReport: null
+    serverErrorsReport: null,
+    mdiAttachment,
+    mdiCloudUpload,
+    mdiCloudDownload
   }),
   computed: {
     inputValidation: () => ({ required: true, mimes: Object.keys(inputFormats) }),

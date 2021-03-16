@@ -12,7 +12,7 @@
         :label="label"
         :disabled="disabled"
         :error-messages="errorMessages"
-        append-icon="mdi-calendar"
+        :append-icon="mdiCalendar"
         readonly />
     </template>
     <v-date-picker @input="save($event)" :value="normalizedValue" no-title />
@@ -21,6 +21,7 @@
 
 <script>
 import format from 'date-fns/format';
+import { mdiCalendar } from '@mdi/js';
 import parse from 'date-fns/parse';
 
 const DATE_FORMAT = 'yyyy-MM-dd';
@@ -34,6 +35,7 @@ export default {
     disabled: { type: Boolean, default: false },
     label: { type: String, default: null }
   },
+  data: () => ({ mdiCalendar }),
   computed: {
     normalizedValue: vm => vm.normalize(vm.value, vm.format, DATE_FORMAT)
   },

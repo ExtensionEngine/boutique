@@ -1,10 +1,8 @@
 @import '~sass-web-fonts/web-fonts';
-$mdi-font-path: '~@mdi/font/fonts';
 
 // Google Web Fonts
 /* stylelint-disable-next-line function-comma-newline-after */
 @import url(web-fonts-url(('Roboto': (300, 400, 500, 700))));
-@import '~@mdi/font/scss/materialdesignicons';
 
 .table-toolbar {
   background: #fff;

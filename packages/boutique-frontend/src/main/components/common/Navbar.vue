@@ -2,7 +2,7 @@
   <v-app-bar color="primary" app dark>
     <v-toolbar-title>
       <router-link :to="rootRoute" class="d-flex align-center">
-        <v-icon size="24" class="mr-1">mdi-shopping</v-icon>
+        <v-icon size="24" class="mr-1">{{ mdiShopping }}</v-icon>
         <span class="white--text">Boutique</span>
       </router-link>
     </v-toolbar-title>
@@ -11,22 +11,22 @@
       v-if="$route.name === 'courseware' && courseware.length"
       @input="setCoursewareFilter"
       :value="coursewareFilter"
+      :prepend-inner-icon="mdiMagnify"
       placeholder="Search..."
-      prepend-inner-icon="mdi-magnify"
       hide-details clearable filled dense />
     <v-spacer />
     <v-menu>
       <template v-slot:activator="{ on }">
         <div v-on="on" class="dropdown-activator">
-          <v-icon size="24" class="mr-1">mdi-account-circle</v-icon>
+          <v-icon size="24" class="mr-1">{{ mdiAccountCircle }}</v-icon>
           <span>{{ user.email }}</span>
-          <v-icon size="24" class="mr-1">mdi-chevron-down</v-icon>
+          <v-icon size="24" class="mr-1">{{ mdiChevronDown }}</v-icon>
         </div>
       </template>
       <v-list>
         <v-list-item @click.prevent="logout">
           <v-list-item-title>
-            <v-icon size="24" class="mr-1">mdi-logout</v-icon>
+            <v-icon size="24" class="mr-1">{{ mdiLogout }}</v-icon>
             <span>Logout</span>
           </v-list-item-title>
         </v-list-item>
@@ -36,10 +36,18 @@
 </template>
 
 <script>
+import { mdiAccountCircle, mdiChevronDown, mdiLogout, mdiMagnify, mdiShopping } from '@mdi/js';
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex';
 
 export default {
   name: 'main-navbar',
+  data: () => ({
+    mdiAccountCircle,
+    mdiChevronDown,
+    mdiLogout,
+    mdiMagnify,
+    mdiShopping
+  }),
   computed: {
     ...mapState('auth', ['user']),
     ...mapState('learner', ['coursewareFilter']),

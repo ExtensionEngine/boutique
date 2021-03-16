@@ -4,7 +4,7 @@
       <v-col lg="4" md="6">
         <v-text-field
           v-model="filter"
-          append-icon="mdi-magnify"
+          :append-icon="mdiMagnify"
           label="Search"
           single-line hide-details clearable />
         <v-checkbox
@@ -57,6 +57,7 @@
 <script>
 import api from '@/admin/api/program';
 import CreateDialog from './CreateDialog';
+import { mdiMagnify } from '@mdi/js';
 import throttle from 'lodash/throttle';
 
 const defaultPage = () => ({ page: 1, sortBy: ['updatedAt'], sortDesc: [true] });
@@ -64,6 +65,7 @@ const defaultPage = () => ({ page: 1, sortBy: ['updatedAt'], sortDesc: [true] })
 export default {
   name: 'program-list',
   data: () => ({
+    mdiMagnify,
     programs: [],
     filter: null,
     totalItems: 0,

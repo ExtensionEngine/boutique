@@ -1,8 +1,8 @@
 <template>
-  <admin-dialog v-model="visible" header-icon="mdi-school">
+  <admin-dialog v-model="visible" :header-icon="mdiSchool">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" :disabled="!users.length" text>
-        <v-icon dense class="mr-1">mdi-school</v-icon>
+        <v-icon dense class="mr-1">{{ mdiSchool }}</v-icon>
         Enroll selected
       </v-btn>
     </template>
@@ -21,10 +21,10 @@
             :items="programOptions"
             :disabled="enrolling"
             :error-messages="errors"
+            :prepend-icon="mdiMagnify"
             name="program"
             label="Program"
             placeholder="Start typing to search"
-            prepend-icon="mdi-magnify"
             clearable />
         </validation-provider>
         <div class="d-flex justify-end my-2">
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import { mdiMagnify, mdiSchool } from '@mdi/js';
 import AdminDialog from '@/admin/components/common/Dialog';
 import enrollmentApi from '@/admin/api/enrollment';
 import map from 'lodash/map';
@@ -57,7 +58,9 @@ export default {
     visible: false,
     selectedProgramId: null,
     programs: [],
-    enrolling: false
+    enrolling: false,
+    mdiMagnify,
+    mdiSchool
   }),
   computed: {
     programOptions: vm => map(vm.programs, it => ({ value: it.id, text: it.name })),

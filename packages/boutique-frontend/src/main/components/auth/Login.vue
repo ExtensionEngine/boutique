@@ -20,12 +20,12 @@
         <v-text-field
           v-model="email"
           :error-messages="errors"
+          :prepend-inner-icon="mdiEmailOutline"
           type="email"
           name="email"
           label="Email"
           placeholder="Email"
           autocomplete="username"
-          prepend-inner-icon="mdi-email-outline"
           outlined
           class="required mb-1" />
       </validation-provider>
@@ -36,11 +36,11 @@
         <v-text-field
           v-model="password"
           :error-messages="errors"
+          :prepend-inner-icon="mdiLockOutline"
           type="password"
           name="password"
           label="Password"
           placeholder="Password"
-          prepend-inner-icon="mdi-lock-outline"
           autocomplete="current-password"
           outlined
           class="required" />
@@ -61,6 +61,7 @@
 </template>
 
 <script>
+import { mdiEmailOutline, mdiLockOutline } from '@mdi/js';
 import { mapActions } from 'vuex';
 
 const LOGIN_ERR_MESSAGE = 'The email or password you entered is incorrect.';
@@ -70,7 +71,9 @@ export default {
   data: () => ({
     email: '',
     password: '',
-    localError: null
+    localError: null,
+    mdiEmailOutline,
+    mdiLockOutline
   }),
   methods: {
     ...mapActions('auth', ['login']),

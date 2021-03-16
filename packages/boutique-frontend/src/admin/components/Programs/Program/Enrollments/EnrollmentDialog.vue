@@ -1,8 +1,8 @@
 <template>
-  <admin-dialog v-model="isVisible" header-icon="mdi-school">
+  <admin-dialog v-model="isVisible" :header-icon="mdiSchool">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" text>
-        <v-icon dense class="mr-1">mdi-school</v-icon>
+        <v-icon dense class="mr-1">{{ mdiSchool }}</v-icon>
         Enroll learner
       </v-btn>
     </template>
@@ -28,7 +28,7 @@
             name="learner"
             label="Learner"
             placeholder="Start typing to Search"
-            prepend-icon="mdi-magnify"
+            :prepend-icon="mdiMagnify"
             clearable />
         </validation-provider>
         <div class="d-flex justify-end">
@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import { mdiMagnify, mdiSchool } from '@mdi/js';
 import AdminDialog from '@/admin/components/common/Dialog';
 import enrollmentApi from '@/admin/api/enrollment';
 import map from 'lodash/map';
@@ -57,7 +58,9 @@ export default {
     email: null,
     learnerId: null,
     learners: [],
-    isLoading: false
+    isLoading: false,
+    mdiMagnify,
+    mdiSchool
   }),
   methods: {
     async enroll() {

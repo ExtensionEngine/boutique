@@ -1,8 +1,8 @@
 <template>
-  <admin-dialog v-model="isVisible" header-icon="mdi-book-arrow-up-outline">
+  <admin-dialog v-model="isVisible" :header-icon="mdiBookArrowUpOutline">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" text>
-        <v-icon dense class="mr-1">mdi-book-arrow-up-outline</v-icon>
+        <v-icon dense class="mr-1">{{ mdiBookArrowUpOutline }}</v-icon>
         Import Content
       </v-btn>
     </template>
@@ -17,7 +17,7 @@
           label="Repository"
           placeholder="Start typing to search"
           no-data-text="No available repositories for import"
-          prepend-icon="mdi-magnify"
+          :prepend-icon="mdiMagnify"
           hide-selected />
         <div class="d-flex justify-end">
           <v-btn @click="close" :disabled="isImporting" text>Cancel</v-btn>
@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import { mdiBookArrowUpOutline, mdiMagnify } from '@mdi/js';
 import AdminDialog from '@/admin/components/common/Dialog';
 import api from '@/admin/api/contentRepo';
 import differenceBy from 'lodash/differenceBy';
@@ -53,7 +54,9 @@ export default {
     catalog: [],
     sourceId: null,
     isImporting: false,
-    isLoading: false
+    isLoading: false,
+    mdiBookArrowUpOutline,
+    mdiMagnify
   }),
   computed: {
     availableRepos: vm => differenceBy(vm.catalog, vm.importedRepos, 'sourceId')

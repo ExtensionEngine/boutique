@@ -7,7 +7,7 @@
     app fixed clipped-left dark>
     <v-app-bar-nav-icon @click.native="$emit('update:drawer', !drawer)" />
     <v-toolbar-title>
-      <v-icon dense class="mr-1">mdi-school</v-icon>
+      <v-icon dense class="mr-1">{{ mdiSchool }}</v-icon>
       Tailor
       <span class="pa-1">|</span>
       <span class="text-subtitle-1 secondary--text">LMS starter</span>
@@ -58,6 +58,7 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import find from 'lodash/find';
+import { mdiSchool } from '@mdi/js';
 
 const parseNumber = val => val !== undefined ? parseInt(val, 10) : val;
 
@@ -66,6 +67,7 @@ export default {
   props: {
     drawer: { type: Boolean, default: true }
   },
+  data: () => ({ mdiSchool }),
   computed: {
     ...mapState('auth', ['user']),
     ...mapState('programs', { programs: 'items' }),
@@ -81,7 +83,7 @@ export default {
       ? [
         { text: 'Programs', disabled: true },
         { text: program.name, disabled: true }]
-      : []
+      : [],
   },
   methods: mapActions('auth', ['logout'])
 };

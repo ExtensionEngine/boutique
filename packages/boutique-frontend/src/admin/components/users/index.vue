@@ -4,7 +4,7 @@
       <v-col sm="4" md="5" lg="4">
         <v-text-field
           v-model="filter"
-          append-icon="mdi-magnify"
+          :append-icon="mdiMagnify"
           label="Search"
           single-line hide-details clearable />
         <v-checkbox
@@ -17,7 +17,7 @@
         <import-dialog @imported="fetch(defaultPage)" />
         <bulk-enrollment-dialog :users="selectedUsers" />
         <v-btn @click.stop="showUserDialog()" text>
-          <v-icon dense class="mr-1">mdi-plus</v-icon>Add user
+          <v-icon dense class="mr-1">{{ mdiPlus }}</v-icon>Add user
         </v-btn>
       </v-col>
     </v-row>
@@ -42,7 +42,7 @@
             @click="showUserDialog(item)"
             color="grey darken-3"
             x-small icon>
-            <v-icon>mdi-pencil</v-icon>
+            <v-icon>{{ mdiPencil }}</v-icon>
           </v-btn>
           <v-btn
             @click="archiveOrRestore(item)"
@@ -50,7 +50,7 @@
             color="grey darken-3"
             x-small icon>
             <v-icon>
-              mdi-account-{{ item.deletedAt ? 'convert' : 'off' }}
+              {{ item.deletedAt ? mdiAccountConvert : mdiAccountOff }}
             </v-icon>
           </v-btn>
         </div>
@@ -70,6 +70,7 @@
 </template>
 
 <script>
+import { mdiAccountConvert, mdiAccountOff, mdiMagnify, mdiPencil, mdiPlus } from '@mdi/js';
 import api from '@/admin/api/user';
 import BulkEnrollmentDialog from './BulkEnrollmentDialog';
 import ConfirmationDialog from '../common/ConfirmationDialog';
@@ -105,7 +106,12 @@ export default {
     userDialog: false,
     editedUser: null,
     showArchived: false,
-    confirmation: null
+    confirmation: null,
+    mdiAccountConvert,
+    mdiAccountOff,
+    mdiMagnify,
+    mdiPencil,
+    mdiPlus
   }),
   computed: {
     ...mapState('auth', ['user']),

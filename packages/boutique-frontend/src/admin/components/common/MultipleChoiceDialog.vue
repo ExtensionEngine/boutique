@@ -1,5 +1,5 @@
 <template>
-  <admin-dialog v-model="show" header-icon="mdi-alert">
+  <admin-dialog v-model="show" :header-icon="mdiAlert">
     <template v-slot:header>{{ heading }}</template>
     <template v-slot:body>
       <div class="mb-1 text-subtitle-1">{{ message }}</div>
@@ -26,6 +26,7 @@
 
 <script>
 import AdminDialog from '@/admin/components/common/Dialog';
+import { mdiAlert } from '@mdi/js';
 
 const validator = actions => {
   if (!(actions instanceof Array)) return false;
@@ -41,7 +42,7 @@ export default {
     warning: { type: String, default: '' },
     actions: { type: Array, default: () => [], validator: validator }
   },
-  data: () => ({ isLoading: false }),
+  data: () => ({ isLoading: false, mdiAlert }),
   computed: {
     show: {
       get: vm => vm.visible,
