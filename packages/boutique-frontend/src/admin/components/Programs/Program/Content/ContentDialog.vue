@@ -1,13 +1,13 @@
 <template>
   <admin-dialog v-model="isVisible" :header-icon="mdiBookArrowUpOutline">
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <v-btn v-on="on" text>
         <v-icon dense class="mr-1">{{ mdiBookArrowUpOutline }}</v-icon>
         Import Content
       </v-btn>
     </template>
-    <template v-slot:header>Import Content</template>
-    <template v-slot:body>
+    <template #header>Import Content</template>
+    <template #body>
       <v-form @submit.prevent="importRepo">
         <v-autocomplete
           v-model="sourceId"

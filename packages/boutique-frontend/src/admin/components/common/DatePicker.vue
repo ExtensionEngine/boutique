@@ -4,7 +4,7 @@
     min-width="290"
     transition="scale-transition"
     offset-y>
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <v-text-field
         v-on="on"
         :name="name"

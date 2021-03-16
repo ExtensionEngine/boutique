@@ -23,10 +23,10 @@
       :footer-props="{ itemsPerPageOptions: [30, 60, 90, -1] }"
       :server-items-length="totalItems"
       :hide-default-footer="totalItems < options.itemsPerPage">
-      <template slot-scope="{ items: programs }">
+      <template slot-scope="{ items }">
         <v-row>
           <v-col
-            v-for="({ id, name }) in programs"
+            v-for="({ id, name }) in items"
             :key="id"
             lg="4"
             sm="12">

@@ -16,7 +16,7 @@
       hide-details clearable filled dense />
     <v-spacer />
     <v-menu>
-      <template v-slot:activator="{ on }">
+      <template #activator="{ on }">
         <div v-on="on" class="dropdown-activator">
           <v-icon size="24" class="mr-1">{{ mdiAccountCircle }}</v-icon>
           <span>{{ user.email }}</span>
@@ -36,8 +36,8 @@
 </template>
 
 <script>
-import { mdiAccountCircle, mdiChevronDown, mdiLogout, mdiMagnify, mdiShopping } from '@mdi/js';
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex';
+import { mdiAccountCircle, mdiChevronDown, mdiLogout, mdiMagnify, mdiShopping } from '@mdi/js';
 
 export default {
   name: 'main-navbar',

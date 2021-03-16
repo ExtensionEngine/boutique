@@ -1,8 +1,8 @@
 'use strict';
 
 require('dotenv').config();
-const path = require('path');
 const { ESBuildMinifyPlugin } = require('esbuild-loader');
+const path = require('path');
 
 const extensions = ['.vue'];
 const aliases = {
@@ -47,9 +47,9 @@ module.exports = {
   configureWebpack: {
     optimization: {
       minimizer: [
-        new ESBuildMinifyPlugin(),
-      ],
-    },
+        new ESBuildMinifyPlugin()
+      ]
+    }
   },
   chainWebpack(config) {
     config.resolve.alias.merge(aliases);
@@ -59,13 +59,13 @@ module.exports = {
       .test('/.js$/')
       .use('esbuild-loader')
       .loader('esbuild-loader')
-      .end()
+      .end();
   },
   devServer,
   transpileDependencies: [
     'vuetify'
   ],
   css: {
-    extract: process.env.NODE_ENV === 'production' ? { ignoreOrder: true } : false,
+    extract: process.env.NODE_ENV === 'production' ? { ignoreOrder: true } : false
   }
 };

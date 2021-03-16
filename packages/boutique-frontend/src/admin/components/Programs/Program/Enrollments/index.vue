@@ -20,7 +20,7 @@
       :no-data-text="noEnrollmentsMessage"
       must-sort
       class="transparent">
-      <template v-slot:item="{ item }">
+      <template #item="{ item }">
         <tr>
           <td>{{ get(item.learner, 'email') }}</td>
           <td>{{ get(item.learner, 'firstName') }}</td>

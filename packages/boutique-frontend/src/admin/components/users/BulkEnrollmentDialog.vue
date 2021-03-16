@@ -1,13 +1,13 @@
 <template>
   <admin-dialog v-model="visible" :header-icon="mdiSchool">
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <v-btn v-on="on" :disabled="!users.length" text>
         <v-icon dense class="mr-1">{{ mdiSchool }}</v-icon>
         Enroll selected
       </v-btn>
     </template>
-    <template v-slot:header>Enroll users</template>
-    <template v-slot:body>
+    <template #header>Enroll users</template>
+    <template #body>
       <validation-observer
         ref="form"
         @submit.prevent="$refs.form.handleSubmit(submit)"

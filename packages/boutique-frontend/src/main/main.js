@@ -13,8 +13,8 @@ import Vue from 'vue';
 import vuetify from '@/plugins/vuetify';
 import VueVisible from 'vue-visible';
 
-Vue.component('ValidationProvider', ValidationProvider);
-Vue.component('ValidationObserver', ValidationObserver);
+Vue.component('validation-provider', ValidationProvider);
+Vue.component('validation-observer', ValidationObserver);
 setInteractionMode('eager');
 
 Vue.use(VueVisible);

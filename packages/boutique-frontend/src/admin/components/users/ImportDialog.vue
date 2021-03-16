@@ -1,12 +1,12 @@
 <template>
   <admin-dialog v-model="visible" width="600" :header-icon="mdiCloudUpload">
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <v-btn v-on="on" color="primary" text>
         <v-icon dense class="mr-1">{{ mdiCloudUpload }}</v-icon>Import users
       </v-btn>
     </template>
-    <template v-slot:header>Import Users</template>
-    <template v-slot:body>
+    <template #header>Import Users</template>
+    <template #body>
       <validation-observer
         v-if="visible"
         ref="form"
@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { mdiAttachment, mdiCloudUpload, mdiCloudDownload } from '@mdi/js';
+import { mdiAttachment, mdiCloudDownload, mdiCloudUpload } from '@mdi/js';
 import AdminDialog from '@/admin/components/common/Dialog';
 import api from '@/admin/api/user';
 import saveAs from 'save-as';

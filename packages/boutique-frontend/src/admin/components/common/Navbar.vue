@@ -14,9 +14,9 @@
     </v-toolbar-title>
     <v-spacer />
     <v-menu min-width="220" transition="slide-y-transition" offset-y>
-      <template v-slot:activator="{ on: menu }">
+      <template #activator="{ on: menu }">
         <v-tooltip left>
-          <template v-slot:activator="{ on: tooltip }">
+          <template #activator="{ on: tooltip }">
             <v-btn icon large class="mr-2">
               <v-avatar
                 v-on="{ ...tooltip, ...menu }"
@@ -35,7 +35,7 @@
         </v-list-item>
       </v-list>
     </v-menu>
-    <template v-if="program" v-slot:extension>
+    <template v-if="program" #extension>
       <div class="ml-10">
         <v-breadcrumbs :items="breadcrumbs" />
         <v-tabs
@@ -83,7 +83,7 @@ export default {
       ? [
         { text: 'Programs', disabled: true },
         { text: program.name, disabled: true }]
-      : [],
+      : []
   },
   methods: mapActions('auth', ['logout'])
 };

@@ -1,13 +1,13 @@
 <template>
   <admin-dialog v-model="visible" :header-icon="mdiPlus">
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <v-btn v-on="on" text>
         <v-icon dense class="mr-1">{{ mdiPlus }}</v-icon>
         Create
       </v-btn>
     </template>
-    <template v-slot:header>Create program</template>
-    <template v-slot:body>
+    <template #header>Create program</template>
+    <template #body>
       <validation-observer
         v-if="visible"
         ref="form"

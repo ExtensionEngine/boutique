@@ -29,14 +29,14 @@
       :options.sync="dataTable"
       show-select must-sort
       class="ma-5 transparent">
-      <template v-slot:item.createdAt="{ item }">
+      <template #item.createdAt="{ item }">
         {{ item.createdAt | formatDate }}
       </template>
-      <template v-slot:item.lastActive="{ item }">
+      <template #item.lastActive="{ item }">
         <span v-if="!item.lastActive">Never</span>
         <v-timeago v-else :datetime="item.lastActive" />
       </template>
-      <template v-slot:item.actions="{ item }">
+      <template #item.actions="{ item }">
         <div class="text-no-wrap text-center">
           <v-btn
             @click="showUserDialog(item)"

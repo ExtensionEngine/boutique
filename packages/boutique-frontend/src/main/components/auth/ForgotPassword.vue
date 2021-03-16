@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { mdiArrowLeft, mdiEmailOutline  } from '@mdi/js';
+import { mdiArrowLeft, mdiEmailOutline } from '@mdi/js';
 import { mapActions } from 'vuex';
 
 const delay = timeout => new Promise(resolve => setTimeout(resolve, timeout));

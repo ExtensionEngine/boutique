@@ -12,6 +12,10 @@ module.exports = {
     }
   }],
   rules: {
-    'vuetify/no-deprecated-classes': 'error'
+    'vuetify/no-deprecated-classes': 'warn',
+    'vue/component-definition-name-casing': ['warn', 'kebab-case'],
+    'vue/valid-v-slot': ['error', {
+      allowModifiers: true
+    }]
   }
 };

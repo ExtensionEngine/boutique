@@ -24,7 +24,7 @@
       :no-data-text="noContentMessage"
       hide-default-footer
       class="transparent">
-      <template v-slot:item="{ item }">
+      <template #item="{ item }">
         <tr
           v-show="!item.deletedAt || showArchived"
           :key="item.sourceId"
@@ -67,8 +67,8 @@
 </template>
 
 <script>
-import { mdiDelete, mdiMagnify, mdiRestore } from '@mdi/js';
 import { mapActions, mapState } from 'vuex';
+import { mdiDelete, mdiMagnify, mdiRestore } from '@mdi/js';
 import api from '@/admin/api/contentRepo';
 import ConfirmationDialog from '@/admin/components/common/ConfirmationDialog';
 import ContentDialog from './ContentDialog';

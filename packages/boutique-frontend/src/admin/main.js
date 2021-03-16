@@ -15,8 +15,8 @@ import vuetify from '@/plugins/vuetify';
 import VueTimeago from 'vue-timeago';
 import VueVisible from 'vue-visible';
 
-Vue.component('ValidationProvider', ValidationProvider);
-Vue.component('ValidationObserver', ValidationObserver);
+Vue.component('validation-provider', ValidationProvider);
+Vue.component('validation-observer', ValidationObserver);
 setInteractionMode('eager');
 
 Vue.use(VueHotkey);

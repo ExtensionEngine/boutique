@@ -1,13 +1,13 @@
 <template>
   <admin-dialog v-model="isVisible" :header-icon="mdiSchool">
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <v-btn v-on="on" text>
         <v-icon dense class="mr-1">{{ mdiSchool }}</v-icon>
         Enroll learner
       </v-btn>
     </template>
-    <template v-slot:header>Enroll learner</template>
-    <template v-slot:body>
+    <template #header>Enroll learner</template>
+    <template #body>
       <validation-observer
         v-if="isVisible"
         ref="form"

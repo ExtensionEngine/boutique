@@ -1,9 +1,9 @@
 <template>
   <admin-dialog v-model="show" :header-icon="mdiFolderPlusOutline">
-    <template v-slot:header>
+    <template #header>
       {{ userData ? 'Edit' : 'Create' }} User
     </template>
-    <template v-slot:body>
+    <template #body>
       <div class="d-flex justify-end mb-5">
         <v-btn
           v-if="!isNewUser"
