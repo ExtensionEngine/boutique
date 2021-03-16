@@ -50,11 +50,12 @@
     "eslint-plugin-vuetify": "^1.0.0-beta.6",
     "node-sass": "^5.0.0",
     "rewrite-lockfile": "^1.0.1",
-    "sass": "^1.26.8",
+    "sass": "^1.32.0",
     "sass-loader": "^10.1.1",
     "stylelint": "^13.0.0",
+    "vue-cli-plugin-vuetify": "~2.2.2",
     "vue-template-compiler": "^2.6.11",
-    "webpack-bundle-analyzer": "^4.0.0"
+    "vuetify-loader": "^1.7.0"
   },
   "dependencies": {
     "@mdi/js": "^5.9.55",

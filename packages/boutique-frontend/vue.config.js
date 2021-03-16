@@ -61,5 +61,11 @@ module.exports = {
       .loader('esbuild-loader')
       .end()
   },
-  devServer
+  devServer,
+  transpileDependencies: [
+    'vuetify'
+  ],
+  css: {
+    extract: process.env.NODE_ENV === 'production' ? { ignoreOrder: true } : false,
+  }
 };
