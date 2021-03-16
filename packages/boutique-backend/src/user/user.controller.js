@@ -153,7 +153,7 @@ async function bulkCreate(users, { concurrency = 16, ...options } = {}) {
     .map(([err, user], index) => {
       if (!err && user) return User.invite(user, options);
       const { message = 'Failed to import user.' } = err;
-      errors.push({ ...users[index], message });
+      return errors.push({ ...users[index], message });
     }, { concurrency });
   return errors.length && errors;
 }

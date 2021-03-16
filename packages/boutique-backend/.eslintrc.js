@@ -5,5 +5,5 @@ module.exports = {
   extends: '@extensionengine/eslint-config/base',
   overrides: [{
     files: ['src/**']
-  }],
+  }]
 };

@@ -58,7 +58,7 @@ async function bulkCreate(enrollments, { concurrency = 16, ...options } = {}) {
   await Enrollment.restoreOrCreateAll(enrollments, { concurrency })
     .map(([err, enrollment], index) => {
       if (err) return failedLearnerIds.push(enrollments[index].learnerId);
-      enrollmentIds.push(enrollment.id);
+      return enrollmentIds.push(enrollment.id);
     }, { concurrency });
   return Promise.all([
     User.findAll({ where: { id: failedLearnerIds } }),
