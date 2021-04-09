@@ -3,6 +3,7 @@
 const { CONFLICT, NO_CONTENT } = require('http-status');
 const { Sequelize, UserGroup } = require('../common/database');
 const { createError } = require('../common/errors');
+const { MemberRole } = require('../../common/config');
 
 const { Op } = Sequelize;
 
@@ -18,11 +19,11 @@ async function list({ query, options }, res) {
 async function create({ user, body }, res) {
   const { id, name, parentId = null } = body;
   const [err, userGroup] = await UserGroup.restoreOrCreate({ id, name, parentId });
+  if (err) return createError(CONFLICT, 'User group exists!');
   if (!user.isAdmin()) {
-    const through = { role: 'INSTRUCTOR' };
+    const through = { role: MemberRole.INSTRUCTOR };
     userGroup.addMember(user, { through });
   }
-  if (err) return createError(CONFLICT, 'User group exists!');
   return res.jsend.success(userGroup);
 }
 
