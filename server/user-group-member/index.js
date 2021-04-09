@@ -23,11 +23,6 @@ async function getMember(req, _, next, memberId) {
   next();
 }
 
-module.exports = {
-  path: '/members',
-  router
-};
-
 async function hasCreationAccess({ user, userGroup }, _, next) {
   if (user.isAdmin()) return next();
   const where = { userId: user.id, userGroupId: userGroup.id };
@@ -41,3 +36,8 @@ function hasMemberAccess({ user, member }, _, next) {
   if (user.isAdmin() || member.isInstructor() || isUserMember) return next();
   return createError(FORBIDDEN, 'Forbidden!');
 }
+
+module.exports = {
+  path: '/members',
+  router
+};
