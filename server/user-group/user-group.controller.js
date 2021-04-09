@@ -20,10 +20,7 @@ async function create({ user, body }, res) {
   const { id, name, parentId = null } = body;
   const [err, userGroup] = await UserGroup.restoreOrCreate({ id, name, parentId });
   if (err) return createError(CONFLICT, 'User group exists!');
-  if (!user.isAdmin()) {
-    const through = { role: MemberRole.INSTRUCTOR };
-    userGroup.addMember(user, { through });
-  }
+  if (!user.isAdmin() && !parentId) await setGroupAdmin(user, userGroup);
   return res.jsend.success(userGroup);
 }
 
@@ -43,3 +40,8 @@ module.exports = {
   patch,
   remove
 };
+
+function setGroupAdmin(user, userGroup) {
+  const through = { role: MemberRole.INSTRUCTOR };
+  return userGroup.addMember(user, { through });
+}
