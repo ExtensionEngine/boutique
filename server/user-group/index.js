@@ -28,8 +28,8 @@ async function getUserGroup(req, _, next, userGroupId) {
   next();
 }
 
-async function hasUserGroupAccess({ user, userGroup = {}, query }, _, next) {
-  const userGroupId = query.parentId || userGroup.id;
+async function hasUserGroupAccess({ body, user, userGroup = {} }, _, next) {
+  const userGroupId = body.parentId || userGroup.id;
   if (user.isAdmin() || !userGroupId) return next();
   const where = { userId: user.id, userGroupId };
   const member = await UserGroupMember.findOne({ where });
