@@ -14,21 +14,13 @@ router
 
 router
   .get('/', ctrl.list)
-  .post('/', hasCreationAccess, ctrl.create);
+  .post('/', ctrl.create);
 
 async function getMember(req, _, next, memberId) {
   const member = await UserGroupMember.findByPk(memberId);
   if (!member) return createError(NOT_FOUND, 'Not found!');
   req.member = member;
   next();
-}
-
-async function hasCreationAccess({ user, userGroup }, _, next) {
-  if (user.isAdmin()) return next();
-  const where = { userId: user.id, userGroupId: userGroup.id };
-  const member = await UserGroupMember.findOne({ where });
-  if (!member) return createError(NOT_FOUND, 'Not found!');
-  return member.isInstructor() ? next() : createError(FORBIDDEN, 'Forbidden!');
 }
 
 function hasMemberAccess({ user, member }, _, next) {
