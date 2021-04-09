@@ -28,15 +28,16 @@ async function getUserGroup(req, _, next, userGroupId) {
   next();
 }
 
-async function hasCreationAccess({ user, query: { parentId } }, _, next) {
-  if (user.isAdmin() || !parentId) return next();
-  const member = await getMember(user.id, parentId);
-  return member.isInstructor() ? next() : createError(FORBIDDEN, 'Forbidden!');
-}
-
 async function hasUserGroupAccess({ user, userGroup }, _, next) {
   if (user.isAdmin()) return next();
   const member = await getMember(user.id, userGroup.id);
+  return member.isInstructor() ? next() : createError(FORBIDDEN, 'Forbidden!');
+}
+
+async function hasCreationAccess({ user, query: { parentId } }, _, next) {
+  if (user.isAdmin()) return next();
+  else if (!parentId) return createError(FORBIDDEN, 'Forbidden!');
+  const member = await getMember(user.id, parentId);
   return member.isInstructor() ? next() : createError(FORBIDDEN, 'Forbidden!');
 }
 
