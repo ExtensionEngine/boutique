@@ -11,7 +11,7 @@ const createUserFilter = q => map(['email', 'firstName', 'lastName'],
   it => ({ [it]: { [Op.iLike]: `%${q}%` } }));
 
 function list({ query, userGroup, options }, res) {
-  const filter = JSON.parse(query.filter);
+  const filter = query.filter ? JSON.parse(query.filter) : {};
   const where = { userGroupId: userGroup.id };
   const userWhere = filter.user ? { [Op.or]: createUserFilter(filter.user) } : {};
   if (filter.role) where.role = filter.role;
