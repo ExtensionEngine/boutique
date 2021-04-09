@@ -53,7 +53,7 @@ export default {
     breadcrumbs() {
       if (!this.userGroup) return [];
       const { userGroup, userGroups } = this;
-      const items = getBreadcrumbItems(userGroup, userGroups);
+      const [items] = getBreadcrumbItems(userGroup, userGroups);
       return [{ text: 'User groups', disabled: true }, ...formatBreadcrumbs(items)];
     }
   },
