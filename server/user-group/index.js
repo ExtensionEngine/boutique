@@ -16,7 +16,7 @@ router
 
 router
   .get('/', ctrl.list)
-  .post('/', hasCreationAccess, ctrl.create);
+  .post('/', hasUserGroupAccess, ctrl.create);
 
 router
   .use(path.join('/:userGroupId', userGroupMember.path), userGroupMember.router);
@@ -28,16 +28,12 @@ async function getUserGroup(req, _, next, userGroupId) {
   next();
 }
 
-async function hasUserGroupAccess({ user, userGroup }, _, next) {
-  if (user.isAdmin()) return next();
-  const member = await getMember(user.id, userGroup.id);
-  return member.isInstructor() ? next() : createError(FORBIDDEN, 'Forbidden!');
-}
-
-async function hasCreationAccess({ user, query: { parentId } }, _, next) {
-  if (user.isAdmin()) return next();
-  else if (!parentId) return createError(FORBIDDEN, 'Forbidden!');
-  const member = await getMember(user.id, parentId);
+async function hasUserGroupAccess({ user, userGroup = {}, query }, _, next) {
+  const userGroupId = query.parentId || userGroup.id;
+  if (user.isAdmin() || !userGroupId) return next();
+  const where = { userId: user.id, userGroupId };
+  const member = await UserGroupMember.findOne({ where });
+  if (!member) return createError(NOT_FOUND, 'Not found!');
   return member.isInstructor() ? next() : createError(FORBIDDEN, 'Forbidden!');
 }
 
@@ -45,9 +41,3 @@ module.exports = {
   path: '/user-groups',
   router
 };
-
-async function getMember(userId, userGroupId) {
-  const where = { userId, userGroupId };
-  const member = await UserGroupMember.findOne({ where });
-  return member || createError(NOT_FOUND, 'Not found!');
-}

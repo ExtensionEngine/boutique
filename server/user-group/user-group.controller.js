@@ -15,9 +15,13 @@ async function list({ query, options }, res) {
   return res.jsend.success({ items: rows, total: count });
 }
 
-async function create({ body }, res) {
+async function create({ user, body }, res) {
   const { id, name, parentId = null } = body;
   const [err, userGroup] = await UserGroup.restoreOrCreate({ id, name, parentId });
+  if (!user.isAdmin()) {
+    const through = { role: 'INSTRUCTOR' };
+    userGroup.addMember(user, { through });
+  }
   if (err) return createError(CONFLICT, 'User group exists!');
   return res.jsend.success(userGroup);
 }
