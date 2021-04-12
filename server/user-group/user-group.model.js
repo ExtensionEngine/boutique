@@ -1,5 +1,6 @@
 'use strict';
 
+const find = require('lodash/find');
 const { Model } = require('sequelize');
 const { restoreOrCreate } = require('../common/database/restore');
 
@@ -75,6 +76,23 @@ class UserGroup extends Model {
 
   static async restoreOrCreate(userGroup, options) {
     return restoreOrCreate(this, userGroup, options);
+  }
+
+  static async hasAncestorInstructor(user, currentItem, items = [currentItem]) {
+    const parent = await this.getParent(currentItem);
+    if (!parent) return;
+    items.push(parent);
+    const { userGroupMember } = find(parent.members, { id: user.id }) || {};
+    const isUserInstructor = userGroupMember && userGroupMember.isInstructor();
+    return isUserInstructor || this.hasAncestorInstructor(user, parent, items);
+  }
+
+  static getParent({ parentId }) {
+    const where = { id: parentId };
+    const attributes = ['id', 'parentId'];
+    const User = this.sequelize.model('User');
+    const include = [{ model: User, as: 'members', attributes: ['id'] }];
+    return this.findOne({ where, attributes, include });
   }
 }
 

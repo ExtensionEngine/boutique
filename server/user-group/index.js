@@ -33,8 +33,10 @@ async function hasUserGroupAccess({ body, user, userGroup = {} }, _, next) {
   if (user.isAdmin() || !userGroupId) return next();
   const where = { userId: user.id, userGroupId };
   const member = await UserGroupMember.findOne({ where });
-  if (!member) return createError(NOT_FOUND, 'Not found!');
-  return member.isInstructor() ? next() : createError(FORBIDDEN, 'Forbidden!');
+  if (member) return member.isInstructor() ? next() : createError(FORBIDDEN, 'Forbidden!');
+  const context = userGroup || { parentId: body.parentId };
+  const hasAncestorInstructor = await UserGroup.hasAncestorInstructor(user, context);
+  return hasAncestorInstructor ? next() : createError(NOT_FOUND, 'Not found!');
 }
 
 module.exports = {
