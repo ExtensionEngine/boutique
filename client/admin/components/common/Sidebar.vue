@@ -32,7 +32,7 @@ export default {
   computed: {
     routes: vm => [
       { name: 'users', label: 'Users', icon: 'account-multiple' },
-      { name: 'programs', label: 'Programs', icon: 'bookshelf' }
+      { name: 'offerings', label: 'Courses & Series', icon: 'bookshelf' }
     ]
   }
 };
