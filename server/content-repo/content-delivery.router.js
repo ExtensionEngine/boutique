@@ -1,6 +1,10 @@
 'use strict';
 
-const { ContentRepo } = require('../common/database');
+const {
+  ContentRepo,
+  Enrollment,
+  EnrollmentOffering
+} = require('../common/database');
 const { createError } = require('../common/errors');
 const ctrl = require('./content-delivery.controller');
 const HttpStatus = require('http-status');
@@ -19,8 +23,14 @@ router
 
 async function hasAccess({ program, user }, _res, next) {
   if (user.isAdmin()) return next();
-  const where = { learnerId: user.id };
-  const enrollment = await program.getEnrollment({ where });
+  const enrollment = await Enrollment.findOne({
+    where: { learnerId: user.id },
+    include: [{
+      model: EnrollmentOffering,
+      as: 'offering',
+      where: { programId: program.id }
+    }]
+  });
   if (!enrollment) return createError(FORBIDDEN, 'Access denied');
   return next();
 }
