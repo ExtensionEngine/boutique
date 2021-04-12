@@ -2,7 +2,7 @@
   <admin-dialog v-model="visible" width="600" header-icon="mdi-cloud-upload">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" color="primary" text>
-        <v-icon dense class="mr-1">mdi-cloud-upload</v-icon>Import users
+        <v-icon dense class="mr-1">mdi-cloud-upload</v-icon>Import {{ label }}
       </v-btn>
     </template>
     <template v-slot:header>Import Users</template>
@@ -10,7 +10,6 @@
       <validation-observer
         v-if="visible"
         ref="form"
-        v-slot="{ invalid }"
         @submit.prevent="$refs.form.handleSubmit(submit)"
         tag="form"
         novalidate>
@@ -28,7 +27,7 @@
               close>
               {{ file.name }}
             </v-chip>
-            <div class="errors-list">{{ errors[0] }}</div>
+            <div class="errors-list mt-2">{{ errors[0] }}</div>
             <label for="userImportInput">
               <input
                 v-show="isDragged"
@@ -60,7 +59,7 @@
             </v-btn>
           </v-fade-transition>
           <v-btn @click="close" text>Cancel</v-btn>
-          <v-btn :disabled="invalid" :loading="importing" type="submit" text>
+          <v-btn :disabled="importDisabled" :loading="importing" type="submit" text>
             Import
           </v-btn>
         </div>
@@ -71,7 +70,8 @@
 
 <script>
 import AdminDialog from '@/admin/components/common/Dialog';
-import api from '@/admin/api/user';
+import api from '@/admin/api/import';
+import pluralize from 'pluralize';
 import saveAs from 'save-as';
 import { validate } from 'vee-validate';
 
@@ -82,6 +82,12 @@ const inputFormats = {
 
 export default {
   name: 'import-dialog',
+  props: {
+    label: { type: String, required: true },
+    baseUrl: { type: String, required: true },
+    disabled: { type: Boolean, default: false },
+    params: { type: Object, default: null }
+  },
   data: () => ({
     visible: false,
     importing: false,
@@ -91,14 +97,13 @@ export default {
     serverErrorsReport: null
   }),
   computed: {
+    importDisabled: vm => !vm.file || vm.$refs.form.invalid || vm.importing,
     inputValidation: () => ({ required: true, mimes: Object.keys(inputFormats) }),
     acceptedFiles: () => Object.keys(inputFormats)
   },
   methods: {
     showDropZone() {
-      if (this.visible) {
-        this.isDragged = true;
-      }
+      if (this.visible) this.isDragged = true;
     },
     hideDropZone() {
       this.isDragged = false;
@@ -119,9 +124,10 @@ export default {
       const [file] = e.target.files;
       if (!file) return (this.file = null);
       this.file = file;
-      const { valid, errors } = await validate(file, this.inputValidation, { name: 'File' });
-      if (valid) return (this.form.append('file', file, file.name));
-      this.$refs.form.setErrors({ File: errors });
+      const result = await validate(file, this.inputValidation, { name: 'File' });
+      const { valid, errors } = result;
+      if (!valid) return this.$refs.form.setErrors({ File: errors });
+      this.form.append('file', file, file.name);
     },
     close() {
       if (this.importing) return;
@@ -133,20 +139,23 @@ export default {
     },
     submit() {
       this.importing = true;
-      const { file } = this;
+      const { file, label, baseUrl, params } = this;
       this.form = new FormData();
       this.form.append('file', file, file.name);
-      return api.bulkImport(this.form).then(({ data, count }) => {
-        this.importing = false;
-        if (count) this.$emit('imported');
-        if (!data.size) return this.close();
-        this.$refs.form.setErrors({ File: [`${count} users were successfully imported.`] });
-        this.serverErrorsReport = data;
-      }).catch(err => {
-        this.importing = false;
-        this.$refs.form.setErrors({ File: ['Importing users failed.'] });
-        return Promise.reject(err);
-      });
+      return api.bulkImport(this.form, { baseUrl, params })
+        .then(({ data, count }) => {
+          this.importing = false;
+          if (count) this.$emit('imported');
+          if (!data.size) return this.close();
+          const msg = `${count} ${pluralize(label, count)} were successfully imported.`;
+          this.$refs.form.setErrors({ File: [msg] });
+          this.serverErrorsReport = data;
+        })
+        .catch(err => {
+          this.importing = false;
+          this.$refs.form.setErrors({ File: [`Importing ${label} failed.`] });
+          return Promise.reject(err);
+        });
     },
     resetErrors() {
       this.$refs.form.reset();
@@ -157,8 +166,10 @@ export default {
       saveAs(this.serverErrorsReport, `Errors.${extension}`);
     },
     async downloadTemplateFile() {
-      const { data } = await api.getImportTemplate();
-      saveAs(data, `Template.${inputFormats[data.type]}`);
+      const { label, baseUrl } = this;
+      const { data } = await api.getImportTemplate({ baseUrl });
+      const fileName = `${label}Template.${inputFormats[data.type]}`;
+      return saveAs(data, fileName);
     }
   },
   mounted() {
@@ -177,7 +188,7 @@ export default {
   text-align: center;
   color: gray;
   background-color: #f5f5f5;
-  border-radius: 5px;
+  border-radius: 0.3125rem;
 }
 
 .drop-file {

@@ -3,12 +3,10 @@
 const { Enrollment, Sequelize, sequelize, User } = require('../common/database');
 const Audience = require('../common/auth/audience');
 const { createError } = require('../common/errors');
-const Datasheet = require('./datasheet');
-const { generate } = require('./helpers');
+const Datasheet = require('../common/datasheet');
+const { generateUsers } = require('../common/helpers');
 const HttpStatus = require('http-status');
-const { importTemplateFormat } = require('./../config');
 const map = require('lodash/map');
-const mime = require('mime');
 const pick = require('lodash/pick');
 
 const { ACCEPTED, BAD_REQUEST, CONFLICT, NO_CONTENT, NOT_FOUND } = HttpStatus;
@@ -114,23 +112,20 @@ function resetPassword({ body }, res) {
     .then(() => res.end());
 }
 
-async function bulkImport({ body, file, origin }, res) {
+async function bulkImport(req, res, next) {
+  const { file, origin } = req;
   const users = (await Datasheet.load(file)).toJSON({ include: inputAttrs });
   const errors = await bulkCreate(users, { origin });
   res.set('data-imported-count', users.length - errors.length);
-  if (!errors) return res.end();
-  const creator = 'Boutique';
-  columns.message = { header: 'Error', width: 30 };
-  const report = (new Datasheet({ columns, data: errors })).toWorkbook({ creator });
-  const format = body.format || mime.getExtension(file.mimetype);
-  return report.send(res, { format });
+  if (!errors.length) return res.end();
+  const message = { header: 'Error', width: 30 };
+  req.sheet = { columns: { ...columns, message }, data: errors };
+  return next();
 }
 
-function getImportTemplate(_req, res) {
-  const creator = 'Boutique';
-  const data = generate();
-  const report = (new Datasheet({ columns, data })).toWorkbook({ creator });
-  return report.send(res, { format: importTemplateFormat });
+function getImportTemplate(req, _res, next) {
+  req.sheet = { columns, data: generateUsers() };
+  return next();
 }
 
 module.exports = {

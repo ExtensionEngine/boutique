@@ -14,7 +14,7 @@
           class="my-2 archived-checkbox" />
       </v-col>
       <v-col sm="8" md="7" lg="8" class="d-flex justify-end">
-        <import-dialog @imported="fetch(defaultPage)" />
+        <import-dialog @imported="fetch(defaultPage)" label="users" base-url="users" />
         <bulk-enrollment-dialog :users="selectedUsers" />
         <v-btn @click.stop="showUserDialog()" text>
           <v-icon dense class="mr-1">mdi-plus</v-icon>Add user
@@ -74,7 +74,7 @@ import api from '@/admin/api/user';
 import BulkEnrollmentDialog from './BulkEnrollmentDialog';
 import ConfirmationDialog from '../common/ConfirmationDialog';
 import humanize from 'humanize-string';
-import ImportDialog from './ImportDialog';
+import ImportDialog from '../common/ImportDialog';
 import { mapState } from 'vuex';
 import throttle from 'lodash/throttle';
 import UserDialog from './UserDialog';

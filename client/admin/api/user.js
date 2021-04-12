@@ -1,14 +1,11 @@
 import { extractData, processParams } from '@/common/api/helpers';
-import get from 'lodash/get';
 import path from 'path';
 import request from '@/common/api/request';
 
 const urls = {
   root: '/users',
   resource: id => path.join(urls.root, String(id)),
-  invite: id => path.join(urls.resource(id), 'invite'),
-  import: () => path.join(urls.root, 'import'),
-  getImportTemplate: () => path.join(urls.import(), 'template')
+  invite: id => path.join(urls.resource(id), 'invite')
 };
 
 function fetch(params = {}) {
@@ -32,22 +29,10 @@ function invite(item) {
   return request.post(urls.invite(item.id));
 }
 
-async function bulkImport(items) {
-  const options = { responseType: 'blob' };
-  const { data, headers } = await request.post(urls.import(), items, options);
-  return { data, count: parseInt(get(headers, 'data-imported-count'), 10) };
-}
-
-function getImportTemplate() {
-  return request.get(urls.getImportTemplate(), { responseType: 'blob' });
-}
-
 export default {
   fetch,
   create,
   update,
   remove,
-  invite,
-  bulkImport,
-  getImportTemplate
+  invite
 };
