@@ -4,6 +4,7 @@ const { FORBIDDEN, NOT_FOUND } = require('http-status');
 const { UserGroup, UserGroupMember } = require('../common/database');
 const { createError } = require('../common/errors');
 const ctrl = require('./user-group.controller');
+const get = require('lodash/get');
 const path = require('path');
 const userGroupMember = require('../user-group-member');
 const router = require('express').Router();
@@ -28,13 +29,14 @@ async function getUserGroup(req, _, next, userGroupId) {
   next();
 }
 
-async function hasUserGroupAccess({ body, user, userGroup = {} }, _, next) {
-  const userGroupId = body.parentId || userGroup.id;
+async function hasUserGroupAccess({ body, user, userGroup }, _, next) {
+  const { parentId } = body;
+  const userGroupId = parentId || get(userGroup, 'id');
   if (user.isAdmin() || !userGroupId) return next();
   const where = { userId: user.id, userGroupId };
   const member = await UserGroupMember.findOne({ where });
   if (member) return member.isInstructor() ? next() : createError(FORBIDDEN, 'Forbidden!');
-  const context = userGroup || { parentId: body.parentId };
+  const context = userGroup || { parentId };
   const hasAncestorInstructor = await UserGroup.hasAncestorInstructor(user, context);
   return hasAncestorInstructor ? next() : createError(NOT_FOUND, 'Not found!');
 }
