@@ -6,7 +6,7 @@
         Create
       </v-btn>
     </template>
-    <template v-slot:header>Create program</template>
+    <template v-slot:header>Create</template>
     <template v-slot:body>
       <validation-observer
         v-if="visible"
@@ -16,10 +16,10 @@
         novalidate>
         <validation-provider
           v-slot="{ errors }"
-          :rules="{ required: true, min: 2, max: 255, unique_program_name: null }"
+          :rules="{ required: true, min: 2, max: 255 }"
           name="name">
           <v-text-field
-            v-model.trim="program.name"
+            v-model.trim="offering.name"
             :error-messages="errors"
             name="name"
             label="Name"
@@ -41,24 +41,24 @@ import api from '@/admin/api/program';
 const getDefaultData = () => ({ name: '' });
 
 export default {
-  name: 'program-dialog',
+  name: 'offering-dialog',
   data: () => ({
     visible: false,
-    program: getDefaultData()
+    offering: getDefaultData()
   }),
   methods: {
     close() {
       this.visible = false;
     },
     save() {
-      api.create(this.program).then(() => this.$emit('created'));
+      api.create(this.offering).then(() => this.$emit('created'));
       this.close();
     }
   },
   watch: {
     visible(val) {
       if (!val) return;
-      this.program = getDefaultData();
+      this.offering = getDefaultData();
     }
   },
   components: { AdminDialog }

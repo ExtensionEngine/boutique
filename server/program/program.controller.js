@@ -1,6 +1,12 @@
 'use strict';
 
-const { Enrollment, Program, Sequelize, sequelize } = require('../common/database');
+const {
+  Enrollment,
+  EnrollmentOffering,
+  Program,
+  Sequelize,
+  sequelize
+} = require('../common/database');
 const pick = require('lodash/pick');
 const yn = require('yn');
 
@@ -17,13 +23,15 @@ function list({ query, options }, res) {
     .then(({ rows, count }) => res.jsend.success({ items: rows, total: count }));
 }
 
-function get({ program }, res) {
-  return res.jsend.success(program);
+async function get({ program }, res) {
+  const include = [{ model: EnrollmentOffering }];
+  return res.jsend.success(await program.reload({ include }));
 }
 
-function create({ body }, res) {
-  return Program.create(processInput(body))
-    .then(program => res.jsend.success(program));
+async function create({ body }, res) {
+  const program = await Program.create(processInput(body));
+  await EnrollmentOffering.create({ programId: program.id });
+  return res.jsend.success(program);
 }
 
 function patch({ body, program }, res) {
@@ -33,14 +41,19 @@ function patch({ body, program }, res) {
 
 function destroy({ program }, res) {
   return sequelize.transaction(async transaction => {
-    await Enrollment.destroy({ where: { programId: program.id }, transaction });
+    const offering = await program.getOffering({ transaction });
+    await Enrollment.destroy({ where: { offeringId: offering.id }, transaction });
+    await offering.destroy({ transaction });
     return program.destroy({ transaction });
   })
   .then(program => res.jsend.success(program));
 }
 
 function getEnrolledPrograms({ user }, res) {
-  const include = [{ model: Enrollment, where: { learnerId: user.id } }];
+  const include = [{
+    model: EnrollmentOffering,
+    include: { model: Enrollment, where: { learnerId: user.id } }
+  }];
   return Program.active().findAll({ include })
     .then(programs => res.jsend.success(programs));
 }

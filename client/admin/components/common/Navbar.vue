@@ -1,7 +1,7 @@
 <template>
   <v-app-bar
-    :dense="!!program"
-    extension-height="74"
+    :dense="!!programId"
+    extension-height="48"
     color="primary"
     elevation="2"
     app fixed clipped-left dark>
@@ -35,9 +35,8 @@
         </v-list-item>
       </v-list>
     </v-menu>
-    <template v-if="program" v-slot:extension>
+    <template v-if="programId" v-slot:extension>
       <div class="ml-10">
-        <v-breadcrumbs :items="breadcrumbs" />
         <v-tabs
           color="grey lighten-2"
           background-color="transparent"
@@ -57,7 +56,6 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import find from 'lodash/find';
 
 const parseNumber = val => val !== undefined ? parseInt(val, 10) : val;
 
@@ -70,18 +68,12 @@ export default {
     ...mapState('auth', ['user']),
     ...mapState('programs', { programs: 'items' }),
     programId: vm => parseNumber(vm.$route.params.programId),
-    program: vm => vm.programId && find(vm.programs, { id: vm.programId }),
     fullName: ({ user }) => `${user.firstName} ${user.lastName}`,
     tabs: () => [
-      { name: 'enrollments', label: 'Enrollments' },
+      { name: 'programEnrollments', label: 'Enrollments' },
       { name: 'importedContent', label: 'Content' },
       { name: 'programSettings', label: 'Settings' }
-    ],
-    breadcrumbs: ({ program }) => program
-      ? [
-        { text: 'Programs', disabled: true },
-        { text: program.name, disabled: true }]
-      : []
+    ]
   },
   methods: mapActions('auth', ['logout'])
 };

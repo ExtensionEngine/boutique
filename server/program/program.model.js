@@ -39,8 +39,8 @@ class Program extends Model {
     };
   }
 
-  static associate({ Enrollment, ContentRepo }) {
-    this.hasOne(Enrollment, {
+  static associate({ EnrollmentOffering, ContentRepo }) {
+    this.hasOne(EnrollmentOffering, {
       foreignKey: { name: 'programId', field: 'program_id' }
     });
     this.hasMany(ContentRepo, {

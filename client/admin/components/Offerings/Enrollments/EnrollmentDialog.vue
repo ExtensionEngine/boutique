@@ -17,7 +17,7 @@
         novalidate>
         <validation-provider
           v-slot="{ errors }"
-          :rules="{ required: true, unique_enrollment: { learnerId, programId } }"
+          :rules="{ required: true, unique_enrollment: { learnerId, offeringId } }"
           name="learner">
           <v-autocomplete
             v-model="learnerId"
@@ -50,7 +50,7 @@ import userApi from '@/admin/api/user';
 export default {
   name: 'enrollment-dialog',
   props: {
-    programId: { type: Number, required: true }
+    offeringId: { type: Number, required: true }
   },
   data: () => ({
     isVisible: false,
@@ -61,7 +61,7 @@ export default {
   }),
   methods: {
     async enroll() {
-      const params = pick(this, ['learnerId', 'programId']);
+      const params = pick(this, ['learnerId', 'offeringId']);
       await enrollmentApi.create(params);
       this.close();
       this.$emit('enrolled');
