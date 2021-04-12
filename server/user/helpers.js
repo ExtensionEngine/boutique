@@ -13,10 +13,10 @@ function generate() {
   times(10, i => {
     const suffix = i || '';
     users.push({
-      firstName: `Learner ${suffix}`,
+      firstName: `User ${suffix}`,
       lastName: 'Example',
-      email: `learner${suffix}@example.org`,
-      role: Role.LEARNER
+      email: `user${suffix}@example.org`,
+      role: Role.USER
     });
   });
   return users;

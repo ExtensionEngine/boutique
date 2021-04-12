@@ -3,8 +3,8 @@
 const { alterEnum } = require('../helpers');
 
 const ROLES = {
-  new: ['ADMIN', 'LEARNER'],
-  old: ['ADMIN', 'STUDENT']
+  new: ['ADMIN', 'USER'],
+  old: ['ADMIN', 'LEARNER']
 };
 
 const getOptions = (roles, ENUM) => ({

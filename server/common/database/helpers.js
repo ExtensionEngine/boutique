@@ -16,7 +16,8 @@ const sql = {
 module.exports = {
   sql,
   getValidator,
-  wrapMethods
+  wrapMethods,
+  alterEnum
 };
 
 function getValidator(Model, attribute) {
@@ -42,6 +43,15 @@ function where(attribute, logic, options = {}) {
   const { comparator = '=', scope = false } = options;
   const where = Sequelize.where(attribute, comparator, logic);
   return !scope ? where : { [Op.and]: [where] };
+}
+
+// NOTE: Enables safe altering of ENUM values: https://git.io/fxzeS
+function alterEnum(qi, { table, column, ...options } = {}) {
+  const { queryGenerator, sequelize } = qi;
+  const str = { type: Sequelize.STRING, allowNull: false };
+  return qi.changeColumn(table, column, str)
+    .then(() => sequelize.query(queryGenerator.pgEnumDrop(table, column)))
+    .then(() => qi.changeColumn(table, column, options));
 }
 
 function wrapMethods(Model, Promise) {

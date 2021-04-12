@@ -79,7 +79,7 @@ export default {
     fetch(email) {
       if (this.learnerId) return;
       this.isLoading = true;
-      const params = { emailLike: email, role: 'LEARNER', limit: 30 };
+      const params = { emailLike: email, role: 'USER', limit: 30 };
       return userApi.fetch({ params })
         .then(this.setLearners)
         .finally(() => (this.isLoading = false));
