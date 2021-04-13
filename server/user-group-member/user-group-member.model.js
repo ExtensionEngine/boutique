@@ -59,6 +59,40 @@ class UserGroupMember extends Model {
     };
   }
 
+  static hooks() {
+    return {
+      async afterCreate({ userId: learnerId, userGroupId }) {
+        const OfferingUserGroup = this.sequelize.model('OfferingUserGroup');
+        const Enrollment = this.sequelize.model('Enrollment');
+        const where = { userGroupId };
+        const enrollments = await OfferingUserGroup.findAll({ where })
+          .map(({ enrollmentOfferingId }) => ({ learnerId, enrollmentOfferingId }));
+        return Enrollment.bulkCreate(enrollments);
+      },
+      async afterUpdate(member) {
+        const isUserChanged = member.changed('userId');
+        if (!isUserChanged) return;
+        const { userId: oldLearnerId } = member._previousDataValues;
+        const { userId: learnerId, userGroupId } = member;
+        const OfferingUserGroup = this.sequelize.model('OfferingUserGroup');
+        const Enrollment = this.sequelize.model('Enrollment');
+        const offeringIds = await OfferingUserGroup.findAll({ where: { userGroupId } })
+          .map(({ enrollmentOfferingId }) => enrollmentOfferingId);
+        const where = { learnerId: oldLearnerId, enrollmentOfferingId: offeringIds };
+        return Enrollment.update({ learnerId }, { where });
+      },
+      async afterDestroy(member) {
+        const { userId: learnerId, userGroupId } = member;
+        const OfferingUserGroup = this.sequelize.model('OfferingUserGroup');
+        const Enrollment = this.sequelize.model('Enrollment');
+        const offeringIds = await OfferingUserGroup.findAll({ where: { userGroupId } })
+          .map(({ enrollmentOfferingId }) => enrollmentOfferingId);
+        const where = { learnerId, enrollmentOfferingId: offeringIds };
+        return Enrollment.destroy({ where });
+      }
+    };
+  }
+
   static scopes({ User }) {
     return {
       user: options => ({ include: { model: User, ...options } })
