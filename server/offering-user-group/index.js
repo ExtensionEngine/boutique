@@ -7,15 +7,15 @@ const router = require('express').Router();
 const { OfferingUserGroup } = require('../common/database');
 
 router
-  .param('userGroupId', getUserGroup)
-  .delete('/:userGroupId', ctrl.remove);
+  .param('groupId', getUserGroup)
+  .delete('/:groupId', ctrl.remove);
 
 router
   .get('/', ctrl.list)
   .post('/', ctrl.create);
 
-async function getUserGroup(req, _, next, userGroupId) {
-  const offeringUserGroup = await OfferingUserGroup.findByPk(userGroupId);
+async function getUserGroup(req, _, next, groupId) {
+  const offeringUserGroup = await OfferingUserGroup.findByPk(groupId);
   if (!offeringUserGroup) return createError(NOT_FOUND, 'Not found!');
   req.offeringUserGroup = offeringUserGroup;
   next();

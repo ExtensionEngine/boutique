@@ -7,17 +7,17 @@ const { UserGroupMember } = require('../common/database');
 const router = require('express').Router();
 
 router
-  .param('memberId', getMember)
-  .use('/:memberId', hasMemberAccess)
-  .patch('/:memberId', ctrl.patch)
-  .delete('/:memberId', ctrl.remove);
+  .param('userId', getMember)
+  .use('/:userId', hasMemberAccess)
+  .patch('/:userId', ctrl.patch)
+  .delete('/:userId', ctrl.remove);
 
 router
   .get('/', ctrl.list)
   .post('/', ctrl.create);
 
-async function getMember(req, _, next, memberId) {
-  const member = await UserGroupMember.findByPk(memberId);
+async function getMember(req, _, next, userId) {
+  const member = await UserGroupMember.findByPk(userId);
   if (!member) return createError(NOT_FOUND, 'Not found!');
   req.member = member;
   next();
