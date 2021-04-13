@@ -88,11 +88,10 @@ class UserGroup extends Model {
   }
 
   static getParent({ parentId }) {
-    const where = { id: parentId };
     const attributes = ['id', 'parentId'];
     const User = this.sequelize.model('User');
     const include = [{ model: User, as: 'members', attributes: ['id'] }];
-    return this.findOne({ where, attributes, include });
+    return this.findByPk(parentId, { attributes, include });
   }
 }
 
