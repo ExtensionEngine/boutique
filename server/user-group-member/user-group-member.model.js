@@ -70,6 +70,8 @@ class UserGroupMember extends Model {
         return Enrollment.bulkCreate(enrollments);
       },
       async afterUpdate(member) {
+        const isRestored = member.changed('deletedAt') && !member.deletedAt;
+        if (isRestored) return this.restoreEnrollments(member);
         const isUserChanged = member.changed('userId');
         if (!isUserChanged) return;
         const { userId: oldLearnerId } = member._previousDataValues;
@@ -107,6 +109,15 @@ class UserGroupMember extends Model {
 
   static async restoreOrCreate(userGroupMember, options) {
     return restoreOrCreate(this, userGroupMember, options);
+  }
+
+  static async restoreEnrollments({ userId, userGroupId }) {
+    const OfferingUserGroup = this.sequelize.model('OfferingUserGroup');
+    const Enrollment = this.sequelize.model('Enrollment');
+    const offeringIds = await OfferingUserGroup.findAll({ where: { userGroupId } })
+      .map(({ enrollmentOfferingId }) => enrollmentOfferingId);
+    const where = { learnerId: userId, enrollmentOfferingId: offeringIds };
+    return Enrollment.update({ deletedAt: null }, { where, paranoid: false });
   }
 
   isInstructor() {
