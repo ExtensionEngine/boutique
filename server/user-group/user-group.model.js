@@ -37,7 +37,7 @@ class UserGroup extends Model {
     });
     this.belongsToMany(EnrollmentOffering, {
       through: OfferingUserGroup,
-      foreignKey: { name: 'enrollmentOfferingId', field: 'enrollment_offering_id' }
+      foreignKey: { name: 'offeringId', field: 'offering_id' }
     });
     this.belongsTo(this, {
       as: 'parent',

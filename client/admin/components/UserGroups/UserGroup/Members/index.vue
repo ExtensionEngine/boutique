@@ -80,8 +80,8 @@ import get from 'lodash/get';
 import humanize from 'humanize-string';
 import map from 'lodash/map';
 import MemberDialog from './MemberDialog';
-import { MemberRole } from '@/../common/config';
 import throttle from 'lodash/throttle';
+import { UserGroupRole } from '@/../common/config';
 
 const defaultPage = () => ({ sortBy: ['updatedAt'], sortDesc: [true], page: 1 });
 const headers = () => [
@@ -116,7 +116,7 @@ export default {
     headers,
     defaultPage,
     userIds: vm => vm.members.map(it => it.userId),
-    roles: () => map(MemberRole, it => ({ text: humanize(it), value: it }))
+    roles: () => map(UserGroupRole, it => ({ text: humanize(it), value: it }))
   },
   methods: {
     get,

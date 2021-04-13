@@ -1,9 +1,9 @@
 'use strict';
 
-const MemberRole = require('./memberRole');
 const Role = require('./role');
+const UserGroupRole = require('./userGroupRole');
 
 module.exports = {
   Role,
-  MemberRole
+  UserGroupRole
 };

@@ -3,7 +3,7 @@
 const { CONFLICT, NO_CONTENT } = require('http-status');
 const { Sequelize, UserGroup } = require('../common/database');
 const { createError } = require('../common/errors');
-const { MemberRole } = require('../../common/config');
+const { UserGroupRole } = require('../../common/config');
 
 const { Op } = Sequelize;
 
@@ -42,6 +42,6 @@ module.exports = {
 };
 
 function setGroupAdmin(user, userGroup) {
-  const through = { role: MemberRole.INSTRUCTOR };
+  const through = { role: UserGroupRole.INSTRUCTOR };
   return userGroup.addMember(user, { through });
 }

@@ -1,8 +1,8 @@
 'use strict';
 
-const { MemberRole } = require('../../common/config');
 const { Model } = require('sequelize');
 const { restoreOrCreate } = require('../common/database/restore');
+const { UserGroupRole } = require('../../common/config');
 
 class UserGroupMember extends Model {
   static fields({ DATE, ENUM, INTEGER }) {
@@ -22,7 +22,7 @@ class UserGroupMember extends Model {
         field: 'user_group_id'
       },
       role: {
-        type: ENUM(Object.values(MemberRole))
+        type: ENUM(Object.values(UserGroupRole))
       },
       createdAt: {
         type: DATE,
@@ -51,7 +51,7 @@ class UserGroupMember extends Model {
   static options() {
     return {
       modelName: 'userGroupMember',
-      tableName: 'user_group_member',
+      tableName: 'user_group_membership',
       underscored: true,
       timestamps: true,
       paranoid: true,
@@ -66,7 +66,7 @@ class UserGroupMember extends Model {
         const Enrollment = this.sequelize.model('Enrollment');
         const where = { userGroupId };
         const enrollments = await OfferingUserGroup.findAll({ where })
-          .map(({ enrollmentOfferingId }) => ({ learnerId, enrollmentOfferingId }));
+          .map(({ offeringId }) => ({ learnerId, offeringId }));
         return Enrollment.bulkCreate(enrollments);
       },
       async afterUpdate(member) {
@@ -79,7 +79,7 @@ class UserGroupMember extends Model {
         const OfferingUserGroup = this.sequelize.model('OfferingUserGroup');
         const Enrollment = this.sequelize.model('Enrollment');
         const offeringIds = await OfferingUserGroup.findAll({ where: { userGroupId } })
-          .map(({ enrollmentOfferingId }) => enrollmentOfferingId);
+          .map(({ offeringId }) => offeringId);
         const where = { learnerId: oldLearnerId, enrollmentOfferingId: offeringIds };
         return Enrollment.update({ learnerId }, { where });
       },
@@ -88,7 +88,7 @@ class UserGroupMember extends Model {
         const OfferingUserGroup = this.sequelize.model('OfferingUserGroup');
         const Enrollment = this.sequelize.model('Enrollment');
         const offeringIds = await OfferingUserGroup.findAll({ where: { userGroupId } })
-          .map(({ enrollmentOfferingId }) => enrollmentOfferingId);
+          .map(({ offeringId }) => offeringId);
         const where = { learnerId, enrollmentOfferingId: offeringIds };
         return Enrollment.destroy({ where });
       }
@@ -115,13 +115,13 @@ class UserGroupMember extends Model {
     const OfferingUserGroup = this.sequelize.model('OfferingUserGroup');
     const Enrollment = this.sequelize.model('Enrollment');
     const offeringIds = await OfferingUserGroup.findAll({ where: { userGroupId } })
-      .map(({ enrollmentOfferingId }) => enrollmentOfferingId);
+      .map(({ offeringId }) => offeringId);
     const where = { learnerId: userId, enrollmentOfferingId: offeringIds };
     return Enrollment.update({ deletedAt: null }, { where, paranoid: false });
   }
 
   isInstructor() {
-    return this.role === MemberRole.INSTRUCTOR;
+    return this.role === UserGroupRole.INSTRUCTOR;
   }
 }
 

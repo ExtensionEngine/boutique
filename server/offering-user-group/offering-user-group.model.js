@@ -16,9 +16,9 @@ class OfferingUserGroup extends Model {
         type: INTEGER,
         field: 'user_group_id'
       },
-      enrollmentOfferingId: {
+      offeringId: {
         type: INTEGER,
-        field: 'enrollment_offering_id'
+        field: 'offering_id'
       },
       createdAt: {
         type: DATE,
@@ -40,7 +40,7 @@ class OfferingUserGroup extends Model {
       foreignKey: { name: 'userGroupId', field: 'user_group_id' }
     });
     this.belongsTo(EnrollmentOffering, {
-      foreignKey: { name: 'enrollmentOfferingId', field: 'enrollment_offering_id' }
+      foreignKey: { name: 'offeringId', field: 'offering_id' }
     });
   }
 

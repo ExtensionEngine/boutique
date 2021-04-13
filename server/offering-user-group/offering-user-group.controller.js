@@ -8,7 +8,7 @@ const { Op } = Sequelize;
 
 async function list({ offering, query, options }, res) {
   const { filter } = query;
-  const where = { enrollmentOfferingId: offering.id };
+  const where = { offeringId: offering.id };
   const include = { model: UserGroup, where: {}, attributes: ['id', 'name'] };
   if (filter) include.where.name = { [Op.iLike]: `%${filter.trim()}%` };
   const opts = { ...options, where, include };
@@ -18,7 +18,7 @@ async function list({ offering, query, options }, res) {
 
 async function create({ offering, body }, res) {
   const { userGroupId } = body;
-  const payload = { userGroupId, enrollmentOfferingId: offering.id };
+  const payload = { userGroupId, offeringId: offering.id };
   const [err, userGroup] = await OfferingUserGroup.restoreOrCreate(payload);
   if (err) return createError(CONFLICT, 'Offering user group exists!');
   return res.jsend.success(userGroup);

@@ -1,20 +1,12 @@
 'use strict';
 
-const { MemberRole } = require('../../../../common/config');
+const TABLE_NAME = 'offering_user_group';
 
-const TABLE_NAME = 'user_group_member';
-
-exports.up = (qi, { DATE, ENUM, INTEGER }) => qi.createTable(TABLE_NAME, {
+exports.up = (qi, { DATE, INTEGER }) => qi.createTable(TABLE_NAME, {
   id: {
     type: INTEGER,
     primaryKey: true,
     autoIncrement: true,
-    allowNull: false
-  },
-  userId: {
-    type: INTEGER,
-    field: 'user_id',
-    references: { model: 'user', key: 'id' },
     allowNull: false
   },
   userGroupId: {
@@ -23,8 +15,11 @@ exports.up = (qi, { DATE, ENUM, INTEGER }) => qi.createTable(TABLE_NAME, {
     references: { model: 'user_group', key: 'id' },
     allowNull: false
   },
-  role: {
-    type: ENUM(Object.values(MemberRole))
+  offeringId: {
+    type: INTEGER,
+    field: 'offering_id',
+    references: { model: 'enrollment_offering', key: 'id' },
+    allowNull: false
   },
   createdAt: {
     type: DATE,
