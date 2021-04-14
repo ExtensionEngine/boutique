@@ -1,30 +1,30 @@
 'use strict';
 
-exports.add = (UserGroupMember, Hooks, db) => {
+exports.add = (UserGroupMembership, Hooks, db) => {
   const { Enrollment, OfferingUserGroup } = db;
 
-  UserGroupMember.addHook(Hooks.afterCreate, async member => {
-    const { userId, userGroupId } = member;
+  UserGroupMembership.addHook(Hooks.afterCreate, async membership => {
+    const { userId, userGroupId } = membership;
     const where = { userGroupId };
     const enrollments = await OfferingUserGroup.findAll({ where })
       .map(({ offeringId }) => ({ learnerId: userId, offeringId }));
     return Enrollment.bulkCreate(enrollments);
   });
 
-  UserGroupMember.addHook(Hooks.afterUpdate, async member => {
-    const isRestored = member.changed('deletedAt') && !member.deletedAt;
-    if (isRestored) return restoreEnrollments(member, db);
-    const isUserChanged = member.changed('userId');
+  UserGroupMembership.addHook(Hooks.afterUpdate, async membership => {
+    const isRestored = membership.changed('deletedAt') && !membership.deletedAt;
+    if (isRestored) return restoreEnrollments(membership, db);
+    const isUserChanged = membership.changed('userId');
     if (!isUserChanged) return;
-    const { userId, userGroupId, _previousDataValues } = member;
+    const { userId, userGroupId, _previousDataValues } = membership;
     const { userId: oldLUserId } = _previousDataValues;
     const offeringIds = await getOfferingIds(userGroupId);
     const where = { learnerId: oldLUserId, enrollmentOfferingId: offeringIds };
     return Enrollment.update({ learnerId: userId }, { where });
   });
 
-  UserGroupMember.addHook(Hooks.afterDestroy, async member => {
-    const { userId, userGroupId } = member;
+  UserGroupMembership.addHook(Hooks.afterDestroy, async membership => {
+    const { userId, userGroupId } = membership;
     const offeringIds = await getOfferingIds(userGroupId);
     const where = { learnerId: userId, enrollmentOfferingId: offeringIds };
     return Enrollment.destroy({ where });

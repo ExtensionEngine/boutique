@@ -5,8 +5,8 @@ import request from '@/common/api/request';
 const urls = {
   root: '/offerings',
   userGroups: id => path.join(urls.root, String(id), 'user-groups'),
-  userGroupResource: ({ id, enrollmentOfferingId }) => {
-    return path.join(urls.userGroups(enrollmentOfferingId), String(id));
+  userGroupResource: ({ userGroupId, offeringId }) => {
+    return path.join(urls.userGroups(offeringId), String(userGroupId));
   }
 };
 

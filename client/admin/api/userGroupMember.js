@@ -4,7 +4,7 @@ import request from '@/common/api/request';
 
 const urls = {
   root: id => path.join('user-groups', String(id), 'members'),
-  resource: ({ id, userGroupId }) => path.join(urls.root(userGroupId), String(id))
+  resource: ({ userId, userGroupId }) => path.join(urls.root(userGroupId), String(userId))
 };
 
 function fetch(userGroupId, params = {}) {

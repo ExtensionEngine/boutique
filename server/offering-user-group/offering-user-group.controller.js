@@ -19,7 +19,8 @@ async function list({ offering, query, options }, res) {
 async function create({ offering, body }, res) {
   const { userGroupId } = body;
   const payload = { userGroupId, offeringId: offering.id };
-  const [err, userGroup] = await OfferingUserGroup.restoreOrCreate(payload);
+  const opts = { modelSearchKey: ['offeringId', 'userGroupId'] };
+  const [err, userGroup] = await OfferingUserGroup.restoreOrCreate(payload, opts);
   if (err) return createError(CONFLICT, 'Offering user group exists!');
   return res.jsend.success(userGroup);
 }

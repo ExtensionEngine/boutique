@@ -5,22 +5,20 @@ const { Model } = require('sequelize');
 const { restoreOrCreate } = require('../common/database/restore');
 const { UserGroupRole } = require('../../common/config');
 
-class UserGroupMember extends Model {
+class UserGroupMembership extends Model {
   static fields({ DATE, ENUM, INTEGER }) {
     return {
-      id: {
-        type: INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false
-      },
       userId: {
         type: INTEGER,
-        field: 'user_id'
+        field: 'user_id',
+        primaryKey: true,
+        unique: 'user_group_membership_pkey'
       },
       userGroupId: {
         type: INTEGER,
-        field: 'user_group_id'
+        field: 'user_group_id',
+        primaryKey: true,
+        unique: 'user_group_membership_pkey'
       },
       role: {
         type: ENUM(Object.values(UserGroupRole))
@@ -51,7 +49,7 @@ class UserGroupMember extends Model {
 
   static options() {
     return {
-      modelName: 'userGroupMember',
+      modelName: 'userGroupMembership',
       tableName: 'user_group_membership',
       underscored: true,
       timestamps: true,
@@ -76,8 +74,8 @@ class UserGroupMember extends Model {
     return this.scope({ method: ['user', options] });
   }
 
-  static async restoreOrCreate(userGroupMember, options) {
-    return restoreOrCreate(this, userGroupMember, options);
+  static async restoreOrCreate(userGroupMembership, options) {
+    return restoreOrCreate(this, userGroupMembership, options);
   }
 
   isInstructor() {
@@ -85,4 +83,4 @@ class UserGroupMember extends Model {
   }
 }
 
-module.exports = UserGroupMember;
+module.exports = UserGroupMembership;

@@ -26,6 +26,7 @@
             outlined />
         </validation-provider>
         <validation-provider
+          v-if="isNewMember"
           v-slot="{ errors }"
           name="user"
           rules="required">
@@ -79,7 +80,7 @@ export default {
         if (!value) this.close();
       }
     },
-    isNewMember: vm => !vm.member.id
+    isNewMember: vm => !vm.member.userId
   },
   methods: {
     close() {

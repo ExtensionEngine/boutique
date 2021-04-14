@@ -30,10 +30,10 @@ class UserGroup extends Model {
     };
   }
 
-  static associate({ EnrollmentOffering, User, UserGroupMember, OfferingUserGroup }) {
+  static associate({ EnrollmentOffering, User, UserGroupMembership, OfferingUserGroup }) {
     this.belongsToMany(User, {
       as: 'members',
-      through: UserGroupMember,
+      through: UserGroupMembership,
       foreignKey: { name: 'userGroupId', field: 'user_group_id' }
     });
     this.belongsToMany(EnrollmentOffering, {
@@ -54,6 +54,7 @@ class UserGroup extends Model {
     return {
       modelName: 'userGroup',
       tableName: 'user_group',
+      underscored: true,
       timestamps: true,
       paranoid: true,
       freezeTableName: true
@@ -72,8 +73,8 @@ class UserGroup extends Model {
     const parent = await this.getParent(currentItem);
     if (!parent) return;
     items.push(parent);
-    const { userGroupMember } = find(parent.members, { id: user.id }) || {};
-    const isUserInstructor = userGroupMember && userGroupMember.isInstructor();
+    const { userGroupMembership } = find(parent.members, { id: user.id }) || {};
+    const isUserInstructor = userGroupMembership && userGroupMembership.isInstructor();
     return isUserInstructor || this.hasAncestorInstructor(user, parent, items);
   }
 

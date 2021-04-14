@@ -1,12 +1,12 @@
 'use strict';
 
 const { FORBIDDEN, NOT_FOUND } = require('http-status');
-const { UserGroup, UserGroupMember } = require('../common/database');
+const { UserGroup, UserGroupMembership } = require('../common/database');
 const { createError } = require('../common/errors');
 const ctrl = require('./user-group.controller');
 const get = require('lodash/get');
 const path = require('path');
-const userGroupMember = require('../user-group-member');
+const userGroupMembership = require('../user-group-membership');
 const router = require('express').Router();
 
 router
@@ -20,7 +20,7 @@ router
   .post('/', hasUserGroupAccess, ctrl.create);
 
 router
-  .use(path.join('/:userGroupId', userGroupMember.path), userGroupMember.router);
+  .use(path.join('/:userGroupId', userGroupMembership.path), userGroupMembership.router);
 
 async function getUserGroup(req, _, next, userGroupId) {
   const userGroup = await UserGroup.findByPk(userGroupId);
@@ -34,8 +34,10 @@ async function hasUserGroupAccess({ body, user, userGroup }, _, next) {
   const userGroupId = parentId || get(userGroup, 'id');
   if (user.isAdmin() || !userGroupId) return next();
   const where = { userId: user.id, userGroupId };
-  const member = await UserGroupMember.findOne({ where });
-  if (member) return member.isInstructor() ? next() : createError(FORBIDDEN, 'Forbidden!');
+  const membership = await UserGroupMembership.findOne({ where });
+  if (membership) {
+    return membership.isInstructor() ? next() : createError(FORBIDDEN, 'Forbidden!');
+  }
   const context = userGroup || { parentId };
   const hasAncestorInstructor = await UserGroup.hasAncestorInstructor(user, context);
   return hasAncestorInstructor ? next() : createError(NOT_FOUND, 'Not found!');

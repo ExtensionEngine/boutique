@@ -24,7 +24,7 @@ const Enrollment = require('../../enrollment/enrollment.model');
 const EnrollmentOffering = require('../../enrollment-offering/enrollment-offering.model');
 const ContentRepo = require('../../content-repo/content-repo.model');
 const UserGroup = require('../../user-group/user-group.model');
-const UserGroupMember = require('../../user-group-member/user-group-member.model');
+const UserGroupMembership = require('../../user-group-membership/user-group-membership.model');
 const OfferingUserGroup = require('../../offering-user-group/offering-user-group.model');
 /* eslint-enable require-sort/require-sort */
 
@@ -85,7 +85,7 @@ const models = {
   EnrollmentOffering: defineModel(EnrollmentOffering),
   ContentRepo: defineModel(ContentRepo),
   UserGroup: defineModel(UserGroup),
-  UserGroupMember: defineModel(UserGroupMember),
+  UserGroupMembership: defineModel(UserGroupMembership),
   OfferingUserGroup: defineModel(OfferingUserGroup)
 };
 

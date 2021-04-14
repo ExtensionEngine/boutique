@@ -6,19 +6,17 @@ const { restoreOrCreate } = require('../common/database/restore');
 class OfferingUserGroup extends Model {
   static fields({ DATE, INTEGER }) {
     return {
-      id: {
-        type: INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false
-      },
       userGroupId: {
         type: INTEGER,
-        field: 'user_group_id'
+        field: 'user_group_id',
+        primaryKey: true,
+        unique: 'offering_user_group_pkey'
       },
       offeringId: {
         type: INTEGER,
-        field: 'offering_id'
+        field: 'offering_id',
+        primaryKey: true,
+        unique: 'offering_user_group_pkey'
       },
       createdAt: {
         type: DATE,
@@ -48,6 +46,7 @@ class OfferingUserGroup extends Model {
     return {
       modelName: 'offeringUserGroup',
       tableName: 'offering_user_group',
+      underscored: true,
       timestamps: true,
       paranoid: true,
       freezeTableName: true

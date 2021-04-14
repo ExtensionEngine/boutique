@@ -1,7 +1,7 @@
 'use strict';
 
 const { CONFLICT, NO_CONTENT } = require('http-status');
-const { Sequelize, UserGroupMember } = require('../common/database');
+const { Sequelize, UserGroupMembership } = require('../common/database');
 const { createError } = require('../common/errors');
 const map = require('lodash/map');
 
@@ -16,26 +16,26 @@ function list({ query, userGroup, options }, res) {
   const userWhere = filter.user ? { [Op.or]: createUserFilter(filter.user) } : {};
   if (filter.role) where.role = filter.role;
   const opts = { ...options, where };
-  return UserGroupMember.withUser({ where: userWhere }).findAndCountAll(opts)
+  return UserGroupMembership.withUser({ where: userWhere }).findAndCountAll(opts)
     .then(({ rows, count }) => res.jsend.success({ items: rows, total: count }));
 }
 
 async function create({ userGroup, body }, res) {
-  const { id, user, role } = body;
-  const payload = { id, userGroupId: userGroup.id, userId: user.id, role };
-  const [err, member] = await UserGroupMember.restoreOrCreate(payload);
-  if (err) return createError(CONFLICT, 'Group member exists!');
-  return res.jsend.success(member);
-}
-
-async function patch({ member, body }, res) {
   const { user, role } = body;
-  const data = await member.update({ userId: user.id, role });
-  res.jsend.success(data);
+  const payload = { userGroupId: userGroup.id, userId: user.id, role };
+  const opts = { modelSearchKey: ['userId', 'userGroupId'] };
+  const [err, membership] = await UserGroupMembership.restoreOrCreate(payload, opts);
+  if (err) return createError(CONFLICT, 'Group membership exists!');
+  return res.jsend.success(membership);
 }
 
-async function remove({ member }, res) {
-  await member.destroy();
+async function patch({ membership, body }, res) {
+  const data = await membership.update({ role: body.role });
+  return res.jsend.success(data);
+}
+
+async function remove({ membership }, res) {
+  await membership.destroy();
   return res.sendStatus(NO_CONTENT);
 }
 
