@@ -2,6 +2,7 @@
 
 const config = require('./config');
 const forEach = require('lodash/forEach');
+const Hooks = require('./hooks');
 const invoke = require('lodash/invoke');
 const { migrationsPath } = require('../../../sequelize.config');
 const pick = require('lodash/pick');
@@ -33,10 +34,9 @@ const { Sequelize: { DataTypes } } = sequelize;
 
 const defineModel = Model => {
   const fields = invoke(Model, 'fields', DataTypes, sequelize) || {};
-  const hooks = invoke(Model, 'hooks') || {};
   const options = invoke(Model, 'options') || {};
   wrapMethods(Model, Promise);
-  return Model.init(fields, { sequelize, hooks, ...options });
+  return Model.init(fields, { sequelize, ...options });
 };
 
 function initialize() {
@@ -91,8 +91,8 @@ const models = {
 
 forEach(models, model => {
   addScopes(model, models);
+  addHooks(model, Hooks, models);
   invoke(model, 'associate', models);
-  invoke(model, 'addHooks', models);
 });
 
 const db = {
@@ -139,6 +139,11 @@ function checkPostgreVersion(sequelize) {
       logger.error({ version, required: range }, err.message);
       return Promise.reject(err);
     });
+}
+
+function addHooks(model, Hooks, models) {
+  const hooks = invoke(model, 'hooks', Hooks, models);
+  forEach(hooks, (it, type) => model.addHook(type, it));
 }
 
 function addScopes(Model, models) {

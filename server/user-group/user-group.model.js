@@ -1,6 +1,7 @@
 'use strict';
 
 const find = require('lodash/find');
+const hooks = require('./hooks');
 const { Model } = require('sequelize');
 const { restoreOrCreate } = require('../common/database/restore');
 
@@ -59,19 +60,8 @@ class UserGroup extends Model {
     };
   }
 
-  static hooks() {
-    return {
-      afterDestroy(userGroup) {
-        const where = { parentId: userGroup.id };
-        return this.destroy({ where });
-      },
-      afterUpdate(userGroup) {
-        const isRestored = userGroup.changed('deletedAt') && !userGroup.deletedAt;
-        if (!isRestored) return;
-        const where = { parentId: userGroup.id };
-        return this.update({ deletedAt: null }, { where, paranoid: false });
-      }
-    };
+  static hooks(Hooks, models) {
+    hooks.add(this, Hooks, models);
   }
 
   static async restoreOrCreate(userGroup, options) {
