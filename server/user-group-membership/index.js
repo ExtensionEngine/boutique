@@ -7,21 +7,24 @@ const { UserGroupMembership } = require('../common/database');
 const router = require('express').Router();
 
 router
-  .param('userId', getMembership)
+  .param('userId', attachMembership)
   .use('/:userId', hasMemberAccess)
   .patch('/:userId', ctrl.patch)
   .delete('/:userId', ctrl.remove);
 
 router
   .get('/', ctrl.list)
-  .post('/', ctrl.create);
+  .post('/', hasCreationAccess, ctrl.create);
 
-async function getMembership(req, _, next, userId) {
-  const where = { userGroupId: req.userGroup.id, userId };
-  const membership = await UserGroupMembership.findOne({ where });
-  if (!membership) return createError(NOT_FOUND, 'Not found!');
-  req.membership = membership;
+async function attachMembership(req, _, next, userId) {
+  req.membership = await getMembership(req.userGroup.id, userId);
   next();
+}
+
+async function hasCreationAccess({ user, userGroup }, _, next) {
+  if (user.isAdmin()) return next();
+  const membership = await getMembership(userGroup.id, user.id);
+  return membership.isInstructor() ? next() : createError(FORBIDDEN, 'Forbidden!');
 }
 
 function hasMemberAccess({ user, membership }, _, next) {
@@ -34,3 +37,9 @@ module.exports = {
   path: '/members',
   router
 };
+
+async function getMembership(userGroupId, userId) {
+  const where = { userId, userGroupId };
+  const membership = await UserGroupMembership.findOne({ where });
+  return membership || createError(NOT_FOUND, 'Not found!');
+}
