@@ -1,5 +1,6 @@
 'use strict';
 
+const hooks = require('./hooks');
 const { Model } = require('sequelize');
 const { restoreOrCreate } = require('../common/database/restore');
 
@@ -33,7 +34,7 @@ class OfferingUserGroup extends Model {
     };
   }
 
-  static associate({ UserGroup, EnrollmentOffering }) {
+  static associate({ EnrollmentOffering, UserGroup }) {
     this.belongsTo(UserGroup, {
       foreignKey: { name: 'userGroupId', field: 'user_group_id' }
     });
@@ -51,6 +52,10 @@ class OfferingUserGroup extends Model {
       paranoid: true,
       freezeTableName: true
     };
+  }
+
+  static hooks(Hooks, models) {
+    hooks.add(this, Hooks, models);
   }
 
   static async restoreOrCreate(offeringUserGroup, options) {

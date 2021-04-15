@@ -3,6 +3,7 @@
 const find = require('lodash/find');
 const hooks = require('./hooks');
 const { Model } = require('sequelize');
+const Promise = require('bluebird');
 const { restoreOrCreate } = require('../common/database/restore');
 
 class UserGroup extends Model {
@@ -84,6 +85,22 @@ class UserGroup extends Model {
     const User = this.sequelize.model('User');
     const include = [{ model: User, as: 'members', attributes: ['id'] }];
     return this.findByPk(parentId, { attributes, include });
+  }
+
+  static getChildren(parentId) {
+    const attributes = ['id', 'parentId'];
+    const User = this.sequelize.model('User');
+    const include = [{ model: User, as: 'members', attributes: ['id'] }];
+    const where = { parentId };
+    return this.findAll({ where, attributes, include });
+  }
+
+  async getDescendants(item = this) {
+    const children = await UserGroup.getChildren(item.id);
+    if (!children.length) return [];
+    const reducer = async (acc, it) => acc.concat(await this.getDescendants(it));
+    const descendants = await Promise.reduce(children, reducer, []);
+    return children.concat(descendants);
   }
 }
 
