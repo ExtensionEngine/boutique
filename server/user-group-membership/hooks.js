@@ -14,13 +14,6 @@ exports.add = (UserGroupMembership, Hooks, db) => {
   UserGroupMembership.addHook(Hooks.afterUpdate, async membership => {
     const isRestored = membership.changed('deletedAt') && !membership.deletedAt;
     if (isRestored) return restoreEnrollments(membership, db);
-    const isUserChanged = membership.changed('userId');
-    if (!isUserChanged) return;
-    const { userId, userGroupId, _previousDataValues } = membership;
-    const { userId: oldLUserId } = _previousDataValues;
-    const offeringIds = await getOfferingIds(userGroupId);
-    const where = { learnerId: oldLUserId, enrollmentOfferingId: offeringIds };
-    return Enrollment.update({ learnerId: userId }, { where });
   });
 
   UserGroupMembership.addHook(Hooks.afterDestroy, async membership => {
