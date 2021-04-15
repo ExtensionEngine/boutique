@@ -78,7 +78,7 @@ const defaultPage = () => ({ sortBy: ['updatedAt'], sortDesc: [true], page: 1 })
 const headers = () => [
   { text: 'Name', value: 'name' },
   { text: 'Date Created', value: 'createdAt' },
-  { text: 'Actions', value: 'id', align: 'center', sortable: false }
+  { text: 'Actions', align: 'center', sortable: false }
 ];
 
 const actions = subGroup => ({

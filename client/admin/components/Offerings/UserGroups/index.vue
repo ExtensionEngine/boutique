@@ -55,7 +55,7 @@ const defaultPage = () => ({ sortBy: ['updatedAt'], sortDesc: [true], page: 1 })
 const headers = () => [
   { text: 'Name', value: 'userGroup.name', align: 'left' },
   { text: 'Created At', value: 'createdAt' },
-  { text: 'Actions', value: 'id', sortable: false, align: 'center' }
+  { text: 'Actions', align: 'center', sortable: false }
 ];
 
 export default {

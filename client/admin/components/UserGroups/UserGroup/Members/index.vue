@@ -89,7 +89,7 @@ const headers = () => [
   { text: 'Email', value: 'email' },
   { text: 'Full Name', value: 'fullName' },
   { text: 'Date Created', value: 'createdAt' },
-  { text: 'Actions', value: 'email', align: 'center', sortable: false }
+  { text: 'Actions', align: 'center', sortable: false }
 ];
 
 const actions = member => ({
