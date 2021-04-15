@@ -8,7 +8,7 @@ const router = require('express').Router();
 
 router
   .param('userId', attachMembership)
-  .use('/:userId', hasMemberAccess)
+  .use('/:userId', hasMembershipAccess)
   .patch('/:userId', ctrl.patch)
   .delete('/:userId', ctrl.remove);
 
@@ -27,7 +27,7 @@ async function hasCreationAccess({ user, userGroup }, _, next) {
   return membership.isInstructor() ? next() : createError(FORBIDDEN, 'Forbidden!');
 }
 
-function hasMemberAccess({ user, membership }, _, next) {
+function hasMembershipAccess({ user, membership }, _, next) {
   const isUserMember = user.id === membership.userId;
   if (user.isAdmin() || membership.isInstructor() || isUserMember) return next();
   return createError(FORBIDDEN, 'Forbidden!');
@@ -39,7 +39,7 @@ module.exports = {
 };
 
 async function getMembership(userGroupId, userId) {
-  const where = { userId, userGroupId };
+  const where = { userGroupId, userId };
   const membership = await UserGroupMembership.findOne({ where });
   return membership || createError(NOT_FOUND, 'Not found!');
 }
