@@ -30,7 +30,8 @@ class UserGroup extends Model {
     };
   }
 
-  static associate({ EnrollmentOffering, User, UserGroupMembership, OfferingUserGroup }) {
+  static associate(opts) {
+    const { EnrollmentOffering, OfferingUserGroup, User, UserGroupMembership } = opts;
     this.belongsToMany(User, {
       as: 'members',
       through: UserGroupMembership,
@@ -38,7 +39,7 @@ class UserGroup extends Model {
     });
     this.belongsToMany(EnrollmentOffering, {
       through: OfferingUserGroup,
-      foreignKey: { name: 'offeringId', field: 'offering_id' }
+      foreignKey: { name: 'userGroupId', field: 'user_group_id' }
     });
     this.belongsTo(this, {
       as: 'parent',
