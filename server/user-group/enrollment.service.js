@@ -5,9 +5,9 @@ const db = require('../common/database');
 const { Enrollment, OfferingUserGroup, UserGroup, sequelize } = db;
 
 class EnrollmentService {
-  async enrollMembership(membership, { deletedAt: prevDeletedAt }) {
+  async enrollMembership(membership, previousDeletedAt) {
     const transaction = await sequelize.transaction();
-    const isRestored = prevDeletedAt && !membership.deletedAt;
+    const isRestored = previousDeletedAt && !membership.deletedAt;
     if (isRestored) return this.restoreEnrollments(membership, transaction);
     const { userId, userGroupId } = membership;
     const where = { userGroupId };
@@ -26,8 +26,8 @@ class EnrollmentService {
     return transaction.commit();
   }
 
-  async enrollUserGroup(userGroup, { deletedAt: prevDeletedAt }) {
-    const isRestored = prevDeletedAt && !userGroup.deletedAt;
+  async enrollUserGroup(userGroup, previousDeletedAt) {
+    const isRestored = previousDeletedAt && !userGroup.deletedAt;
     if (!isRestored) return;
     const transaction = await sequelize.transaction();
     const where = { parentId: userGroup.id };

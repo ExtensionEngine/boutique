@@ -22,7 +22,7 @@ async function create({ user, body }, res) {
   const payload = id ? { id, name, parentId } : { name, parentId };
   const [err, userGroup] = await UserGroup.restoreOrCreate(payload);
   if (err) return createError(CONFLICT, 'User group exists!');
-  await EnrollmentService.enrollUserGroup(userGroup, body);
+  await EnrollmentService.enrollUserGroup(userGroup, body.deletedAt);
   if (!user.isAdmin() && !parentId) await setGroupAdmin(user, userGroup);
   return res.jsend.success(userGroup);
 }
