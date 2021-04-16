@@ -3,7 +3,7 @@
 const { CONFLICT, NO_CONTENT } = require('http-status');
 const { Sequelize, UserGroupMembership } = require('../common/database');
 const { createError } = require('../common/errors');
-const EnrollmentService = require('../enrollment/enrollment.service');
+const enrollmentService = require('../enrollment/enrollment.service');
 const map = require('lodash/map');
 
 const { Op } = Sequelize;
@@ -26,7 +26,7 @@ async function create({ userGroup, body }, res) {
   const payload = { userGroupId: userGroup.id, userId: user.id, role };
   const opts = { modelSearchKey: ['userId', 'userGroupId'] };
   const [err, membership] = await UserGroupMembership.restoreOrCreate(payload, opts);
-  await EnrollmentService.enrollMembership(membership, body.deletedAt);
+  await enrollmentService.enrollMembership(membership, body.deletedAt);
   if (err) return createError(CONFLICT, 'Group membership exists!');
   return res.jsend.success(membership);
 }
@@ -38,7 +38,7 @@ async function patch({ membership, body }, res) {
 
 async function remove({ membership }, res) {
   await membership.destroy();
-  await EnrollmentService.unenrollMembership(membership);
+  await enrollmentService.unenrollMembership(membership);
   return res.sendStatus(NO_CONTENT);
 }
 

@@ -3,7 +3,7 @@
 const { CONFLICT, NO_CONTENT } = require('http-status');
 const { OfferingUserGroup, Sequelize, UserGroup } = require('../common/database');
 const { createError } = require('../common/errors');
-const EnrollmentService = require('../enrollment/enrollment.service');
+const enrollmentService = require('../enrollment/enrollment.service');
 
 const { Op } = Sequelize;
 
@@ -23,12 +23,13 @@ async function create({ offering, body }, res) {
   const opts = { modelSearchKey: ['offeringId', 'userGroupId'] };
   const [err, userGroup] = await OfferingUserGroup.restoreOrCreate(payload, opts);
   if (err) return createError(CONFLICT, 'Offering user group exists!');
+  await enrollmentService.enrollOfferingGroup(userGroup);
   return res.jsend.success(userGroup);
 }
 
 async function remove({ offeringUserGroup }, res) {
   await offeringUserGroup.destroy();
-  await EnrollmentService.unenrollOfferingGroup(offeringUserGroup);
+  await enrollmentService.unenrollOfferingGroup(offeringUserGroup);
   return res.sendStatus(NO_CONTENT);
 }
 

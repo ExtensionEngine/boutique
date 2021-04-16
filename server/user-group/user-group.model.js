@@ -82,19 +82,20 @@ class UserGroup extends Model {
     return this.findByPk(parentId, { attributes, include });
   }
 
-  static getChildren(parentId) {
+  static getChildren(transaction, parentId) {
     const attributes = ['id', 'parentId'];
     const User = this.sequelize.model('User');
     const include = [{ model: User, as: 'members', attributes: ['id'] }];
     const where = { parentId };
-    return this.findAll({ where, attributes, include });
+    return this.findAll({ where, attributes, include, transaction });
   }
 
-  async getDescendants(item = this) {
-    const children = await UserGroup.getChildren(item.id);
+  async getDescendants(transaction, item = this) {
+    const children = await UserGroup.getChildren(transaction, item.id);
     if (!children.length) return [];
-    const reducer = async (acc, it) => acc.concat(await this.getDescendants(it));
-    const descendants = await Promise.reduce(children, reducer, []);
+    const descendants = await Promise.reduce(children, async (acc, it) => {
+      return acc.concat(await this.getDescendants(transaction, it));
+    }, []);
     return children.concat(descendants);
   }
 }

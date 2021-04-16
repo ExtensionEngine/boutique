@@ -50,15 +50,24 @@ class EnrollmentService {
     return transaction.commit();
   }
 
+  async enrollOfferingGroup(offeringUserGroup) {
+    const transaction = await sequelize.transaction();
+    const userGroups = await this.getLinkedUserGroups(offeringUserGroup, transaction);
+    const { offeringId } = offeringUserGroup;
+    const enrollments = flatMap(userGroups, 'members')
+      .map(it => ({ learnerId: it.id, offeringId }));
+    await Enrollment.bulkCreate(enrollments, { transaction });
+    return transaction.commit();
+  }
+
   async unenrollOfferingGroup(offeringUserGroup) {
-    const include = [{ model: User, as: 'members', attributes: ['id'] }];
-    const userGroup = await offeringUserGroup.getUserGroup({ include });
-    const descendants = await userGroup.getDescendants();
-    const userGroups = [userGroup, ...descendants];
+    const transaction = await sequelize.transaction();
+    const userGroups = await this.getLinkedUserGroups(offeringUserGroup, transaction);
     const memberIds = flatMap(userGroups, 'members').map(it => it.id);
     const { offeringId } = offeringUserGroup;
     const where = { learnerId: memberIds, enrollmentOfferingId: offeringId };
-    return Enrollment.destroy({ where });
+    await Enrollment.destroy({ where, transaction });
+    return transaction.commit();
   }
 
   async restoreEnrollments(membership, transaction) {
@@ -77,6 +86,13 @@ class EnrollmentService {
   async getMemberIds(userGroup, transaction) {
     const members = await userGroup.getMembers({ transaction });
     return members.map(({ id }) => id);
+  }
+
+  async getLinkedUserGroups(offeringUserGroup, transaction) {
+    const include = [{ model: User, as: 'members', attributes: ['id'] }];
+    const userGroup = await offeringUserGroup.getUserGroup({ include, transaction });
+    const descendants = await userGroup.getDescendants(transaction);
+    return [userGroup, ...descendants];
   }
 }
 
