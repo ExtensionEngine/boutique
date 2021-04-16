@@ -170,7 +170,7 @@ class User extends Model {
 
   static async restoreOrCreateAll(users, options) {
     const where = { email: map(users, 'email') };
-    return restoreOrCreateAll(this, users, { where }, options);
+    return restoreOrCreateAll(this, users, where, options);
   }
 
   static updateActivity(id, lastActive) {

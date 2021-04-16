@@ -52,7 +52,7 @@ class Enrollment extends Model {
 
   static async restoreOrCreateAll(enrollments, options) {
     const where = { learnerId: map(enrollments, 'learnerId') };
-    return restoreOrCreateAll(this, enrollments, { where }, options);
+    return restoreOrCreateAll(this, enrollments, where, options);
   }
 }
 
