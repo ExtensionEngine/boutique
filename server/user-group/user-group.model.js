@@ -1,7 +1,6 @@
 'use strict';
 
 const find = require('lodash/find');
-const hooks = require('./hooks');
 const { Model } = require('sequelize');
 const Promise = require('bluebird');
 const { restoreOrCreate } = require('../common/database/restore');
@@ -61,10 +60,6 @@ class UserGroup extends Model {
       paranoid: true,
       freezeTableName: true
     };
-  }
-
-  static hooks(Hooks, models) {
-    hooks.add(this, Hooks, models);
   }
 
   static async restoreOrCreate(userGroup, options) {

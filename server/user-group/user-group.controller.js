@@ -3,6 +3,7 @@
 const { CONFLICT, NO_CONTENT } = require('http-status');
 const { Sequelize, UserGroup } = require('../common/database');
 const { createError } = require('../common/errors');
+const EnrollmentService = require('./enrollment.service');
 const { UserGroupRole } = require('../../common/config');
 
 const { Op } = Sequelize;
@@ -21,6 +22,7 @@ async function create({ user, body }, res) {
   const payload = id ? { id, name, parentId } : { name, parentId };
   const [err, userGroup] = await UserGroup.restoreOrCreate(payload);
   if (err) return createError(CONFLICT, 'User group exists!');
+  await EnrollmentService.enrollUserGroup(userGroup, body);
   if (!user.isAdmin() && !parentId) await setGroupAdmin(user, userGroup);
   return res.jsend.success(userGroup);
 }
@@ -32,6 +34,7 @@ async function patch({ userGroup, body }, res) {
 
 async function remove({ userGroup }, res) {
   await userGroup.destroy();
+  await EnrollmentService.unenrollUserGroup(userGroup);
   return res.sendStatus(NO_CONTENT);
 }
 

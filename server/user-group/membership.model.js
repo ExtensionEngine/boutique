@@ -1,6 +1,5 @@
 'use strict';
 
-const hooks = require('./hooks');
 const { Model } = require('sequelize');
 const { restoreOrCreate } = require('../common/database/restore');
 const { UserGroupRole } = require('../../common/config');
@@ -56,10 +55,6 @@ class UserGroupMembership extends Model {
       paranoid: true,
       freezeTableName: true
     };
-  }
-
-  static hooks(Hooks, models) {
-    hooks.add(this, Hooks, models);
   }
 
   static scopes({ User }) {

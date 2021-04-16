@@ -1,0 +1,71 @@
+'use strict';
+
+const db = require('../common/database');
+
+const { Enrollment, OfferingUserGroup, UserGroup, sequelize } = db;
+
+class EnrollmentService {
+  async enrollMembership(membership, { deletedAt: prevDeletedAt }) {
+    const transaction = await sequelize.transaction();
+    const isRestored = prevDeletedAt && !membership.deletedAt;
+    if (isRestored) return this.restoreEnrollments(membership, transaction);
+    const { userId, userGroupId } = membership;
+    const where = { userGroupId };
+    const enrollments = await OfferingUserGroup.findAll({ where, transaction })
+      .map(({ offeringId }) => ({ learnerId: userId, offeringId }));
+    await Enrollment.bulkCreate(enrollments, { transaction });
+    return transaction.commit();
+  }
+
+  async unenrollMembership(membership) {
+    const { userId, userGroupId } = membership;
+    const transaction = await sequelize.transaction();
+    const offeringIds = await this.getOfferingIds(userGroupId, transaction);
+    const where = { learnerId: userId, enrollmentOfferingId: offeringIds };
+    await Enrollment.destroy({ where, transaction });
+    return transaction.commit();
+  }
+
+  async enrollUserGroup(userGroup, { deletedAt: prevDeletedAt }) {
+    const isRestored = prevDeletedAt && !userGroup.deletedAt;
+    if (!isRestored) return;
+    const transaction = await sequelize.transaction();
+    const where = { parentId: userGroup.id };
+    const userGroupOptions = { where, paranoid: false, transaction };
+    await UserGroup.update({ deletedAt: null }, userGroupOptions);
+    const memberIds = await this.getMemberIds(userGroup, transaction);
+    const options = { where: { learnerId: memberIds }, paranoid: false, transaction };
+    await Enrollment.update({ deletedAt: null }, options);
+    return transaction.commit();
+  }
+
+  async unenrollUserGroup(userGroup) {
+    const where = { parentId: userGroup.id };
+    const transaction = await sequelize.transaction();
+    await UserGroup.destroy({ where, transaction });
+    const memberIds = await this.getMemberIds(userGroup, transaction);
+    const options = { where: { learnerId: memberIds }, transaction };
+    await Enrollment.destroy(options);
+    return transaction.commit();
+  }
+
+  async restoreEnrollments(membership, transaction) {
+    const { userId, userGroupId } = membership;
+    const offeringIds = await this.getOfferingIds(userGroupId, transaction);
+    const where = { learnerId: userId, enrollmentOfferingId: offeringIds };
+    const options = { where, transaction, paranoid: false };
+    return Enrollment.update({ deletedAt: null }, options);
+  }
+
+  getOfferingIds(userGroupId, transaction) {
+    const opts = { where: { userGroupId }, transaction };
+    return OfferingUserGroup.findAll(opts).map(({ offeringId }) => offeringId);
+  }
+
+  async getMemberIds(userGroup, transaction) {
+    const members = await userGroup.getMembers({ transaction });
+    return members.map(({ id }) => id);
+  }
+}
+
+module.exports = new EnrollmentService();

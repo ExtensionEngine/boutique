@@ -126,19 +126,15 @@ class User extends Model {
     };
   }
 
-  static hooks(Hooks) {
+  static hooks({ beforeCreate, beforeBulkCreate, beforeUpdate, beforeDestroy }) {
     return {
-      [Hooks.beforeCreate]: user => user.encryptPassword(),
-      [Hooks.beforeBulkCreate](users) {
-        return Promise.map(users, user => user.encryptPassword());
-      },
-      [Hooks.beforeUpdate](user) {
+      [beforeCreate]: user => user.encryptPassword(),
+      [beforeBulkCreate]: users => Promise.map(users, user => user.encryptPassword()),
+      [beforeDestroy]: user => activityLookup.clear(user.id, { silent: true }),
+      [beforeUpdate](user) {
         return user.changed('password')
           ? user.encryptPassword()
           : Promise.resolve(user);
-      },
-      [Hooks.beforeDestroy](user) {
-        return activityLookup.clear(user.id, { silent: true });
       }
     };
   }
