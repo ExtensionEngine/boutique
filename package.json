@@ -62,7 +62,7 @@
     "node-sass": "^4.14.1",
     "nodemon": "^2.0.4",
     "poi": "^12.10.3",
-    "read-pkg-up": "^7.0.1",
+    "read-pkg-up": "^8.0.0",
     "readme-filename": "^1.0.0",
     "remark-cli": "^9.0.0",
     "remark-lint": "^6.0.5",
