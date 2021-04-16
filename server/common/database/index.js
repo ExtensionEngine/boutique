@@ -25,7 +25,7 @@ const EnrollmentOffering = require('../../enrollment-offering/enrollment-offerin
 const ContentRepo = require('../../content-repo/content-repo.model');
 const UserGroup = require('../../user-group/user-group.model');
 const UserGroupMembership = require('../../user-group/membership.model');
-const OfferingUserGroup = require('../../offering-user-group/offering-user-group.model');
+const OfferingUserGroup = require('../../enrollment-offering/offering-user-group.model');
 /* eslint-enable require-sort/require-sort */
 
 const isProduction = process.env.NODE_ENV === 'production';

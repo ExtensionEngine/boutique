@@ -3,7 +3,7 @@
 const { CONFLICT, NO_CONTENT } = require('http-status');
 const { Sequelize, UserGroup } = require('../common/database');
 const { createError } = require('../common/errors');
-const EnrollmentService = require('./enrollment.service');
+const EnrollmentService = require('../enrollment/enrollment.service');
 const { UserGroupRole } = require('../../common/config');
 
 const { Op } = Sequelize;

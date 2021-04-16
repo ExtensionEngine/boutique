@@ -1,8 +1,9 @@
 'use strict';
 
 const db = require('../common/database');
+const flatMap = require('lodash/flatMap');
 
-const { Enrollment, OfferingUserGroup, UserGroup, sequelize } = db;
+const { Enrollment, OfferingUserGroup, User, UserGroup, sequelize } = db;
 
 class EnrollmentService {
   async enrollMembership(membership, previousDeletedAt) {
@@ -10,8 +11,8 @@ class EnrollmentService {
     const isRestored = previousDeletedAt && !membership.deletedAt;
     if (isRestored) return this.restoreEnrollments(membership, transaction);
     const { userId, userGroupId } = membership;
-    const where = { userGroupId };
-    const enrollments = await OfferingUserGroup.findAll({ where, transaction })
+    const options = { where: { userGroupId }, transaction };
+    const enrollments = await OfferingUserGroup.findAll(options)
       .map(({ offeringId }) => ({ learnerId: userId, offeringId }));
     await Enrollment.bulkCreate(enrollments, { transaction });
     return transaction.commit();
@@ -47,6 +48,17 @@ class EnrollmentService {
     const options = { where: { learnerId: memberIds }, transaction };
     await Enrollment.destroy(options);
     return transaction.commit();
+  }
+
+  async unenrollOfferingGroup(offeringUserGroup) {
+    const include = [{ model: User, as: 'members', attributes: ['id'] }];
+    const userGroup = await offeringUserGroup.getUserGroup({ include });
+    const descendants = await userGroup.getDescendants();
+    const userGroups = [userGroup, ...descendants];
+    const memberIds = flatMap(userGroups, 'members').map(it => it.id);
+    const { offeringId } = offeringUserGroup;
+    const where = { learnerId: memberIds, enrollmentOfferingId: offeringId };
+    return Enrollment.destroy({ where });
   }
 
   async restoreEnrollments(membership, transaction) {

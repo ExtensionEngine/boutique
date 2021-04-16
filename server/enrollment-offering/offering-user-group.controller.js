@@ -3,6 +3,7 @@
 const { CONFLICT, NO_CONTENT } = require('http-status');
 const { OfferingUserGroup, Sequelize, UserGroup } = require('../common/database');
 const { createError } = require('../common/errors');
+const EnrollmentService = require('../enrollment/enrollment.service');
 
 const { Op } = Sequelize;
 
@@ -27,6 +28,7 @@ async function create({ offering, body }, res) {
 
 async function remove({ offeringUserGroup }, res) {
   await offeringUserGroup.destroy();
+  await EnrollmentService.unenrollOfferingGroup(offeringUserGroup);
   return res.sendStatus(NO_CONTENT);
 }
 
