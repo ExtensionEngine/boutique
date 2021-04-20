@@ -1,9 +1,20 @@
 'use strict';
 
 const db = require('../common/database');
+const difference = require('lodash/difference');
 const flatMap = require('lodash/flatMap');
 
-const { Enrollment, OfferingUserGroup, User, UserGroup, sequelize } = db;
+const {
+  Enrollment,
+  OfferingUserGroup,
+  User,
+  UserGroup,
+  UserGroupMembership,
+  Sequelize,
+  sequelize
+} = db;
+
+const { Op } = Sequelize;
 
 class EnrollmentService {
   async enrollMembership(membership, previousDeletedAt) {
@@ -14,7 +25,8 @@ class EnrollmentService {
     const options = { where: { userGroupId }, transaction };
     const enrollments = await OfferingUserGroup.findAll(options)
       .map(({ offeringId }) => ({ learnerId: userId, offeringId }));
-    await Enrollment.bulkCreate(enrollments, { transaction });
+    const opts = { modelSearchKey: ['learnerId', 'offeringId'], transaction };
+    await Enrollment.restoreOrCreateAll(enrollments, opts);
     return transaction.commit();
   }
 
@@ -56,7 +68,8 @@ class EnrollmentService {
     const { offeringId } = offeringUserGroup;
     const enrollments = flatMap(userGroups, 'members')
       .map(it => ({ learnerId: it.id, offeringId }));
-    await Enrollment.bulkCreate(enrollments, { transaction });
+    const opts = { modelSearchKey: ['learnerId', 'offeringId'], transaction };
+    await Enrollment.restoreOrCreateAll(enrollments, opts);
     return transaction.commit();
   }
 
@@ -65,7 +78,10 @@ class EnrollmentService {
     const userGroups = await this.getLinkedUserGroups(offeringUserGroup, transaction);
     const memberIds = flatMap(userGroups, 'members').map(it => it.id);
     const { offeringId } = offeringUserGroup;
-    const where = { learnerId: memberIds, enrollmentOfferingId: offeringId };
+    const opts = { memberIds, transaction };
+    const excludedUserIds = await this.getExcludedUserIds(offeringUserGroup, opts);
+    const learnerIds = difference(memberIds, excludedUserIds);
+    const where = { learnerId: learnerIds, enrollmentOfferingId: offeringId };
     await Enrollment.destroy({ where, transaction });
     return transaction.commit();
   }
@@ -76,6 +92,16 @@ class EnrollmentService {
     const where = { learnerId: userId, enrollmentOfferingId: offeringIds };
     const options = { where, transaction, paranoid: false };
     return Enrollment.update({ deletedAt: null }, options);
+  }
+
+  async getExcludedUserIds(offeringUserGroup, { memberIds, transaction }) {
+    const { offeringId, userGroupId } = offeringUserGroup;
+    const offeringGroupWhere = { offeringId, [Op.not]: { userGroupId } };
+    const opts = { where: offeringGroupWhere, attributes: ['userGroupId'], transaction };
+    const userGroupIds = await OfferingUserGroup.findAll(opts).map(it => it.userGroupId);
+    const where = { userId: memberIds, userGroupId: userGroupIds };
+    const options = { where, attributes: ['userId'], transaction };
+    return UserGroupMembership.findAll(options).map(it => it.userId);
   }
 
   getOfferingIds(userGroupId, transaction) {
