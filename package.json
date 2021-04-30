@@ -104,6 +104,7 @@
     "http-status": "^1.4.2",
     "humanize-string": "^2.1.0",
     "into-stream": "^5.1.1",
+    "is-localhost": "0.0.2",
     "joi": "^14.3.1",
     "jsend": "^1.1.0",
     "jsonwebtoken": "^8.5.1",

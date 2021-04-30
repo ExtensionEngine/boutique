@@ -2,10 +2,18 @@
 
 const ms = require('ms');
 const path = require('path');
+const isLocalhost = require('is-localhost');
+
+const hostname = process.env.HOSTNAME || 'localhost';
+const protocol = resolveProtocol(hostname);
+const port = resolvePort();
+const origin = resolveOrigin(hostname, protocol, port);
 
 module.exports = {
-  hostname: process.env.HOSTNAME,
-  port: process.env.PORT,
+  protocol,
+  hostname,
+  port,
+  origin,
   ip: process.env.IP,
   useHistoryApiFallback: process.env.HISTORY_API_FALLBACK,
   apiPath: process.env.API_PATH || '/api/v1/',
@@ -54,3 +62,27 @@ module.exports = {
     ttl: ms(process.env.USER_ACTIVITY_TTL || '10min')
   }
 };
+
+function resolveProtocol(hostname) {
+  const { PROTOCOL } = process.env;
+  if (PROTOCOL) return PROTOCOL;
+  return isLocalhost(hostname) ? 'http' : 'https';
+}
+
+function resolvePort() {
+  const { PORT, SERVER_PORT } = process.env;
+  return PORT || SERVER_PORT || 3000;
+}
+
+function resolveOrigin(hostname, protocol) {
+  const originPort = resolveOriginPort();
+  const host = [hostname, originPort].filter(Boolean).join(':');
+  return `${protocol}://${host}`;
+}
+
+function resolveOriginPort() {
+  const { REVERSE_PROXY_PORT } = process.env;
+  if (!REVERSE_PROXY_PORT) return port;
+  if (REVERSE_PROXY_PORT === '80' || REVERSE_PROXY_PORT === '443') return '';
+  return REVERSE_PROXY_PORT;
+}
