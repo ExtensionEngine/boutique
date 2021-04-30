@@ -63,23 +63,12 @@ function destroy({ params }, res) {
   .then(() => res.sendStatus(NO_CONTENT));
 }
 
-function login({ body }, res) {
-  const { email, password } = body;
-  if (!email || !password) {
-    return createError(BAD_REQUEST, 'Please enter email and password!');
-  }
-
-  return User.findOne({ where: { email } })
-    .then(user => user || createError(NOT_FOUND, WRONG_CREDENTIALS_MESSAGE))
-    .then(user => user.authenticate(password))
-    .then(user => user || createError(NOT_FOUND, WRONG_CREDENTIALS_MESSAGE))
-    .then(user => {
-      const token = user.createToken({
-        audience: Audience.Scope.Access,
-        expiresIn: '5 days'
-      });
-      res.jsend.success({ token, user: user.profile });
-    });
+function login({ user }, res) {
+  const token = user.createToken({
+    audience: Audience.Scope.Access,
+    expiresIn: '5 days'
+  });
+  res.jsend.success({ token, user: user.profile });
 }
 
 function logout({ user }, res) {
