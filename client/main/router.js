@@ -2,7 +2,6 @@ import Activity from '@/main/components/program/Activity';
 import Auth from '@/main/components/auth';
 import Courseware from '@/main/components/program/Courseware';
 import ForgotPassword from '@/main/components/auth/ForgotPassword';
-import get from 'lodash/get';
 import Home from '@/main/components';
 import Login from '@/main/components/auth/Login';
 import { navigateTo } from '@/common/navigation';
@@ -13,7 +12,6 @@ import ProgramSelection from '@/main/components/ProgramSelection';
 import ResetPassword from '@/main/components/auth/ResetPassword';
 import { Role } from '@/../common/config';
 import Router from 'vue-router';
-import store from './store';
 import transform from 'lodash/transform';
 import Vue from 'vue';
 
@@ -81,7 +79,7 @@ const isAdmin = user => user && user.role === Role.ADMIN;
 const requiresAuth = route => route.matched.some(it => it.meta.auth);
 
 router.beforeEach((to, _from, next) => {
-  const user = get(store.state, 'auth.user');
+  const { user } = router.app.$store.state.auth;
   if (requiresAuth(to) && !user) return next({ name: 'login' });
   return !isAdmin(user) ? next() : navigateTo('/admin');
 });

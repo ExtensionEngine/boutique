@@ -6,6 +6,7 @@ const urls = {
   root: '/users',
   login: () => path.join(urls.root, 'login'),
   logout: () => path.join(urls.root, 'logout'),
+  profile: () => path.join(urls.root, 'me'),
   forgotPassword: () => path.join(urls.root, 'forgotPassword'),
   resetPassword: () => path.join(urls.root, 'resetPassword')
 };
@@ -13,16 +14,16 @@ const urls = {
 function login(credentials) {
   return request.base.post(urls.login(), credentials)
     .then(extractData)
-    .then(({ token, user }) => {
-      request.auth.token = token;
-      return user;
-    });
+    .then(({ user }) => user);
 }
 
 function logout() {
-  request.post(urls.logout()).then(() => {
-    request.auth.token = null;
-  });
+  return request.get(urls.logout());
+}
+
+function getUserInfo() {
+  return request.base.get(urls.profile())
+    .then(extractData);
 }
 
 function forgotPassword(email) {
@@ -37,5 +38,6 @@ export default {
   login,
   logout,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  getUserInfo
 };

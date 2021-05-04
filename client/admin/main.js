@@ -7,8 +7,8 @@ import {
 } from 'vee-validate';
 import App from './App';
 import format from 'date-fns/format';
+import getStore from './store';
 import router from './router';
-import store from './store';
 import Vue from 'vue';
 import VueHotkey from 'v-hotkey';
 import vuetify from '@/plugins/vuetify';
@@ -28,10 +28,14 @@ Vue.filter('formatDate', (value, dateFormat = 'MM/dd/yy HH:mm') => {
 });
 
 // eslint-disable-next-line no-new
-new Vue({
-  store,
-  router,
-  vuetify,
-  el: '#app',
-  render: h => h(App)
-});
+getStore()
+  .then(store => {
+    /* eslint-disable no-new */
+    new Vue({
+      store,
+      router,
+      vuetify,
+      el: '#app',
+      render: h => h(App)
+    });
+  });

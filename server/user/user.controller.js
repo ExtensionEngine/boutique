@@ -1,7 +1,6 @@
 'use strict';
 
 const { Enrollment, Sequelize, sequelize, User } = require('../common/database');
-const Audience = require('../common/auth/audience');
 const { createError } = require('../common/errors');
 const Datasheet = require('./datasheet');
 const { generate } = require('./helpers');
@@ -63,16 +62,12 @@ function destroy({ params }, res) {
   .then(() => res.sendStatus(NO_CONTENT));
 }
 
-function login({ user }, res) {
-  const token = user.createToken({
-    audience: Audience.Scope.Access,
-    expiresIn: '5 days'
-  });
-  res.jsend.success({ token, user: user.profile });
+function getProfile({ user }, res) {
+  res.jsend.success({ user: user.profile });
 }
 
 function logout({ user }, res) {
-  // TODO: Add token invalidation
+  // TODO: Consider moving to authenticator
   User.stopActivityLog(user.id);
   return res.end();
 }
@@ -128,7 +123,7 @@ module.exports = {
   bulkImport,
   patch,
   destroy,
-  login,
+  getProfile,
   logout,
   invite,
   forgotPassword,
