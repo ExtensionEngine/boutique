@@ -1,7 +1,6 @@
 'use strict';
 
 const { Enrollment, Sequelize, sequelize, User } = require('../common/database');
-const Audience = require('../common/auth/audience');
 const { createError } = require('../common/errors');
 const Datasheet = require('./datasheet');
 const { generate } = require('./helpers');
@@ -11,10 +10,8 @@ const map = require('lodash/map');
 const mime = require('mime');
 const pick = require('lodash/pick');
 
-const { ACCEPTED, BAD_REQUEST, CONFLICT, NO_CONTENT, NOT_FOUND } = HttpStatus;
+const { ACCEPTED, CONFLICT, NO_CONTENT, NOT_FOUND } = HttpStatus;
 const { EmptyResultError, Op } = Sequelize;
-
-const WRONG_CREDENTIALS_MESSAGE = 'Incorrect email or password.';
 
 const columns = {
   email: { header: 'Email', width: 30 },
@@ -63,27 +60,12 @@ function destroy({ params }, res) {
   .then(() => res.sendStatus(NO_CONTENT));
 }
 
-function login({ body }, res) {
-  const { email, password } = body;
-  if (!email || !password) {
-    return createError(BAD_REQUEST, 'Please enter email and password!');
-  }
-
-  return User.findOne({ where: { email } })
-    .then(user => user || createError(NOT_FOUND, WRONG_CREDENTIALS_MESSAGE))
-    .then(user => user.authenticate(password))
-    .then(user => user || createError(NOT_FOUND, WRONG_CREDENTIALS_MESSAGE))
-    .then(user => {
-      const token = user.createToken({
-        audience: Audience.Scope.Access,
-        expiresIn: '5 days'
-      });
-      res.jsend.success({ token, user: user.profile });
-    });
+function getProfile({ user }, res) {
+  res.jsend.success({ user: user.profile });
 }
 
 function logout({ user }, res) {
-  // TODO: Add token invalidation
+  // TODO: Consider moving to authenticator
   User.stopActivityLog(user.id);
   return res.end();
 }
@@ -139,7 +121,7 @@ module.exports = {
   bulkImport,
   patch,
   destroy,
-  login,
+  getProfile,
   logout,
   invite,
   forgotPassword,

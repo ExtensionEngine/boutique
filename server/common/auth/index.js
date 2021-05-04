@@ -1,10 +1,11 @@
 'use strict';
 
-const { ExtractJwt, Strategy } = require('passport-jwt');
 const Audience = require('./audience');
+const auth = require('./authenticator');
 const { auth: config = {} } = require('../../config');
+const get = require('lodash/get');
 const LocalStrategy = require('passport-local');
-const passport = require('passport');
+const { Strategy } = require('passport-jwt');
 const { User } = require('../database');
 
 const options = {
@@ -12,7 +13,7 @@ const options = {
   session: false
 };
 
-passport.use(new LocalStrategy(options, (email, password, done) => {
+auth.use(new LocalStrategy(options, (email, password, done) => {
   return User.findOne({ where: { email } })
     .then(user => user && user.authenticate(password))
     .then(user => done(null, user || false))
@@ -21,27 +22,23 @@ passport.use(new LocalStrategy(options, (email, password, done) => {
 
 const jwtOptions = {
   ...config,
-  jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme(config.scheme),
+  jwtFromRequest: extractJwtFromCookie,
   secretOrKey: config.secret,
   audience: Audience.Scope.Access
 };
 
-passport.use(new Strategy(jwtOptions, (payload, done) => {
+auth.use(new Strategy(jwtOptions, (payload, done) => {
   return User.findByPk(payload.id)
     .then(user => done(null, user ? user.logActivity() : false))
     .error(err => done(err, false));
 }));
 
-passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser((user, done) => done(null, user));
+auth.serializeUser((user, done) => done(null, user));
+auth.deserializeUser((user, done) => done(null, user));
 
-module.exports = {
-  initialize(options = {}) {
-    return passport.initialize(options);
-  },
-  authenticate(strategy, options = {}) {
-    // NOTE:  passport to forward errors down the middleware chain:
-    // https://github.com/jaredhanson/passport/blob/ad5fe1dfaeb79f81ba21f99e6025daa0dec87e6e/lib/middleware/authenticate.js#L171
-    return passport.authenticate(strategy, { ...options, failWithError: true });
-  }
-};
+module.exports = auth;
+
+function extractJwtFromCookie(req) {
+  const path = config.cookie.signed ? 'signedCookies' : 'cookies';
+  return get(req[path], config.cookie.name, null);
+}

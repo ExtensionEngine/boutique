@@ -6,6 +6,7 @@ const auth = require('./common/auth');
 const AuthError = require('passport/lib/errors/authenticationerror');
 const bodyParser = require('body-parser');
 const config = require('./config');
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const express = require('express');
 const fallback = require('express-history-api-fallback');
@@ -26,6 +27,7 @@ app.use(cors({
   preflightContinue: true
 }));
 app.use(bodyParser.json({ limit: config.uploadLimit }));
+app.use(cookieParser(config.auth.cookie.secret));
 app.use(auth.initialize());
 app.use(origin());
 app.use(express.static(config.staticFolder));

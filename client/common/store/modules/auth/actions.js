@@ -1,4 +1,5 @@
 import auth from '@/common/api/auth';
+import { navigateTo } from '@/common/navigation';
 
 export const login = ({ commit }, credentials) => {
   return auth.login(credentials)
@@ -6,13 +7,20 @@ export const login = ({ commit }, credentials) => {
 };
 
 export const logout = () => {
-  return auth.logout();
+  return auth.logout()
+    .then(() => navigateTo('/'));
 };
 
-export const forgotPassword = (context, { email }) => {
+export const forgotPassword = (_, { email }) => {
   return auth.forgotPassword(email);
 };
 
-export const resetPassword = (context, payload) => {
+export const resetPassword = (_, payload) => {
   return auth.resetPassword(payload);
+};
+
+export const fetchUserInfo = ({ commit }) => {
+  return auth.getUserInfo()
+    .then(({ user }) => commit('login', user))
+    .catch(() => commit('logout'));
 };

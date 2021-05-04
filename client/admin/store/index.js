@@ -1,8 +1,6 @@
 import auth from '@/common/store/modules/auth';
-import { auth as authPlugin } from '@/common/store/plugins';
 import contentRepo from '@/admin/store/modules/content-repo';
 import programs from '@/admin/store/modules/programs';
-import request from '@/common/api/request';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
@@ -16,11 +14,10 @@ const store = new Vuex.Store({
     contentRepo,
     programs
   },
-  plugins: [authPlugin({ storageKey: 'LMS_USER' })],
   strict: !isProduction
 });
 
-request.auth.storageKey = 'LMS_TOKEN';
-request.auth.on('error', () => store.dispatch('auth/logout'));
-
-export default store;
+export default function getStore() {
+  return store.dispatch('auth/fetchUserInfo')
+    .then(() => store);
+}
