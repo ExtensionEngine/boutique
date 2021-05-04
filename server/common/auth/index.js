@@ -1,10 +1,10 @@
 'use strict';
 
 const Audience = require('./audience');
+const auth = require('./authenticator');
 const { auth: config = {} } = require('../../config');
 const get = require('lodash/get');
 const LocalStrategy = require('passport-local');
-const auth = require('./authenticator');
 const { Strategy } = require('passport-jwt');
 const { User } = require('../database');
 

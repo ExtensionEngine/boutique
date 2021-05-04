@@ -1,8 +1,8 @@
 'use strict';
 
+const isLocalhost = require('is-localhost');
 const ms = require('ms');
 const path = require('path');
-const isLocalhost = require('is-localhost');
 
 const { env } = process;
 
@@ -36,7 +36,7 @@ module.exports = {
       signed: !!env.AUTH_JWT_COOKIE_SECRET,
       secure: protocol === 'https' && !isLocalhost(hostname),
       httpOnly: true
-    },
+    }
   },
   email: {
     sender: {

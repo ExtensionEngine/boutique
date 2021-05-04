@@ -10,10 +10,8 @@ const map = require('lodash/map');
 const mime = require('mime');
 const pick = require('lodash/pick');
 
-const { ACCEPTED, BAD_REQUEST, CONFLICT, NO_CONTENT, NOT_FOUND } = HttpStatus;
+const { ACCEPTED, CONFLICT, NO_CONTENT, NOT_FOUND } = HttpStatus;
 const { EmptyResultError, Op } = Sequelize;
-
-const WRONG_CREDENTIALS_MESSAGE = 'Incorrect email or password.';
 
 const columns = {
   email: { header: 'Email', width: 30 },
