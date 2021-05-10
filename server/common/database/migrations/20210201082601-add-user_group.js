@@ -12,8 +12,7 @@ module.exports = {
     parentId: {
       type: INTEGER,
       field: 'parent_id',
-      references: { model: 'user_group', key: 'id' },
-      onDelete: 'CASCADE'
+      references: { model: 'user_group', key: 'id' }
     },
     name: {
       type: STRING

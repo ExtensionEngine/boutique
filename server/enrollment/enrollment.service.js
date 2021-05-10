@@ -17,33 +17,13 @@ const {
 const { Op } = Sequelize;
 
 class EnrollmentService {
-  async enrollMembership(membership, previousDeletedAt) {
-    const transaction = await sequelize.transaction();
-    const isRestored = previousDeletedAt && !membership.deletedAt;
-    if (isRestored) return this.restoreEnrollments(membership, transaction);
-    const { userId, userGroupId } = membership;
-    const options = { where: { userGroupId }, transaction };
-    const enrollments = await OfferingUserGroup.findAll(options)
-      .map(({ offeringId }) => ({ learnerId: userId, offeringId }));
-    const opts = { modelSearchKey: ['learnerId', 'offeringId'], transaction };
-    await Enrollment.restoreOrCreateAll(enrollments, opts);
-    return transaction.commit();
-  }
-
-  async unenrollMembership(membership) {
-    const { userId, userGroupId } = membership;
-    const transaction = await sequelize.transaction();
-    const offeringIds = await this.getOfferingIds(userGroupId, transaction);
-    const where = { learnerId: userId, enrollmentOfferingId: offeringIds };
-    await Enrollment.destroy({ where, transaction });
-    return transaction.commit();
-  }
-
   async enrollUserGroup(userGroup, previousDeletedAt) {
     const isRestored = previousDeletedAt && !userGroup.deletedAt;
     if (!isRestored) return;
     const transaction = await sequelize.transaction();
-    const where = { parentId: userGroup.id };
+    const opts = { transaction, paranoid: false };
+    const descendantIds = await userGroup.getDescendants(opts).map(it => it.id);
+    const where = { id: [userGroup.id, ...descendantIds] };
     const userGroupOptions = { where, paranoid: false, transaction };
     await UserGroup.update({ deletedAt: null }, userGroupOptions);
     const memberIds = await this.getMemberIds(userGroup, transaction);
@@ -53,9 +33,7 @@ class EnrollmentService {
   }
 
   async unenrollUserGroup(userGroup) {
-    const where = { parentId: userGroup.id };
     const transaction = await sequelize.transaction();
-    await UserGroup.destroy({ where, transaction });
     const memberIds = await this.getMemberIds(userGroup, transaction);
     const options = { where: { learnerId: memberIds }, transaction };
     await Enrollment.destroy(options);
@@ -86,12 +64,24 @@ class EnrollmentService {
     return transaction.commit();
   }
 
-  async restoreEnrollments(membership, transaction) {
+  async enrollMembership(membership) {
+    const transaction = await sequelize.transaction();
     const { userId, userGroupId } = membership;
+    const options = { where: { userGroupId }, transaction };
+    const enrollments = await OfferingUserGroup.findAll(options)
+      .map(({ offeringId }) => ({ learnerId: userId, offeringId }));
+    const opts = { modelSearchKey: ['learnerId', 'offeringId'], transaction };
+    await Enrollment.restoreOrCreateAll(enrollments, opts);
+    return transaction.commit();
+  }
+
+  async unenrollMembership(membership) {
+    const { userId, userGroupId } = membership;
+    const transaction = await sequelize.transaction();
     const offeringIds = await this.getOfferingIds(userGroupId, transaction);
     const where = { learnerId: userId, enrollmentOfferingId: offeringIds };
-    const options = { where, transaction, paranoid: false };
-    return Enrollment.update({ deletedAt: null }, options);
+    await Enrollment.destroy({ where, transaction });
+    return transaction.commit();
   }
 
   async getExcludedUserIds(offeringUserGroup, { memberIds, transaction }) {
@@ -106,7 +96,7 @@ class EnrollmentService {
 
   getOfferingIds(userGroupId, transaction) {
     const opts = { where: { userGroupId }, transaction };
-    return OfferingUserGroup.findAll(opts).map(({ offeringId }) => offeringId);
+    return OfferingUserGroup.findAll(opts).map(it => it.offeringId);
   }
 
   async getMemberIds(userGroup, transaction) {
@@ -117,7 +107,7 @@ class EnrollmentService {
   async getLinkedUserGroups(offeringUserGroup, transaction) {
     const include = [{ model: User, as: 'members', attributes: ['id'] }];
     const userGroup = await offeringUserGroup.getUserGroup({ include, transaction });
-    const descendants = await userGroup.getDescendants(transaction);
+    const descendants = await userGroup.getDescendants({ transaction });
     return [userGroup, ...descendants];
   }
 }

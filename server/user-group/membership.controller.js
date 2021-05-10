@@ -26,7 +26,7 @@ async function create({ userGroup, body }, res) {
   const payload = { userGroupId: userGroup.id, userId: user.id, role };
   const opts = { modelSearchKey: ['userId', 'userGroupId'] };
   const [err, membership] = await UserGroupMembership.restoreOrCreate(payload, opts);
-  await enrollmentService.enrollMembership(membership, body.deletedAt);
+  await enrollmentService.enrollMembership(membership);
   if (err) return createError(CONFLICT, 'Group membership exists!');
   return res.jsend.success(membership);
 }

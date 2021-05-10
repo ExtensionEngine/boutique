@@ -6,12 +6,8 @@ const Promise = require('bluebird');
 const { restoreOrCreate } = require('../common/database/restore');
 
 class UserGroup extends Model {
-  static fields({ DATE, INTEGER, STRING }) {
+  static fields({ DATE, STRING }) {
     return {
-      parentId: {
-        type: INTEGER,
-        field: 'parent_id'
-      },
       name: {
         type: STRING
       },
@@ -82,21 +78,29 @@ class UserGroup extends Model {
     return this.findByPk(parentId, { attributes, include });
   }
 
-  static getChildren(transaction, parentId) {
+  static getChildren(parentId, options = {}) {
     const attributes = ['id', 'parentId'];
     const User = this.sequelize.model('User');
     const include = [{ model: User, as: 'members', attributes: ['id'] }];
     const where = { parentId };
-    return this.findAll({ where, attributes, include, transaction });
+    return this.findAll({ where, attributes, include, ...options });
   }
 
-  async getDescendants(transaction, item = this) {
-    const children = await UserGroup.getChildren(transaction, item.id);
+  async getDescendants(options, item = this) {
+    const children = await UserGroup.getChildren(item.id, options);
     if (!children.length) return [];
     const descendants = await Promise.reduce(children, async (acc, it) => {
-      return acc.concat(await this.getDescendants(transaction, it));
+      return acc.concat(await this.getDescendants(options, it));
     }, []);
     return children.concat(descendants);
+  }
+
+  async remove() {
+    const transaction = await this.sequelize.transaction();
+    const descendantIds = await this.getDescendants(transaction).map(it => it.id);
+    const where = { id: [this.id, ...descendantIds] };
+    await UserGroup.destroy({ where });
+    return transaction.commit();
   }
 }
 

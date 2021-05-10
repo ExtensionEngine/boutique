@@ -29,11 +29,11 @@ async function create({ user, body }, res) {
 
 async function patch({ userGroup, body }, res) {
   const data = await userGroup.update({ name: body.name });
-  res.jsend.success(data);
+  return res.jsend.success(data);
 }
 
 async function remove({ userGroup }, res) {
-  await userGroup.destroy();
+  await userGroup.remove();
   await enrollmentService.unenrollUserGroup(userGroup);
   return res.sendStatus(NO_CONTENT);
 }
