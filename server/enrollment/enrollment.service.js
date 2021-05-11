@@ -3,6 +3,7 @@
 const db = require('../common/database');
 const difference = require('lodash/difference');
 const flatMap = require('lodash/flatMap');
+const map = require('lodash/map');
 
 const {
   Enrollment,
@@ -23,29 +24,28 @@ class EnrollmentService {
     const transaction = await sequelize.transaction();
     const opts = { transaction, paranoid: false };
     const descendantIds = await userGroup.getDescendants(opts).map(it => it.id);
-    const where = { id: [userGroup.id, ...descendantIds] };
-    const userGroupOptions = { where, paranoid: false, transaction };
-    await UserGroup.update({ deletedAt: null }, userGroupOptions);
-    const memberIds = await this.getMemberIds(userGroup, transaction);
-    const options = { where: { learnerId: memberIds }, paranoid: false, transaction };
-    await Enrollment.update({ deletedAt: null }, options);
+    const userGroupWhere = { id: [userGroup.id, ...descendantIds] };
+    await UserGroup.update({ deletedAt: null }, { where: userGroupWhere, ...opts });
+    const members = await this.getLinkedMembers({ userGroup }, opts);
+    const where = { learnerId: map(members, 'id') };
+    await Enrollment.update({ deletedAt: null }, { where, ...opts });
     return transaction.commit();
   }
 
   async unenrollUserGroup(userGroup) {
     const transaction = await sequelize.transaction();
-    const memberIds = await this.getMemberIds(userGroup, transaction);
-    const options = { where: { learnerId: memberIds }, transaction };
-    await Enrollment.destroy(options);
+    const options = { paranoid: false, transaction };
+    const members = await this.getLinkedMembers({ userGroup }, options);
+    const where = { learnerId: map(members, 'id') };
+    await Enrollment.destroy({ where, transaction });
     return transaction.commit();
   }
 
   async enrollOfferingGroup(offeringUserGroup) {
     const transaction = await sequelize.transaction();
-    const userGroups = await this.getLinkedUserGroups(offeringUserGroup, transaction);
     const { offeringId } = offeringUserGroup;
-    const enrollments = flatMap(userGroups, 'members')
-      .map(it => ({ learnerId: it.id, offeringId }));
+    const members = await this.getLinkedMembers({ offeringUserGroup }, { transaction });
+    const enrollments = members.map(it => ({ learnerId: it.id, offeringId }));
     const opts = { modelSearchKey: ['learnerId', 'offeringId'], transaction };
     await Enrollment.restoreOrCreateAll(enrollments, opts);
     return transaction.commit();
@@ -53,9 +53,10 @@ class EnrollmentService {
 
   async unenrollOfferingGroup(offeringUserGroup) {
     const transaction = await sequelize.transaction();
-    const userGroups = await this.getLinkedUserGroups(offeringUserGroup, transaction);
-    const memberIds = flatMap(userGroups, 'members').map(it => it.id);
     const { offeringId } = offeringUserGroup;
+    const options = { paranoid: false, transaction };
+    const members = await this.getLinkedMembers({ offeringUserGroup }, options);
+    const memberIds = map(members, 'id');
     const opts = { memberIds, transaction };
     const excludedUserIds = await this.getExcludedUserIds(offeringUserGroup, opts);
     const learnerIds = difference(memberIds, excludedUserIds);
@@ -80,7 +81,7 @@ class EnrollmentService {
     const transaction = await sequelize.transaction();
     const offeringIds = await this.getOfferingIds(userGroupId, transaction);
     const where = { learnerId: userId, enrollmentOfferingId: offeringIds };
-    await Enrollment.destroy({ where, transaction });
+    await Enrollment.destroy({ where, transaction }); // check this
     return transaction.commit();
   }
 
@@ -99,16 +100,12 @@ class EnrollmentService {
     return OfferingUserGroup.findAll(opts).map(it => it.offeringId);
   }
 
-  async getMemberIds(userGroup, transaction) {
-    const members = await userGroup.getMembers({ transaction });
-    return members.map(({ id }) => id);
-  }
-
-  async getLinkedUserGroups(offeringUserGroup, transaction) {
+  async getLinkedMembers({ userGroup, offeringUserGroup }, options) {
     const include = [{ model: User, as: 'members', attributes: ['id'] }];
-    const userGroup = await offeringUserGroup.getUserGroup({ include, transaction });
-    const descendants = await userGroup.getDescendants({ transaction });
-    return [userGroup, ...descendants];
+    if (userGroup) await userGroup.reload({ include, ...options });
+    else userGroup = await offeringUserGroup.getUserGroup({ include, ...options });
+    const descendants = await userGroup.getDescendants(options);
+    return flatMap([userGroup, ...descendants], 'members');
   }
 }
 
