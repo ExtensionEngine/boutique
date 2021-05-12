@@ -8,11 +8,11 @@ const map = require('lodash/map');
 const {
   Enrollment,
   OfferingUserGroup,
+  Sequelize,
+  sequelize,
   User,
   UserGroup,
-  UserGroupMembership,
-  Sequelize,
-  sequelize
+  UserGroupMembership
 } = db;
 
 const { Op } = Sequelize;
@@ -22,8 +22,8 @@ async function enrollUserGroup(userGroup, previousDeletedAt) {
   if (!isRestored) return;
   const transaction = await sequelize.transaction();
   const opts = { transaction, paranoid: false };
-  const descendantIds = await userGroup.getDescendants(opts).map(it => it.id);
-  const userGroupWhere = { id: [userGroup.id, ...descendantIds] };
+  const descendants = await userGroup.getDescendants(opts);
+  const userGroupWhere = { id: [userGroup.id, ...map(descendants, 'id')] };
   await UserGroup.update({ deletedAt: null }, { where: userGroupWhere, ...opts });
   const members = await getLinkedMembers({ userGroup }, opts);
   const where = { learnerId: map(members, 'id') };
@@ -78,7 +78,8 @@ async function enrollMembership(membership) {
 async function unenrollMembership(membership) {
   const { userId, userGroupId } = membership;
   const transaction = await sequelize.transaction();
-  const offeringIds = await getOfferingIds(userGroupId, transaction);
+  const opts = { where: { userGroupId }, transaction };
+  const offeringIds = await OfferingUserGroup.findAll(opts).map(it => it.offeringId);
   const where = { learnerId: userId, enrollmentOfferingId: offeringIds };
   await Enrollment.destroy({ where, transaction });
   return transaction.commit();
@@ -99,11 +100,6 @@ async function getLinkedMembers({ userGroup, offeringUserGroup }, options) {
   else userGroup = await offeringUserGroup.getUserGroup({ include, ...options });
   const descendants = await userGroup.getDescendants(options);
   return flatMap([userGroup, ...descendants], 'members');
-}
-
-function getOfferingIds(userGroupId, transaction) {
-  const opts = { where: { userGroupId }, transaction };
-  return OfferingUserGroup.findAll(opts).map(it => it.offeringId);
 }
 
 async function getExcludedUserIds(offeringUserGroup, { memberIds, transaction }) {
