@@ -26,6 +26,7 @@ const parseParams = ({ params }) => {
 const fallbackRoute = { path: '*', component: NotFound };
 
 const router = new Router({
+  mode: 'history',
   routes: [{
     path: '/auth',
     name: 'auth',

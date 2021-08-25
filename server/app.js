@@ -1,16 +1,15 @@
 'use strict';
 
 require('express-async-errors');
-const { INTERNAL_SERVER_ERROR, NOT_FOUND } = require('http-status');
 const auth = require('./common/auth');
 const AuthError = require('passport/lib/errors/authenticationerror');
 const bodyParser = require('body-parser');
 const config = require('./config');
 const cors = require('cors');
 const express = require('express');
-const fallback = require('express-history-api-fallback');
 const helmet = require('helmet');
 const HttpError = require('http-errors').HttpError;
+const { INTERNAL_SERVER_ERROR } = require('http-status');
 const jsend = require('jsend').middleware;
 const morgan = require('morgan');
 const nocache = require('nocache');
@@ -28,7 +27,6 @@ app.use(cors({
 app.use(bodyParser.json({ limit: config.uploadLimit }));
 app.use(auth.initialize());
 app.use(origin());
-app.use(express.static(config.staticFolder));
 app.use(jsend);
 
 // Log http requests
@@ -55,11 +53,5 @@ app.use((err, req, res, next) => {
   res.status(INTERNAL_SERVER_ERROR).end();
   logger.error({ req, err }, '🚨  Internal Error:', err.message);
 });
-
-// Handle non-existing routes.
-const notFound = config.useHistoryApiFallback
-  ? fallback('index.html', { root: config.staticFolder })
-  : (_, res) => res.sendStatus(NOT_FOUND);
-app.use(notFound);
 
 module.exports = app;
