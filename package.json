@@ -79,7 +79,7 @@
   "dependencies": {
     "@mdi/font": "^5.8.55",
     "aws-sdk": "^2.696.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.3",
     "bcrypt": "^5.0.0",
     "bluebird": "^3.7.2",
     "body-parser": "^1.19.0",
