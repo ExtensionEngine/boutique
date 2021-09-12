@@ -64,7 +64,7 @@
     "poi": "^12.10.3",
     "read-pkg-up": "^7.0.1",
     "readme-filename": "^1.0.0",
-    "remark-cli": "^9.0.0",
+    "remark-cli": "^10.0.0",
     "remark-lint": "^6.0.5",
     "remark-preset-lint-recommended": "^3.0.3",
     "rewrite-lockfile": "^1.0.1",
