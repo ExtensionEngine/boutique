@@ -86,6 +86,7 @@ class UserGroup extends Model {
     return this.findAll({ where, attributes, include, ...options });
   }
 
+  // TODO: Rewrite this to recursive CTE
   async getDescendants(options, item = this) {
     const children = await UserGroup.getChildren(item.id, options);
     if (!children.length) return [];
