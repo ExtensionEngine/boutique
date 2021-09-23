@@ -109,9 +109,8 @@ class UserGroup extends Model {
 
   remove() {
     return this.sequelize.transaction(async transaction => {
-      const descendantIds = await this.getDescendants(transaction).map(it => it.id);
-      const where = { id: descendantIds };
-      return UserGroup.destroy({ where });
+      const descendantIds = map(await this.getRootWithDescendants(transaction), 'id');
+      return UserGroup.destroy({ where: { id: descendantIds } });
     });
   }
 }
