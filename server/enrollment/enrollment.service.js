@@ -9,7 +9,6 @@ const {
   Enrollment,
   OfferingUserGroup,
   Sequelize,
-  sequelize,
   User,
   UserGroup,
   UserGroupMembership
@@ -17,41 +16,34 @@ const {
 
 const { Op } = Sequelize;
 
-async function enrollUserGroup(userGroup, previousDeletedAt) {
+async function enrollUserGroup(userGroup, previousDeletedAt, { transaction }) {
   const isRestored = previousDeletedAt && !userGroup.deletedAt;
   if (!isRestored) return;
-  const transaction = await sequelize.transaction();
   const opts = { transaction, paranoid: false };
   const descendants = await userGroup.getDescendants(opts);
   const userGroupWhere = { id: [userGroup.id, ...map(descendants, 'id')] };
   await UserGroup.update({ deletedAt: null }, { where: userGroupWhere, ...opts });
   const members = await getLinkedMembers({ userGroup }, opts);
   const where = { learnerId: map(members, 'id') };
-  await Enrollment.update({ deletedAt: null }, { where, ...opts });
-  return transaction.commit();
+  return Enrollment.update({ deletedAt: null }, { where, ...opts });
 }
 
-async function unenrollUserGroup(userGroup) {
-  const transaction = await sequelize.transaction();
+async function unenrollUserGroup(userGroup, { transaction }) {
   const options = { paranoid: false, transaction };
   const members = await getLinkedMembers({ userGroup }, options);
   const where = { learnerId: map(members, 'id') };
-  await Enrollment.destroy({ where, transaction });
-  return transaction.commit();
+  return Enrollment.destroy({ where, transaction });
 }
 
-async function enrollOfferingGroup(offeringUserGroup) {
-  const transaction = await sequelize.transaction();
+async function enrollOfferingGroup(offeringUserGroup, { transaction }) {
   const { offeringId } = offeringUserGroup;
   const members = await getLinkedMembers({ offeringUserGroup }, { transaction });
   const enrollments = members.map(it => ({ learnerId: it.id, offeringId }));
   const opts = { modelSearchKey: ['learnerId', 'offeringId'], transaction };
-  await Enrollment.restoreOrCreateAll(enrollments, opts);
-  return transaction.commit();
+  return Enrollment.restoreOrCreateAll(enrollments, opts);
 }
 
-async function unenrollOfferingGroup(offeringUserGroup) {
-  const transaction = await sequelize.transaction();
+async function unenrollOfferingGroup(offeringUserGroup, { transaction }) {
   const { offeringId } = offeringUserGroup;
   const options = { paranoid: false, transaction };
   const members = await getLinkedMembers({ offeringUserGroup }, options);
@@ -60,29 +52,24 @@ async function unenrollOfferingGroup(offeringUserGroup) {
   const excludedUserIds = await getExcludedUserIds(offeringUserGroup, opts);
   const learnerIds = difference(memberIds, excludedUserIds);
   const where = { learnerId: learnerIds, enrollmentOfferingId: offeringId };
-  await Enrollment.destroy({ where, transaction });
-  return transaction.commit();
+  return Enrollment.destroy({ where, transaction });
 }
 
-async function enrollMembership(membership) {
-  const transaction = await sequelize.transaction();
+async function enrollMembership(membership, { transaction }) {
   const { userId, userGroupId } = membership;
   const options = { where: { userGroupId }, transaction };
   const enrollments = await OfferingUserGroup.findAll(options)
     .map(({ offeringId }) => ({ learnerId: userId, offeringId }));
   const opts = { modelSearchKey: ['learnerId', 'offeringId'], transaction };
-  await Enrollment.restoreOrCreateAll(enrollments, opts);
-  return transaction.commit();
+  return Enrollment.restoreOrCreateAll(enrollments, opts);
 }
 
-async function unenrollMembership(membership) {
+async function unenrollMembership(membership, { transaction }) {
   const { userId, userGroupId } = membership;
-  const transaction = await sequelize.transaction();
   const opts = { where: { userGroupId }, transaction };
   const offeringIds = await OfferingUserGroup.findAll(opts).map(it => it.offeringId);
   const where = { learnerId: userId, enrollmentOfferingId: offeringIds };
-  await Enrollment.destroy({ where, transaction });
-  return transaction.commit();
+  return Enrollment.destroy({ where, transaction });
 }
 
 module.exports = {

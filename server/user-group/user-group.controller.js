@@ -1,7 +1,7 @@
 'use strict';
 
 const { CONFLICT, NO_CONTENT } = require('http-status');
-const { Sequelize, UserGroup } = require('../common/database');
+const { Sequelize, sequelize, UserGroup } = require('../common/database');
 const { createError } = require('../common/errors');
 const enrollmentService = require('../enrollment/enrollment.service');
 const { UserGroupRole } = require('../../common/config');
@@ -17,14 +17,18 @@ async function list({ query, options }, res) {
   return res.jsend.success({ items: rows, total: count });
 }
 
-async function create({ user, body }, res) {
+function create({ user, body }, res) {
   const { id, name, parentId = null } = body;
   const payload = id ? { id, name, parentId } : { name, parentId };
-  const [err, userGroup] = await UserGroup.restoreOrCreate(payload);
-  if (err) return createError(CONFLICT, 'User group exists!');
-  await enrollmentService.enrollUserGroup(userGroup, body.deletedAt);
-  if (!user.isAdmin() && !parentId) await setGroupAdmin(user, userGroup);
-  return res.jsend.success(userGroup);
+  return sequelize.transaction(async transaction => {
+    const opts = { transaction };
+    const [err, userGroup] = await UserGroup.restoreOrCreate(payload, opts);
+    if (err) return createError(CONFLICT, 'User group exists!');
+    await enrollmentService.enrollUserGroup(userGroup, body.deletedAt, opts);
+    if (!user.isAdmin() && !parentId) await setGroupAdmin(user, userGroup, opts);
+    return userGroup;
+  })
+  .then(res.jsend.success);
 }
 
 async function patch({ userGroup, body }, res) {
@@ -32,10 +36,12 @@ async function patch({ userGroup, body }, res) {
   return res.jsend.success(data);
 }
 
-async function remove({ userGroup }, res) {
-  await userGroup.remove();
-  await enrollmentService.unenrollUserGroup(userGroup);
-  return res.sendStatus(NO_CONTENT);
+function remove({ userGroup }, res) {
+  return sequelize.transaction(async transaction => {
+    await userGroup.remove({ transaction });
+    return enrollmentService.unenrollUserGroup(userGroup, { transaction });
+  })
+  .then(() => res.sendStatus(NO_CONTENT));
 }
 
 module.exports = {
@@ -45,7 +51,7 @@ module.exports = {
   remove
 };
 
-function setGroupAdmin(user, userGroup) {
+function setGroupAdmin(user, userGroup, { transaction }) {
   const through = { role: UserGroupRole.INSTRUCTOR };
-  return userGroup.addMember(user, { through });
+  return userGroup.addMember(user, { through, transaction });
 }

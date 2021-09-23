@@ -1,10 +1,11 @@
 'use strict';
 
 const { CONFLICT, NO_CONTENT } = require('http-status');
-const { OfferingUserGroup, Sequelize, UserGroup } = require('../common/database');
 const { createError } = require('../common/errors');
+const db = require('../common/database');
 const enrollmentService = require('../enrollment/enrollment.service');
 
+const { OfferingUserGroup, sequelize, Sequelize, UserGroup } = db;
 const { Op } = Sequelize;
 
 async function list({ offering, query, options }, res) {
@@ -20,17 +21,22 @@ async function list({ offering, query, options }, res) {
 async function create({ offering, body }, res) {
   const { userGroupId } = body;
   const payload = { userGroupId, offeringId: offering.id };
-  const opts = { modelSearchKey: ['offeringId', 'userGroupId'] };
-  const [err, userGroup] = await OfferingUserGroup.restoreOrCreate(payload, opts);
-  if (err) return createError(CONFLICT, 'Offering user group exists!');
-  await enrollmentService.enrollOfferingGroup(userGroup);
-  return res.jsend.success(userGroup);
+  return sequelize.transaction(async transaction => {
+    const opts = { modelSearchKey: ['offeringId', 'userGroupId'], transaction };
+    const [err, userGroup] = await OfferingUserGroup.restoreOrCreate(payload, opts);
+    if (err) return createError(CONFLICT, 'Offering user group exists!');
+    await enrollmentService.enrollOfferingGroup(userGroup, { transaction });
+    return userGroup;
+  })
+  .then(res.jsend.success);
 }
 
-async function remove({ offeringUserGroup }, res) {
-  await offeringUserGroup.destroy();
-  await enrollmentService.unenrollOfferingGroup(offeringUserGroup);
-  return res.sendStatus(NO_CONTENT);
+function remove({ offeringUserGroup }, res) {
+  return sequelize.transaction(async transaction => {
+    await offeringUserGroup.destroy({ transaction });
+    return enrollmentService.unenrollOfferingGroup(offeringUserGroup, { transaction });
+  })
+  .then(() => res.sendStatus(NO_CONTENT));
 }
 
 module.exports = {
