@@ -21,18 +21,21 @@ module.exports = {
   restoreOrCreateAll
 };
 
-async function restoreOrBuildAll(Model, items = [], { where } = {}, options = {}) {
-  const { save = false, concurrency = 16, modelSearchKey = 'id' } = options;
-  const found = await Model.findAll({ where, paranoid: false });
+async function restoreOrBuildAll(Model, items = [], where = {}, options = {}) {
+  const { save = false, concurrency = 16, modelSearchKey = 'id', transaction } = options;
+  const found = await Model.findAll({ where, paranoid: false, transaction });
   const results = await Promise.map(items, item => pTuple(() => {
     const model = find(found, processSearchKey(modelSearchKey, item));
     if (model && !model.deletedAt) {
       const message = `${capitalize(name(Model))} already exists`;
       throw new UniqueConstraintError({ message });
     }
-    if (!model) return save ? Model.create(item) : Model.build(item);
+    if (!model) {
+      const action = save ? 'create' : 'build';
+      return Model[action](item, { transaction });
+    }
     model.setDataValue('deletedAt', null);
-    return save ? model.save() : model;
+    return save ? model.save({ transaction }) : model;
   }), { concurrency });
   return Array.isArray(items) ? results : results[0];
 }
