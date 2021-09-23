@@ -13,13 +13,13 @@ const rootQuery = id => `
 `;
 
 const getRootWithDescendantsQuery = id => `
-WITH RECURSIVE group_tree AS (
-  ${rootQuery(id)}
-  UNION ALL
-  SELECT user_group.id, user_group.parent_id
-  FROM user_group
-  JOIN group_tree ON user_group.parent_id = group_tree.id
-) SELECT * FROM group_tree`;
+  WITH RECURSIVE group_tree AS (
+    ${rootQuery(id)}
+    UNION ALL
+    SELECT user_group.id, user_group.parent_id
+    FROM user_group
+    JOIN group_tree ON user_group.parent_id = group_tree.id
+  ) SELECT * FROM group_tree`;
 
 class UserGroup extends Model {
   static fields({ DATE, STRING }) {
