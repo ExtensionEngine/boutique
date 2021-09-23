@@ -20,8 +20,8 @@ async function enrollUserGroup(userGroup, previousDeletedAt, { transaction }) {
   const isRestored = previousDeletedAt && !userGroup.deletedAt;
   if (!isRestored) return;
   const opts = { transaction, paranoid: false };
-  const descendants = await userGroup.getDescendants(opts);
-  const userGroupWhere = { id: [userGroup.id, ...map(descendants, 'id')] };
+  const rootWithdescendants = await userGroup.getRootWithDescendants(opts);
+  const userGroupWhere = { id: map(rootWithdescendants, 'id') };
   await UserGroup.update({ deletedAt: null }, { where: userGroupWhere, ...opts });
   const members = await getLinkedMembers({ userGroup }, opts);
   const where = { learnerId: map(members, 'id') };
@@ -85,8 +85,8 @@ async function getLinkedMembers({ userGroup, offeringUserGroup }, options) {
   const include = [{ model: User, as: 'members', attributes: ['id'] }];
   if (userGroup) await userGroup.reload({ include, ...options });
   else userGroup = await offeringUserGroup.getUserGroup({ include, ...options });
-  const descendants = await userGroup.getDescendants(options);
-  return flatMap([userGroup, ...descendants], 'members');
+  const rootWithdescendants = await userGroup.getRootWithDescendants(options);
+  return flatMap(rootWithdescendants, 'members');
 }
 
 async function getExcludedUserIds(offeringUserGroup, { memberIds, transaction }) {
