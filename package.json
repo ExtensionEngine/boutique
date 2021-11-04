@@ -70,7 +70,7 @@
     "rewrite-lockfile": "^1.0.1",
     "sass": "^1.26.8",
     "sass-loader": "^7.1.0",
-    "sequelize-cli": "^6.2.0",
+    "sequelize-cli": "^6.3.0",
     "split2": "^3.1.1",
     "stylelint": "^13.8.0",
     "vue-template-compiler": "^2.6.11",
