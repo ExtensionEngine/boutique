@@ -58,7 +58,7 @@
     "eslint-plugin-vuetify": "^1.0.0-beta.6",
     "inquirer": "^7.2.0",
     "is-email-like": "^1.0.0",
-    "minimist": "^1.2.5",
+    "minimist": "^1.2.6",
     "node-sass": "^4.14.1",
     "nodemon": "^2.0.4",
     "poi": "^12.10.3",
