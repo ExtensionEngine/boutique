@@ -127,7 +127,7 @@
     "sass-web-fonts": "^2.1.0",
     "save-as": "^0.1.8",
     "semver": "^6.3.0",
-    "sequelize": "^6.3.5",
+    "sequelize": "^6.19.1",
     "sequelize-replace-enum-postgres": "^1.5.0",
     "tailor-teaching-elements": "^1.5.0",
     "truncate": "^2.1.0",
