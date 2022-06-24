@@ -60,7 +60,7 @@
     "is-email-like": "^1.0.0",
     "minimist": "^1.2.5",
     "node-sass": "^4.14.1",
-    "nodemon": "^2.0.4",
+    "nodemon": "^2.0.17",
     "poi": "^12.10.3",
     "read-pkg-up": "^7.0.1",
     "readme-filename": "^1.0.0",
