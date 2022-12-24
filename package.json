@@ -117,7 +117,7 @@
     "ncp": "^2.0.0",
     "nocache": "^2.1.0",
     "passport": "^0.4.1",
-    "passport-jwt": "^4.0.0",
+    "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "pg": "^8.4.2",
     "promise-queue": "^2.2.5",
